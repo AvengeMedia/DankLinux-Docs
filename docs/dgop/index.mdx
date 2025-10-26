@@ -1,0 +1,101 @@
+---
+title: dgop
+sidebar_position: 1
+---
+
+# dgop
+
+dgop is a lightweight system monitoring tool providing both CLI and REST API interfaces for accessing system resources.
+
+## Overview
+
+dgop provides comprehensive system metrics through an easy-to-use interface. It's designed as a single-binary solution that can operate independently or integrate with DankMaterialShell for enhanced functionality.
+
+### Key Features
+
+- **CLI Interface** with comprehensive commands for:
+  - System metrics (CPU, memory, network, disk)
+  - Process monitoring with sorting and filtering
+  - Hardware information retrieval
+  - GPU detection and temperature monitoring
+
+- **REST API Server** with JSON endpoints for programmatic access
+- **Real-time Monitoring** with cursor-based sampling
+- **Performance Optimized** with configurable options
+- **OpenAPI Documentation** available at `/docs` endpoint
+
+## Installation
+
+### Pre-built Binaries
+
+Download from [GitHub Releases](https://github.com/AvengeMedia/dgop/releases)
+
+### Arch Linux
+
+```bash
+yay -S dgop
+# or
+paru -S dgop
+```
+
+### From Source
+
+```bash
+git clone https://github.com/AvengeMedia/dgop
+cd dgop
+make
+sudo make install
+```
+
+## Quick Start
+
+### CLI Usage
+
+Get system metrics:
+
+```bash
+dgop system
+```
+
+Monitor processes:
+
+```bash
+dgop processes --sort cpu --limit 10
+```
+
+Get hardware info:
+
+```bash
+dgop hardware
+```
+
+### API Server
+
+Start the API server:
+
+```bash
+dgop serve
+```
+
+Access the API at `http://localhost:8080` and view documentation at `http://localhost:8080/docs`
+
+## JSON Output
+
+All commands support JSON output for scripting:
+
+```bash
+dgop system --json
+```
+
+## Technical Requirements
+
+- **OS**: Linux (uses `/proc` and `/sys`)
+- **Go**: 1.22+ (for building)
+- **Optional**: `nvidia-smi` and `lspci` for GPU functionality
+
+## Next Steps
+
+- [Installation Guide](#) - Detailed setup instructions
+- [CLI Reference](#) - Complete command documentation
+- [API Documentation](#) - REST API endpoints
+- [System Monitoring](#) - Advanced monitoring workflows

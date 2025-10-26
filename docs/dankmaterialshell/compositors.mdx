@@ -1,0 +1,190 @@
+---
+title: Compositor Setup
+sidebar_position: 4
+---
+
+# Compositor Setup
+
+DankMaterialShell works with multiple Wayland compositors, providing first-class support for niri and Hyprland. This guide covers installation pointers, recommended configuration, and IPC bindings to unlock the full experience.
+
+## Supported Compositors at a Glance
+
+| Compositor | Support Level | Notes |
+| --- | --- | --- |
+| **niri** | Primary | Deep integration with scrollable workspaces, keybind export, theme sync. |
+| **Hyprland** | Full | Comprehensive IPC bindings, dock integration, dynamic gaps support. |
+| **Other Wayland** | Basic | Runs on wlroots-based compositors; some advanced features may be unavailable. |
+
+## niri Setup
+
+### Install niri
+
+```bash
+# Arch
+sudo pacman -S niri
+
+# Fedora
+sudo dnf copr enable yalter/niri
+sudo dnf install niri
+```
+
+See the [niri Getting Started guide](https://yalter.github.io/niri/Getting-Started.html) for additional distributions.
+
+### Launching the Shell
+
+Add these entries to your `config.kdl`:
+
+```kdl
+// Clipboard history service
+spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
+
+// Privilege escalation agent (optional but recommended)
+spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+
+// Start DankMaterialShell
+spawn-at-startup "dms" "run"
+```
+
+### Recommended Keybinds
+
+Merge the following bindings with your existing configuration to control shell modals and system features:
+
+```kdl
+binds {
+  Mod+Space hotkey-overlay-title="Application Launcher" {
+    spawn "dms" "ipc" "call" "spotlight" "toggle"
+  }
+  Mod+V hotkey-overlay-title="Clipboard Manager" {
+    spawn "dms" "ipc" "call" "clipboard" "toggle"
+  }
+  Mod+M hotkey-overlay-title="Task Manager" {
+    spawn "dms" "ipc" "call" "processlist" "toggle"
+  }
+  Mod+N hotkey-overlay-title="Notification Center" {
+    spawn "dms" "ipc" "call" "notifications" "toggle"
+  }
+  Mod+Comma hotkey-overlay-title="Settings" {
+    spawn "dms" "ipc" "call" "settings" "toggle"
+  }
+  Mod+P hotkey-overlay-title="Notepad" {
+    spawn "dms" "ipc" "call" "notepad" "toggle"
+  }
+  Super+Alt+L hotkey-overlay-title="Lock Screen" {
+    spawn "dms" "ipc" "call" "lock" "lock"
+  }
+  Mod+X hotkey-overlay-title="Power Menu" {
+    spawn "dms" "ipc" "call" "powermenu" "toggle"
+  }
+  Mod+C hotkey-overlay-title="Control Center" {
+    spawn "dms" "ipc" "call" "control-center" "toggle"
+  }
+  XF86AudioRaiseVolume allow-when-locked=true {
+    spawn "dms" "ipc" "call" "audio" "increment" "3"
+  }
+  XF86AudioLowerVolume allow-when-locked=true {
+    spawn "dms" "ipc" "call" "audio" "decrement" "3"
+  }
+  XF86AudioMute allow-when-locked=true {
+    spawn "dms" "ipc" "call" "audio" "mute"
+  }
+  XF86AudioMicMute allow-when-locked=true {
+    spawn "dms" "ipc" "call" "audio" "micmute"
+  }
+  XF86MonBrightnessUp allow-when-locked=true {
+    spawn "dms" "ipc" "call" "brightness" "increment" "5" ""
+  }
+  XF86MonBrightnessDown allow-when-locked=true {
+    spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""
+  }
+  Mod+Shift+N allow-when-locked=true {
+    spawn "dms" "ipc" "call" "night" "toggle"
+  }
+}
+```
+
+### Theme Synchronization
+
+For niri builds newer than commit `3933903`, include the generated layout and color files to keep compositor styling aligned with DMS:
+
+```bash
+echo 'include "dms/colors.kdl"' >> ~/.config/niri/config.kdl
+echo 'include "dms/layout.kdl"' >> ~/.config/niri/config.kdl
+```
+
+## Hyprland Setup
+
+### Install Hyprland
+
+```bash
+# Arch
+sudo pacman -S hyprland
+# Latest git snapshot
+paru -S hyprland-git
+
+# Fedora
+sudo dnf install hyprland
+# Or the Copr for bleeding edge
+sudo dnf copr enable solopasha/hyprland
+sudo dnf install hyprland
+```
+
+### Launching the Shell
+
+Add these lines to `~/.config/hypr/hyprland.conf`:
+
+```conf
+# Clipboard history service
+exec-once = bash -c "wl-paste --watch cliphist store &"
+
+# Privilege escalation agent (optional but recommended)
+exec-once = /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
+
+# Start DankMaterialShell
+exec-once = dms run
+```
+
+### Recommended Keybinds
+
+Hyprland bindings mirror the niri configuration:
+
+```conf
+bind = SUPER, Space, exec, dms ipc call spotlight toggle
+bind = SUPER, V, exec, dms ipc call clipboard toggle
+bind = SUPER, M, exec, dms ipc call processlist toggle
+bind = SUPER, N, exec, dms ipc call notifications toggle
+bind = SUPER, comma, exec, dms ipc call settings toggle
+bind = SUPER, P, exec, dms ipc call notepad toggle
+bind = SUPERALT, L, exec, dms ipc call lock lock
+bind = SUPER, X, exec, dms ipc call powermenu toggle
+bind = SUPER, C, exec, dms ipc call control-center toggle
+bindl = , XF86AudioRaiseVolume, exec, dms ipc call audio increment 3
+bindl = , XF86AudioLowerVolume, exec, dms ipc call audio decrement 3
+bindl = , XF86AudioMute, exec, dms ipc call audio mute
+bindl = , XF86AudioMicMute, exec, dms ipc call audio micmute
+bindl = , XF86MonBrightnessUp, exec, dms ipc call brightness increment 5 ""
+bindl = , XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5 ""
+bind = SUPERSHIFT, N, exec, dms ipc call night toggle
+```
+
+### Extra Tips
+
+- Use `bind = , XF86AudioPlay, exec, dms ipc call mpris playPause` to control media players.
+- If you run custom window rules, load them before starting DMS to avoid race conditions.
+
+## Generic Wayland Support
+
+DankMaterialShell also runs on other wlroots-based compositors (Sway, River, Wayfire, etc.). Feature coverage will depend on compositor capabilities:
+
+- Idle management requires support for session locking APIs.
+- Monitor-aware widgets rely on accurate output naming.
+- Some IPC-powered widgets may not function without `dms` CLI access.
+
+Test with `dms run` and report compatibility findings to the community.
+
+## Troubleshooting
+
+- **Pw errors or missing clipboard history:** ensure `wl-clipboard` and `cliphist` are installed and your compositor configuration starts the watcher.
+- **Brightness controls failing:** install `brightnessctl` and verify your user has permission to access backlight devices.
+- **Keybind conflicts:** adjust modifiers to avoid overlapping existing compositor bindings.
+
+Continue to [Configuration](/docs/dankmaterialshell/configuration) for a deeper dive into widget layouts and system tweaks.

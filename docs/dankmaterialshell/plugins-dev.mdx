@@ -1,0 +1,85 @@
+---
+title: Plugin Development
+---
+
+# Development
+
+Build and ship your own DankMaterialShell plugins using the QML-based plugin framework. This guide walks through setup, project structure, development patterns, and publishing workflows.
+
+## Getting Started
+
+1. Ensure you have DankMaterialShell installed (via [DankLinux](/docs/danklinux/dankinstall) or manual setup).
+2. Create a workspace for plugins:
+   ```bash
+   mkdir -p ~/.config/DankMaterialShell/plugins/MyPlugin
+   cd ~/.config/DankMaterialShell/plugins/MyPlugin
+   ```
+3. Copy a starter plugin, such as `PLUGINS/ExampleEmojiPlugin`, from the DankMaterialShell repository to understand the structure.
+4. Edit `plugin.json` to define metadata, permissions, and entry components.
+
+## Project Structure
+
+```
+MyPlugin/
+├── plugin.json        # Manifest (required)
+├── MyWidget.qml       # Main component (required)
+├── MySettings.qml     # Optional settings interface
+├── helpers.js         # Optional JavaScript utilities
+└── README.md          # Recommended documentation
+```
+
+Key manifest fields:
+
+- `id`, `name`, `description`, `version`
+- `type`: `widget`, `launcher`, or `daemon`
+- `capabilities`: e.g., `dankbar-widget`, `watch-events`
+- `component`: path to the main QML component
+- `settings`: optional settings component path
+- `permissions`: e.g., `settings_write` for persistent configuration
+
+## Development Workflow
+
+1. **Load the Plugin:** Enable it under **Settings → Plugins**.
+2. **Iterate Quickly:**
+   ```bash
+   dms restart
+   ```
+   Run this after changing QML files or settings schemas.
+3. **Log Output:**
+   ```bash
+   journalctl --user -fu dms
+   ```
+   or run `dms run` in a terminal for real-time logs.
+4. **Global State:** Use `PluginGlobalVar` to share data between multiple widget instances.
+5. **Automation:** Call `dms ipc` from Dank Actions or hooks to control shell features.
+
+### Launcher Plugins
+
+Set `"type": "launcher"` and provide a custom trigger string (e.g., `"#"`). Implement `getItems(query)` and `executeItem(item)` in your QML component to return search results and actions. See `PLUGINS/LauncherExample` for a reference implementation.
+
+### External Commands
+
+Use the provided helpers instead of raw `exec`:
+
+- `Proc.runCommand(id, args, callback, debounce)` – run commands and capture output.
+- `Quickshell.execDetached([...])` – fire-and-forget commands (e.g., piping to `wl-copy`).
+
+## Testing Checklist
+
+- Validate your manifest using the `plugin-schema.json` in the main repository.
+- Confirm settings load/save correctly when `settings_write` is declared.
+- Test on both horizontal and vertical DankBar layouts if your widget renders differently.
+- Verify optional dependencies (`wl-copy`, `curl`, etc.) are documented.
+
+## Publishing Workflow
+
+1. Host your plugin in a public repository with a clear README, installation steps, and screenshots.
+2. Add release tags if you plan to maintain versioned updates.
+3. Submit metadata to the [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) to appear on [plugins.danklinux.com](https://plugins.danklinux.com/).
+4. Monitor issues and feedback, updating your plugin as DankMaterialShell evolves.
+
+## Contributing
+
+- Share ideas or request new plugin APIs in the [DankMaterialShell issue tracker](https://github.com/AvengeMedia/DankMaterialShell/issues).
+- Improve the developer experience by opening pull requests against the core repo (e.g., new helper components or documentation updates).
+- Document best practices in your own plugin READMEs to help the next wave of developers.

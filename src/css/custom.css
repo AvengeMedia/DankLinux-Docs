@@ -1,0 +1,429 @@
+/**
+ * Custom CSS - Theme Specific Styles
+ *
+ * Import order:
+ * 1. Tailwind base styles
+ * 2. Global overrides (our Docusaurus defaults)
+ * 3. Theme-specific customizations (this file)
+ */
+
+/* Tailwind CSS imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Docusaurus overrides - our base styles */
+@import url('./global.css');
+
+/* ========================================
+   PAGE-SPECIFIC NAVBAR THEMES
+   ======================================== */
+
+/* Override Docusaurus's navbar theme classes that set solid backgrounds */
+.navbar--dark,
+.navbar--primary {
+  --ifm-navbar-background-color: transparent;
+}
+
+/* Landing Page - Override Docusaurus navbar variables */
+body.landing-page {
+  --ifm-navbar-background-color: rgba(0, 0, 0, 0.8);
+  --ifm-navbar-shadow: none;
+}
+
+body.landing-page .navbar--dark,
+body.landing-page .navbar--primary {
+  --ifm-navbar-background-color: rgba(0, 0, 0, 0.8);
+}
+
+body.landing-page .navbar {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(208, 188, 255, 0.1);
+}
+
+/* Adjust main content padding for fixed navbar */
+body.landing-page main {
+  padding-top: var(--ifm-navbar-height);
+}
+
+/* Docs Page - Override Docusaurus navbar variables */
+body.docs-page {
+  --ifm-navbar-background-color: rgba(26, 22, 37, 0.85);
+  --ifm-navbar-shadow: none;
+}
+
+body.docs-page .navbar--dark,
+body.docs-page .navbar--primary {
+  --ifm-navbar-background-color: rgba(26, 22, 37, 0.85);
+}
+
+body.docs-page .navbar {
+  position: sticky;
+  background: rgba(26, 22, 37, 0.85) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(208, 188, 255, 0.15);
+  transition: background 0.3s ease, border-color 0.3s ease;
+  z-index: 1100;
+}
+
+/* Docs page navbar link color adjustment */
+body.docs-page .navbar__link {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Light mode navbar overrides */
+html[data-theme='light'] body.landing-page,
+html[data-theme='light'] body.docs-page {
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.65);
+}
+
+html[data-theme='light'] body.landing-page .navbar,
+html[data-theme='light'] body.docs-page .navbar {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-bottom-color: rgba(128, 90, 213, 0.12);
+}
+
+html[data-theme='light'] .navbar__link {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+html[data-theme='light'] .navbar__link:hover {
+  color: var(--dank-purple-dark);
+}
+
+html[data-theme='light'] .navbar-sidebar {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+html[data-theme='light'] .navbar-sidebar__item .menu__link {
+  color: rgba(0, 0, 0, 0.85);
+}
+
+html[data-theme='light'] .header-github-link,
+html[data-theme='light'] .navbar-discord-link {
+  color: rgba(26, 22, 37, 0.75);
+}
+
+/* Brand hover effect */
+.navbar__brand:hover {
+  color: var(--dank-purple-light);
+}
+
+/* Dark mode toggle button */
+[data-theme='dark'] .clean-btn[title*='dark'],
+[data-theme='light'] .clean-btn[title*='light'] {
+  color: var(--dank-purple-light);
+}
+
+.clean-btn:hover {
+  background: rgba(208, 188, 255, 0.1);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Material Design 3 Purple Palette for Dank Linux */
+:root {
+  --ifm-color-primary: #805AD5;
+  --ifm-color-primary-dark: #6B46C1;
+  --ifm-color-primary-darker: #553C9A;
+  --ifm-color-primary-darkest: #44337A;
+  --ifm-color-primary-light: #9F7AEA;
+  --ifm-color-primary-lighter: #B794F4;
+  --ifm-color-primary-lightest: #D0BCFF;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(208, 188, 255, 0.1);
+  --ifm-background-color: #f8f7fb;
+  --dank-docs-background: #f8f7fb;
+
+  /* Additional purple shades */
+  --purple-50: #F5F0FF;
+  --purple-100: #E9DFFF;
+  --purple-200: #D0BCFF;
+  --purple-300: #B794F4;
+  --purple-400: #9F7AEA;
+  --purple-500: #805AD5;
+  --purple-600: #6B46C1;
+  --purple-700: #553C9A;
+  --purple-800: #44337A;
+  --purple-900: #322659;
+}
+
+/* Dark mode - use lighter purples for better readability */
+[data-theme='dark'] {
+  --ifm-color-primary: #D0BCFF;
+  --ifm-color-primary-dark: #B794F4;
+  --ifm-color-primary-darker: #9F7AEA;
+  --ifm-color-primary-darkest: #805AD5;
+  --ifm-color-primary-light: #E9DFFF;
+  --ifm-color-primary-lighter: #F5F0FF;
+  --ifm-color-primary-lightest: #FFFFFF;
+  --docusaurus-highlighted-code-line-bg: rgba(208, 188, 255, 0.2);
+  --ifm-background-color: #1a1a1d;
+  --dank-docs-background: #1a1a1d;
+  --ifm-background-surface-color: #242428;
+}
+
+/* Additional Dank Linux custom variables matching Nextra */
+:root {
+  --dank-purple-primary: #805AD5;
+  --dank-purple-light: #D0BCFF;
+  --dank-purple-lighter: #E9D5FF;
+  --dank-purple-dark: #6B46C1;
+  --dank-purple-darker: #553C9A;
+  --dank-purple-hover: #B794F4;
+  --dank-gradient: linear-gradient(135deg, #805AD5, #D0BCFF);
+}
+
+/* Documentation background styling aligned with Nextra */
+body.docs-page {
+  background: var(--dank-docs-background) !important;
+  transition: background 0.4s ease;
+}
+
+body.docs-page #__docusaurus,
+body.docs-page .main-wrapper,
+body.docs-page .docs-wrapper {
+  background: transparent !important;
+}
+
+body.docs-page[data-theme='dark'],
+[data-theme='dark'] body.docs-page {
+  background: radial-gradient(140% 160% at 0% 0%, rgba(128, 90, 213, 0.08), transparent), var(--dank-docs-background) !important;
+  background-attachment: fixed;
+}
+
+/* Ensure landing page uses full black background everywhere */
+html:has(body.landing-page) {
+  background-color: #000000 !important;
+}
+
+body.landing-page {
+  background: #000000 !important;
+  background-color: #000000 !important;
+  min-height: 100vh !important;
+}
+
+body.landing-page,
+body.landing-page * {
+  --ifm-background-color: #000000 !important;
+}
+
+body.landing-page #__docusaurus,
+body.landing-page .main-wrapper,
+body.landing-page main,
+body.landing-page > div {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Navbar should NOT be transparent - it has its own glassmorphic background */
+body.landing-page header,
+body.landing-page nav:not(.navbar) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Remove any padding/margin that creates gaps */
+body.landing-page #__docusaurus {
+  min-height: 100vh !important;
+}
+
+
+/* Tailwind ring color for focus states */
+* {
+  --tw-ring-color: rgba(208, 188, 255, 0.5) !important;
+}
+
+/* Sidebar link styling matching Nextra */
+.theme-doc-sidebar-item-link {
+  color: inherit !important;
+}
+
+.theme-doc-sidebar-item-link:hover {
+  color: var(--dank-purple-hover) !important;
+}
+
+[data-theme='dark'] .theme-doc-sidebar-item-link:hover {
+  color: var(--dank-purple-lighter) !important;
+}
+
+/* Active sidebar item */
+.theme-doc-sidebar-item-link-level-1.menu__link--active,
+.theme-doc-sidebar-item-link-level-2.menu__link--active,
+.theme-doc-sidebar-item-link-level-3.menu__link--active {
+  color: var(--dank-purple-light) !important;
+  border-left-color: var(--dank-purple-light) !important;
+}
+
+/* Search bar styling */
+.DocSearch-Button {
+  background: rgba(208, 188, 255, 0.1) !important;
+  border: 1px solid rgba(208, 188, 255, 0.2) !important;
+}
+
+.DocSearch-Button:hover {
+  background: rgba(208, 188, 255, 0.15) !important;
+  border-color: rgba(208, 188, 255, 0.3) !important;
+}
+
+/* Code blocks with purple accent */
+pre[class*='language-'] {
+  border-left: 3px solid var(--dank-purple-primary);
+}
+
+/* Inline code */
+
+:not(pre) > code {
+  background-color: rgba(208, 188, 255, 0.1);
+  border: 1px solid rgba(208, 188, 255, 0.2);
+  color: var(--dank-purple-light);
+}
+
+[data-theme='dark'] code {
+  background-color: rgba(208, 188, 255, 0.15);
+  border-color: rgba(208, 188, 255, 0.25);
+}
+
+/* Tables */
+table thead tr {
+  border-bottom: 2px solid var(--dank-purple-primary);
+}
+
+/* Admonitions (callouts) */
+.alert--info {
+  border-left-color: var(--dank-purple-primary);
+}
+
+.alert--info .admonitionHeading {
+  color: var(--dank-purple-light);
+}
+
+/* Buttons and CTAs */
+.button--primary {
+  background: var(--dank-gradient);
+  border: none;
+}
+
+.button--primary:hover {
+  background: linear-gradient(135deg, #6B46C1, #B794F4);
+}
+
+/* Pagination */
+.pagination-nav__link:hover {
+  border-color: var(--dank-purple-primary);
+}
+
+.pagination-nav__label::before {
+  color: var(--dank-purple-light);
+}
+
+/* TOC (table of contents) active item */
+.table-of-contents__link--active {
+  color: var(--dank-purple-light);
+  border-left-color: var(--dank-purple-light);
+}
+
+.table-of-contents__link:hover {
+  color: var(--dank-purple-hover);
+}
+
+/* Breadcrumbs */
+.breadcrumbs__link:hover {
+  background: rgba(208, 188, 255, 0.1);
+  color: var(--dank-purple-light);
+}
+
+/* Footer styling - Matching Nextra's simpler glassmorphic design */
+.footer {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-top: 1px solid rgba(208, 188, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .footer {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border-top: 1px solid rgba(208, 188, 255, 0.1) !important;
+}
+
+[data-theme='light'] .footer {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-top: 1px solid rgba(128, 90, 213, 0.1) !important;
+}
+
+.footer__link-item:hover {
+  color: var(--dank-purple-light) !important;
+}
+
+/* Markdown headers with purple accent */
+.markdown h1,
+.markdown h2 {
+  border-bottom-color: rgba(208, 188, 255, 0.2);
+}
+
+/* Links in markdown content */
+.markdown a {
+  color: var(--dank-purple-light);
+}
+
+.markdown a:hover {
+  color: var(--dank-purple-hover);
+  text-decoration-color: var(--dank-purple-hover);
+}
+
+/* Hero button on docs page */
+.button.button--secondary.button--lg {
+  border-color: var(--dank-purple-primary);
+  color: var(--dank-purple-light);
+}
+
+.button.button--secondary.button--lg:hover {
+  background: rgba(208, 188, 255, 0.1);
+  border-color: var(--dank-purple-light);
+}
+
+/* ASCII Art Styling */
+pre.ascii-art {
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  position: static !important;
+  color: var(--dank-purple-dark) !important;
+  box-shadow: none !important;
+  display: inline-block !important;
+  font-size: 0.65rem !important;
+  line-height: 1.1 !important;
+  white-space: pre !important;
+}
+
+.landing-page main {
+  padding-top: 4rem;
+}
+
+/* Dark mode toggle button styling */
+html[data-theme='dark'] .clean-btn[title*='dark'],
+html[data-theme='light'] .clean-btn[title*='light'] {
+  color: var(--dank-purple-light) !important;
+}
+
+.clean-btn:hover {
+  background: rgba(208, 188, 255, 0.1) !important;
+}
+

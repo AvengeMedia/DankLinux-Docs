@@ -1,0 +1,99 @@
+---
+title: DankLinux
+sidebar_position: 1
+---
+
+# DankLinux
+
+DankLinux is a comprehensive installer and management tool for DankMaterialShell, providing a seamless setup experience for your modern Wayland desktop environment.
+
+## Overview
+
+The DankLinux project provides two main components:
+
+### dankinstall - Installation Tool
+
+The interactive TUI installer that:
+- Installs the complete DankMaterialShell suite
+- Configures niri and/or Hyprland compositors
+- Provides pre-configured starting points
+- Automatically backs up existing configurations
+- Handles distribution-specific package management
+
+### dms - Shell Runner
+
+The enriched shell runner that:
+- Manages dbus connections for system services (NetworkManager, loginctl, accountsservice)
+- Exposes a JSON socket for interface interaction
+- Provides plugin management APIs
+- Offers optional update interface for manual installations
+
+## Quick Installation
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+This single command will:
+1. Detect your Linux distribution
+2. Install all necessary dependencies
+3. Set up DankMaterialShell
+4. Configure your chosen compositor
+5. Apply default themes and configurations
+
+## Supported Distributions
+
+### Arch Linux & Derivatives
+- Arch Linux
+- ArchARM
+- Archcraft
+- CachyOS
+- EndeavourOS
+- Manjaro
+
+### Fedora & Derivatives
+- Fedora
+- Nobara
+- Fedora Asahi Remix
+
+### Debian-based
+- Ubuntu 25.04+
+- Debian 13+ (Trixie, niri-only)
+
+### Other
+- openSUSE Tumbleweed
+- NixOS (via separate flake configuration)
+
+## Key Features
+
+- **Minimal System Intrusion** - User-level configurations only
+- **Automatic Package Building** - Builds from source when needed
+- **Distribution-Specific Management** - Uses native package managers
+- **Complete Desktop Experience** - Includes wallpapers, theming, notifications, lock screen
+- **Plugin System Support** - Extensible architecture
+
+## Manual Build
+
+Requirements: Go 1.24+
+
+```bash
+git clone https://github.com/AvengeMedia/DankLinux
+cd DankLinux
+make
+sudo make install
+```
+
+## Architecture
+
+DankLinux uses a modular architecture:
+- **Core Installer** - Distribution detection and package management
+- **Configuration Manager** - Handles dotfiles and settings
+- **Service Manager** - dbus integration and system services
+- **Plugin System** - Extensible functionality
+
+## Next Steps
+
+- [dankinstall Guide](/docs/danklinux/dankinstall) - Learn about the installer
+- [dms Runner](/docs/danklinux/dms-runner) - Understand the shell runner
+- [Distribution Setup](/docs/danklinux/distributions) - Distribution-specific instructions
+- [Plugin Development](/docs/danklinux/plugins) - Create custom plugins

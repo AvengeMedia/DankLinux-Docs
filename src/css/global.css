@@ -1,0 +1,215 @@
+/**
+ * Global CSS - Docusaurus Base Overrides
+ * This file sets our defaults for Docusaurus components
+ * No !important needed - we're setting the base values
+ */
+
+/* ========================================
+   ROOT VARIABLES - Our Defaults
+   ======================================== */
+
+:root {
+  /* Navbar dimensions */
+  --ifm-navbar-height: 4.5rem;
+  --ifm-navbar-padding-horizontal: 2rem;
+  --ifm-navbar-padding-vertical: 0;
+  --ifm-navbar-item-padding-horizontal: 1rem;
+  --ifm-navbar-item-padding-vertical: 0.5rem;
+
+  /* Navbar appearance - overridden by page-specific styles in custom.css */
+  --ifm-navbar-shadow: none;
+}
+
+/* ========================================
+   NAVBAR BASE STRUCTURE
+   ======================================== */
+
+.navbar {
+  height: var(--ifm-navbar-height);
+  padding: var(--ifm-navbar-padding-vertical) 0;
+  box-shadow: var(--ifm-navbar-shadow);
+  background: var(--ifm-navbar-background-color);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.navbar__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--ifm-navbar-padding-horizontal);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__items {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__item {
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo {
+  height: 2rem;
+  margin-right: 0.5rem;
+}
+
+.navbar__title {
+  font-weight: 600;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* ========================================
+   NAVBAR LINKS
+   ======================================== */
+
+.navbar__link {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: var(--ifm-navbar-item-padding-vertical) var(--ifm-navbar-item-padding-horizontal);
+  border-radius: 0.375rem;
+  transition: color 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: auto;
+}
+
+/* Smooth underline animation on hover */
+.navbar__link::after {
+  content: '';
+  position: absolute;
+  bottom: 0.25rem;
+  left: var(--ifm-navbar-item-padding-horizontal);
+  right: var(--ifm-navbar-item-padding-horizontal);
+  height: 2px;
+  background: linear-gradient(90deg, #D0BCFF, #805AD5);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.navbar__link:hover {
+  color: #ffffff;
+  background: transparent;
+}
+
+.navbar__link:hover::after {
+  transform: scaleX(1);
+}
+
+.navbar__link--active {
+  color: var(--dank-purple-light);
+  background: rgba(208, 188, 255, 0.18);
+}
+
+/* ========================================
+   NAVBAR TOGGLE (Mobile)
+   ======================================== */
+
+.navbar__toggle {
+  color: var(--dank-purple-light);
+}
+
+.navbar__toggle:hover {
+  background: rgba(208, 188, 255, 0.1);
+}
+
+/* ========================================
+   NAVBAR SIDEBAR (Mobile Menu)
+   ======================================== */
+
+.navbar-sidebar {
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(20px);
+}
+
+.navbar-sidebar__brand {
+  border-bottom: 1px solid rgba(208, 188, 255, 0.12);
+}
+
+.navbar-sidebar__item {
+  padding: 0.5rem 1rem;
+}
+
+.navbar-sidebar__item .menu__link {
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.navbar-sidebar__item .menu__link:hover {
+  background: rgba(208, 188, 255, 0.1);
+  color: var(--dank-purple-light);
+}
+
+/* ========================================
+   NAVBAR ICON LINKS (GitHub, Discord, etc.)
+   ======================================== */
+
+.header-github-link,
+.navbar-discord-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.75);
+  transition: background 0.2s ease, color 0.2s ease;
+  padding: 0;
+  overflow: visible;
+}
+
+.header-github-link::before,
+.navbar-discord-link::before {
+  content: '';
+  width: 1.5rem;
+  height: 1.5rem;
+  display: block;
+  background: currentColor;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+}
+
+.header-github-link::before {
+  mask-image: url('/img/github.svg');
+  -webkit-mask-image: url('/img/github.svg');
+}
+
+.navbar-discord-link::before {
+  mask-image: url('/img/discord.svg');
+  -webkit-mask-image: url('/img/discord.svg');
+}
+
+.header-github-link:hover,
+.navbar-discord-link:hover {
+  background: rgba(208, 188, 255, 0.15);
+  color: var(--dank-purple-light);
+}
+
+/* Hide text in icon-only links */
+.header-github-link,
+.navbar-discord-link {
+  font-size: 0;
+}

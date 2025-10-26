@@ -1,0 +1,95 @@
+---
+title: Configuration
+sidebar_position: 3
+---
+
+# Configuration
+
+DankMaterialShell offers a deep configuration surface that spans widgets, layouts, IPC bindings, and theme behavior. This page outlines the primary ways to customize your environment and where configurations live on disk.
+
+## Settings Overview
+
+You can configure the shell from two complementary entry points:
+
+- **Settings Modal** – openable from the control center or with `dms ipc call settings toggle`. This is the easiest way to manage daily preferences such as theme, widgets, calendar integrations, and dock behavior.
+- **Configuration Files** – stored under `~/.config/DankMaterialShell/`. The most important file is `~/.config/DankMaterialShell/settings.json`, which mirrors the values changed in the UI.
+
+Changes applied via the settings modal are persisted automatically. Editing `settings.json` manually requires a shell restart (`dms restart`) to apply.
+
+## Core Configuration Areas
+
+### Layout & Widgets
+
+- Enable, disable, and reorder any of the 20+ widgets across left, center, and right bar sections.
+- Switch the DankBar orientation (top, bottom, left, right) to match your compositor layout.
+- Control pop-out panels for dashboards, notifications, and control center tiles.
+
+See the [Widgets](#) page for a detailed catalogue of built-in options.
+
+### Theme & Colors
+
+- Toggle between dynamic wallpaper-based themes, light/dark mode, or a static preset.
+- Apply GTK and QT themes directly from the settings modal to keep native applications in sync.
+- Point to custom theme files when using bespoke color schemes (see [Theming](/docs/dankmaterialshell/theming)).
+
+### Wallpaper & Profiles
+
+- Manage global or per-monitor wallpapers, including cycling and presets.
+- Configure profile imagery and avatar handling for the lock screen and greeter.
+
+### Dock & Application Launcher
+
+- Control dock visibility, pinned applications, and behavior for running apps.
+- Adjust the Spotlight launcher trigger, favorites, and behavior of the central command modal.
+
+### System Integrations
+
+- Toggle system services such as clipboard history, media controls, network, Bluetooth, and weather providers.
+- Decide how idle management behaves (lock, screen off, suspend, hibernate) for AC vs. battery power.
+
+### Calendar & Accounts
+
+- Integrate CalDAV sources via vdirsyncer and configure update intervals.
+- Manage account profile information and presence used throughout the UI.
+
+## IPC and Keybindings
+
+DankMaterialShell exposes a rich IPC surface, allowing you to bind shell actions inside your compositor configuration.
+
+- Run `dms ipc list` to discover available targets.
+- Reference the full [IPC Command Reference](/docs/dankmaterialshell/ipc) for action details.
+
+Example niri binding (KDL):
+
+```kdl
+binds {
+  Mod+Space hotkey-overlay-title="Application Launcher" {
+    spawn "dms" "ipc" "call" "spotlight" "toggle"
+  }
+}
+```
+
+Example Hyprland binding:
+
+```conf
+bind = SUPER, Space, exec, dms ipc call spotlight toggle
+```
+
+## File Structure Reference
+
+| Path | Description |
+| --- | --- |
+| `~/.config/DankMaterialShell/settings.json` | Primary settings store (theme, widgets, integrations). |
+| `~/.local/state/DankMaterialShell/session.json` | Session state including last active workspace and modal positions. |
+| `~/.cache/quickshell/dankshell/` | Generated assets (color palettes, cached data). |
+| `~/.config/quickshell/dms/` | Core shell source (do not edit unless developing). |
+
+Back up the `settings.json` file to retain your layout and theme preferences between machines.
+
+## Advanced Tweaks
+
+- **Custom Scripts:** Use the [Dank Actions plugin](https://github.com/AvengeMedia/dms-plugins/tree/main/DankActions) to bind scripts to bar buttons.
+- **Per-Monitor Behavior:** Assign widgets and popouts to a specific monitor via the widget editor in the settings modal.
+- **Automation:** Combine IPC commands with cron/systemd timers for scheduled theme or night mode changes.
+
+When developing customizations, keep a terminal with `journalctl --user -fu dms` open to monitor runtime logs.

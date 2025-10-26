@@ -1,0 +1,82 @@
+---
+title: Troubleshooting
+sidebar_position: 9
+---
+
+# Troubleshooting
+
+Most issues can be resolved quickly with the logs and tooling that ship alongside DankMaterialShell. This page lists common symptoms, likely causes, and remediation steps.
+
+## Capturing Logs
+
+Run the shell in a foreground terminal to capture verbose output:
+
+```bash
+dms kill && dms run
+```
+
+For background sessions managed by systemd, follow the journal:
+
+```bash
+journalctl --user -fu dms
+```
+
+## Common Issues
+
+### Missing Icons or Fonts
+
+- Verify Material Symbols and Inter are installed:
+  ```bash
+  fc-list | grep MaterialSymbols
+  fc-list | grep Inter
+  ```
+- Re-run the font installation commands listed in the [Installation guide](/docs/dankmaterialshell/installation) and refresh the cache with `fc-cache -fv`.
+
+### Dynamic Theming Not Working
+
+- Confirm `matugen` is installed and available in `PATH`.
+- Ensure dynamic theming is enabled in **Settings → Theme & Colors**.
+- Check for `~/.config/gtk-3.0/dank-colors.css`—if missing, re-run the installer or toggle the GTK theme option.
+
+### Qt Applications Ignore Colors
+
+- Set `QT_QPA_PLATFORMTHEME` and `QT_QPA_PLATFORMTHEME_QT6` to `gtk3` or `qt6ct` in your compositor config.
+- If using `qt6ct`, launch the Qt configuration tool and select the DMS-generated matugen theme.
+
+### Clipboard History Empty
+
+- Ensure `wl-clipboard` and `cliphist` are installed.
+- Confirm your compositor starts the monitoring service:
+  ```bash
+  wl-paste --watch cliphist store &
+  ```
+- Restart the shell after installing the utilities.
+
+### Volume or Brightness Keys Do Nothing
+
+- Make sure the recommended IPC bindings are present in your compositor config.
+- Install `brightnessctl` for backlight control.
+- Inspect `dms ipc call audio status` to verify audio devices are detected.
+
+### Calendar Events Missing
+
+- Install `vdirsyncer` and `khal`, then configure them following the instructions in the README.
+- Run `vdirsyncer sync` to refresh calendars and restart the shell.
+
+### Greeter Not Matching Theme
+
+- Run `dms-greeter-sync` (Fedora RPM package) or follow the manual ACL steps documented on the [Greeter page](/docs/dankmaterialshell/greeter).
+
+### Shell Fails to Start After Update
+
+- Update the CLI with the latest binary from the [DankLinux releases](https://github.com/AvengeMedia/danklinux/releases).
+- Remove stale cache files under `~/.cache/quickshell/dankshell/` and restart.
+- Re-run the installer for your distribution to ensure dependencies are met.
+
+## Getting Help
+
+- Search existing issues or file a new report on the [DankMaterialShell GitHub repository](https://github.com/AvengeMedia/DankMaterialShell/issues).
+- Collect logs (`journalctl` output, `dms run` console logs) and include them when reporting problems.
+- Join community channels (niri, Hyprland, or DankMaterialShell discussions) for compositor-specific questions.
+
+If you uncover additional edge cases, consider opening a pull request to expand this guide.

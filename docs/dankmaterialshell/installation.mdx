@@ -1,0 +1,140 @@
+---
+title: Installation
+sidebar_position: 2
+---
+
+# Installation
+
+DankMaterialShell can be installed in minutes using the curated DankLinux installer or by following manual, distribution-specific steps. This guide captures the officially supported paths and highlights optional tooling that unlocks the full experience.
+
+## Quick Start (All Distros)
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+Running the installer sets up DankMaterialShell, recommended compositor presets, and core dependencies across supported distributions. Re-run the script any time to update modules or repair the environment.
+
+## Distribution Packages
+
+### Arch Linux
+
+```bash
+# Stable release
+paru -S dms-shell-bin
+
+# Latest development build
+paru -S dms-shell-git
+```
+
+These packages ship the shell, widgets, and CLI. Pair them with the `niri` or `hyprland` packages from the official repositories for a complete desktop stack.
+
+### Fedora / RHEL / Rocky / Alma
+
+Enable the COPR repositories managed by the team to install prebuilt packages:
+
+```bash
+# Stable release (recommended)
+sudo dnf copr enable avengemedia/dms
+sudo dnf install dms
+
+# Latest development snapshots
+sudo dnf copr enable avengemedia/dms-git
+sudo dnf install dms
+```
+
+The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `ghostty`, and other utilities used by the default configuration.
+
+### NixOS (via flakes)
+
+Add DankMaterialShell, the CLI, and dgop as flake inputs:
+
+```nix
+inputs = {
+  dgop = {
+    url = "github:AvengeMedia/dgop";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  dms-cli = {
+    url = "github:AvengeMedia/danklinux";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+  dankMaterialShell = {
+    url = "github:AvengeMedia/DankMaterialShell";
+    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.dgop.follows = "dgop";
+    inputs.dms-cli.follows = "dms-cli";
+  };
+};
+```
+
+Then import the module in `home-manager`:
+
+```nix
+imports = [
+  inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+  # Optional: compositor helpers
+  inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
+];
+
+programs.dankMaterialShell.enable = true;
+```
+
+For niri integrations you also need the `sodiboo/niri-flake` input and should import `inputs.niri.homeModules.niri`.
+
+## Manual Installation (All Distros)
+
+Use the manual path when packaging for a new distribution or running a stripped-down environment:
+
+1. **Install Quickshell**
+   ```bash
+   # Arch
+   paru -S quickshell-git
+
+   # Fedora
+   sudo dnf copr enable avengemedia/danklinux
+   sudo dnf install quickshell-git
+   ```
+   Build from source on Debian-based systems where packages are unavailable.
+
+2. **Install fonts** (system-wide recommended)
+   ```bash
+   sudo curl -L "https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf" -o /usr/share/fonts/MaterialSymbolsRounded.ttf
+   sudo curl -L "https://github.com/rsms/inter/raw/refs/tags/v4.1/docs/font-files/InterVariable.ttf" -o /usr/share/fonts/InterVariable.ttf
+   sudo curl -L "https://github.com/tonsky/FiraCode/releases/latest/download/FiraCode-Regular.ttf" -o /usr/share/fonts/FiraCode-Regular.ttf
+   fc-cache -fv
+   ```
+
+3. **Clone the shell sources**
+   ```bash
+   mkdir -p ~/.config/quickshell
+   git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quickshell/dms
+   ```
+
+4. **Install the CLI manager**
+   ```bash
+   sudo sh -c "curl -L https://github.com/AvengeMedia/danklinux/releases/latest/download/dms-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').gz | gunzip | tee /usr/local/bin/dms > /dev/null && chmod +x /usr/local/bin/dms"
+   ```
+
+5. **Install optional integrations** for full functionality (see below).
+
+After completing the manual steps, launch the shell with `dms run`. Use `dms restart` or `dms kill` to manage the session during upgrades.
+
+## Optional Components
+
+While DankMaterialShell runs without extras, the following tools unlock signature features:
+
+- `dgop`: Enables detailed system metrics, process lists, and temperature widgets.
+- `matugen`: Generates Material Design color palettes from your wallpapers.
+- `brightnessctl`: Controls display backlight and keyboard lighting.
+- `wl-clipboard` + `cliphist`: Drives clipboard history and copy helpers.
+- `cava`: Powers the audio visualizer widget.
+- `qt6-multimedia`: Provides system sound feedback.
+
+Install them through your package manager or the DankLinux installer. Consult the [Plugins](/docs/dankmaterialshell/plugins) and [Widgets](#) pages to learn how these dependencies are used.
+
+## Post Install Checklist
+
+- Pick your compositor and finish keybinding setup via the [Compositor Setup](/docs/dankmaterialshell/compositors) guide.
+- Review [Configuration](/docs/dankmaterialshell/configuration) to tailor widgets, theming, and system preferences.
+- Explore optional modules like the [Greeter](/docs/dankmaterialshell/greeter) and the [Plugin Registry](https://plugins.danklinux.com/) for additional functionality.

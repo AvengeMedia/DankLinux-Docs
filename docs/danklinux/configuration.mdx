@@ -1,0 +1,74 @@
+---
+title: Configuration
+sidebar_position: 3
+---
+
+# Configuration
+
+DankLinux aims to be minimally intrusive, but power users and maintainers can tailor the installation process, package selection, and runtime behavior. This page outlines the primary levers available after running `dankinstall`.
+
+## Installer Configuration
+
+Most installer choices are made interactively, but you can influence behavior by:
+
+- **Re-running `dankinstall`:** Change compositor presets, reinstall packages, or repair missing dependencies. Previous configs are backed up with timestamped suffixes.
+- **Skipping Components:** Decline optional modules (e.g., greeter, clipboard helpers) when prompted to keep the system lean.
+- **Custom Package Mirrors:** Configure your distribution’s package manager before running the installer if you need mirrors or caching proxies.
+
+## Manual Binary Builds
+
+When packaging for new distributions or offline environments, build the CLI and supporting binaries manually.
+
+### dms CLI
+
+```bash
+# Requires Go 1.24+
+make          # builds bin/dms-linux-<arch>
+sudo make install
+
+# Distribution-specific build without update/greeter helpers
+make dist     # outputs bin/dms-linux-amd64 and bin/dms-linux-arm64
+```
+
+### dankinstall
+
+The installer script lives in the `scripts/` directory of the repository. You can modify it to add package mappings or tweak prompts before rebuilding the CLI.
+
+## Manual Package Building
+
+Some distributions require compiling components from source. The repository documents recommended commands:
+
+- **quickshell:** Build with `cmake` and Qt6 development packages (Ubuntu, Debian, openSUSE).
+- **matugen:** Compile via `cargo install --path .` when binaries are unavailable.
+- **dgop:** Use `go build ./...` or `make` in the dgop repo and install the resulting binary.
+- **niri:** Build with Rust (`cargo build --release`) on distributions lacking prebuilt packages.
+
+Refer to the [Distribution Setup](/docs/danklinux/distributions) page for exact commands.
+
+## Directory Layout
+
+| Path | Description |
+| --- | --- |
+| `/usr/local/bin/dms` | Installed CLI for shell management and IPC. |
+| `~/.config/quickshell/dms` | Cloned DankMaterialShell workspace. |
+| `~/.config/DankMaterialShell/` | Settings and theme data synced with the shell. |
+| `/var/cache/dms-greeter` | Cache directory for the optional greeter. |
+
+## Integrating with System Services
+
+- **systemd User Units:** DankLinux installs user services for `dms` and related helpers. Manage them using `systemctl --user` commands.
+- **Greeter:** Configure greetd via `dms greeter install` or edit `/etc/greetd/config.toml` manually. See the [Greeter documentation](/docs/dankmaterialshell/greeter) for theme syncing.
+
+## Updating DankLinux
+
+- Pull latest releases from the [DankLinux GitHub](https://github.com/AvengeMedia/danklinux) repo and rebuild the CLI with `make && sudo make install`.
+- Re-run `dankinstall` to catch new dependencies or updated configuration defaults.
+- Keep track of upstream commits for quickshell, niri, Hyprland, and matugen, especially on distributions using source builds.
+
+## Contributing Configuration Enhancements
+
+- Add new distro support by extending the installer scripts and updating this documentation.
+- Share curated compositor presets or additional feature toggles via pull requests.
+- Document edge cases discovered in the field to help other users.
+
+DankLinux is designed to grow with the desktop ecosystem—customize responsibly and upstream improvements whenever possible.

@@ -1,0 +1,140 @@
+---
+title: IPC Commands
+sidebar_position: 7
+---
+
+# IPC Command Reference
+
+DankMaterialShell exposes a comprehensive IPC interface through the `dms` CLI. Commands follow the pattern:
+
+```bash
+dms ipc call <target> <function> [arguments...]
+```
+
+Use these commands from compositor keybindings, scripts, or terminals to automate shell behavior.
+
+## Core Targets
+
+### audio
+
+Manage output and input devices.
+
+| Function | Description |
+| --- | --- |
+| `setvolume <0-100>` | Set output volume percentage. |
+| `increment <step>` / `decrement <step>` | Adjust volume by a step (default 5). |
+| `mute` | Toggle output mute. |
+| `setmic <0-100>` | Set microphone volume. |
+| `micmute` | Toggle microphone mute. |
+| `status` | Print current output/input levels and mute state. |
+
+### brightness
+
+Control backlight and LED brightness (requires `brightnessctl`).
+
+| Function | Description |
+| --- | --- |
+| `set <percent> [device]` | Set brightness, optionally targeting a device. |
+| `increment <step> [device]` | Increase brightness by step. |
+| `decrement <step> [device]` | Decrease brightness by step. |
+| `status` | Show the active device and level. |
+| `list` | List available brightness devices. |
+
+### night
+
+Automate night mode and temperature shifts.
+
+| Function | Description |
+| --- | --- |
+| `toggle` / `enable` / `disable` | Control night mode state. |
+| `status` | Show current status. |
+| `temperature [value]` | Query or set the color temperature (2500–6000 K). |
+| `automation [mode]` | Choose `manual`, `time`, or `location`. |
+| `schedule <start> <end>` | Configure time-based automation. |
+| `location <lat> <lon>` | Set coordinates for location-based automation. |
+
+### mpris
+
+Send media controls to the active player.
+
+- `play`, `pause`, `playPause`, `next`, `previous`, `stop`, `list`
+
+### lock & inhibit
+
+- `lock lock` – Trigger the lock screen immediately.
+- `lock isLocked` – Return the current lock state.
+- `inhibit toggle|enable|disable` – Manage idle inhibitor for presentations.
+
+### wallpaper & profile
+
+Manage wallpapers globally or per monitor, and control profile imagery used in the dock and greeter.
+
+Examples:
+
+```bash
+dms ipc call wallpaper set /path/to/wall.jpg
+dms ipc call wallpaper setFor DP-2 /path/to/wall.jpg
+dms ipc call profile setImage ~/Pictures/avatar.png
+```
+
+## Modal Targets
+
+Control modals and overlays programmatically:
+
+| Target | Functions |
+| --- | --- |
+| `spotlight` | `open`, `close`, `toggle`, `openQuery <text>`, `toggleQuery <text>` |
+| `clipboard` | `open`, `close`, `toggle` |
+| `notifications` | `open`, `close`, `toggle` |
+| `settings` | `open`, `close`, `toggle` |
+| `processlist` | `open`, `close`, `toggle` |
+| `powermenu` | `open`, `close`, `toggle` |
+| `control-center` | `open`, `close`, `toggle` |
+| `notepad` | `open`, `close`, `toggle` |
+| `dash` | `open [tab]`, `close`, `toggle [tab]` (tabs: `overview`, `media`, `weather`) |
+| `file` | `browse wallpaper|profile` |
+| `hypr` | `openBinds`, `closeBinds`, `toggleBinds` (Hyprland cheatsheet) |
+
+## Launcher Plugins
+
+Launcher plugins register custom triggers and search results. Create bespoke automation by binding keys in your compositor to run `dms ipc call spotlight openQuery "!server"` or similar triggers.
+
+## Integration Examples
+
+### niri (KDL)
+
+```kdl
+binds {
+  Mod+Space hotkey-overlay-title="Application Launcher" {
+    spawn "dms" "ipc" "call" "spotlight" "toggle"
+  }
+  XF86AudioRaiseVolume allow-when-locked=true {
+    spawn "dms" "ipc" "call" "audio" "increment" "3"
+  }
+  XF86MonBrightnessUp allow-when-locked=true {
+    spawn "dms" "ipc" "call" "brightness" "increment" "5" ""
+  }
+}
+```
+
+### Hyprland (conf)
+
+```conf
+bind = SUPER, V, exec, dms ipc call clipboard toggle
+bindl = , XF86AudioMute, exec, dms ipc call audio mute
+bindl = , XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5 ""
+```
+
+### Script Automation
+
+```bash
+#!/usr/bin/env bash
+hour=$(date +%H)
+if [ "$hour" -ge 20 ] || [ "$hour" -le 6 ]; then
+  dms ipc call night enable
+else
+  dms ipc call night disable
+fi
+```
+
+Combine IPC with cron, systemd timers, or third-party automation to extend the shell without modifying core code. Refer back to upstream `docs/IPC.md` for exhaustive argument details and future additions.

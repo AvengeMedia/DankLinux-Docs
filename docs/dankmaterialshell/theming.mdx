@@ -1,0 +1,156 @@
+---
+title: Theming
+sidebar_position: 5
+---
+
+# Theming
+
+DankMaterialShell embraces Material Design 3 principles, offering automatic wallpaper-driven palettes, curated presets, and full support for custom themes. Use this guide to tailor colors across the shell, native applications, and browsers.
+
+## Dynamic Theming with matugen
+
+When dynamic theming is enabled, DankMaterialShell launches `matugen` whenever your wallpaper changes and writes palettes to the following paths:
+
+- `~/.config/gtk-3.0/dank-colors.css`
+- `~/.config/gtk-4.0/dank-colors.css`
+- `~/.config/qt5ct/colors/matugen.conf`
+- `~/.config/qt6ct/colors/matugen.conf`
+- Terminal theme snippets (Ghostty, kitty) under `~/.config/DankMaterialShell/`
+
+Toggle dynamic theming in **Settings → Theme & Colors**. To pause palette generation, set the environment variable `DMS_DISABLE_MATUGEN=1` before launching `dms`.
+
+## Custom Themes
+
+Beyond dynamic palettes, you can load custom Material Design 3 color sets.
+
+1. Create a JSON theme file containing `dark` and/or `light` sections with the required keys:
+
+```json
+{
+  "name": "Cyberpunk Electric",
+  "dark": {
+    "primary": "#00FFCC",
+    "primaryText": "#000000",
+    "surface": "#0F0F0F",
+    "surfaceText": "#E0FFE0",
+    "background": "#000000",
+    "backgroundText": "#F0FFF0",
+    "outline": "#80FF80",
+    "error": "#FF0066"
+  },
+  "light": {
+    "primary": "#00B899",
+    "primaryText": "#FFFFFF",
+    "surface": "#F0FFF0",
+    "surfaceText": "#1F2F1F",
+    "background": "#FFFFFF",
+    "backgroundText": "#000000",
+    "outline": "#4DCC4D",
+    "error": "#B3004D"
+  },
+  "matugen_type": "scheme-expressive"
+}
+```
+
+2. Place the file somewhere accessible (for example `~/.config/DankMaterialShell/themes/cyberpunk.json`).
+3. In **Settings → Theme & Colors**, choose **Custom** and provide the file path, or edit `settings.json`:
+
+```json
+{
+  "currentThemeName": "custom",
+  "customThemeFile": "/path/to/cyberpunk.json"
+}
+```
+
+Changes to the JSON file take effect instantly while the theme is active.
+
+### Example Themes
+
+Prebuilt examples live in the repository under `docs/theme_*.json`. Popular picks include:
+
+- Cyberpunk Electric
+- Hotline Miami
+- Miami Vice
+- Synthwave Electric
+
+Use these as a starting point for your own palette.
+
+## GTK Integration
+
+Enable the **Apply GTK Themes** toggle to symlink DMS-generated styles into the GTK config directories:
+
+```bash
+sudo pacman -S adw-gtk-theme   # Arch
+sudo dnf install adw-gtk3-theme # Fedora
+```
+
+This copies `dank-colors.css` into `gtk.css`, allowing GTK 3/4 apps to follow your live palette.
+
+## Qt Integration
+
+Choose between two approaches:
+
+1. **GTK passthrough:** set these environment variables in your compositor config:
+   ```kdl
+   environment {
+     QT_QPA_PLATFORMTHEME "gtk3"
+     QT_QPA_PLATFORMTHEME_QT6 "gtk3"
+   }
+   ```
+
+2. **Dedicated Qt control:** install `qt6ct-kde` (or equivalent) and set the same variables to `qt6ct`. Within DMS settings select **Apply Qt Themes** to link generated matugen color files.
+
+Restart your session after adjusting Qt platform themes to ensure all applications pick up the changes.
+
+## Browser Integration
+
+### Firefox (Material Fox)
+
+1. Enable custom styles in `about:config`:
+   - `toolkit.legacyuserprofilecustomizations.stylesheets = true`
+   - `svg.context-properties.content.enabled = true`
+   - Create `userChrome.theme-material = true`
+
+2. Install the [material-fox-updated](https://github.com/edelvarden/material-fox-updated) theme and copy `firefox.css` from `~/.config/DankMaterialShell/` into the profile directory:
+
+```bash
+export PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default-release" | head -n 1)
+curl -L -o "$PROFILE_DIR/chrome.zip" https://github.com/edelvarden/material-fox-updated/releases/download/v2.0.0/chrome.zip
+unzip -o "$PROFILE_DIR/chrome.zip" -d "$PROFILE_DIR"
+rm "$PROFILE_DIR/chrome.zip"
+ln -sf ~/.config/DankMaterialShell/firefox.css "$PROFILE_DIR/chrome/theme-material-blue.css"
+```
+
+### Firefox (Pywalfox)
+
+Install [pywalfox](https://github.com/Frewacom/pywalfox) and the browser extension, then link the generated palette:
+
+```bash
+ln -sf ~/.cache/wal/dank-pywalfox.json ~/.cache/wal/colors.json
+```
+
+### Browser Agnostic Tips
+
+- Keep userChrome/userContent overrides under version control for easy sharing.
+- Disable conflicting theme extensions if you prefer DMS-managed colors.
+
+## Terminal Integration
+
+Dynamic palettes generate configuration snippets for Ghostty and kitty:
+
+```bash
+echo "config-file = ./config-dankcolors" >> ~/.config/ghostty/config
+echo "app-notifications = no-clipboard-copy,no-config-reload" >> ~/.config/ghostty/config
+
+echo "include dank-theme.conf" >> ~/.config/kitty/kitty.conf
+```
+
+Reload or restart the terminal to apply the new colors.
+
+## Advanced Tips
+
+- Create theme profiles per workspace by scripting IPC calls with `dms ipc call theme light` or `dms ipc call theme dark`.
+- Disable matugen when benchmarking or running resource-sensitive tasks to avoid palette regeneration.
+- Store custom themes alongside dotfiles for easy synchronization across machines.
+
+With dynamic theming, custom palettes, and extensive app integration, DankMaterialShell can match any workflow or branding requirement.

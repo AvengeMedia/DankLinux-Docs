@@ -1,0 +1,60 @@
+---
+title: Dank Install
+sidebar_position: 2
+---
+
+# dankinstall
+
+`dankinstall` is the interactive installer that bootstraps a complete DankMaterialShell desktop. It detects your distribution, installs dependencies, configures compositors, and applies a polished starting layout with minimal intrusion.
+
+## Quick Usage
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+Run the script from a terminal in your graphical session or TTY. The TUI walks through the entire process with sensible defaults and confirmation prompts.
+
+## What the Installer Does
+
+1. **Detects Your Distribution** – Supports Arch-based, Fedora-based, Debian/Ubuntu, openSUSE Tumbleweed, and more.
+2. **Installs Core Packages** – Quickshell, DankMaterialShell, dgop, matugen, compositor packages, fonts, and supporting utilities.
+3. **Configures Compositors** – Offers curated presets for niri and Hyprland, backing up any existing configs before applying new ones.
+4. **Sets Up CLI Tools** – Places the `dms` management CLI and optional helpers in `/usr/local/bin`.
+5. **Applies Default Themes** – Seeds wallpapers, fonts, and shell configuration so you can log in immediately.
+
+## Interactive Flow
+
+1. **Compositor Selection** – Choose niri, Hyprland, or both. Existing configs can be preserved or replaced.
+2. **Plugin & Feature Toggles** – Enable optional extras such as clipboard history, greeter installation, and additional widgets.
+3. **Package Installation** – The installer uses the native package manager for your distro, building from source when binaries are not available.
+4. **Post-Install Summary** – Presents next steps and useful commands (`dms run`, `dms restart`, `dms greeter install`).
+
+## Distribution-Specific Behavior
+
+See the [Distribution Setup](/docs/danklinux/distributions) page for the full matrix, but highlights include:
+
+- **Arch & Derivatives:** Uses `pacman` for repo packages and compiles AUR packages (quickshell, matugen, dgop) locally.
+- **Fedora & Derivatives:** Enables COPR repositories (`avengemedia/dms`, `avengemedia/danklinux`, `yalter/niri`, `solopasha/hyprland`) and installs prebuilt RPMs.
+- **Ubuntu/Debian:** Builds quickshell, matugen, dgop, and sometimes niri from source—expect longer install times.
+- **openSUSE Tumbleweed:** Installs most dependencies via `zypper` and builds quickshell/matugen when necessary.
+
+## Re-running the Installer
+
+Re-launch the installer to repair packages, pick up new dependencies, or switch compositor presets. Existing configurations are backed up with timestamped suffixes, allowing easy rollback.
+
+## Offline or Minimal Environments
+
+For air-gapped systems:
+
+1. Clone the [DankLinux repository](https://github.com/AvengeMedia/danklinux) and run `make` to build the CLI.
+2. Transfer the binaries and required packages manually.
+3. Execute `dankinstall` with the planned `--offline` flag when it becomes available, or follow the manual steps in the repository READMEs in the meantime.
+
+## Troubleshooting Installer Runs
+
+- **Package Build Failures:** Ensure required development toolchains (base-devel on Arch, build-essential on Debian) are installed.
+- **Network Issues:** The installer needs GitHub access for source pulls. Retry after restoring connectivity.
+- **Permission Errors:** Run the script as your regular user; the installer will request sudo privileges when needed.
+
+Once the installer completes, follow the [dms Runner](/docs/danklinux/dms-runner) guide to control and update your session, and explore additional tweaks in the [Configuration](/docs/danklinux/configuration) section.
