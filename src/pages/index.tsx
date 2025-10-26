@@ -10,6 +10,7 @@ export default function Home() {
   const [showCursor, setShowCursor] = useState(true);
   const [mounted, setMounted] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
+  
 
   useEffect(() => {
     setMounted(true);
@@ -30,6 +31,7 @@ export default function Home() {
     }, 500);
     return () => clearInterval(interval);
   }, []);
+
 
   return (
     <Layout
@@ -181,6 +183,8 @@ export default function Home() {
                     loop
                     muted
                     playsInline
+                    controls
+                    controlsList="nodownload"
                   >
                     <source src="https://github.com/user-attachments/assets/40d2c56e-c1c9-4671-b04f-8f8b7b83b9ec" type="video/mp4" />
                     Your browser does not support the video tag.
@@ -311,6 +315,7 @@ export default function Home() {
               </div>
             </div>
           </section>
+
         </div>
       </div>
     </Layout>
