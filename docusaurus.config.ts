@@ -51,6 +51,18 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      require.resolve('@easyops-cn/docusaurus-search-local'),
+      {
+        hashed: true,
+        language: ['en'],
+        highlightSearchTermsOnTargetPage: true,
+        explicitSearchResultPath: true,
+      },
+    ],
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/danklinux-social-card.jpg',
@@ -82,6 +94,11 @@ const config: Config = {
           to: '/docs/getting-started',
           label: 'Install',
           position: 'right',
+        },
+        {
+          type: 'search',
+          position: 'right',
+          className: 'navbar-search-hidden',
         },
         {
           href: 'https://github.com/AvengeMedia',

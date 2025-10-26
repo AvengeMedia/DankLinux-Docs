@@ -427,3 +427,13 @@ html[data-theme='light'] .clean-btn[title*='light'] {
   background: rgba(208, 188, 255, 0.1) !important;
 }
 
+/* Hide search bar on homepage/landing page */
+body.landing-page .navbar-search-hidden {
+  display: none !important;
+}
+
+/* Show search bar only on docs pages */
+body.docs-page .navbar-search-hidden {
+  display: block !important;
+}
+

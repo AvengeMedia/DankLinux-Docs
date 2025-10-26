@@ -230,7 +230,7 @@ export default function Home() {
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="https://github.com/user-attachments/assets/732c30de-5f4a-4a2b-a995-c8ab656cecd5"
+                    src="/img/Control-Center.png"
                     alt="Control Center"
                     className={styles.screenshotImage}
                   />
@@ -268,6 +268,21 @@ export default function Home() {
                 <div className={styles.screenshotLabel}>
                   <h3>Widget Customization</h3>
                   <p>Personalize your desktop experience</p>
+                </div>
+              </div>
+
+              {/* Plugins */}
+              <div className={styles.screenshotCard}>
+                <div className={styles.screenshotFrame}>
+                  <img
+                    src="/img/Plugins.png"
+                    alt="Plugins"
+                    className={styles.screenshotImage}
+                  />
+                </div>
+                <div className={styles.screenshotLabel}>
+                  <h3>Plugins</h3>
+                  <p>Browse and install plugins from the DMS registry</p>
                 </div>
               </div>
             </div>
