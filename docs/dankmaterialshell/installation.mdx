@@ -19,11 +19,12 @@ Running the installer sets up DankMaterialShell, recommended compositor presets,
 
 ### Arch Linux
 
+<h4>Stable release</h4>
 ```bash
-# Stable release
 paru -S dms-shell-bin
-
-# Latest development build
+```
+<h4>Latest development build</h4>
+```bash
 paru -S dms-shell-git
 ```
 
@@ -33,12 +34,15 @@ These packages ship the shell, widgets, and CLI. Pair them with the `niri` or `h
 
 Enable the COPR repositories managed by the team to install prebuilt packages:
 
+
+<h4>Stable release</h4>
 ```bash
-# Stable release (recommended)
 sudo dnf copr enable avengemedia/dms
 sudo dnf install dms
+```
 
-# Latest development snapshots
+<h3>Latest development build</h3>
+```bash
 sudo dnf copr enable avengemedia/dms-git
 sudo dnf install dms
 ```
