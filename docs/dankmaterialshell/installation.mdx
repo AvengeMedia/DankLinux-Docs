@@ -19,11 +19,11 @@ Running the installer sets up DankMaterialShell, recommended compositor presets,
 
 ### Arch Linux
 
-<h4>Stable release</h4>
+#### Stable release
 ```bash
 paru -S dms-shell-bin
 ```
-<h4>Latest development build</h4>
+#### Latest development build
 ```bash
 paru -S dms-shell-git
 ```
@@ -35,13 +35,13 @@ These packages ship the shell, widgets, and CLI. Pair them with the `niri` or `h
 Enable the COPR repositories managed by the team to install prebuilt packages:
 
 
-<h4>Stable release</h4>
+#### Stable release
 ```bash
 sudo dnf copr enable avengemedia/dms
 sudo dnf install dms
 ```
 
-<h3>Latest development build</h3>
+### Latest development build
 ```bash
 sudo dnf copr enable avengemedia/dms-git
 sudo dnf install dms
@@ -101,26 +101,18 @@ Use the manual path when packaging for a new distribution or running a stripped-
    ```
    Build from source on Debian-based systems where packages are unavailable.
 
-2. **Install fonts** (system-wide recommended)
-   ```bash
-   sudo curl -L "https://github.com/google/material-design-icons/raw/master/variablefont/MaterialSymbolsRounded%5BFILL%2CGRAD%2Copsz%2Cwght%5D.ttf" -o /usr/share/fonts/MaterialSymbolsRounded.ttf
-   sudo curl -L "https://github.com/rsms/inter/raw/refs/tags/v4.1/docs/font-files/InterVariable.ttf" -o /usr/share/fonts/InterVariable.ttf
-   sudo curl -L "https://github.com/tonsky/FiraCode/releases/latest/download/FiraCode-Regular.ttf" -o /usr/share/fonts/FiraCode-Regular.ttf
-   fc-cache -fv
-   ```
-
-3. **Clone the shell sources**
+2. **Clone the shell sources**
    ```bash
    mkdir -p ~/.config/quickshell
    git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quickshell/dms
    ```
 
-4. **Install the CLI manager**
+3. **Install the CLI manager**
    ```bash
    sudo sh -c "curl -L https://github.com/AvengeMedia/danklinux/releases/latest/download/dms-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').gz | gunzip | tee /usr/local/bin/dms > /dev/null && chmod +x /usr/local/bin/dms"
    ```
 
-5. **Install optional integrations** for full functionality (see below).
+4. **Install optional integrations** for full functionality (see below).
 
 After completing the manual steps, launch the shell with `dms run`. Use `dms restart` or `dms kill` to manage the session during upgrades.
 

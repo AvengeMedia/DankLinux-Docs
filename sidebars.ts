@@ -57,7 +57,15 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'dgop',
+      label: 'DankSearch',
+      collapsed: false,
+      items: [
+        'danksearch/index',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'DGOP',
       collapsed: false,
       items: [
         'dgop/index',

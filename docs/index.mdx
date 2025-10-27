@@ -23,13 +23,13 @@ Dank Linux is a desktop environment and suite of tools and desktop applications 
 curl -fsSL https://install.danklinux.com | sh
 ```
 
-- Supports Arch Linux + Derivatives, Fedora + Derivatives, Ubuntu, Debian, and openSUSE.
+Supports Arch Linux + Derivatives, Fedora + Derivatives, Ubuntu, Debian, and openSUSE.
 
 ## The Suite
 
 - **[DankMaterialShell](dankmaterialshell/)** - A feature-rich desktop shell built with [Quickshell](https://quickshell.org/) and [Go](https://golang.org/).
-- **[dgop](dgop/)** - A stateless system monitoring tool with a CLI and REST API
-- **dsearch (in development)** - An indexed file system search tool with fuzzy search capabilities
+- **[DankSearch](danksearch/)** - Native file system search with fuzzy search capabilities, built into DMS
+- **[DGOP](dgop/)** - A comprehensive system monitoring and operations platform with CLI and REST API
 - **dcal (in development)** - A calendar application that integrates with online calendar services.
 - **[dankinstall](danklinux/)** - An automated installer and management tool for the entire Dank Linux suite
 
@@ -43,22 +43,18 @@ DankMaterialShell provides a stunning desktop experience right out of the box:
 
 ## Powerful System Monitoring
 
-dgop provides comprehensive system insights:
-- **Real-time Metrics**: CPU, memory, network, disk, and GPU monitoring
-- **CLI Interface**: Powerful command-line tools for system information
-- **REST API**: JSON endpoints for programmatic access and integration
-- **Process Management**: Advanced process monitoring with sorting and filtering
+DGOP provides comprehensive system insights and operations capabilities:
+- **Real-time Metrics**: CPU, memory, network, disk, and GPU monitoring with detailed statistics
+- **Advanced CLI**: Powerful command-line tools with filtering, sorting, and search capabilities
+- **REST API**: Complete JSON API with OpenAPI documentation for programmatic access
+- **Process Management**: Advanced process monitoring with real-time updates and control
+- **Hardware Monitoring**: Temperature sensors, hardware information, and performance tracking
+- **Network Analysis**: Interface statistics, connection monitoring, and traffic analysis
 
 ## Easy Installation
 
-Get started in seconds with our automated installer:
-
-```bash
-curl -fsSL https://install.danklinux.com | sh
-```
-
-The installer handles everything:
-- Detects your Linux distribution automatically
+The installer handles everything automatically:
+- Detects your Linux distribution
 - Installs all necessary dependencies
 - Configures your compositor (niri or Hyprland)
 - Sets up theming and default configurations
