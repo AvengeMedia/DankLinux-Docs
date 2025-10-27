@@ -1,6 +1,6 @@
 ---
 title: Welcome
-description: Welcome to Dank Linux - A modern desktop environment for Wayland
+description: Welcome to Dank Linux
 sidebar_position: 1
 ---
 
@@ -13,11 +13,11 @@ sidebar_position: 1
 ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝`}</pre>
 </div>
 
-Dank Linux is a desktop environment and suite of tools and desktop applications designed to provide a clean, efficient, and highly customizable modern desktop experience on Wayland compositors.
+Dank Linux is a desktop suite that provides a comprehensive desktop shell along with a suite of tools and applications designed to provide a modern, efficient, and highly customizable desktop experience on top of Wayland compositors.
 
 ## Quick Start
 
-*This will set up Dank Linux on your system, including all dependencies, the DankMaterialShell desktop shell, and default configurations.*
+*This will set up Dank Linux on your system, including all dependencies, the DankMaterialShell™, and default compositor and terminal configurations.*
 
 ```bash
 curl -fsSL https://install.danklinux.com | sh
@@ -28,57 +28,109 @@ Supports Arch Linux + Derivatives, Fedora + Derivatives, Ubuntu, Debian, and ope
 ## The Suite
 
 - **[DankMaterialShell](dankmaterialshell/)** - A feature-rich desktop shell built with [Quickshell](https://quickshell.org/) and [Go](https://golang.org/).
-- **[DankSearch](danksearch/)** - Native file system search with fuzzy search capabilities, built into DMS
-- **[DGOP](dgop/)** - A comprehensive system monitoring and operations platform with CLI and REST API
-- **dcal (in development)** - A calendar application that integrates with online calendar services.
+- **[dsearch](danksearch/)** - Extremely fast, configurable, zero-dependency indexed filesystem search service.
+- **[dgop](dgop/)** - A stateless, cursor-based system and process monitoring tool with a tui, cli, and REST API.
 - **[dankinstall](danklinux/)** - An automated installer and management tool for the entire Dank Linux suite
+- **dcal (in development)** - A calendar application that integrates with online and local calendars.
+
+## Batteries Included
+
+The age of assembling your desktop from dozens of separate tools and spending hours trying to make it feel cohesive is over. While traditional Wayland setups require you to hunt down, configure, and maintain a sprawling collection of utilities, Dank Linux delivers everything in one cohesive package with minimal dependencies.
+
+### The Traditional Way: Package Hunting Simulator
+
+A typical Hyprland, Niri, Sway, or generic Wayland setup forces you to become a package archaeologist:
+
+- **Status Bar**: waybar, eww, or custom scripts
+- **Notifications**: mako, swaync, or dunst
+- **App Launcher**: rofi, wofi, fuzzel, or tofi
+- **Screen Locking**: swaylock, hyprlock, or gtklock
+- **Idle Management**: swayidle, hypridle
+- **System Tools**: htop, btop, nm-applet, blueman, pavucontrol
+- **Audio Control**: pavucontrol, pamixer scripts
+- **Brightness Control**: brightnessctl with custom bindings
+- **Clipboard Manager**: clipman, cliphist, or wl-clipboard scripts
+- **Wallpaper Management**: swaybg, swww, hyprpaper, or wpaperd
+- **Theming**: manually configuring gtk, qt, various apps, bars, compositor gaps and colors
+- **Power Management**: custom scripts or additional daemons
+- **Greeter**: gdm, sddm, lightdm, greetd
+
+Each tool has its own configuration format, its own quirks, and its own dependencies. You'll spend hours writing glue scripts, debugging integration issues, and discovering missing functionality at the worst possible moments.
+
+### The Dank Way: Actually Complete
+
+Dank Linux replaces this fragmented ecosystem with **DankMaterialShell** - a single, integrated solution built with [Quickshell](https://quickshell.org) and [Go](https://go.dev):
+
+- ✅ **Full Desktop Shell** - Complete panels, widgets, and system integration
+- ✅ **Unified Configuration** - One consistent approach, not 15 different syntaxes
+- ✅ **Intelligent Search** - `danksearch` for lightning-fast file discovery
+- ✅ **System Monitoring** - `dgop` provides comprehensive system insights without additional tools, persistent daemons, or long-running samplers preventing CPU sleep states.
+- ✅ **Dynamic Theming** - Automatic color generation with `matugen`, applied everywhere
+- ✅ **All Essentials Included** - Notifications, app launcher, system tray, media controls, and more
+- ✅ **Comprehensive Plugin System** - Comprehensive plugin system allows limitless possibilities for new widgets and launcher functions.
+- ✅ **Smart Defaults** - Works beautifully out of the box, customizable when you want it
+
+No more late-night debugging sessions because you forgot to install a clipboard manager. No more manually syncing color schemes across a dozen config files.
+
+**One install. One shell. Everything works.**
+
+That's Dank Linux - we've already done the integration work so you can focus on using your desktop, not building it.
 
 ## Beautiful by Default
 
 DankMaterialShell provides a stunning desktop experience right out of the box:
-- **20+ Customizable Widgets**: App launcher, workspace switcher, media player, clock, weather, system tray, notifications, and more
-- **Dynamic Theming**: Automatic color schemes generated from your wallpaper using matugen
+- **Dozens of Customizable Widgets**: Extendable launcher, workspace switcher, media player, clock, weather, system tray, notifications, lock screen, greeter, network integration, bluetooth integration, and more.
+- **Dynamic Theming**: Automatic color schemes applied across the desktop.
 - **Smooth Animations**: Polished transitions and effects throughout the desktop
 - **Material Design**: Modern, clean aesthetics inspired by Material Design 3
 
-## Powerful System Monitoring
+## Innovating Solutions
 
-DGOP provides comprehensive system insights and operations capabilities:
-- **Real-time Metrics**: CPU, memory, network, disk, and GPU monitoring with detailed statistics
-- **Advanced CLI**: Powerful command-line tools with filtering, sorting, and search capabilities
-- **REST API**: Complete JSON API with OpenAPI documentation for programmatic access
-- **Process Management**: Advanced process monitoring with real-time updates and control
-- **Hardware Monitoring**: Temperature sensors, hardware information, and performance tracking
-- **Network Analysis**: Interface statistics, connection monitoring, and traffic analysis
+Dank Linux is engineering solutions to problems that have never been solved before in the Linux space.
 
-## Easy Installation
+### dgop - first-of-its-kind Stateless System & Process Status Tool 
 
-The installer handles everything automatically:
-- Detects your Linux distribution
-- Installs all necessary dependencies
-- Configures your compositor (niri or Hyprland)
-- Sets up theming and default configurations
+Before dgop, if you wanted to measure CPU usage - for example, you either had to:
+1. Collect samples over a substantial time period, say 1-5 seconds, and then calculate the difference between the samples to get an average CPU usage over that time, or:
+2. Use a persistent daemon that continuously samples and stores system metrics on-disk or in-memory, which can consume resources and complicate system design.
 
-## Supported Platforms
+Both approaches have significant drawbacks, including delayed responsiveness, increased resource consumption, and added complexity.
 
-Dank Linux works on:
-- **Arch Linux** and derivatives (Manjaro, EndeavourOS, CachyOS)
-- **Fedora** 40+ and derivatives (Nobara, Fedora Asahi Remix)
-- **Ubuntu** 25.04+
-- **Debian** 13+ (Trixie)
-- **openSUSE Tumbleweed**
-- **NixOS** (via flake)
+With dgop, this problem is solved using a novel, cursor-based sampling technique:
+1. Request CPU percentage, receive baseline values with a `cursor`
+2. Request CPU percentage again, whenever you want, passing the previous `cursor` and you will receive the CPU, process, and system metrics calculated over the exact time since the last request - instantaneously.
 
-## Optimized for Wayland
+This approach is also used for other time-based metrics, such as disk thoroughput and network usage.
 
-Built specifically for modern Wayland compositors:
-- **niri** - Scrollable-tiling compositor (primary support)
-- **Hyprland** - Dynamic tiling compositor (fully supported)
-- **Generic Wayland** - Basic support for other compositors
+dgop also provides a top-like TUI, advanced CLI, and a fully-documented OpenAPI 3.1 REST API for programmatic access - with "meta" commands that allow you to mix and match any type of metrics you want.
+
+### ! IMAGE OF dgop HERE !
+
+### danksearch - Blazingly Fast Filesystem Search
+
+Traditional filesystem search tools usually come as part of the [KDE](https://kde.org/) or [GNOME](https://www.gnome.org/) desktop environments. They require many dependencies, are hard to configure, difficult to search in a programmatic way, and often users opt to just disable them.
+
+DankSearch is a zero-dependency, lightning-fast, fully configurable in 1 file, indexed filesystem search service that works as a standalone tool.
+
+- **Zero Dependencies**: Written in Go, runs anywhere
+- **Configurable**: One simple configuration file, populated with sensible defaults.
+- **Fast Indexing**: Index tens of thousands of files in minutes.
+- **Index Synching**: Automatically keeps the index up to date with filesystem changes.
+- **Advanced Search**: Full text search, regex, fuzzy matching, extension filters, metadata searching, etc.
+- **Programmatic Access**: Provides a fully documented OpenAPI 3.1 spec REST API for easy integration with other tools and scripts, as well as a CLI for direct use.
+
+#### ! IMAGE of danksearch here 
 
 ## Open Source
 
-Dank Linux and all its components are open source and MIT-licensed. All source code is available on [GitHub](https://github.com/AvengeMedia).
+Dank Linux and all its components are open source and GPL-3.0 or MIT-licensed.
+
+Source code:
+- [DankMaterialShell/dms](https://github.com/AvengeMedia/DankMaterialShell)
+- [DankMaterialShell/dms backend + dankinstall](https://github.com/AvengeMedia/danklinux)
+- [dms first-party plugins](https://github.com/AvengeMedia/dms-plugins)
+- [dgop GitHub](https://github.com/AvengeMedia/dgop)
+- [danksearch GitHub](https://github.com/AvengeMedia/danksearch)
 
 ## Get Started
 
@@ -89,3 +141,5 @@ Ready to dive in? Head over to the [Getting Started](getting-started) guide to b
 - **GitHub**: [github.com/AvengeMedia](https://github.com/AvengeMedia)
 - **Discord**: Join our community server
 - **Documentation**: You're already here!
+
+## ! Add Donation Link !
