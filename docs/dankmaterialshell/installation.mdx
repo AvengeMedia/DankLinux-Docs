@@ -3,18 +3,6 @@ title: Installation
 sidebar_position: 2
 ---
 
-# Installation
-
-DankMaterialShell can be installed in minutes using the curated DankLinux installer or by following manual, distribution-specific steps. This guide captures the officially supported paths and highlights optional tooling that unlocks the full experience.
-
-## Quick Start (All Distros)
-
-```bash
-curl -fsSL https://install.danklinux.com | sh
-```
-
-Running the installer sets up DankMaterialShell, recommended compositor presets, and core dependencies across supported distributions. Re-run the script any time to update modules or repair the environment.
-
 ## Distribution Packages
 
 ### Arch Linux
@@ -51,40 +39,7 @@ The COPR repositories also provide companion packages such as `quickshell-git`, 
 
 ### NixOS (via flakes)
 
-Add DankMaterialShell, the CLI, and dgop as flake inputs:
-
-```nix
-inputs = {
-  dgop = {
-    url = "github:AvengeMedia/dgop";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  dms-cli = {
-    url = "github:AvengeMedia/danklinux";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-  dankMaterialShell = {
-    url = "github:AvengeMedia/DankMaterialShell";
-    inputs.nixpkgs.follows = "nixpkgs";
-    inputs.dgop.follows = "dgop";
-    inputs.dms-cli.follows = "dms-cli";
-  };
-};
-```
-
-Then import the module in `home-manager`:
-
-```nix
-imports = [
-  inputs.dankMaterialShell.homeModules.dankMaterialShell.default
-  # Optional: compositor helpers
-  inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
-];
-
-programs.dankMaterialShell.enable = true;
-```
-
-For niri integrations you also need the `sodiboo/niri-flake` input and should import `inputs.niri.homeModules.niri`.
+NixOS has its own documentation, see [here](./nixos.mdx) for details.
 
 ## Manual Installation (All Distros)
 

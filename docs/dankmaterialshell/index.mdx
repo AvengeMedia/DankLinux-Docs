@@ -6,14 +6,15 @@ sidebar_position: 1
 
 # DankMaterialShell
 
-DankMaterialShell (dms) is a modern Wayland desktop shell built with [Quickshell](https://quickshell.org/) and Go. It consolidates the widgets, panels, and background services typically scattered across multiple applications into a cohesive, theme-aware experience optimized for the niri and Hyprland compositors.
+DankMaterialShell (dms) is a modern Wayland desktop shell built with [Quickshell](https://quickshell.org/) and [Go](https://go.dev/). It consolidates the widgets, panels, and system controls of a traditional desktop environment into a single, cohesive application that runs on top of most Wayland compositors.
 
 ## Why DMS?
 
 - **Unified Desktop Stack:** Replaces status bars, launchers, notification daemons, lock screens, and more with a single, coherent system.
 - **Dynamic Material Design:** Auto-generates color palettes from your wallpaper or loads bespoke Material Design 3 themes.
 - **Extensible Architecture:** Plugin system, IPC, and CLI allow deep customization without patching core files.
-- **Compositor Friendly:** Ships ready-made keybindings and layout helpers for niri and Hyprland while remaining Wayland agnostic.
+- **Compositor Friendly:** Ships ready-made keybindings and layout helpers for niri and Hyprland while remaining compositor-agnostic.
+- **One Dependency:** Besides itself, only requires Quickshell - no additional daemons or services needed for core functionality.
 
 ## Feature Highlights
 
@@ -29,24 +30,10 @@ DankMaterialShell (dms) is a modern Wayland desktop shell built with [Quickshell
 
 | Component | Role |
 | --- | --- |
-| **Quickshell** | Declarative UI framework powering widgets, modals, and layouts. |
-| **Go Backend (`dms` CLI)** | Bridges DBus, IPC, and plugin APIs; provides installer integration. |
+| **DankMaterialShell - Quickshell** | Frontend powering widgets, modals, and user experience. |
+| **DankMaterialShell - Backend (cli)** | Bridges DBus, Wayland, and plugin APIs - also a management CLI |
 | **dgop** | Optional system telemetry service used by resource widgets. |
-| **PluginService** | Discovers and manages dynamically loaded QML plugins. |
-
-## Quick Start
-
-```bash
-curl -fsSL https://install.danklinux.com | sh
-```
-
-Prefer packaging or manual control? Visit the [Installation guide](installation) for distribution-specific steps, fonts, and dependencies.
-
-## Ecosystem
-
-- **Plugins:** Extend the shell with custom widgets and launchers. Explore the curated [Plugin Registry](https://plugins.danklinux.com/) or see the [Plugins documentation](plugins).
-- **Greeter:** Optional greetd front-end that mirrors your shell theme. Learn more on the [Greeter page](greeter).
-- **DankLinux CLI:** Manage sessions, send IPC commands, and install new components using the `dms` tool included with DankLinux.
+| **dsearch** | Optional filesystem search engine used by the Spotlight launcher. |
 
 ## Continue Exploring
 
