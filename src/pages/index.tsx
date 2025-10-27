@@ -54,14 +54,14 @@ export default function Home() {
           <section className={styles.hero}>
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
-                <span className={styles.heroLine}>Modern Desktop.</span>
+                <span className={styles.heroLine}>Modern Desktop</span>
                 <span className={styles.heroLine}>Built for</span>
-                <span className={`${styles.heroLine} ${styles.heroGradient}`}>Wayland.</span>
+                <span className={`${styles.heroLine} ${styles.heroGradient}`}>Wayland</span>
               </h1>
 
               <p className={styles.heroSubtitle}>
-                A beautiful, powerful desktop environment with 20+ customizable widgets,
-                real-time system monitoring, and seamless compositor integration.
+                A beautiful, powerful desktop environment built with Quickshell and GO. 
+                It includes customizable widgets, plugins, real-time system monitoring, and seamless Wayland compositor integration.
               </p>
 
               {/* Call to action buttons */}
