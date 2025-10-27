@@ -1,8 +1,174 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import type {PrismTheme} from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
+
+// Custom Dank Purple Prism Theme
+const dankPurple: PrismTheme = {
+  plain: {
+    color: '#e4e4e7',
+    backgroundColor: '#2e2a3d',
+  },
+  styles: [
+    {
+      types: ['comment', 'prolog', 'doctype', 'cdata'],
+      style: {
+        color: '#7c7c99',
+        fontStyle: 'italic',
+      },
+    },
+    {
+      types: ['punctuation'],
+      style: {
+        color: '#c0c0d0',
+      },
+    },
+    {
+      types: ['namespace'],
+      style: {
+        opacity: 0.7,
+      },
+    },
+    {
+      types: ['property', 'tag', 'constant', 'symbol', 'deleted'],
+      style: {
+        color: '#f78c6c',
+      },
+    },
+    {
+      types: ['boolean', 'number'],
+      style: {
+        color: '#f78c6c',
+      },
+    },
+    {
+      types: ['selector', 'attr-name', 'string', 'char', 'builtin', 'inserted'],
+      style: {
+        color: '#c3e88d',
+      },
+    },
+    {
+      types: ['operator', 'entity', 'url', 'variable'],
+      style: {
+        color: '#89ddff',
+      },
+    },
+    {
+      types: ['atrule', 'attr-value', 'keyword'],
+      style: {
+        color: '#c792ea',
+      },
+    },
+    {
+      types: ['function', 'class-name'],
+      style: {
+        color: '#82aaff',
+      },
+    },
+    {
+      types: ['regex', 'important'],
+      style: {
+        color: '#f07178',
+      },
+    },
+    {
+      types: ['important', 'bold'],
+      style: {
+        fontWeight: 'bold',
+      },
+    },
+    {
+      types: ['italic'],
+      style: {
+        fontStyle: 'italic',
+      },
+    },
+  ],
+};
+
+const dankPurpleLight: PrismTheme = {
+  plain: {
+    color: '#2e2a3d',
+    backgroundColor: '#f8f7fb',
+  },
+  styles: [
+    {
+      types: ['comment', 'prolog', 'doctype', 'cdata'],
+      style: {
+        color: '#6e7c93',
+        fontStyle: 'italic',
+      },
+    },
+    {
+      types: ['punctuation'],
+      style: {
+        color: '#5a5a77',
+      },
+    },
+    {
+      types: ['namespace'],
+      style: {
+        opacity: 0.7,
+      },
+    },
+    {
+      types: ['property', 'tag', 'constant', 'symbol', 'deleted'],
+      style: {
+        color: '#d65d0e',
+      },
+    },
+    {
+      types: ['boolean', 'number'],
+      style: {
+        color: '#d65d0e',
+      },
+    },
+    {
+      types: ['selector', 'attr-name', 'string', 'char', 'builtin', 'inserted'],
+      style: {
+        color: '#427b58',
+      },
+    },
+    {
+      types: ['operator', 'entity', 'url', 'variable'],
+      style: {
+        color: '#076678',
+      },
+    },
+    {
+      types: ['atrule', 'attr-value', 'keyword'],
+      style: {
+        color: '#8f3f71',
+      },
+    },
+    {
+      types: ['function', 'class-name'],
+      style: {
+        color: '#0969da',
+      },
+    },
+    {
+      types: ['regex', 'important'],
+      style: {
+        color: '#cc241d',
+      },
+    },
+    {
+      types: ['important', 'bold'],
+      style: {
+        fontWeight: 'bold',
+      },
+    },
+    {
+      types: ['italic'],
+      style: {
+        fontStyle: 'italic',
+      },
+    },
+  ],
+};
 
 const config: Config = {
   title: 'Dank Linux',
@@ -85,14 +251,19 @@ const config: Config = {
       },
       items: [
         {
+          to: '/docs/getting-started',
+          label: 'Install',
+          position: 'right',
+        },
+        {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'right',
           label: 'Docs',
         },
         {
-          to: '/docs/getting-started',
-          label: 'Install',
+          to: '/docs/dankmaterialshell/plugins',
+          label: 'Plugins',
           position: 'right',
         },
         {
@@ -164,8 +335,9 @@ const config: Config = {
       copyright: `© ${new Date().getFullYear()} Dank Linux • MIT Licensed`,
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.palenight,
+      theme: dankPurpleLight,
+      darkTheme: dankPurple,
+      additionalLanguages: ['bash', 'json', 'yaml', 'toml', 'rust', 'python', 'javascript', 'typescript'],
     },
   } satisfies Preset.ThemeConfig,
 };
