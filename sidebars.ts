@@ -16,13 +16,33 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     'index',
     'getting-started',
-    'demo',
+    {
+      type: 'category',
+      label: 'DankLinux',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'danklinux/index',
+          label: 'Overview',
+        },
+        'danklinux/dankinstall',
+        'danklinux/configuration',
+        'danklinux/distributions',
+        'danklinux/dms-runner',
+        'danklinux/plugins',
+      ],
+    },
     {
       type: 'category',
       label: 'DankMaterialShell',
       collapsed: false,
       items: [
-        'dankmaterialshell/index',
+        {
+          type: 'doc',
+          id: 'dankmaterialshell/index',
+          label: 'Overview',
+        },
         'dankmaterialshell/installation',
         'dankmaterialshell/configuration',
         'dankmaterialshell/compositors',
@@ -44,23 +64,17 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'DankLinux',
-      collapsed: false,
-      items: [
-        'danklinux/index',
-        'danklinux/dankinstall',
-        'danklinux/configuration',
-        'danklinux/distributions',
-        'danklinux/dms-runner',
-        'danklinux/plugins',
-      ],
-    },
-    {
-      type: 'category',
       label: 'DankSearch',
       collapsed: false,
       items: [
-        'danksearch/index',
+        {
+          type: 'doc',
+          id: 'danksearch/index',
+          label: 'Overview',
+        },
+        'danksearch/installation',
+        'danksearch/configuration',
+        'danksearch/usage',
       ],
     },
     {
@@ -68,11 +82,19 @@ const sidebars: SidebarsConfig = {
       label: 'DGOP',
       collapsed: false,
       items: [
-        'dgop/index',
+        {
+          type: 'doc',
+          id: 'dgop/index',
+          label: 'Overview',
+        },
+        'dgop/installation',
+        'dgop/configuration',
+        'dgop/usage',
       ],
     },
-    'support',
     'contributing',
+    'demo',
+    'support'
   ],
 };
 

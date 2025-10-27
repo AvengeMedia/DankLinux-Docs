@@ -1,0 +1,124 @@
+---
+title: Installation
+sidebar_position: 2
+---
+
+# DGOP Installation
+
+Install DGOP as part of the Dank Linux suite or as a standalone system monitoring tool.
+
+## Quick Installation
+
+Install DGOP as part of the complete Dank Linux suite:
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+This will install DGOP along with DankMaterialShell and other components.
+
+## Standalone Installation
+
+### Pre-built Binaries
+
+Download the latest release for your architecture:
+
+```bash
+# Download and install
+wget https://github.com/AvengeMedia/dgop/releases/latest/download/dgop-linux-amd64
+chmod +x dgop-linux-amd64
+sudo mv dgop-linux-amd64 /usr/local/bin/dgop
+```
+
+### Package Managers
+
+#### Arch Linux
+```bash
+yay -S dgop
+# or
+paru -S dgop
+```
+
+#### Fedora/RHEL
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dgop
+```
+
+#### Ubuntu/Debian
+```bash
+sudo apt install dgop
+```
+
+### From Source
+
+Requirements: Go 1.22+
+
+```bash
+git clone https://github.com/AvengeMedia/dgop
+cd dgop
+make
+sudo make install
+```
+
+### Docker
+
+```bash
+docker run -it --rm -v /proc:/host/proc:ro -v /sys:/host/sys:ro avengemedia/dgop
+```
+
+## Verification
+
+Test the installation:
+
+```bash
+# Check version
+dgop --version
+
+# Test system metrics
+dgop system
+
+# Test API server
+dgop serve --port 8080
+```
+
+## System Requirements
+
+- **Operating System**: Linux (uses `/proc` and `/sys` filesystems)
+- **Architecture**: AMD64, ARM64, ARMv7
+- **Go Version**: 1.22+ (for building from source)
+
+### Optional Dependencies
+
+For enhanced functionality:
+
+- `nvidia-smi` - NVIDIA GPU monitoring
+- `lspci` - PCI device information
+- `sensors` - Temperature monitoring
+- `lscpu` - Detailed CPU information
+
+Install optional dependencies:
+
+```bash
+# Arch Linux
+sudo pacman -S nvidia-utils pciutils lm-sensors
+
+# Fedora
+sudo dnf install nvidia-driver pciutils lm_sensors
+
+# Ubuntu/Debian
+sudo apt install nvidia-utils pciutils lm-sensors
+```
+
+## Integration with DMS
+
+If you have DankMaterialShell installed, DGOP will automatically integrate:
+
+- **System Widgets**: Real-time monitoring widgets
+- **IPC Commands**: Access via `dms` CLI
+- **API Integration**: Automatic API endpoint configuration
+
+## Next Steps
+
+- [Configuration](configuration) - Configure monitoring settings
+- [Usage](usage) - Learn CLI commands and API usage

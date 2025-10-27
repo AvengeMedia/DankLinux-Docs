@@ -1,0 +1,260 @@
+---
+title: Usage
+sidebar_position: 4
+---
+
+# DankSearch Usage
+
+Learn how to use DankSearch effectively for file discovery and system navigation.
+
+## Basic Search
+
+### Spotlight Launcher
+
+Access DankSearch through the Spotlight launcher:
+
+1. Press `Super + D` to open Spotlight
+2. Start typing to search for files
+3. Use arrow keys to navigate results
+4. Press `Enter` to open the selected file
+
+### CLI Search
+
+Use the command line interface:
+
+```bash
+# Basic search
+dms search "filename"
+
+# Search in specific directory
+dms search "config" --dir ~/.config
+
+# Search by file extension
+dms search "*.pdf"
+
+# Case-sensitive search
+dms search "Config" --case-sensitive
+```
+
+## Advanced Search
+
+### Search Operators
+
+Use operators to refine your search:
+
+| Operator | Description | Example |
+|----------|-------------|---------|
+| `ext:` | File extension | `ext:md` |
+| `in:` | Directory | `in:Documents` |
+| `size:` | File size | `size:>10MB` |
+| `modified:` | Modification date | `modified:today` |
+| `name:` | Exact filename | `name:config.json` |
+
+### Examples
+
+```bash
+# Find all PDF files in Documents
+dms search "ext:pdf in:Documents"
+
+# Find large files modified today
+dms search "size:>50MB modified:today"
+
+# Find configuration files
+dms search "name:config.*"
+```
+
+## Search Filters
+
+### File Type Filtering
+
+Filter by file types:
+
+```bash
+# Images only
+dms search "vacation" --type image
+
+# Documents only
+dms search "report" --type document
+
+# Archives only
+dms search "backup" --type archive
+```
+
+### Size Filtering
+
+Filter by file size:
+
+```bash
+# Files larger than 10MB
+dms search "video" --size ">10MB"
+
+# Files smaller than 1MB
+dms search "config" --size "<1MB"
+
+# Files between 5-50MB
+dms search "media" --size "5MB-50MB"
+```
+
+### Date Filtering
+
+Filter by modification date:
+
+```bash
+# Modified today
+dms search "work" --modified today
+
+# Modified this week
+dms search "project" --modified week
+
+# Modified this month
+dms search "archive" --modified month
+```
+
+## Search Results
+
+### Result Formatting
+
+Customize how results are displayed:
+
+```bash
+# Detailed format
+dms search "config" --format detailed
+
+# JSON output
+dms search "config" --format json
+
+# Simple format
+dms search "config" --format simple
+```
+
+### Sorting Results
+
+Sort results by different criteria:
+
+```bash
+# Sort by relevance (default)
+dms search "config" --sort relevance
+
+# Sort by name
+dms search "config" --sort name
+
+# Sort by size
+dms search "config" --sort size
+
+# Sort by modification date
+dms search "config" --sort modified
+```
+
+## Integration Features
+
+### Recent Searches
+
+View your recent search history:
+
+```bash
+# List recent searches
+dms search --recent
+
+# Clear search history
+dms search --clear-history
+```
+
+### Favorites
+
+Manage favorite searches:
+
+```bash
+# Add current search to favorites
+dms search "config" --favorite
+
+# List favorites
+dms search --favorites
+
+# Remove from favorites
+dms search --unfavorite "config"
+```
+
+### Quick Access
+
+Set up quick access shortcuts:
+
+```bash
+# Create shortcut for common search
+dms search --shortcut "docs" "in:Documents ext:md"
+
+# Use shortcut
+dms search --shortcut "docs"
+```
+
+## Desktop Integration
+
+### Widget Usage
+
+Use DankSearch widgets on your desktop:
+
+- **Search Widget**: Quick search from desktop
+- **Recent Files**: Access recently opened files
+- **Quick Access**: Favorite searches and shortcuts
+
+### Keyboard Shortcuts
+
+Default keyboard shortcuts:
+
+- `Super + D` - Open Spotlight launcher
+- `Super + F` - Quick file search
+- `Super + R` - Recent files
+- `Ctrl + R` - Refresh search index
+
+## Performance Tips
+
+### Optimize Search Speed
+
+- Keep indexed directories focused
+- Use specific file extensions when possible
+- Regularly clean up old files
+- Monitor index size and performance
+
+### Memory Usage
+
+- Limit indexed directory scope for large filesystems
+- Use excluded patterns for temporary files
+- Adjust batch size for indexing
+
+## Troubleshooting
+
+### Common Issues
+
+**Search not working:**
+- Check if DMS is running: `dms status`
+- Verify search service: `dms search status`
+- Restart search service: `dms search restart`
+
+**Slow search:**
+- Check index status: `dms search status`
+- Reduce indexed directories
+- Increase fuzzy threshold
+
+**Missing files:**
+- Refresh index: `dms search refresh`
+- Check file permissions
+- Verify excluded patterns
+
+### Debug Information
+
+Get detailed debug information:
+
+```bash
+# Verbose output
+dms search "config" --verbose
+
+# Debug mode
+dms search --debug
+
+# Performance metrics
+dms search --metrics
+```
+
+## Next Steps
+
+- [Configuration](configuration) - Customize search settings
+- [Installation](installation) - Setup and integration details

@@ -1,0 +1,377 @@
+---
+title: Usage
+sidebar_position: 4
+---
+
+# DGOP Usage
+
+Learn how to use DGOP effectively for system monitoring, process management, and API integration.
+
+## CLI Usage
+
+### System Overview
+
+Get comprehensive system metrics:
+
+```bash
+# Basic system information
+dgop system
+
+# Detailed system metrics
+dgop system --detailed
+
+# JSON output
+dgop system --json
+```
+
+### Process Monitoring
+
+Monitor running processes:
+
+```bash
+# List all processes
+dgop processes
+
+# Top 10 processes by CPU usage
+dgop processes --sort cpu --limit 10
+
+# Top 20 processes by memory usage
+dgop processes --sort memory --limit 20
+
+# Search for specific processes
+dgop processes --search "firefox"
+
+# Filter by user
+dgop processes --user root
+
+# Filter by state
+dgop processes --state running
+```
+
+### Hardware Information
+
+Get detailed hardware information:
+
+```bash
+# General hardware info
+dgop hardware
+
+# CPU information only
+dgop hardware --cpu
+
+# Memory information
+dgop hardware --memory
+
+# GPU information (requires nvidia-smi)
+dgop hardware --gpu
+
+# Temperature sensors
+dgop temperature
+```
+
+### Network Monitoring
+
+Monitor network interfaces and connections:
+
+```bash
+# Network interfaces
+dgop network
+
+# Active connections
+dgop network --connections
+
+# Interface statistics
+dgop network --interfaces
+
+# Network traffic
+dgop network --traffic
+```
+
+## API Usage
+
+### Starting the API Server
+
+Start the REST API server:
+
+```bash
+# Default port (8080)
+dgop serve
+
+# Custom port
+dgop serve --port 9090
+
+# With authentication
+dgop serve --auth --username admin --password secret
+
+# Background daemon
+dgop serve --daemon
+```
+
+### API Endpoints
+
+Access system information via HTTP:
+
+#### System Metrics
+```bash
+# Overall system status
+curl http://localhost:8080/api/v1/system
+
+# CPU information
+curl http://localhost:8080/api/v1/cpu
+
+# Memory usage
+curl http://localhost:8080/api/v1/memory
+
+# Disk usage
+curl http://localhost:8080/api/v1/disk
+```
+
+#### Process Management
+```bash
+# Process list
+curl http://localhost:8080/api/v1/processes
+
+# Specific process
+curl http://localhost:8080/api/v1/processes/1234
+
+# Kill process (POST)
+curl -X POST http://localhost:8080/api/v1/processes/1234/kill
+```
+
+#### Hardware Information
+```bash
+# Hardware overview
+curl http://localhost:8080/api/v1/hardware
+
+# CPU details
+curl http://localhost:8080/api/v1/hardware/cpu
+
+# Memory configuration
+curl http://localhost:8080/api/v1/hardware/memory
+
+# GPU information
+curl http://localhost:8080/api/v1/hardware/gpu
+```
+
+#### Network Monitoring
+```bash
+# Network interfaces
+curl http://localhost:8080/api/v1/network
+
+# Active connections
+curl http://localhost:8080/api/v1/network/connections
+
+# Interface statistics
+curl http://localhost:8080/api/v1/network/interfaces
+```
+
+### API Documentation
+
+Access interactive API documentation:
+
+```bash
+# Open in browser
+xdg-open http://localhost:8080/docs
+
+# Or visit directly
+curl http://localhost:8080/docs
+```
+
+## Advanced Usage
+
+### Filtering and Sorting
+
+Use advanced filtering options:
+
+```bash
+# Filter processes by CPU usage
+dgop processes --cpu-greater 10
+
+# Filter by memory usage
+dgop processes --memory-greater 100MB
+
+# Sort by multiple criteria
+dgop processes --sort cpu,memory --limit 20
+
+# Filter by process name pattern
+dgop processes --name "chrome*"
+```
+
+### Output Formatting
+
+Customize output format:
+
+```bash
+# Table format
+dgop processes --format table
+
+# CSV format
+dgop processes --format csv
+
+# JSON format
+dgop processes --format json
+
+# Custom columns
+dgop processes --columns pid,name,cpu,memory
+```
+
+### Real-time Monitoring
+
+Monitor system in real-time:
+
+```bash
+# Watch system metrics
+dgop system --watch
+
+# Watch processes
+dgop processes --watch --sort cpu
+
+# Watch with custom interval
+dgop system --watch --interval 2s
+```
+
+## Integration Examples
+
+### Shell Scripts
+
+Use DGOP in shell scripts:
+
+```bash
+#!/bin/bash
+# Monitor system and alert on high CPU usage
+
+CPU_USAGE=$(dgop system --json | jq '.cpu.usage_percent')
+if (( $(echo "$CPU_USAGE > 80" | bc -l) )); then
+    echo "High CPU usage: ${CPU_USAGE}%"
+    # Send alert
+fi
+```
+
+### Python Integration
+
+Use DGOP with Python:
+
+```python
+import requests
+import json
+
+# Get system metrics
+response = requests.get('http://localhost:8080/api/v1/system')
+data = response.json()
+
+print(f"CPU Usage: {data['cpu']['usage_percent']}%")
+print(f"Memory Usage: {data['memory']['usage_percent']}%")
+```
+
+### Node.js Integration
+
+Use DGOP with Node.js:
+
+```javascript
+const axios = require('axios');
+
+async function getSystemMetrics() {
+    try {
+        const response = await axios.get('http://localhost:8080/api/v1/system');
+        console.log('CPU Usage:', response.data.cpu.usage_percent + '%');
+        console.log('Memory Usage:', response.data.memory.usage_percent + '%');
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+}
+
+getSystemMetrics();
+```
+
+## DMS Integration
+
+### Desktop Widgets
+
+Configure desktop widgets in DankMaterialShell:
+
+```bash
+# Enable CPU widget
+dms config set widgets.cpu.enabled true
+
+# Enable memory widget
+dms config set widgets.memory.enabled true
+
+# Configure refresh interval
+dms config set widgets.refresh_interval 2s
+```
+
+### IPC Commands
+
+Use DGOP through DMS IPC:
+
+```bash
+# Get system metrics via DMS
+dms ipc call dgop get_system
+
+# Get process list
+dms ipc call dgop get_processes
+
+# Start monitoring
+dms ipc call dgop start_monitoring
+```
+
+## Performance Tips
+
+### Optimize for Large Systems
+
+- Use filtering to reduce data volume
+- Increase refresh intervals for less critical metrics
+- Use specific process filters
+- Enable data cleanup
+
+### Memory Management
+
+- Monitor memory usage: `dgop system --json | jq '.memory'`
+- Adjust max_history in configuration
+- Use process filtering to reduce data
+
+### Network Optimization
+
+- Use local API endpoints when possible
+- Compress API responses
+- Implement caching for frequently accessed data
+
+## Troubleshooting
+
+### Common Issues
+
+**High CPU usage:**
+- Increase refresh intervals
+- Disable unnecessary monitoring features
+- Use process filtering
+
+**API connection issues:**
+- Check if API server is running: `dgop status`
+- Verify port availability
+- Check firewall settings
+
+**Missing data:**
+- Verify system permissions
+- Check optional dependencies
+- Enable debug logging
+
+### Debug Commands
+
+```bash
+# Check DGOP status
+dgop status
+
+# Validate configuration
+dgop config validate
+
+# Test API connectivity
+dgop test-api
+
+# Debug mode
+dgop --debug system
+```
+
+## Next Steps
+
+- [Configuration](configuration) - Configure monitoring settings
+- [Installation](installation) - Setup and requirements

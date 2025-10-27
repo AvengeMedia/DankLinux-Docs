@@ -1,0 +1,213 @@
+---
+title: Configuration
+sidebar_position: 3
+---
+
+# DankSearch Configuration
+
+Configure DankSearch settings to customize search behavior, indexing options, and integration preferences.
+
+## Configuration File
+
+DankSearch settings are stored in `~/.config/dms/search.json`:
+
+```json
+{
+  "indexed_directories": [
+    "~/Documents",
+    "~/Downloads",
+    "~/Pictures"
+  ],
+  "excluded_patterns": [
+    "*.tmp",
+    "*.log",
+    ".git/**"
+  ],
+  "fuzzy_threshold": 0.6,
+  "max_results": 50,
+  "refresh_interval": "5m"
+}
+```
+
+## Indexing Settings
+
+### Indexed Directories
+
+Configure which directories to include in the search index:
+
+```json
+{
+  "indexed_directories": [
+    "~/Documents",
+    "~/Downloads", 
+    "~/Pictures",
+    "~/Projects"
+  ]
+}
+```
+
+### Excluded Patterns
+
+Set file patterns to ignore during indexing:
+
+```json
+{
+  "excluded_patterns": [
+    "*.tmp",
+    "*.log",
+    ".git/**",
+    "node_modules/**",
+    "*.cache"
+  ]
+}
+```
+
+## Search Settings
+
+### Fuzzy Matching
+
+Adjust how strict fuzzy matching should be (0.0 = exact match, 1.0 = very loose):
+
+```json
+{
+  "fuzzy_threshold": 0.6
+}
+```
+
+### Result Limits
+
+Set maximum number of search results:
+
+```json
+{
+  "max_results": 50
+}
+```
+
+### Refresh Interval
+
+Configure how often the index is updated:
+
+```json
+{
+  "refresh_interval": "5m"
+}
+```
+
+## CLI Configuration
+
+Use the DMS CLI to manage settings:
+
+```bash
+# View current configuration
+dms search config
+
+# Set indexed directories
+dms search config set indexed_directories "~/Documents,~/Downloads"
+
+# Set fuzzy threshold
+dms search config set fuzzy_threshold 0.7
+
+# Reset to defaults
+dms search config reset
+```
+
+## Integration Settings
+
+### Spotlight Integration
+
+Configure how DankSearch appears in the Spotlight launcher:
+
+```json
+{
+  "spotlight": {
+    "enabled": true,
+    "shortcut": "Super+D",
+    "show_preview": true,
+    "max_preview_length": 100
+  }
+}
+```
+
+### Widget Integration
+
+Settings for desktop widgets:
+
+```json
+{
+  "widgets": {
+    "recent_searches": true,
+    "quick_access": true,
+    "search_history": 20
+  }
+}
+```
+
+## Performance Tuning
+
+### Memory Usage
+
+Limit memory usage for large indexes:
+
+```json
+{
+  "performance": {
+    "max_memory_mb": 512,
+    "index_batch_size": 1000,
+    "background_indexing": true
+  }
+}
+```
+
+### CPU Usage
+
+Control CPU usage during indexing:
+
+```json
+{
+  "performance": {
+    "max_cpu_percent": 25,
+    "index_priority": "low"
+  }
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+**Search not returning results:**
+- Check if indexing is complete: `dms search status`
+- Verify directory permissions
+- Check excluded patterns
+
+**Slow search performance:**
+- Reduce indexed directory scope
+- Increase fuzzy threshold
+- Check system resources
+
+**Missing files:**
+- Manually refresh index: `dms search refresh`
+- Check file permissions
+- Verify excluded patterns
+
+### Debug Mode
+
+Enable verbose logging:
+
+```bash
+dms search --debug
+```
+
+### Reset Configuration
+
+Reset to default settings:
+
+```bash
+dms search config reset
+```
+
+## Next Steps
+
+- [Usage](usage) - Learn how to use DankSearch effectively
+- [Installation](installation) - Setup and integration details

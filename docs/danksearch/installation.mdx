@@ -1,0 +1,62 @@
+---
+title: Installation
+sidebar_position: 2
+---
+
+# DankSearch Installation
+
+DankSearch is built into DankMaterialShell and doesn't require separate installation. This guide covers the integration process and any additional setup steps.
+
+## Automatic Installation
+
+DankSearch is automatically installed when you install DankMaterialShell:
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+This will:
+- Install DankMaterialShell with DankSearch integration
+- Set up the search index
+- Configure default search settings
+- Enable Spotlight launcher integration
+
+## Manual Installation
+
+If you're building from source or need manual setup:
+
+### Prerequisites
+
+- DankMaterialShell installed and running
+- Go 1.22+ (for building from source)
+- Linux system with `/proc` and `/sys` filesystems
+
+### Build from Source
+
+```bash
+git clone https://github.com/AvengeMedia/DankMaterialShell
+cd DankMaterialShell
+make
+sudo make install
+```
+
+### Verify Installation
+
+Check if DankSearch is available:
+
+```bash
+dms search --help
+```
+
+## Integration with DMS
+
+DankSearch integrates with DankMaterialShell through:
+
+- **Spotlight Launcher**: Access via `Super + D`
+- **IPC Commands**: Programmatic access via `dms search`
+- **Widget System**: Real-time search results in desktop widgets
+
+## Next Steps
+
+- [Configuration](configuration) - Customize search behavior
+- [Usage](usage) - Learn how to use DankSearch effectively
