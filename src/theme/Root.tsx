@@ -20,6 +20,8 @@ export default function Root({ children }: { children: React.ReactNode }) {
         document.body.classList.add('landing-page');
         document.body.classList.remove('docs-page');
       }
+      // Add pathname as data attribute for CSS targeting
+      document.body.setAttribute('data-path', pathname);
     };
 
     // Apply initially

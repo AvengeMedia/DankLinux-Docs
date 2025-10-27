@@ -254,17 +254,21 @@ const config: Config = {
           to: '/docs/getting-started',
           label: 'Install',
           position: 'right',
+          // Only active on exactly this path
+          activeBasePath: 'none', 
         },
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'right',
+          to: '/docs/',
           label: 'Docs',
+          position: 'right',
+          // Active on /docs/* EXCEPT getting-started and plugins
+          activeBaseRegex: '^/docs(?!/getting-started|/dankmaterialshell/plugins).*',
         },
         {
           to: '/docs/dankmaterialshell/plugins',
           label: 'Plugins',
           position: 'right',
+          activeBasePath: 'none',
         },
         {
           type: 'search',
