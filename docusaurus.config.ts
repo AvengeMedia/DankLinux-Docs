@@ -293,45 +293,18 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Documentation',
           items: [
             {
-              label: 'Getting Started',
+              label: 'Install',
               to: '/docs/getting-started',
             },
             {
-              label: 'DankMaterialShell',
-              to: '/docs/dankmaterialshell',
+              label: 'Docs',
+              to: '/docs/',
             },
-            {
-              label: 'dgop',
-              to: '/docs/dgop',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Discord',
-              href: 'https://discord.gg/danklinux',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/AvengeMedia',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
               label: 'Contributing',
               to: '/docs/contributing',
-            },
-            {
-              label: 'Support',
-              to: '/docs/support',
             },
           ],
         },

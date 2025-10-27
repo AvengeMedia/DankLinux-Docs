@@ -50,21 +50,21 @@ body.landing-page main {
 
 /* Docs Page - Override Docusaurus navbar variables */
 body.docs-page {
-  --ifm-navbar-background-color: rgba(26, 22, 37, 0.85);
+  --ifm-navbar-background-color: rgba(20, 19, 24, 0.85);
   --ifm-navbar-shadow: none;
 }
 
 body.docs-page .navbar--dark,
 body.docs-page .navbar--primary {
-  --ifm-navbar-background-color: rgba(26, 22, 37, 0.85);
+  --ifm-navbar-background-color: rgba(20, 19, 24, 0.85);
 }
 
 body.docs-page .navbar {
   position: sticky;
-  background: rgba(26, 22, 37, 0.85) !important;
+  background: rgba(20, 19, 24, 0.85) !important;
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(208, 188, 255, 0.15);
+  border-bottom: 1px solid rgba(208, 188, 255, 0.08);
   transition: background 0.3s ease, border-color 0.3s ease;
   z-index: 1100;
 }
@@ -170,8 +170,8 @@ html[data-theme='light'] .navbar-discord-link {
   --ifm-color-primary-lighter: #F5F0FF;
   --ifm-color-primary-lightest: #FFFFFF;
   --docusaurus-highlighted-code-line-bg: rgba(208, 188, 255, 0.2);
-  --ifm-background-color: #1a1a1d;
-  --dank-docs-background: #1a1a1d;
+  --ifm-background-color: #111111;
+  --dank-docs-background: #111111;
   --ifm-background-surface-color: #242428;
 }
 
@@ -350,28 +350,154 @@ table thead tr {
   color: var(--dank-purple-light);
 }
 
-/* Footer styling - Matching Nextra's simpler glassmorphic design */
+/* Footer container */
 .footer {
-  background: rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-top: 1px solid rgba(208, 188, 255, 0.1) !important;
+  position: relative;
+  background: transparent !important;
+  border-top: none !important;
 }
 
-[data-theme='dark'] .footer {
-  background: rgba(0, 0, 0, 0.8) !important;
+/* Landing page footer */
+body.landing-page .footer {
+  background: transparent !important;
   border-top: 1px solid rgba(208, 188, 255, 0.1) !important;
+  padding: 2rem 0;
 }
 
+/* Docs page footer */
+body.docs-page .footer {
+  background: transparent !important;
+  border-top: 1px solid rgba(208, 188, 255, 0.1) !important;
+  padding: 2rem 0;
+}
+
+/* Light mode footer */
 [data-theme='light'] .footer {
-  background: rgba(255, 255, 255, 0.65) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  background: transparent !important;
   border-top: 1px solid rgba(128, 90, 213, 0.1) !important;
+}
+
+/* Footer layout - horizontal single row */
+.footer__links {
+  margin-bottom: 1rem;
+}
+
+.footer__items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+}
+
+.footer__item {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.footer__link-item {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  transition: color 0.2s ease;
 }
 
 .footer__link-item:hover {
   color: var(--dank-purple-light) !important;
+  text-decoration: none;
+}
+
+/* Copyright text */
+.footer__copyright {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Light mode adjustments */
+[data-theme='light'] .footer__link-item {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='light'] .footer__copyright {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.footer-icon-links {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.footer-github-link,
+.footer-discord-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7);
+  transition: background 0.2s ease, color 0.2s ease;
+  padding: 0;
+  overflow: visible;
+}
+
+.footer-github-link::before,
+.footer-discord-link::before {
+  content: '';
+  width: 1.25rem;
+  height: 1.25rem;
+  display: block;
+  background: currentColor;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+}
+
+.footer-github-link::before {
+  mask-image: url('/img/github.svg');
+  -webkit-mask-image: url('/img/github.svg');
+}
+
+.footer-discord-link::before {
+  mask-image: url('/img/discord.svg');
+  -webkit-mask-image: url('/img/discord.svg');
+}
+
+.footer-github-link:hover,
+.footer-discord-link:hover {
+  background: rgba(208, 188, 255, 0.15);
+  color: var(--dank-purple-light);
+}
+
+/* Light mode icon colors */
+[data-theme='light'] .footer-github-link,
+[data-theme='light'] .footer-discord-link {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme='light'] .footer-github-link:hover,
+[data-theme='light'] .footer-discord-link:hover {
+  color: var(--dank-purple-dark);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .footer-icon-links {
+    position: static;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
 }
 
 /* Markdown headers with purple accent */
