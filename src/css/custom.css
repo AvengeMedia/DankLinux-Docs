@@ -2,15 +2,9 @@
  * Custom CSS - Theme Specific Styles
  *
  * Import order:
- * 1. Tailwind base styles
- * 2. Global overrides (our Docusaurus defaults)
- * 3. Theme-specific customizations (this file)
+ * 1. Global overrides (our Docusaurus defaults)
+ * 2. Theme-specific customizations (this file)
  */
-
-/* Tailwind CSS imports */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 /* Global Docusaurus overrides - our base styles */
 @import url('./global.css');
@@ -66,7 +60,7 @@ body.docs-page .navbar {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(208, 188, 255, 0.08);
   transition: background 0.3s ease, border-color 0.3s ease;
-  z-index: 1100;
+  z-index: var(--ifm-z-index-fixed);
 }
 
 /* Docs page navbar link color adjustment */
@@ -240,11 +234,6 @@ body.landing-page #__docusaurus {
   min-height: 100vh !important;
 }
 
-
-/* Tailwind ring color for focus states */
-* {
-  --tw-ring-color: rgba(208, 188, 255, 0.5) !important;
-}
 
 /* Sidebar link styling matching Nextra */
 .theme-doc-sidebar-item-link {
