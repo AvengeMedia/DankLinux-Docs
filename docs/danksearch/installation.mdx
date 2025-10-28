@@ -3,60 +3,91 @@ title: Installation
 sidebar_position: 2
 ---
 
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
 # DankSearch Installation
 
-DankSearch is built into DankMaterialShell and doesn't require separate installation. This guide covers the integration process and any additional setup steps.
+`dsearch` has zero dependencies and can be compiled to a single binary.
 
-## Automatic Installation
+### Distribution Packages
 
-DankSearch is automatically installed when you install DankMaterialShell:
-
+#### Arch Linux (AUR)
 ```bash
-curl -fsSL https://install.danklinux.com | sh
+paru -S dsearch-git
 ```
 
-This will:
-- Install DankMaterialShell with DankSearch integration
-- Set up the search index
-- Configure default search settings
-- Enable Spotlight launcher integration
+#### Fedora/RHEL
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dsearch
+```
 
-## Manual Installation
+### Pre-built Binaries
 
-If you're building from source or need manual setup:
-
-### Prerequisites
-
-- DankMaterialShell installed and running
-- Go 1.22+ (for building from source)
-- Linux system with `/proc` and `/sys` filesystems
-
-### Build from Source
+Download the latest release for your architecture:
 
 ```bash
-git clone https://github.com/AvengeMedia/DankMaterialShell
-cd DankMaterialShell
+# Download and install
+wget https://github.com/AvengeMedia/danksearch/releases/latest/download/dsearch-linux-amd64.gz
+gunzip dsearch-linux-amd64.gz
+chmod +x dsearch-linux-amd64
+sudo mv dsearch-linux-amd64 /usr/local/bin/dsearch
+```
+
+Install the systemd user unit and enable it.
+
+```bash
+wget https://raw.githubusercontent.com/AvengeMedia/danksearch/refs/heads/master/assets/dsearch.service
+mv dsearch.service ~/.config/systemd/user
+systemctl --user enable --now dsearch
+```
+
+### From Source
+
+Requirements: Go 1.24+
+
+```bash
+git clone https://github.com/AvengeMedia/danksearch
+cd danksearch
 make
 sudo make install
+make install-service
 ```
 
-### Verify Installation
+## Verification
 
-Check if DankSearch is available:
+Test the installation:
 
 ```bash
-dms search --help
+# Check version
+dsearch version
+
+# Build initial index
+dsearch index generate
 ```
+
+## System Requirements
+
+- **Operating System**: Unix-based, compatible with most Unix-based operating systems (Linux, MacOS, BSD)
+- **Go Version**: 1.24+ (for building from source)
 
 ## Integration with DMS
 
-DankSearch integrates with DankMaterialShell through:
+If you have DankMaterialShell installed, installing dsearch will enable additional features:
 
-- **Spotlight Launcher**: Access via `Super + D`
-- **IPC Commands**: Programmatic access via `dms search`
-- **Widget System**: Real-time search results in desktop widgets
+- **File search**: Type `/` in the launcher to initiate a filesystem search.
 
 ## Next Steps
 
-- [Configuration](configuration) - Customize search behavior
-- [Usage](usage) - Learn how to use DankSearch effectively
+- [Configuration](configuration) - Configure dsearch
+- [Usage](usage) - Learn CLI commands and API usage

@@ -52,21 +52,6 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'DankSearch (dsearch)',
-      collapsed: false,
-      items: [
-        {
-          type: 'doc',
-          id: 'danksearch/index',
-          label: 'Overview',
-        },
-        'danksearch/installation',
-        'danksearch/configuration',
-        'danksearch/usage',
-      ],
-    },
-    {
-      type: 'category',
       label: 'DankGOP (dgop)',
       collapsed: false,
       items: [
@@ -78,6 +63,21 @@ const sidebars: SidebarsConfig = {
         'dgop/installation',
         'dgop/configuration',
         'dgop/usage',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'DankSearch (dsearch)',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'danksearch/index',
+          label: 'Overview',
+        },
+        'danksearch/installation',
+        'danksearch/configuration',
+        'danksearch/usage',
       ],
     },
     'contributing',

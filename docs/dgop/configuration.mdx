@@ -3,317 +3,137 @@ title: Configuration
 sidebar_position: 3
 ---
 
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
 # DGOP Configuration
 
-Configure DGOP settings for monitoring behavior, API options, and system integration.
+## API
 
-## Configuration File
+For the API, you can set the following environment variable to override the port of the http server:
+- `API_PORT` (defaults to `63484`)
 
-DGOP settings are stored in `~/.config/dgop/config.json`:
+## Colors
+
+dgop will ready colors from `~/.config/dgop/colors.json`:
+
+Example:
 
 ```json
 {
-  "api": {
-    "enabled": true,
-    "port": 8080,
-    "host": "localhost",
-    "auth": false,
-    "username": "",
-    "password": ""
+  "ui": {
+    "border_primary": "#ccbeff",
+    "border_secondary": "#cac3dc",
+    "header_background": "#ccbeff",
+    "header_text": "#33275e",
+    "footer_background": "#141318",
+    "footer_text": "#cac4cf",
+    "text_primary": "#e6e1e9",
+    "text_secondary": "#cac4cf",
+    "text_accent": "#ccbeff",
+    "selection_background": "#ccbeff",
+    "selection_text": "#33275e"
   },
-  "monitoring": {
-    "refresh_interval": "1s",
-    "max_history": 1000,
-    "enable_gpu": true,
-    "enable_temperature": true
+  "charts": {
+    "network_download": "#ccbeff",
+    "network_upload": "#4a3e76",
+    "network_line": "#cac3dc",
+    "cpu_core_low": "#4a3e76",
+    "cpu_core_medium": "#ccbeff",
+    "cpu_core_high": "#eeb8ca",
+    "disk_read": "#ccbeff",
+    "disk_write": "#4a3e76"
   },
-  "logging": {
-    "level": "info",
-    "file": "/var/log/dgop.log"
+  "progress_bars": {
+    "memory_low": "#4a3e76",
+    "memory_medium": "#ccbeff",
+    "memory_high": "#eeb8ca",
+    "disk_low": "#4a3e76",
+    "disk_medium": "#ccbeff",
+    "disk_high": "#eeb8ca",
+    "cpu_low": "#4a3e76",
+    "cpu_medium": "#ccbeff",
+    "cpu_high": "#eeb8ca",
+    "progress_background": "#201f24"
+  },
+  "temperature": {
+    "cold": "#4a3e76",
+    "warm": "#ccbeff",
+    "hot": "#eeb8ca",
+    "danger": "#ffb4ab"
+  },
+  "status": {
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "#ffb4ab",
+    "info": "#ccbeff"
   }
 }
 ```
 
-## API Configuration
+### matugen template
 
-### Basic API Settings
-
-Configure the REST API server:
+Below is a template that can be used with matugen:
 
 ```json
 {
-  "api": {
-    "enabled": true,
-    "port": 8080,
-    "host": "0.0.0.0"
+  "ui": {
+    "border_primary": "{{colors.primary.default.hex}}",
+    "border_secondary": "{{colors.secondary.default.hex}}",
+    "header_background": "{{colors.primary.default.hex}}",
+    "header_text": "{{colors.on_primary.default.hex}}",
+    "footer_background": "{{colors.surface_container.default.hex}}",
+    "footer_text": "{{colors.on_surface_variant.default.hex}}",
+    "text_primary": "{{colors.on_surface.default.hex}}",
+    "text_secondary": "{{colors.on_surface_variant.default.hex}}",
+    "text_accent": "{{colors.primary.default.hex}}",
+    "selection_background": "{{colors.primary.default.hex}}",
+    "selection_text": "{{colors.on_primary.default.hex}}"
+  },
+  "charts": {
+    "network_download": "{{colors.primary.default.hex}}",
+    "network_upload": "{{colors.primary_container.default.hex}}",
+    "network_line": "{{colors.secondary.default.hex}}",
+    "cpu_core_low": "{{colors.primary_container.default.hex}}",
+    "cpu_core_medium": "{{colors.primary.default.hex}}",
+    "cpu_core_high": "{{colors.tertiary.default.hex}}",
+    "disk_read": "{{colors.primary.default.hex}}",
+    "disk_write": "{{colors.primary_container.default.hex}}"
+  },
+  "progress_bars": {
+    "memory_low": "{{colors.primary_container.default.hex}}",
+    "memory_medium": "{{colors.primary.default.hex}}",
+    "memory_high": "{{colors.tertiary.default.hex}}",
+    "disk_low": "{{colors.primary_container.default.hex}}",
+    "disk_medium": "{{colors.primary.default.hex}}",
+    "disk_high": "{{colors.tertiary.default.hex}}",
+    "cpu_low": "{{colors.primary_container.default.hex}}",
+    "cpu_medium": "{{colors.primary.default.hex}}",
+    "cpu_high": "{{colors.tertiary.default.hex}}",
+  "progress_background": "{{colors.surface_container_high.default.hex}}"
+  },
+  "temperature": {
+    "cold": "{{colors.primary_container.default.hex}}",
+    "warm": "{{colors.primary.default.hex}}",
+    "hot": "{{colors.tertiary.default.hex}}",
+    "danger": "{{colors.error.default.hex}}"
+  },
+  "status": {
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "{{colors.error.default.hex}}",
+    "info": "{{colors.primary.default.hex}}"
   }
 }
-```
-
-### Authentication
-
-Enable API authentication:
-
-```json
-{
-  "api": {
-    "auth": true,
-    "username": "admin",
-    "password": "secure_password"
-  }
-}
-```
-
-### CORS Settings
-
-Configure Cross-Origin Resource Sharing:
-
-```json
-{
-  "api": {
-    "cors": {
-      "enabled": true,
-      "origins": ["http://localhost:3000", "https://yourdomain.com"]
-    }
-  }
-}
-```
-
-## Monitoring Configuration
-
-### Refresh Intervals
-
-Set how often metrics are updated:
-
-```json
-{
-  "monitoring": {
-    "refresh_interval": "1s",
-    "api_refresh_interval": "5s",
-    "widget_refresh_interval": "2s"
-  }
-}
-```
-
-### Data Retention
-
-Configure how much historical data to keep:
-
-```json
-{
-  "monitoring": {
-    "max_history": 1000,
-    "history_cleanup_interval": "1h"
-  }
-}
-```
-
-### Feature Toggles
-
-Enable/disable specific monitoring features:
-
-```json
-{
-  "monitoring": {
-    "enable_cpu": true,
-    "enable_memory": true,
-    "enable_disk": true,
-    "enable_network": true,
-    "enable_gpu": true,
-    "enable_temperature": true,
-    "enable_processes": true
-  }
-}
-```
-
-## Logging Configuration
-
-### Log Levels
-
-Set the logging verbosity:
-
-```json
-{
-  "logging": {
-    "level": "info",
-    "file": "/var/log/dgop.log",
-    "max_size": "100MB",
-    "max_backups": 3
-  }
-}
-```
-
-Available log levels: `debug`, `info`, `warn`, `error`
-
-### Log Rotation
-
-Configure log file rotation:
-
-```json
-{
-  "logging": {
-    "rotation": {
-      "enabled": true,
-      "max_size": "100MB",
-      "max_backups": 3,
-      "max_age": "7d"
-    }
-  }
-}
-```
-
-## CLI Configuration
-
-Use the DGOP CLI to manage settings:
-
-```bash
-# View current configuration
-dgop config show
-
-# Edit configuration
-dgop config edit
-
-# Set specific values
-dgop config set api.port 9090
-dgop config set monitoring.refresh_interval "2s"
-
-# Reset to defaults
-dgop config reset
-```
-
-## DMS Integration
-
-### Widget Configuration
-
-Configure desktop widgets:
-
-```json
-{
-  "dms": {
-    "widgets": {
-      "cpu_widget": {
-        "enabled": true,
-        "refresh_interval": "1s",
-        "show_cores": true
-      },
-      "memory_widget": {
-        "enabled": true,
-        "refresh_interval": "2s",
-        "show_swap": true
-      },
-      "network_widget": {
-        "enabled": true,
-        "refresh_interval": "5s",
-        "interfaces": ["eth0", "wlan0"]
-      }
-    }
-  }
-}
-```
-
-### IPC Configuration
-
-Configure Inter-Process Communication:
-
-```json
-{
-  "dms": {
-    "ipc": {
-      "enabled": true,
-      "socket_path": "/tmp/dgop.sock",
-      "timeout": "5s"
-    }
-  }
-}
-```
-
-## Performance Tuning
-
-### Resource Limits
-
-Limit resource usage:
-
-```json
-{
-  "performance": {
-    "max_cpu_percent": 10,
-    "max_memory_mb": 100,
-    "worker_threads": 4
-  }
-}
-```
-
-### Caching
-
-Configure data caching:
-
-```json
-{
-  "performance": {
-    "cache": {
-      "enabled": true,
-      "ttl": "30s",
-      "max_size": "50MB"
-    }
-  }
-}
-```
-
-## Security Configuration
-
-### API Security
-
-Secure the API endpoint:
-
-```json
-{
-  "security": {
-    "api": {
-      "rate_limit": {
-        "enabled": true,
-        "requests_per_minute": 60
-      },
-      "ssl": {
-        "enabled": false,
-        "cert_file": "",
-        "key_file": ""
-      }
-    }
-  }
-}
-```
-
-### Access Control
-
-Configure access restrictions:
-
-```json
-{
-  "security": {
-    "access": {
-      "allowed_ips": ["127.0.0.1", "192.168.1.0/24"],
-      "blocked_ips": []
-    }
-  }
-}
-```
-
-## Environment Variables
-
-Override configuration with environment variables:
-
-```bash
-# API settings
-export DGOP_API_PORT=9090
-export DGOP_API_HOST=0.0.0.0
-
-# Monitoring settings
-export DGOP_REFRESH_INTERVAL=2s
-export DGOP_MAX_HISTORY=500
-
-# Logging settings
-export DGOP_LOG_LEVEL=debug
-export DGOP_LOG_FILE=/var/log/dgop.log
 ```
 
 ## Troubleshooting
@@ -321,36 +141,9 @@ export DGOP_LOG_FILE=/var/log/dgop.log
 ### Common Issues
 
 **API not starting:**
-- Check port availability: `netstat -tlnp | grep :8080`
-- Verify configuration: `dgop config validate`
-- Check logs: `dgop logs`
-
-**High CPU usage:**
-- Increase refresh interval
-- Disable unnecessary features
-- Check worker thread count
-
-**Memory issues:**
-- Reduce max_history
-- Enable data cleanup
-- Check cache settings
-
-### Debug Mode
-
-Enable debug logging:
-
-```bash
-# Start with debug logging
-dgop serve --log-level debug
-
-# Validate configuration
-dgop config validate
-
-# Test configuration
-dgop test-config
-```
+- Check port availability: `netstat -tlnp | grep :63484`
+- Check logs
 
 ## Next Steps
 
 - [Usage](usage) - Learn CLI commands and API usage
-- [Installation](installation) - Setup and requirements

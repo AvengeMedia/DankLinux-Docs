@@ -3,211 +3,274 @@ title: Configuration
 sidebar_position: 3
 ---
 
-# DankSearch Configuration
+import Hero from '@site/src/components/Hero';
 
-Configure DankSearch settings to customize search behavior, indexing options, and integration preferences.
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
 
-## Configuration File
+# Configuration
 
-DankSearch settings are stored in `~/.config/dms/search.json`:
+`dsearch` uses a TOML configuration file to control indexing behavior. The first time you run DankSearch, it creates a default config file at `~/.config/danksearch/config.toml`.
 
-```json
-{
-  "indexed_directories": [
-    "~/Documents",
-    "~/Downloads",
-    "~/Pictures"
-  ],
-  "excluded_patterns": [
-    "*.tmp",
-    "*.log",
-    ".git/**"
-  ],
-  "fuzzy_threshold": 0.6,
-  "max_results": 50,
-  "refresh_interval": "5m"
-}
-```
+## Configuration File Location
 
-## Indexing Settings
+Default paths:
+- Linux/macOS/BSD: `~/.config/danksearch/config.toml`
 
-### Indexed Directories
-
-Configure which directories to include in the search index:
-
-```json
-{
-  "indexed_directories": [
-    "~/Documents",
-    "~/Downloads", 
-    "~/Pictures",
-    "~/Projects"
-  ]
-}
-```
-
-### Excluded Patterns
-
-Set file patterns to ignore during indexing:
-
-```json
-{
-  "excluded_patterns": [
-    "*.tmp",
-    "*.log",
-    ".git/**",
-    "node_modules/**",
-    "*.cache"
-  ]
-}
-```
-
-## Search Settings
-
-### Fuzzy Matching
-
-Adjust how strict fuzzy matching should be (0.0 = exact match, 1.0 = very loose):
-
-```json
-{
-  "fuzzy_threshold": 0.6
-}
-```
-
-### Result Limits
-
-Set maximum number of search results:
-
-```json
-{
-  "max_results": 50
-}
-```
-
-### Refresh Interval
-
-Configure how often the index is updated:
-
-```json
-{
-  "refresh_interval": "5m"
-}
-```
-
-## CLI Configuration
-
-Use the DMS CLI to manage settings:
-
+Override with the `-c` flag:
 ```bash
-# View current configuration
-dms search config
-
-# Set indexed directories
-dms search config set indexed_directories "~/Documents,~/Downloads"
-
-# Set fuzzy threshold
-dms search config set fuzzy_threshold 0.7
-
-# Reset to defaults
-dms search config reset
+dsearch -c /path/to/config.toml
 ```
 
-## Integration Settings
+## Basic Settings
 
-### Spotlight Integration
+### `index_path`
+Where DankSearch stores the index database.
 
-Configure how DankSearch appears in the Spotlight launcher:
+**Default:**
+- Linux/macOS/BSD: `~/.cache/danksearch/index`
 
-```json
-{
-  "spotlight": {
-    "enabled": true,
-    "shortcut": "Super+D",
-    "show_preview": true,
-    "max_preview_length": 100
-  }
-}
+### `listen_addr`
+HTTP server address and port.
+
+**Default:** `:43654`
+
+```toml
+listen_addr = ":43654"
 ```
 
-### Widget Integration
+### `max_file_bytes`
+Maximum file size to index (in bytes). Larger files are skipped.
 
-Settings for desktop widgets:
+**Default:** `2097152` (2MB)
 
-```json
-{
-  "widgets": {
-    "recent_searches": true,
-    "quick_access": true,
-    "search_history": 20
-  }
-}
+```toml
+max_file_bytes = 2097152  # 2MB
 ```
 
-## Performance Tuning
+### `worker_count`
+Number of parallel indexing workers. More workers = faster indexing but higher CPU usage during index operations.
 
-### Memory Usage
+**Default:** Half your CPU cores (minimum 1)
 
-Limit memory usage for large indexes:
-
-```json
-{
-  "performance": {
-    "max_memory_mb": 512,
-    "index_batch_size": 1000,
-    "background_indexing": true
-  }
-}
+```toml
+worker_count = 4
 ```
 
-### CPU Usage
+### `index_all_files`
+Index all file types, not just text files. When enabled, binary files are indexed by filename only.
 
-Control CPU usage during indexing:
+**Default:** `true`
 
-```json
-{
-  "performance": {
-    "max_cpu_percent": 25,
-    "index_priority": "low"
-  }
-}
+```toml
+index_all_files = true
 ```
+
+### `auto_reindex`
+Automatically re-index on startup if the interval has passed.
+
+**Default:** `false`
+
+```toml
+auto_reindex = false
+```
+
+### `reindex_interval_hours`
+How often to re-index (in hours). Set to `0` to disable periodic re-indexing.
+
+**Default:** `24`
+
+```toml
+reindex_interval_hours = 24
+```
+
+### `text_extensions`
+File extensions to extract text content from. Other files are indexed by filename only.
+
+**Default:**
+```toml
+text_extensions = [
+    ".txt", ".md", ".go", ".py", ".js", ".ts",
+    ".jsx", ".tsx", ".json", ".yaml", ".yml",
+    ".toml", ".html", ".css", ".rs", ".c",
+    ".cpp", ".h", ".java", ".rb", ".php", ".sh",
+]
+```
+
+## Index Paths
+
+Index multiple directories with individual settings using `[[index_paths]]` blocks. Each path can have its own depth limit and exclusion rules.
+
+### Basic Example
+
+```toml
+[[index_paths]]
+path = "/home/brandon"
+max_depth = 6
+exclude_hidden = true
+exclude_dirs = ["node_modules", "venv", "target"]
+```
+
+### Configuration Options
+
+#### `path`
+Directory to index.
+
+#### `max_depth`
+Maximum directory depth to traverse. Set to `0` for unlimited depth.
+
+**Example:**
+```toml
+max_depth = 6  # Go 6 levels deep
+max_depth = 0  # No limit
+```
+
+#### `exclude_hidden`
+Skip hidden files and directories (starting with `.`).
+
+**Default:** `true`
+
+```toml
+exclude_hidden = true
+```
+
+#### `exclude_dirs`
+List of directory names to skip during indexing.
+
+**Default excludes:**
+```toml
+exclude_dirs = [
+    # JavaScript/Node.js
+    "node_modules", "bower_components", ".npm", ".yarn",
+
+    # Python
+    "site-packages", "__pycache__", ".venv", "venv", ".tox",
+    ".pytest_cache", ".eggs",
+
+    # Build outputs
+    "dist", "build", "out", "bin", "obj",
+
+    # Rust
+    "target",
+
+    # Go
+    "vendor",
+
+    # Java/JVM
+    ".gradle", ".m2",
+
+    # Ruby
+    "bundle",
+
+    # Cache directories
+    ".cache", ".parcel-cache", ".next", ".nuxt",
+
+    # OS specific
+    "Library", ".Trash-1000",
+
+    # Databases
+    ".postgresql", ".mysql", ".mongodb", ".redis",
+
+    # Package manager caches
+    "go", ".cargo", ".pyenv", ".rbenv", ".nvm", ".rustup",
+
+    # IDE/Editor
+    ".idea", ".vscode",
+]
+```
+
+## Multiple Index Paths
+
+Configure different indexing strategies for different directories:
+
+```toml
+# Index home with moderate depth
+[[index_paths]]
+path = "/home/brandon"
+max_depth = 6
+exclude_hidden = true
+exclude_dirs = ["node_modules", "venv", "target", "dist"]
+
+# Index repos with more depth, exclude VCS
+[[index_paths]]
+path = "/home/brandon/repos"
+max_depth = 8
+exclude_hidden = true
+exclude_dirs = ["node_modules", "venv", "target", ".git"]
+
+# Index documents fully, including hidden files
+[[index_paths]]
+path = "/home/brandon/Documents"
+max_depth = 0  # No limit
+exclude_hidden = false
+exclude_dirs = []
+```
+
+## Example Configuration
+
+Here's a complete example config:
+
+```toml
+# DankSearch Configuration
+index_path = "/home/brandon/.cache/danksearch/index"
+listen_addr = ":43654"
+max_file_bytes = 2097152  # 2MB
+worker_count = 4
+index_all_files = true
+auto_reindex = false
+reindex_interval_hours = 24
+
+text_extensions = [
+    ".txt", ".md", ".go", ".py", ".js", ".ts",
+    ".jsx", ".tsx", ".json", ".yaml", ".yml",
+    ".toml", ".html", ".css", ".rs", ".c",
+    ".cpp", ".h", ".java", ".rb", ".php", ".sh",
+]
+
+[[index_paths]]
+path = "/home/brandon"
+max_depth = 6
+exclude_hidden = true
+exclude_dirs = [
+    "node_modules", "__pycache__", "venv", "target",
+    "dist", "build", ".cache"
+]
+```
+
+## Tips
+
+**Speed up indexing:** Increase `worker_count` if you have CPU cores to spare.
+
+**Reduce index size:** Lower `max_file_bytes`, add more directories to `exclude_dirs`, or limit `max_depth`.
+
+**Index everything:** Set `max_depth = 0` and `exclude_dirs = []` for a path you want fully indexed.
+
+**Skip binary files:** Set `index_all_files = false` to index only text files.
 
 ## Troubleshooting
 
-### Common Issues
+**Indexing is slow:**
+- Check `worker_count` - try increasing it
+- Add common build/cache directories to `exclude_dirs`
+- Reduce `max_depth` for large directory trees
 
-**Search not returning results:**
-- Check if indexing is complete: `dms search status`
-- Verify directory permissions
-- Check excluded patterns
+**Search isn't finding files:**
+- Run `dsearch reindex` to rebuild the index
+- Check if the file's directory is in an `index_paths` block
+- Verify the file isn't in an excluded directory
+- Check that `exclude_hidden = false` if searching for hidden files
 
-**Slow search performance:**
-- Reduce indexed directory scope
-- Increase fuzzy threshold
-- Check system resources
-
-**Missing files:**
-- Manually refresh index: `dms search refresh`
-- Check file permissions
-- Verify excluded patterns
-
-### Debug Mode
-
-Enable verbose logging:
-
-```bash
-dms search --debug
-```
-
-### Reset Configuration
-
-Reset to default settings:
-
-```bash
-dms search config reset
-```
+**Port already in use:**
+- Change `listen_addr` to a different port
+- Check what's using the port: `netstat -tlnp | grep :43654`
 
 ## Next Steps
 
-- [Usage](usage) - Learn how to use DankSearch effectively
-- [Installation](installation) - Setup and integration details
+- [Usage](usage.mdx) - Learn CLI commands and API usage

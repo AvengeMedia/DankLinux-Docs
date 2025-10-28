@@ -3,336 +3,60 @@ title: DGOP
 sidebar_position: 1
 ---
 
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
 # DGOP
 
-DGOP (Dank Go Process Status) is a comprehensive system monitoring and operations tool built in Go, providing both CLI and REST API interfaces for accessing system resources, processes, and hardware information.
+`dgop` (Dank GO Process Status) is a stateless system and process monitoring tool that provides a top-like tui, CLI, and REST API. It allows sampling numerous metrics related to the system.
 
-## Overview
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DGOP Preview"
+    sources={{
+      light: useBaseUrl('/img/dgoplight.png'),
+      dark: useBaseUrl('/img/dgop.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>dgop tui interface</figcaption>
+</figure>
 
-DGOP is designed as a stateless, high-performance system monitoring solution that can operate independently or integrate seamlessly with DankMaterialShell for enhanced desktop functionality. It provides real-time insights into system performance, process management, and hardware status through intuitive interfaces.
+## Features
 
-## Quick Start
-
-Install DGOP as part of the Dank Linux suite:
-
-```bash
-curl -fsSL https://install.danklinux.com | sh
-```
-
-Or install DGOP separately:
-# Arch Linux
-```bash
-paru -S dgop
-```
-# Fedora
-```bash
-sudo dnf install dgop
-```
+- top-like TUI
+- CPU, GPU, Memory, Process, Network, Disk, and other various metrics
+- Cursor-based stateless method to sample data over any arbitrary time period.
+- Fully documented with OpenAPI 3.1, REST API
+- cli to query any metric, in human-readable or machine-readable formats
+- mix and match different metrics under a single `meta` call
 
 ## Documentation
 
 - [Installation](installation) - Detailed setup instructions and requirements
-- [Configuration](configuration) - Configure monitoring settings and API options
+- [Configuration](configuration) - Configuration options
 - [Usage](usage) - Learn CLI commands and API endpoints
-
-### Key Features
-
-- **Comprehensive CLI Interface** with commands for:
-  - Real-time system metrics (CPU, memory, network, disk, GPU)
-  - Advanced process monitoring with sorting, filtering, and search
-  - Hardware information retrieval and temperature monitoring
-  - Network interface statistics and connection monitoring
-  - System uptime and load average tracking
-
-- **REST API Server** with JSON endpoints for programmatic access
-- **Real-time Monitoring** with configurable sampling intervals
-- **Performance Optimized** with minimal resource usage
-- **OpenAPI Documentation** available at `/docs` endpoint
-- **DankMaterialShell Integration** for desktop widgets and system monitoring
-
-## Installation
-
-### Pre-built Binaries
-
-Download the latest release from [GitHub Releases](https://github.com/AvengeMedia/dgop/releases) for your architecture:
-
-```bash
-wget https://github.com/AvengeMedia/dgop/releases/latest/download/dgop-linux-amd64
-chmod +x dgop-linux-amd64
-sudo mv dgop-linux-amd64 /usr/local/bin/dgop
-```
-
-### Package Managers
-
-#### Arch Linux
-```bash
-yay -S dgop
-# or
-paru -S dgop
-```
-
-#### Fedora/RHEL
-```bash
-sudo dnf copr enable avengemedia/danklinux
-sudo dnf install dgop
-```
-
-#### Ubuntu/Debian
-```bash
-sudo apt install dgop
-```
-
-### From Source
-
-Requirements: Go 1.22+
-
-```bash
-git clone https://github.com/AvengeMedia/dgop
-cd dgop
-make
-sudo make install
-```
-
-### Docker
-
-```bash
-docker run -it --rm -v /proc:/host/proc:ro -v /sys:/host/sys:ro avengemedia/dgop
-```
-
-## Quick Start
-
-### CLI Usage
-
-#### System Overview
-Get comprehensive system metrics:
-
-```bash
-dgop system
-```
-
-#### Process Monitoring
-Monitor running processes with various sorting options:
-
-```bash
-# Top 10 processes by CPU usage
-dgop processes --sort cpu --limit 10
-
-# Top 20 processes by memory usage
-dgop processes --sort memory --limit 20
-
-# Search for specific processes
-dgop processes --search "firefox"
-
-# Filter by user
-dgop processes --user root
-```
-
-#### Hardware Information
-Get detailed hardware information:
-
-```bash
-# General hardware info
-dgop hardware
-
-# CPU information only
-dgop hardware --cpu
-
-# Memory information
-dgop hardware --memory
-
-# GPU information (requires nvidia-smi)
-dgop hardware --gpu
-```
-
-#### Network Monitoring
-Monitor network interfaces and connections:
-
-```bash
-# Network interfaces
-dgop network
-
-# Active connections
-dgop network --connections
-
-# Interface statistics
-dgop network --interfaces
-```
-
-#### Temperature Monitoring
-Monitor system temperatures:
-
-```bash
-# All temperature sensors
-dgop temperature
-
-# Specific sensor
-dgop temperature --sensor "coretemp-isa-0000"
-```
-
-### API Server
-
-Start the REST API server:
-
-```bash
-# Default port (8080)
-dgop serve
-
-# Custom port
-dgop serve --port 9090
-
-# With authentication
-dgop serve --auth --username admin --password secret
-```
-
-Access the API at `http://localhost:8080` and view interactive documentation at `http://localhost:8080/docs`
-
-### JSON Output
-
-All commands support JSON output for scripting and integration:
-
-```bash
-# System metrics as JSON
-dgop system --json
-
-# Process list as JSON
-dgop processes --json --limit 5
-
-# Hardware info as JSON
-dgop hardware --json
-```
-
-### Configuration
-
-DGOP supports configuration files for persistent settings:
-
-```bash
-# Create default config
-dgop config init
-
-# Edit configuration
-dgop config edit
-
-# View current configuration
-dgop config show
-```
-
-## DankMaterialShell Integration
-
-DGOP integrates seamlessly with DankMaterialShell to provide real-time system monitoring widgets:
-
-### System Widgets
-- **CPU Usage**: Real-time CPU utilization with core breakdown
-- **Memory Monitor**: RAM usage with swap information
-- **Network Stats**: Interface traffic and connection monitoring
-- **Temperature**: System and component temperature readings
-- **Process List**: Top processes with customizable sorting
-
-### Configuration
-Enable DGOP integration in DankMaterialShell:
-
-```bash
-# Enable DGOP service
-dms config set dgop.enabled true
-
-# Configure refresh interval
-dms config set dgop.refresh_interval 5s
-
-# Set API endpoint
-dms config set dgop.api_url http://localhost:8080
-```
-
-## API Endpoints
-
-The REST API provides comprehensive system information:
-
-### System Metrics
-- `GET /api/v1/system` - Overall system status
-- `GET /api/v1/cpu` - CPU information and usage
-- `GET /api/v1/memory` - Memory usage and statistics
-- `GET /api/v1/disk` - Disk usage and I/O statistics
-
-### Process Management
-- `GET /api/v1/processes` - Process list with filtering
-- `GET /api/v1/processes/{pid}` - Specific process details
-- `POST /api/v1/processes/{pid}/kill` - Terminate process
-
-### Hardware Information
-- `GET /api/v1/hardware` - Complete hardware overview
-- `GET /api/v1/hardware/cpu` - CPU specifications
-- `GET /api/v1/hardware/memory` - Memory configuration
-- `GET /api/v1/hardware/gpu` - GPU information
-
-### Network Monitoring
-- `GET /api/v1/network` - Network interfaces and statistics
-- `GET /api/v1/network/connections` - Active network connections
-
-## Technical Requirements
-
-- **Operating System**: Linux (uses `/proc` and `/sys` filesystems)
-- **Go Version**: 1.22+ (for building from source)
-- **Architecture**: AMD64, ARM64, ARMv7
-- **Optional Dependencies**:
-  - `nvidia-smi` for NVIDIA GPU monitoring
-  - `lspci` for PCI device information
-  - `sensors` for temperature monitoring
-  - `lscpu` for detailed CPU information
-
-## Performance Characteristics
-
-- **Memory Usage**: Typically 5-15MB RAM
-- **CPU Overhead**: Less than 1% on modern systems
-- **API Response Time**: Less than 10ms for most endpoints
-- **Concurrent Connections**: Supports 100+ simultaneous API clients
-
-## Security Considerations
-
-- **API Authentication**: Optional username/password protection
-- **Network Binding**: Configurable interface binding
-- **Process Access**: Requires appropriate permissions for process monitoring
-- **File System Access**: Read-only access to system files
-
-## Troubleshooting
-
-### Common Issues
-
-**Permission Denied Errors:**
-```bash
-# Run with appropriate permissions
-sudo dgop system
-```
-
-**GPU Information Not Available:**
-```bash
-# Install NVIDIA drivers and nvidia-smi
-sudo pacman -S nvidia-utils  # Arch
-sudo dnf install nvidia-driver  # Fedora
-```
-
-**Temperature Sensors Not Found:**
-```bash
-# Install lm-sensors
-sudo pacman -S lm-sensors  # Arch
-sudo dnf install lm_sensors  # Fedora
-```
-
-### Debug Mode
-
-Enable verbose logging for troubleshooting:
-
-```bash
-dgop --debug system
-dgop serve --debug --log-level trace
-```
 
 ## Contributing
 
-DGOP is open source and welcomes contributions:
+`dgop` is open source and welcomes contributions:
 
 - **Source Code**: [GitHub Repository](https://github.com/AvengeMedia/dgop)
-- **Issue Tracking**: Report bugs and request features
+- **Issues**: Report bugs and request features on GitHub
 - **Documentation**: Help improve the documentation
 - **Testing**: Test on different Linux distributions and hardware
 
 ## License
 
-DGOP is released under the MIT License. See the [LICENSE](https://github.com/AvengeMedia/dgop/blob/master/LICENSE) file for details.
+`dgop` is released under the MIT License. See the [LICENSE](https://github.com/AvengeMedia/dgop/blob/master/LICENSE) file for details.

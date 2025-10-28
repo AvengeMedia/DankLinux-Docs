@@ -21,11 +21,38 @@ DankMaterialShell works with any Wayland compositor, but we provide optimized co
 
 niri uses the KDL configuration format. DankMaterialShell integrates seamlessly with niri's scrollable tiling layout.
 
+**Note:** niri's configuration is *not* repeatable, the below settings are snippets, you need to merge them with any existing configuration. Example, you cannot have multiple `layout {}` sections.
+
 ### Quick Setup
 
 When you run `dms` for the first time, it will offer to install a recommended niri configuration. Alternatively, you can manually configure niri using the examples below.
 
 ### Key Configuration Sections
+
+In the next niri release, you can synchronize gaps and colors with dms automatically, but please note it is **not supported** on the current stable niri release.
+
+```kdl
+// Add to the top of ~/.config/niri.config.kdls
+include "dms/binds.kdl"
+
+// Add to the end of ~/.config/niri/config.kdl
+include "dms/colors.kdl"
+include "dms/layout.kdl"
+```
+
+For manual configuration recommendations, continue below.
+
+#### Layout
+
+The niri layout should have a transparent background, in order to integrate wallpapers onto the overview.
+
+```kdl
+layout {
+    // You can tailor the gaps to fit dms spacing.
+    gaps 5
+    background-color "transparent"
+}
+```
 
 #### Layer Rules
 
@@ -168,6 +195,17 @@ Hyprland uses a simple config file format at `~/.config/hypr/hyprland.conf`.
 exec-once = bash -c "wl-paste --watch cliphist store &"
 exec-once = dms run
 exec-once = {{POLKIT_AGENT_PATH}}
+```
+
+#### Miscellaneous
+
+Disables the hyprland backdrop/logo
+
+```conf
+misc {
+    disable_hyprland_logo = true
+    disable_splash_rendering = true
+}
 ```
 
 #### Environment Variables

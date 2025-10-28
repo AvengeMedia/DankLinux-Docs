@@ -5,6 +5,8 @@ sidebar_position: 2
 ---
 
 import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗    ██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
@@ -26,7 +28,17 @@ The fastest way to get started is with our one-line installer:
 curl -fsSL https://install.danklinux.com | sh
 ```
 
-# ! TODO - add dankinstall screneshot
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DankInstall Installer"
+    sources={{
+      light: useBaseUrl('/img/dankinstalallight.png'),
+      dark: useBaseUrl('/img/dankinstall.png'),
+    }}
+    style={{ maxWidth: '800px', width: '100%' }}
+  />
+  <figcaption>dankinstall interactive installer</figcaption>
+</figure>
 
 This will:
 - Install all dependencies for your distribution

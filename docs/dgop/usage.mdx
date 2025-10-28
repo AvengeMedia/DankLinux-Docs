@@ -3,375 +3,180 @@ title: Usage
 sidebar_position: 4
 ---
 
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
 # DGOP Usage
-
-Learn how to use DGOP effectively for system monitoring, process management, and API integration.
-
-## CLI Usage
-
-### System Overview
-
-Get comprehensive system metrics:
-
-```bash
-# Basic system information
-dgop system
-
-# Detailed system metrics
-dgop system --detailed
-
-# JSON output
-dgop system --json
-```
-
-### Process Monitoring
-
-Monitor running processes:
-
-```bash
-# List all processes
-dgop processes
-
-# Top 10 processes by CPU usage
-dgop processes --sort cpu --limit 10
-
-# Top 20 processes by memory usage
-dgop processes --sort memory --limit 20
-
-# Search for specific processes
-dgop processes --search "firefox"
-
-# Filter by user
-dgop processes --user root
-
-# Filter by state
-dgop processes --state running
-```
-
-### Hardware Information
-
-Get detailed hardware information:
-
-```bash
-# General hardware info
-dgop hardware
-
-# CPU information only
-dgop hardware --cpu
-
-# Memory information
-dgop hardware --memory
-
-# GPU information (requires nvidia-smi)
-dgop hardware --gpu
-
-# Temperature sensors
-dgop temperature
-```
-
-### Network Monitoring
-
-Monitor network interfaces and connections:
-
-```bash
-# Network interfaces
-dgop network
-
-# Active connections
-dgop network --connections
-
-# Interface statistics
-dgop network --interfaces
-
-# Network traffic
-dgop network --traffic
-```
 
 ## API Usage
 
-### Starting the API Server
+The `dgop` API provides a documentation endpoint, with a full openapi 3.1 specification available at `http://localhost:63484/docs`
 
-Start the REST API server:
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DGOP API Documentation"
+    sources={{
+      light: useBaseUrl('/img/dgopdoclight.png'),
+      dark: useBaseUrl('/img/dgopdoc.png'),
+    }}
+    style={{ maxWidth: '800px', width: '100%' }}
+  />
+  <figcaption>Interactive OpenAPI documentation interface</figcaption>
+</figure>
 
-```bash
-# Default port (8080)
-dgop serve
+It is guaranteed to be up to date so it's the best way to reference API usage.
 
-# Custom port
-dgop serve --port 9090
+## CLI Usage
 
-# With authentication
-dgop serve --auth --username admin --password secret
+DGOP provides a comprehensive command-line interface for querying system metrics. All commands support JSON output via the `--json` flag for easy integration with scripts and applications.
 
-# Background daemon
-dgop serve --daemon
-```
+### Basic Commands
 
-### API Endpoints
-
-Access system information via HTTP:
-
-#### System Metrics
-```bash
-# Overall system status
-curl http://localhost:8080/api/v1/system
-
-# CPU information
-curl http://localhost:8080/api/v1/cpu
-
-# Memory usage
-curl http://localhost:8080/api/v1/memory
-
-# Disk usage
-curl http://localhost:8080/api/v1/disk
-```
-
-#### Process Management
-```bash
-# Process list
-curl http://localhost:8080/api/v1/processes
-
-# Specific process
-curl http://localhost:8080/api/v1/processes/1234
-
-# Kill process (POST)
-curl -X POST http://localhost:8080/api/v1/processes/1234/kill
-```
-
-#### Hardware Information
-```bash
-# Hardware overview
-curl http://localhost:8080/api/v1/hardware
-
-# CPU details
-curl http://localhost:8080/api/v1/hardware/cpu
-
-# Memory configuration
-curl http://localhost:8080/api/v1/hardware/memory
-
-# GPU information
-curl http://localhost:8080/api/v1/hardware/gpu
-```
-
-#### Network Monitoring
-```bash
-# Network interfaces
-curl http://localhost:8080/api/v1/network
-
-# Active connections
-curl http://localhost:8080/api/v1/network/connections
-
-# Interface statistics
-curl http://localhost:8080/api/v1/network/interfaces
-```
-
-### API Documentation
-
-Access interactive API documentation:
+Get quick system information using individual commands:
 
 ```bash
-# Open in browser
-xdg-open http://localhost:8080/docs
+# View CPU usage and information
+dgop cpu
 
-# Or visit directly
-curl http://localhost:8080/docs
+# Check memory usage
+dgop memory
+
+# Monitor network interfaces
+dgop network
+
+# View disk information
+dgop disk
+
+# List running processes
+dgop processes
+
+# Get general system information
+dgop system
 ```
 
-## Advanced Usage
+### Advanced Commands
 
-### Filtering and Sorting
-
-Use advanced filtering options:
+For more specialized monitoring:
 
 ```bash
-# Filter processes by CPU usage
-dgop processes --cpu-greater 10
+# Monitor disk I/O rates in real-time
+dgop disk-rate
 
-# Filter by memory usage
-dgop processes --memory-greater 100MB
+# Track network transfer rates
+dgop net-rate
 
-# Sort by multiple criteria
-dgop processes --sort cpu,memory --limit 20
+# View GPU information
+dgop gpu
 
-# Filter by process name pattern
-dgop processes --name "chrome*"
+# Get GPU temperature readings
+dgop gpu-temp
+
+# Display hardware details (motherboard, BIOS)
+dgop hardware
+
+# Get all metrics at once
+dgop all
 ```
 
-### Output Formatting
+### Process Management
 
-Customize output format:
+The `processes` command provides detailed process information with sorting and filtering options:
 
 ```bash
-# Table format
-dgop processes --format table
+# List top processes by CPU usage
+dgop processes --sort cpu --limit 20
 
-# CSV format
-dgop processes --format csv
+# List processes by memory usage
+dgop processes --sort memory --limit 10
 
-# JSON format
-dgop processes --format json
-
-# Custom columns
-dgop processes --columns pid,name,cpu,memory
+# Disable CPU calculation for faster listing
+dgop processes --no-cpu
 ```
 
-### Real-time Monitoring
+### Meta Command
 
-Monitor system in real-time:
+The `meta` command is designed for efficient polling by requesting multiple modules in a single call:
 
 ```bash
-# Watch system metrics
-dgop system --watch
+# Query multiple metrics at once
+dgop meta --modules cpu,memory,network
 
-# Watch processes
-dgop processes --watch --sort cpu
+# Get all metrics with specific GPU monitoring
+dgop meta --modules all --gpu-pci-ids 0000:01:00.0
 
-# Watch with custom interval
-dgop system --watch --interval 2s
+# Efficient CPU monitoring with cursor-based sampling
+dgop meta --modules cpu --cpu-cursor <previous-cursor>
+
+# Process monitoring with cursor for accurate percentages
+dgop meta --modules processes --proc-cursor <previous-cursor> --limit 100
 ```
 
-## Integration Examples
+#### Cursor-Based Sampling
 
-### Shell Scripts
-
-Use DGOP in shell scripts:
+For accurate CPU and process metrics over time, DGOP supports cursor-based sampling. The meta command returns cursor values that should be passed back on subsequent calls:
 
 ```bash
-#!/bin/bash
-# Monitor system and alert on high CPU usage
+# First call - no cursor needed
+dgop meta --modules cpu,processes --json
 
-CPU_USAGE=$(dgop system --json | jq '.cpu.usage_percent')
-if (( $(echo "$CPU_USAGE > 80" | bc -l) )); then
-    echo "High CPU usage: ${CPU_USAGE}%"
-    # Send alert
-fi
+# Subsequent calls - use returned cursors for accurate deltas
+dgop meta --modules cpu,processes --cpu-cursor abc123 --proc-cursor def456 --json
 ```
 
-### Python Integration
+This ensures CPU percentages reflect actual usage between samples rather than system-wide averages.
 
-Use DGOP with Python:
+### Interactive Monitor
 
-```python
-import requests
-import json
-
-# Get system metrics
-response = requests.get('http://localhost:8080/api/v1/system')
-data = response.json()
-
-print(f"CPU Usage: {data['cpu']['usage_percent']}%")
-print(f"Memory Usage: {data['memory']['usage_percent']}%")
-```
-
-### Node.js Integration
-
-Use DGOP with Node.js:
-
-```javascript
-const axios = require('axios');
-
-async function getSystemMetrics() {
-    try {
-        const response = await axios.get('http://localhost:8080/api/v1/system');
-        console.log('CPU Usage:', response.data.cpu.usage_percent + '%');
-        console.log('Memory Usage:', response.data.memory.usage_percent + '%');
-    } catch (error) {
-        console.error('Error:', error.message);
-    }
-}
-
-getSystemMetrics();
-```
-
-## DMS Integration
-
-### Desktop Widgets
-
-Configure desktop widgets in DankMaterialShell:
+Launch a real-time, interactive system monitor, similar to top, htop:
 
 ```bash
-# Enable CPU widget
-dms config set widgets.cpu.enabled true
-
-# Enable memory widget
-dms config set widgets.memory.enabled true
-
-# Configure refresh interval
-dms config set widgets.refresh_interval 2s
+dgop
 ```
 
-### IPC Commands
+### API Server
 
-Use DGOP through DMS IPC:
+Start the HTTP API server for programmatic access:
 
 ```bash
-# Get system metrics via DMS
-dms ipc call dgop get_system
+# Start server on default port (63484)
+dgop server
 
-# Get process list
-dms ipc call dgop get_processes
-
-# Start monitoring
-dms ipc call dgop start_monitoring
+# Access OpenAPI documentation at http://localhost:63484/docs
 ```
 
-## Performance Tips
+### Output Formats
 
-### Optimize for Large Systems
-
-- Use filtering to reduce data volume
-- Increase refresh intervals for less critical metrics
-- Use specific process filters
-- Enable data cleanup
-
-### Memory Management
-
-- Monitor memory usage: `dgop system --json | jq '.memory'`
-- Adjust max_history in configuration
-- Use process filtering to reduce data
-
-### Network Optimization
-
-- Use local API endpoints when possible
-- Compress API responses
-- Implement caching for frequently accessed data
-
-## Troubleshooting
-
-### Common Issues
-
-**High CPU usage:**
-- Increase refresh intervals
-- Disable unnecessary monitoring features
-- Use process filtering
-
-**API connection issues:**
-- Check if API server is running: `dgop status`
-- Verify port availability
-- Check firewall settings
-
-**Missing data:**
-- Verify system permissions
-- Check optional dependencies
-- Enable debug logging
-
-### Debug Commands
+All commands support JSON output for integration with other tools:
 
 ```bash
-# Check DGOP status
-dgop status
+# Get CPU info in JSON format
+dgop cpu --json
 
-# Validate configuration
-dgop config validate
-
-# Test API connectivity
-dgop test-api
-
-# Debug mode
-dgop --debug system
+# Pipe to jq for parsing
+dgop memory --json | jq '.usage'
 ```
 
-## Next Steps
+### Common Flags
 
-- [Configuration](configuration) - Configure monitoring settings
-- [Installation](installation) - Setup and requirements
+- `--json` - Output results in JSON format
+- `--no-cpu` - Disable CPU calculation in process listing for better performance
+- `--help` - Show help for any command
+
+### List Available Modules
+
+See which metric modules are available:
+
+```bash
+dgop modules
+```

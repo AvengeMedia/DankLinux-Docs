@@ -3,40 +3,27 @@ title: Installation
 sidebar_position: 2
 ---
 
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
 # DGOP Installation
 
-Install DGOP as part of the Dank Linux suite or as a standalone system monitoring tool.
+`dgop` has zero dependencies and can be compiled to a single binary.
 
-## Quick Installation
+### Distribution Packages
 
-Install DGOP as part of the complete Dank Linux suite:
-
+#### Arch Linux (AUR)
 ```bash
-curl -fsSL https://install.danklinux.com | sh
-```
-
-This will install DGOP along with DankMaterialShell and other components.
-
-## Standalone Installation
-
-### Pre-built Binaries
-
-Download the latest release for your architecture:
-
-```bash
-# Download and install
-wget https://github.com/AvengeMedia/dgop/releases/latest/download/dgop-linux-amd64
-chmod +x dgop-linux-amd64
-sudo mv dgop-linux-amd64 /usr/local/bin/dgop
-```
-
-### Package Managers
-
-#### Arch Linux
-```bash
-yay -S dgop
-# or
-paru -S dgop
+paru -S dgop-bin
 ```
 
 #### Fedora/RHEL
@@ -45,14 +32,21 @@ sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dgop
 ```
 
-#### Ubuntu/Debian
+### Pre-built Binaries
+
+Download the latest release for your architecture:
+
 ```bash
-sudo apt install dgop
+# Download and install
+wget https://github.com/AvengeMedia/dgop/releases/latest/download/dgop-linux-amd64.gz
+gunzip dgop-linux-amd64.gz
+chmod +x dgop-linux-amd64
+sudo mv dgop-linux-amd64 /usr/local/bin/dgop
 ```
 
 ### From Source
 
-Requirements: Go 1.22+
+Requirements: Go 1.24+
 
 ```bash
 git clone https://github.com/AvengeMedia/dgop
@@ -61,64 +55,44 @@ make
 sudo make install
 ```
 
-### Docker
-
-```bash
-docker run -it --rm -v /proc:/host/proc:ro -v /sys:/host/sys:ro avengemedia/dgop
-```
-
 ## Verification
 
 Test the installation:
 
 ```bash
 # Check version
-dgop --version
+dgop version
 
-# Test system metrics
+# Get system metrics
 dgop system
 
-# Test API server
-dgop serve --port 8080
+# Run API server
+dgop server
+
+# See available commands
+dgop --help
 ```
 
 ## System Requirements
 
 - **Operating System**: Linux (uses `/proc` and `/sys` filesystems)
-- **Architecture**: AMD64, ARM64, ARMv7
-- **Go Version**: 1.22+ (for building from source)
+- **Go Version**: 1.24+ (for building from source)
 
 ### Optional Dependencies
 
 For enhanced functionality:
 
 - `nvidia-smi` - NVIDIA GPU monitoring
-- `lspci` - PCI device information
-- `sensors` - Temperature monitoring
-- `lscpu` - Detailed CPU information
-
-Install optional dependencies:
-
-```bash
-# Arch Linux
-sudo pacman -S nvidia-utils pciutils lm-sensors
-
-# Fedora
-sudo dnf install nvidia-driver pciutils lm_sensors
-
-# Ubuntu/Debian
-sudo apt install nvidia-utils pciutils lm-sensors
-```
+- `pciutils (lspci)` - PCI device information
 
 ## Integration with DMS
 
-If you have DankMaterialShell installed, DGOP will automatically integrate:
+If you have DankMaterialShell installed, installing dgop will enable additional features:
 
-- **System Widgets**: Real-time monitoring widgets
-- **IPC Commands**: Access via `dms` CLI
-- **API Integration**: Automatic API endpoint configuration
+- **System Widgets**: CPU, RAM, GPU, Disk, and Network widgets
+- **Process Monitor**: Process overview sorted by cpu/ram usage
 
 ## Next Steps
 
-- [Configuration](configuration) - Configure monitoring settings
+- [Configuration](configuration) - Configure dgop
 - [Usage](usage) - Learn CLI commands and API usage

@@ -3,128 +3,117 @@ title: Usage
 sidebar_position: 4
 ---
 
-# DankSearch Usage
+import Hero from '@site/src/components/Hero';
 
-Learn how to use DankSearch effectively for file discovery and system navigation.
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
 
-## Basic Search
+# Usage
 
-### Spotlight Launcher
+`dsearch` provides both a CLI and HTTP API for searching your filesystem. The API follows OpenAPI 3.1 specification with full documentation available at the `/docs` endpoint.
 
-Access DankSearch through the Spotlight launcher:
+## API Usage
 
-1. Press `Super + D` to open Spotlight
-2. Start typing to search for files
-3. Use arrow keys to navigate results
-4. Press `Enter` to open the selected file
+The `dsearch` API provides a documentation endpoint with a full OpenAPI 3.1 specification available at `http://localhost:43654/docs`.
 
-### CLI Search
+It's guaranteed to be up to date, so it's the best way to reference API usage.
 
-Use the command line interface:
+## CLI Usage
+
+DankSearch provides a command-line interface for managing the search index and querying files.
+
+### Starting the Server
+
+Run the HTTP API server:
 
 ```bash
-# Basic search
-dms search "filename"
+# Start server on default port (43654)
+dsearch serve
 
-# Search in specific directory
-dms search "config" --dir ~/.config
-
-# Search by file extension
-dms search "*.pdf"
-
-# Case-sensitive search
-dms search "Config" --case-sensitive
+# Access OpenAPI documentation at http://localhost:43654/docs
 ```
 
-## Advanced Search
+The server runs the search API and file watcher for real-time index updates.
 
-### Search Operators
+### Basic Search
 
-Use operators to refine your search:
-
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `ext:` | File extension | `ext:md` |
-| `in:` | Directory | `in:Documents` |
-| `size:` | File size | `size:>10MB` |
-| `modified:` | Modification date | `modified:today` |
-| `name:` | Exact filename | `name:config.json` |
-
-### Examples
+Search for files using the `search` command:
 
 ```bash
-# Find all PDF files in Documents
-dms search "ext:pdf in:Documents"
+# Basic search - searches filename and content
+dsearch search "config"
 
-# Find large files modified today
-dms search "size:>50MB modified:today"
+# Limit results
+dsearch search "README" --limit 5
 
-# Find configuration files
-dms search "name:config.*"
+# Search all results (no limit)
+dsearch search "TODO" --limit 0
 ```
 
-## Search Filters
+### Search Filters
 
-### File Type Filtering
+#### File Extension
 
-Filter by file types:
+Filter by file extension:
 
 ```bash
-# Images only
-dms search "vacation" --type image
+# Find all Python files
+dsearch search "main" --ext .py
 
-# Documents only
-dms search "report" --type document
+# Find all markdown files
+dsearch search "documentation" --ext .md
 
-# Archives only
-dms search "backup" --type archive
+# Find JavaScript/TypeScript files
+dsearch search "component" --ext .tsx
 ```
 
-### Size Filtering
+#### File Size
 
-Filter by file size:
+Filter by file size (in bytes):
 
 ```bash
-# Files larger than 10MB
-dms search "video" --size ">10MB"
+# Files larger than 1MB (1048576 bytes)
+dsearch search "video" --min-size 1048576
 
-# Files smaller than 1MB
-dms search "config" --size "<1MB"
+# Files smaller than 100KB (102400 bytes)
+dsearch search "config" --max-size 102400
 
-# Files between 5-50MB
-dms search "media" --size "5MB-50MB"
+# Files between 10KB and 500KB
+dsearch search "log" --min-size 10240 --max-size 512000
 ```
 
-### Date Filtering
+#### Field-Specific Search
 
-Filter by modification date:
+Search in specific fields:
 
 ```bash
-# Modified today
-dms search "work" --modified today
+# Search only filenames
+dsearch search "config" --field filename
 
-# Modified this week
-dms search "project" --modified week
+# Search only file content
+dsearch search "TODO" --field body
 
-# Modified this month
-dms search "archive" --modified month
+# Search titles (for supported file types)
+dsearch search "introduction" --field title
 ```
 
-## Search Results
+### Fuzzy Matching
 
-### Result Formatting
-
-Customize how results are displayed:
+Enable fuzzy matching for typo tolerance:
 
 ```bash
-# Detailed format
-dms search "config" --format detailed
+# Find files even with typos
+dsearch search "confing" --fuzzy
 
-# JSON output
-dms search "config" --format json
-
-# Simple format
-dms search "config" --format simple
+# Works with other filters
+dsearch search "readne" --fuzzy --ext .md
 ```
 
 ### Sorting Results
@@ -132,129 +121,189 @@ dms search "config" --format simple
 Sort results by different criteria:
 
 ```bash
-# Sort by relevance (default)
-dms search "config" --sort relevance
+# Sort by relevance score (default)
+dsearch search "config" --sort score
 
-# Sort by name
-dms search "config" --sort name
+# Sort by modification time (newest first)
+dsearch search "log" --sort mtime
 
-# Sort by size
-dms search "config" --sort size
+# Sort by file size
+dsearch search "image" --sort size --ext .jpg
 
-# Sort by modification date
-dms search "config" --sort modified
+# Sort by filename
+dsearch search "test" --sort filename
+
+# Sort ascending instead of descending
+dsearch search "config" --sort mtime --desc=false
 ```
 
-## Integration Features
+### Output Formats
 
-### Recent Searches
+#### JSON Output
 
-View your recent search history:
+Get results in JSON format for scripting:
 
 ```bash
-# List recent searches
-dms search --recent
+# JSON output
+dsearch search "config" --json
 
-# Clear search history
-dms search --clear-history
+# Pipe to jq for parsing
+dsearch search "README" --json | jq '.[].path'
+
+# Get file paths only
+dsearch search "*.go" --json | jq -r '.[].path'
 ```
 
-### Favorites
+#### Human-Readable Output
 
-Manage favorite searches:
+Default output shows key information in a readable format:
 
 ```bash
-# Add current search to favorites
-dms search "config" --favorite
-
-# List favorites
-dms search --favorites
-
-# Remove from favorites
-dms search --unfavorite "config"
+# Standard output format
+dsearch search "main"
 ```
 
-### Quick Access
+## Index Management
 
-Set up quick access shortcuts:
+### Initial Indexing
+
+Generate the initial index:
 
 ```bash
-# Create shortcut for common search
-dms search --shortcut "docs" "in:Documents ext:md"
-
-# Use shortcut
-dms search --shortcut "docs"
+# Start indexing (runs asynchronously)
+dsearch index generate
 ```
 
-## Desktop Integration
+This crawls all configured paths and builds the search index. Large directories may take time.
 
-### Widget Usage
+### Index Status
 
-Use DankSearch widgets on your desktop:
+Check index statistics:
 
-- **Search Widget**: Quick search from desktop
-- **Recent Files**: Access recently opened files
-- **Quick Access**: Favorite searches and shortcuts
+```bash
+# View index stats
+dsearch index status
 
-### Keyboard Shortcuts
+# Example output:
+# Total Files: 15,432
+# Total Bytes: 2.3 GB
+# Last Index: 2025-10-28 14:30:00
+# Duration: 45s
+```
 
-Default keyboard shortcuts:
+### Incremental Sync
 
-- `Super + D` - Open Spotlight launcher
-- `Super + F` - Quick file search
-- `Super + R` - Recent files
-- `Ctrl + R` - Refresh search index
+Update the index with new/modified files:
+
+```bash
+# Sync changes
+dsearch index sync
+```
+
+This is faster than a full reindex - it only processes changes since the last sync.
+
+### File Watcher
+
+The file watcher automatically updates the index when files change:
+
+```bash
+# Start watching (usually runs with serve)
+dsearch watch
+
+# Check watcher status
+dsearch watch status
+```
+
+When running `dsearch serve`, the watcher starts automatically.
+
+## Common Use Cases
+
+### Find Recent Changes
+
+```bash
+# Recently modified files, sorted by time
+dsearch search "" --sort mtime --limit 20
+```
+
+### Find Large Files
+
+```bash
+# Files over 10MB
+dsearch search "" --min-size 10485760 --sort size
+```
+
+### Search Code
+
+```bash
+# Find function definitions in Go files
+dsearch search "func main" --ext .go --field body
+
+# Find TODOs in source code
+dsearch search "TODO" --fuzzy
+```
+
+### Find Documents
+
+```bash
+# All markdown documentation
+dsearch search "" --ext .md --sort filename
+
+# PDFs with "report" in filename
+dsearch search "report" --ext .pdf --field filename
+```
+
+## Configuration File
+
+Override the default config location:
+
+```bash
+# Use custom config
+dsearch -c /path/to/config.toml search "query"
+
+# Works with all commands
+dsearch -c ./dev-config.toml serve
+```
+
+## Global Flags
+
+All commands support:
+
+- `-c, --config` - Path to config file (default: `~/.config/danksearch/config.toml`)
+- `-h, --help` - Show help for any command
+
+## Version Information
+
+Check the version:
+
+```bash
+dsearch version
+```
 
 ## Performance Tips
 
-### Optimize Search Speed
+**Faster searches:**
+- Use `--field filename` to skip content matching
+- Add `--ext` filters to narrow results
+- Keep `--limit` reasonable for large result sets
 
-- Keep indexed directories focused
-- Use specific file extensions when possible
-- Regularly clean up old files
-- Monitor index size and performance
-
-### Memory Usage
-
-- Limit indexed directory scope for large filesystems
-- Use excluded patterns for temporary files
-- Adjust batch size for indexing
+**Efficient indexing:**
+- Use `index sync` instead of `generate` for updates
+- Configure `exclude_dirs` to skip unnecessary directories
+- Adjust `worker_count` in config based on CPU cores
 
 ## Troubleshooting
 
-### Common Issues
+**Search returns no results:**
+- Run `dsearch index status` to check if indexing is complete
+- Try `dsearch index generate` to rebuild the index
+- Verify the file is in a configured `index_paths` directory
 
-**Search not working:**
-- Check if DMS is running: `dms status`
-- Verify search service: `dms search status`
-- Restart search service: `dms search restart`
+**Indexing is slow:**
+- Check `worker_count` in config - increase if you have CPU cores available
+- Add large directories to `exclude_dirs` (e.g., `node_modules`, `.git`)
+- Reduce `max_depth` for deep directory trees
 
-**Slow search:**
-- Check index status: `dms search status`
-- Reduce indexed directories
-- Increase fuzzy threshold
-
-**Missing files:**
-- Refresh index: `dms search refresh`
-- Check file permissions
-- Verify excluded patterns
-
-### Debug Information
-
-Get detailed debug information:
-
-```bash
-# Verbose output
-dms search "config" --verbose
-
-# Debug mode
-dms search --debug
-
-# Performance metrics
-dms search --metrics
-```
-
-## Next Steps
-
-- [Configuration](configuration) - Customize search settings
-- [Installation](installation) - Setup and integration details
+**Server won't start:**
+- Check if port 43654 is available: `netstat -tlnp | grep :43654`
+- Change `listen_addr` in config to use a different port
+- Check logs for permission errors

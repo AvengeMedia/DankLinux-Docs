@@ -4,158 +4,62 @@ description: Native file system search with fuzzy search capabilities
 sidebar_position: 1
 ---
 
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
 # DankSearch
 
-DankSearch is a native file system search tool built into DankMaterialShell, providing fast and intuitive file discovery with fuzzy search capabilities.
+`dsearch` is a native file system search tool with configurable indexes and a CLI + REST API for searching files with various parameters.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DankSearch"
+    sources={{
+      light: useBaseUrl('/img/dsearchlight.png'),
+      dark: useBaseUrl('/img/dsearch.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>DankSearch file search interface</figcaption>
+</figure>
 
 ## Overview
 
 DankSearch integrates seamlessly with DankMaterialShell's Spotlight launcher, offering:
 
-- **Instant Search**: Real-time file system indexing and search
+- **Instant Search**: Blazingly fast filesystem search
 - **Fuzzy Matching**: Intelligent search that finds files even with typos
-- **Fast Performance**: Optimized indexing for quick results
-- **Native Integration**: Built directly into DMS without external dependencies
-
-## Quick Start
-
-DankSearch is automatically available when you install DankMaterialShell. No additional setup required!
-
-```bash
-curl -fsSL https://install.danklinux.com | sh
-```
+= **Content Searching**: Search for files by content instead of just filename.
+- **Efficient**: Indexes are loaded into memory on-demand, not held their indefinitely.
+- **Fast**: Extremely fast, for tens of thousands of files.
+- **Zero Dependency**: Zero dependencies, compiles to a single portable binary.
 
 ## Documentation
 
-- [Installation](installation) - Setup and integration details
-- [Configuration](configuration) - Customize search settings and behavior
-- [Usage](usage) - Learn how to use DankSearch effectively
+- [Installation](installation) - Detailed setup instructions and requirements
+- [Configuration](configuration) - Configuration options
+- [Usage](usage) - Learn CLI commands and API endpoints
 
-## Features
+## Contributing
 
-### Core Capabilities
+`dsearch` is open source and welcomes contributions:
 
-- **File System Indexing**: Automatically indexes your home directory and common system locations
-- **Fuzzy Search**: Find files using partial matches and approximate spelling
-- **File Type Filtering**: Search by file extensions and MIME types
-- **Path-based Search**: Search within specific directories
-- **Recent Files**: Quick access to recently accessed files
+- **Source Code**: [GitHub Repository](https://github.com/AvengeMedia/danksearch)
+- **Issues**: Report bugs and request features on GitHub
+- **Documentation**: Help improve the documentation
+- **Testing**: Test on different Linux distributions and hardware
 
-### Integration Features
+## License
 
-- **Spotlight Integration**: Accessible via `Super + D` or the Spotlight launcher
-- **Keyboard Shortcuts**: Navigate results with arrow keys, open with Enter
-- **Preview Support**: Quick file previews for supported file types
-- **Action Menu**: Right-click context menu for file operations
-
-## Usage
-
-### Basic Search
-
-1. Press `Super + D` to open Spotlight
-2. Start typing to search for files
-3. Use arrow keys to navigate results
-4. Press `Enter` to open the selected file
-
-### Advanced Search
-
-- **File Type Filtering**: Type `ext:pdf` to search only PDF files
-- **Directory Search**: Type `in:Documents` to search within Documents folder
-- **Size Filtering**: Use `size:>10MB` to find files larger than 10MB
-- **Date Filtering**: Use `modified:today` to find recently modified files
-
-### Search Operators
-
-| Operator | Description | Example |
-|----------|-------------|---------|
-| `ext:` | File extension | `ext:md` |
-| `in:` | Directory | `in:Downloads` |
-| `size:` | File size | `size:>5MB` |
-| `modified:` | Modification date | `modified:yesterday` |
-| `name:` | Exact filename | `name:config.json` |
-
-## Configuration
-
-DankSearch settings can be configured through the DMS configuration interface:
-
-### Indexing Settings
-
-- **Indexed Directories**: Choose which directories to include in the index
-- **Excluded Patterns**: Set file patterns to ignore during indexing
-- **Update Frequency**: Configure how often the index is refreshed
-- **Maximum File Size**: Set limits on file sizes to index
-
-### Search Settings
-
-- **Fuzzy Threshold**: Adjust how strict fuzzy matching should be
-- **Result Limit**: Set maximum number of search results
-- **Search Depth**: Configure how deep to search in directory trees
-- **Case Sensitivity**: Toggle case-sensitive search
-
-## Performance
-
-DankSearch is optimized for performance:
-
-- **Incremental Indexing**: Only updates changed files
-- **Background Processing**: Indexing happens in the background
-- **Memory Efficient**: Uses minimal system resources
-- **Fast Startup**: Quick initialization and search response
-
-## Troubleshooting
-
-### Common Issues
-
-**Search not returning results:**
-- Check if indexing is complete
-- Verify directory permissions
-- Ensure search terms are not too restrictive
-
-**Slow search performance:**
-- Reduce indexed directory scope
-- Increase fuzzy threshold
-- Check available system resources
-
-**Missing files:**
-- Verify files are in indexed directories
-- Check excluded patterns settings
-- Manually refresh the index
-
-### Manual Index Refresh
-
-To manually refresh the search index:
-
-```bash
-dms search refresh
-```
-
-### Reset Index
-
-To completely reset the search index:
-
-```bash
-dms search reset
-```
-
-## Development
-
-DankSearch is built into DankMaterialShell and doesn't require separate installation. For development and customization:
-
-- **Source Code**: Available in the [DankMaterialShell repository](https://github.com/AvengeMedia/DankMaterialShell)
-- **API Documentation**: See the [IPC documentation](/docs/dankmaterialshell/keybinds-ipc) for search-related commands
-- **Plugin Development**: Create custom search plugins using the DMS plugin system
-
-## Future Enhancements
-
-Planned features for DankSearch include:
-
-- **Content Search**: Search within file contents, not just filenames
-- **Metadata Search**: Search by file metadata (tags, ratings, etc.)
-- **Cloud Integration**: Search cloud storage and remote files
-- **Advanced Filters**: More sophisticated filtering options
-- **Search History**: Persistent search history and saved searches
-
-## Related Documentation
-
-- [DankMaterialShell Spotlight](/docs/dankmaterialshell/overview) - Learn about the integrated launcher
-- [DMS Configuration](/docs/dankmaterialshell/advanced-configuration) - Configure search settings
-- [IPC Commands](/docs/dankmaterialshell/keybinds-ipc) - Programmatic search interface
+`dsearch` is released under the MIT License. See the [LICENSE](https://github.com/AvengeMedia/danksearch/blob/master/LICENSE) file for details.
