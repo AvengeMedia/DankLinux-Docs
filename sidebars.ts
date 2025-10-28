@@ -28,7 +28,7 @@ const sidebars: SidebarsConfig = {
           label: 'Overview & Architecture',
         },
         'dankmaterialshell/installation',
-        'dankmaterialshell/upgrading',
+        'dankmaterialshell/updating',
         'dankmaterialshell/compositors',
         {
           type: 'category',

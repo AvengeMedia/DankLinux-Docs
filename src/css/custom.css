@@ -533,6 +533,8 @@ pre.ascii-art {
   white-space: pre !important;
 }
 
+/* Page title visibility is now controlled by Hero component */
+
 .landing-page main {
   padding-top: 4rem;
 }

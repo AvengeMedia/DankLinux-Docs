@@ -1,0 +1,129 @@
+.hero {
+  position: relative;
+  width: 100%;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--ifm-background-color);
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(128, 90, 213, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(128, 90, 213, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(208, 188, 255, 0.08) 0%, transparent 40%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(128, 90, 213, 0.03) 2px,
+      rgba(128, 90, 213, 0.03) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(128, 90, 213, 0.03) 2px,
+      rgba(128, 90, 213, 0.03) 4px
+    );
+}
+
+[data-theme='dark'] .hero {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(208, 188, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(128, 90, 213, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(208, 188, 255, 0.1) 0%, transparent 40%),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(208, 188, 255, 0.05) 2px,
+      rgba(208, 188, 255, 0.05) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(208, 188, 255, 0.05) 2px,
+      rgba(208, 188, 255, 0.05) 4px
+    );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 1200px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.heroAscii {
+  margin: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+  font-family: monospace;
+  text-align: left;
+  display: inline-block;
+  background: none;
+  border: none;
+  color: var(--dank-purple-dark);
+  white-space: pre;
+  overflow: visible;
+  max-width: 100%;
+  transform-origin: center;
+}
+
+[data-theme='dark'] .heroAscii {
+  color: var(--dank-purple-dark);
+}
+
+@media screen and (max-width: 1400px) {
+  .heroAscii {
+    font-size: 0.68rem;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .heroAscii {
+    font-size: 0.6rem;
+  }
+}
+
+@media screen and (max-width: 996px) {
+  .hero {
+    padding: 3rem 1.5rem;
+  }
+
+  .heroAscii {
+    font-size: 0.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+
+  .heroAscii {
+    font-size: 0.4rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .heroAscii {
+    font-size: 0.32rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .heroAscii {
+    font-size: 0.26rem;
+  }
+}
+
+@media screen and (max-width: 380px) {
+  .heroAscii {
+    font-size: 0.22rem;
+  }
+}
