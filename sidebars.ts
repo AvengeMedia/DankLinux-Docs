@@ -81,7 +81,6 @@ const sidebars: SidebarsConfig = {
       ],
     },
     'contributing',
-    'demo',
     'support'
   ],
 };
