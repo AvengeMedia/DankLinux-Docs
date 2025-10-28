@@ -1,0 +1,221 @@
+---
+title: NixOS Installation
+sidebar_position: 3
+---
+
+# NixOS Installation
+
+DankMaterialShell can be installed on NixOS using home-manager with a declarative configuration. This guide covers the flake-based installation method.
+
+## Installation via home-manager
+
+### 1. Add Flake Inputs
+
+First, add the required flake inputs to your `flake.nix`:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dms-cli = {
+      url = "github:AvengeMedia/danklinux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    dankMaterialShell = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.dgop.follows = "dgop";
+      inputs.dms-cli.follows = "dms-cli";
+    };
+  };
+}
+```
+
+### 2. Import the Home Module
+
+Add the DankMaterialShell home module to your home-manager imports:
+
+```nix
+imports = [
+  inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+];
+```
+
+### 3. Enable DankMaterialShell
+
+In your home-manager configuration, enable DankMaterialShell:
+
+```nix
+programs.dankMaterialShell.enable = true;
+```
+
+That's it! Rebuild your system and DankMaterialShell will be installed with sensible defaults.
+
+## Niri Integration
+
+If you're using the Niri compositor, DankMaterialShell provides additional integration options including automatic keybindings and startup configuration.
+
+### Prerequisites
+
+First, ensure you have [niri-flake](https://github.com/sodiboo/niri-flake) in your inputs:
+
+```nix
+niri = {
+  url = "github:sodiboo/niri-flake";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+Import it in your home-manager configuration:
+
+```nix
+imports = [
+  inputs.niri.homeModules.niri
+];
+```
+
+### Enable Niri Module
+
+Now you can import and use the Niri-specific DankMaterialShell module:
+
+```nix
+imports = [
+  inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+  inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
+];
+```
+
+Enable Niri integration features:
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+  niri = {
+    enableKeybinds = true;  # Automatic keybinding configuration
+    enableSpawn = true;      # Auto-start DMS with Niri
+  };
+};
+```
+
+This will automatically configure keybindings for launcher, notifications, settings, and all other DankMaterialShell features.
+
+## Configuration Options
+
+DankMaterialShell provides numerous configuration options to customize your installation. Here are the main options:
+
+### Feature Toggles
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+
+  # Core features
+  enableSystemd = true;              # Systemd service for auto-start
+  enableSystemMonitoring = true;     # System monitoring widgets (dgop)
+  enableClipboard = true;            # Clipboard history manager
+  enableVPN = true;                  # VPN management widget
+  enableBrightnessControl = true;    # Backlight/brightness controls
+  enableColorPicker = true;          # Color picker tool
+  enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
+  enableAudioWavelength = true;      # Audio visualizer (cava)
+  enableCalendarEvents = true;       # Calendar integration (khal)
+  enableSystemSound = true;          # System sound effects
+};
+```
+
+### Default Settings
+
+You can pre-configure default settings that will be used on first launch:
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+
+  default.settings = {
+    theme = "dark";
+    dynamicTheming = true;
+    # Add any other settings here
+  };
+
+  default.session = {
+    # Session state defaults
+  };
+};
+```
+
+These defaults are only applied if the settings files don't already exist, so they won't override your existing configuration.
+
+### Custom Quickshell Package
+
+If you need a specific version of Quickshell:
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+  quickshell.package = pkgs.quickshell; # or your custom package
+};
+```
+
+### Plugins
+
+Install DankMaterialShell plugins declaratively:
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+
+  plugins = {
+    myPlugin = {
+      enable = true;
+      src = ./path/to/plugin;
+    };
+  };
+};
+```
+
+## Advanced Configuration
+
+For a complete list of available options, check the module files:
+- Base module: `nix/default.nix` in the DankMaterialShell repository
+- Niri module: `nix/niri.nix` in the DankMaterialShell repository
+
+## Rebuilding
+
+After making configuration changes, rebuild your system:
+
+```bash
+# For home-manager standalone
+home-manager switch
+
+# For NixOS with home-manager as a module
+sudo nixos-rebuild switch
+```
+
+## Troubleshooting
+
+### DMS doesn't start automatically
+
+Make sure you have either:
+- `enableSystemd = true` for systemd-based startup, or
+- `niri.enableSpawn = true` for Niri-managed startup
+
+### Missing dependencies
+
+Each feature has its own dependency set. If a feature isn't working, ensure the corresponding `enable` option is set to `true`. For example, clipboard history requires `enableClipboard = true` which installs `cliphist` and `wl-clipboard`.
+
+### Custom keybindings conflict with Niri defaults
+
+If `niri.enableKeybinds = true` conflicts with your existing Niri configuration, you can disable it and manually configure keybindings using the examples in the [Keybinds & IPC](keybinds-ipc) guide.
+
+## Next Steps
+
+- Configure your preferences via [Themes](themes)
+- Set up compositor keybindings in [Keybinds & IPC](keybinds-ipc)
+- Extend functionality with [Plugins](plugins-overview)

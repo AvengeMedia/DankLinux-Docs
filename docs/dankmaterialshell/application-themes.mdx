@@ -1,0 +1,235 @@
+---
+title: Application Theming
+sidebar_position: 4.2
+---
+
+# Application Theming
+
+DankMaterialShell automatically generates theme files for native applications when matugen is enabled. These files are created on wallpaper changes and theme switches.
+
+## Disabling Matugen
+
+Set the environment variable before launching to disable theme generation entirely:
+
+```bash
+export DMS_DISABLE_MATUGEN=1
+dms run
+```
+
+## Generated Files
+
+When matugen is enabled, theme files are always generated regardless of the "Apply GTK/Qt Themes" toggle:
+
+- `~/.config/gtk-3.0/dank-colors.css`
+- `~/.config/gtk-4.0/dank-colors.css`
+- `~/.config/qt5ct/colors/matugen.conf`
+- `~/.config/qt6ct/colors/matugen.conf`
+
+The "Apply GTK/Qt Themes" toggles only control whether DankMaterialShell manages the symlinks to make applications use these files.
+
+## GTK Applications
+
+### Install Prerequisites
+
+```bash
+# Arch
+sudo pacman -S adw-gtk-theme
+
+# Fedora
+sudo dnf install adw-gtk3-theme
+```
+
+### Enable via Settings
+
+1. Open **Settings → Theme & Colors**
+2. Toggle **Apply GTK Themes**
+
+This creates symlinks from `dank-colors.css` to `gtk.css`, enabling dynamic theming for GTK 3 and GTK 4 applications.
+
+### Manual Integration
+
+If you manage your own GTK theme but want DMS colors:
+
+```css
+/* In ~/.config/gtk-3.0/gtk.css or gtk-4.0/gtk.css */
+@import url("dank-colors.css");
+```
+
+## Qt Applications
+
+Qt theming offers two approaches: basic GTK passthrough or dedicated Qt control.
+
+### Option 1: GTK Passthrough (Simple)
+
+Best for users who primarily run GTK applications. Qt apps will use the GTK theme.
+
+**Niri Configuration:**
+```kdl
+environment {
+  QT_QPA_PLATFORMTHEME "gtk3"
+  QT_QPA_PLATFORMTHEME_QT6 "gtk3"
+}
+```
+
+**Hyprland Configuration:**
+```conf
+env = QT_QPA_PLATFORMTHEME,gtk3
+env = QT_QPA_PLATFORMTHEME_QT6,gtk3
+```
+
+### Option 2: Dedicated Qt Control (Advanced)
+
+Provides better Qt integration and more styling control.
+
+**Install qt6ct:**
+
+```bash
+# Arch
+paru -S qt6ct-kde
+
+# Fedora
+sudo dnf install qt6ct
+
+# Other distributions
+# Follow instructions at https://www.opencode.net/trialuser/qt6ct
+```
+
+**Configure Environment:**
+
+**Niri:**
+```kdl
+environment {
+  QT_QPA_PLATFORMTHEME "qt6ct"
+  QT_QPA_PLATFORMTHEME_QT6 "qt6ct"
+}
+```
+
+**Hyprland:**
+```conf
+env = QT_QPA_PLATFORMTHEME,qt6ct
+env = QT_QPA_PLATFORMTHEME_QT6,qt6ct
+```
+
+**Enable Qt Theming:**
+
+1. Restart your compositor session for environment changes to take effect
+2. Open **Settings → Theme & Colors**
+3. Toggle **Apply Qt Themes**
+
+This links the generated matugen color files to qt5ct/qt6ct configurations.
+
+## Firefox
+
+Firefox has two theme integration options: Material Fox or Pywalfox.
+
+### Option 1: Material Fox (Chrome-like with Dynamic Colors)
+
+Firefox uses GTK3 theming but a separate matugen CSS is generated for better integration with Material Fox.
+
+**Enable Custom Styles in Firefox:**
+
+Navigate to `about:config` and set:
+- `toolkit.legacyuserprofilecustomizations.stylesheets` = `true`
+- `svg.context-properties.content.enabled` = `true`
+
+Create new boolean property:
+- `userChrome.theme-material` = `true`
+
+**Install Material Fox Theme:**
+
+```bash
+# Find Firefox profile directory
+export PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default-release" | head -n 1)
+
+# Download and extract theme
+curl -L -o "$PROFILE_DIR/chrome.zip" https://github.com/edelvarden/material-fox-updated/releases/download/v2.0.0/chrome.zip
+unzip -o "$PROFILE_DIR/chrome.zip" -d "$PROFILE_DIR"
+rm "$PROFILE_DIR/chrome.zip"
+```
+
+**Link Dynamic Colors:**
+
+```bash
+export PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default-release" | head -n 1)
+rm -f "$PROFILE_DIR/chrome/theme-material-blue.css"
+ln -sf ~/.config/DankMaterialShell/firefox.css "$PROFILE_DIR/chrome/theme-material-blue.css"
+```
+
+Restart Firefox to apply changes.
+
+### Option 2: Pywalfox
+
+**Install Pywalfox:**
+
+```bash
+# Arch
+paru -S python-pywalfox
+
+# Other distributions
+# Install from https://github.com/Frewacom/pywalfox
+```
+
+**Install Browser Extension:**
+
+Install the [Pywalfox extension](https://addons.mozilla.org/firefox/addon/pywalfox/) from Firefox Add-ons.
+
+**Enable DMS Colors:**
+
+```bash
+ln -sf ~/.cache/wal/dank-pywalfox.json ~/.cache/wal/colors.json
+```
+
+Restart DMS to generate the palette, then enable Pywalfox in the browser.
+
+### Browser Tips
+
+- Keep userChrome/userContent overrides under version control
+- Disable conflicting theme extensions when using DMS-managed colors
+
+## Terminal Applications
+
+Matugen automatically generates theme files for supported terminal emulators.
+
+### Ghostty
+
+```bash
+echo "config-file = ./config-dankcolors" >> ~/.config/ghostty/config
+```
+
+Optional - disable excessive notifications:
+
+```bash
+echo "app-notifications = no-clipboard-copy,no-config-reload" >> ~/.config/ghostty/config
+```
+
+### kitty
+
+```bash
+echo "include dank-theme.conf" >> ~/.config/kitty/kitty.conf
+```
+
+Reload or restart the terminal to apply colors.
+
+## Troubleshooting
+
+**GTK apps not themed:**
+- Verify `adw-gtk-theme` is installed
+- Check that symlinks exist: `ls -la ~/.config/gtk-3.0/gtk.css`
+- Ensure "Apply GTK Themes" is toggled in Settings
+
+**Qt apps not themed:**
+- Verify environment variables are set in compositor config
+- Restart compositor session after changing environment
+- Check `qt6ct` is installed if using Option 2
+- Ensure "Apply Qt Themes" is toggled in Settings
+
+**Firefox theme not working:**
+- Verify `about:config` settings are correct
+- Check that theme files exist in profile directory
+- Try disabling other Firefox theme extensions
+- Restart Firefox after making changes
+
+**Terminal colors not updating:**
+- Verify config lines are added to terminal config
+- Check that theme files exist in `~/.config/DankMaterialShell/`
+- Restart terminal application

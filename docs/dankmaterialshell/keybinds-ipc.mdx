@@ -1,0 +1,379 @@
+---
+title: Keybinds & IPC
+sidebar_position: 5
+---
+
+# IPC Commands Reference
+
+DankMaterialShell provides comprehensive IPC (Inter-Process Communication) functionality that allows external control of the shell through command-line commands. All IPC commands follow the format:
+
+```bash
+dms ipc call <target> <function> [parameters...]
+```
+
+## Core Controls
+
+### audio
+
+Manage audio output and input devices.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `setvolume <percentage>` | Set output volume | percentage (0-100) |
+| `increment <step>` | Increase output volume | step (default: 5) |
+| `decrement <step>` | Decrease output volume | step (default: 5) |
+| `mute` | Toggle output mute | - |
+| `setmic <percentage>` | Set microphone volume | percentage (0-100) |
+| `micmute` | Toggle microphone mute | - |
+| `status` | Get current audio status | - |
+
+**Examples:**
+```bash
+dms ipc call audio setvolume 50
+dms ipc call audio increment 10
+dms ipc call audio mute
+```
+
+### brightness
+
+Control display brightness for internal and external displays.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `set <percentage> [device]` | Set brightness level | percentage (1-100), device (optional) |
+| `increment <step> [device]` | Increase brightness | step, device (optional) |
+| `decrement <step> [device]` | Decrease brightness | step, device (optional) |
+| `status` | Get current brightness status | - |
+| `list` | List all brightness devices | - |
+
+**Examples:**
+```bash
+dms ipc call brightness set 80
+dms ipc call brightness increment 10 ""
+dms ipc call brightness decrement 5 "intel_backlight"
+```
+
+### night
+
+Night mode (gamma/color temperature) control.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `toggle` | Toggle night mode on/off | - |
+| `enable` | Enable night mode | - |
+| `disable` | Disable night mode | - |
+| `status` | Get night mode status | - |
+| `temperature [value]` | Get/set color temperature | value in Kelvin (2500-6000, optional) |
+| `automation [mode]` | Get/set automation mode | "manual", "time", or "location" (optional) |
+| `schedule <start> <end>` | Set time-based schedule | start time (HH:MM), end time (HH:MM) |
+| `location <lat> <lon>` | Set location coordinates | latitude, longitude |
+
+**Examples:**
+```bash
+dms ipc call night toggle
+dms ipc call night temperature 4000
+dms ipc call night automation time
+dms ipc call night schedule 20:00 06:00
+dms ipc call night location 40.7128 -74.0060
+```
+
+### mpris
+
+Media player control via MPRIS interface.
+
+| Function | Description |
+| --- | --- |
+| `list` | List all available media players |
+| `play` | Start playback |
+| `pause` | Pause playback |
+| `playPause` | Toggle play/pause |
+| `previous` | Skip to previous track |
+| `next` | Skip to next track |
+| `stop` | Stop playback |
+
+**Examples:**
+```bash
+dms ipc call mpris playPause
+dms ipc call mpris next
+```
+
+### lock
+
+Screen lock control and status.
+
+| Function | Description |
+| --- | --- |
+| `lock` | Lock the screen immediately |
+| `demo` | Show lock screen demo (doesn't lock) |
+| `isLocked` | Check if screen is locked |
+
+**Examples:**
+```bash
+dms ipc call lock lock
+dms ipc call lock isLocked
+```
+
+### inhibit
+
+Idle inhibitor control to prevent automatic sleep/lock.
+
+| Function | Description |
+| --- | --- |
+| `toggle` | Toggle idle inhibit state |
+| `enable` | Enable idle inhibit (prevent sleep) |
+| `disable` | Disable idle inhibit (allow sleep) |
+
+**Examples:**
+```bash
+dms ipc call inhibit toggle
+dms ipc call inhibit enable
+```
+
+## Wallpaper & Profile
+
+### wallpaper
+
+Wallpaper management with support for global and per-monitor configurations.
+
+#### Global Wallpaper Functions
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `get` | Get current wallpaper path | - |
+| `set <path>` | Set wallpaper | path to image file |
+| `clear` | Clear all wallpapers | - |
+| `next` | Cycle to next wallpaper | - |
+| `prev` | Cycle to previous wallpaper | - |
+
+#### Per-Monitor Functions
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `getFor <screen>` | Get wallpaper for monitor | monitor name (e.g., "DP-2") |
+| `setFor <screen> <path>` | Set wallpaper for monitor | monitor name, path to image |
+| `nextFor <screen>` | Cycle to next wallpaper | monitor name |
+| `prevFor <screen>` | Cycle to previous wallpaper | monitor name |
+
+**Examples:**
+```bash
+# Global wallpaper mode
+dms ipc call wallpaper set /path/to/image.jpg
+dms ipc call wallpaper next
+
+# Per-monitor wallpaper mode
+dms ipc call wallpaper setFor DP-2 /path/to/image1.jpg
+dms ipc call wallpaper setFor eDP-1 /path/to/image2.jpg
+dms ipc call wallpaper nextFor eDP-1
+
+# Clear and return to global mode
+dms ipc call wallpaper clear
+```
+
+**Note:** When per-monitor mode is enabled, legacy global functions will return error messages directing you to use the per-monitor equivalents.
+
+### profile
+
+User profile image management.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `getImage` | Get current profile image path | - |
+| `setImage <path>` | Set profile image | path to image file |
+| `clearImage` | Clear profile image | - |
+
+**Examples:**
+```bash
+dms ipc call profile setImage /path/to/avatar.png
+dms ipc call profile clearImage
+```
+
+## Appearance Controls
+
+### theme
+
+Theme mode control (light/dark mode switching).
+
+| Function | Description |
+| --- | --- |
+| `toggle` | Toggle between light and dark themes |
+| `light` | Switch to light theme |
+| `dark` | Switch to dark theme |
+| `getMode` | Get current theme mode |
+
+**Examples:**
+```bash
+dms ipc call theme toggle
+dms ipc call theme dark
+```
+
+### bar
+
+Top bar visibility control.
+
+| Function | Description |
+| --- | --- |
+| `reveal` | Show the top bar |
+| `hide` | Hide the top bar |
+| `toggle` | Toggle top bar visibility |
+| `status` | Get visibility status |
+
+**Examples:**
+```bash
+dms ipc call bar toggle
+dms ipc call bar hide
+```
+
+## Modal Controls
+
+These targets control various modal windows and overlays.
+
+### spotlight
+
+Application launcher modal with search capabilities.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show launcher | - |
+| `close` | Hide launcher | - |
+| `toggle` | Toggle launcher visibility | - |
+| `openQuery <query>` | Show launcher with search | search text |
+| `toggleQuery <query>` | Toggle launcher with search | search text |
+
+**Examples:**
+```bash
+dms ipc call spotlight toggle
+dms ipc call spotlight openQuery browser
+dms ipc call spotlight toggleQuery "!"
+```
+
+### Other Modals
+
+All these modals support `open`, `close`, and `toggle` functions:
+
+- **clipboard** - Clipboard history manager
+- **notifications** - Notification center
+- **settings** - Settings modal
+- **processlist** - System process list and performance monitor
+- **powermenu** - Power menu for system actions
+- **control-center** - Quick settings (network, bluetooth, audio, etc.)
+- **notepad** - Quick notepad/scratchpad
+
+**Examples:**
+```bash
+dms ipc call clipboard toggle
+dms ipc call notifications open
+dms ipc call settings toggle
+dms ipc call processlist open
+dms ipc call powermenu toggle
+dms ipc call control-center toggle
+dms ipc call notepad open
+```
+
+### dash
+
+Dashboard popup with multiple tabs.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open [tab]` | Show dashboard | tab: "", "overview", "media", "weather" (optional) |
+| `close` | Hide dashboard | - |
+| `toggle [tab]` | Toggle dashboard | tab (optional) |
+
+**Examples:**
+```bash
+dms ipc call dash open overview
+dms ipc call dash toggle media
+dms ipc call dash open weather
+```
+
+### file
+
+File browser controls for selecting wallpapers and profile images.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `browse <type>` | Open file browser | "wallpaper" or "profile" |
+
+**Examples:**
+```bash
+dms ipc call file browse wallpaper
+dms ipc call file browse profile
+```
+
+### dankdash
+
+DankDash wallpaper browser control.
+
+| Function | Description |
+| --- | --- |
+| `wallpaper` | Toggle DankDash wallpaper browser |
+
+**Examples:**
+```bash
+dms ipc call dankdash wallpaper
+```
+
+## System Utilities
+
+### systemupdater
+
+System updater external check request.
+
+| Function | Description |
+| --- | --- |
+| `updatestatus` | Trigger system update check |
+
+**Examples:**
+```bash
+dms ipc call systemupdater updatestatus
+```
+
+## Scripting and Automation
+
+IPC commands are designed for integration with keybindings, scripts, and automation tools.
+
+### Time-based Automation
+
+```bash
+#!/bin/bash
+# Toggle night mode based on time of day
+hour=$(date +%H)
+if [ $hour -ge 20 ] || [ $hour -le 6 ]; then
+    dms ipc call night enable
+else
+    dms ipc call night disable
+fi
+```
+
+### Status Checking
+
+```bash
+# Check if screen is locked before performing action
+if dms ipc call lock isLocked | grep -q "false"; then
+    dms ipc call notifications open
+fi
+```
+
+### Conditional Logic
+
+```bash
+# Increase brightness only if below threshold
+current=$(dms ipc call brightness status | grep -oP '\d+')
+if [ "$current" -lt 50 ]; then
+    dms ipc call brightness set 50
+fi
+```
+
+## Return Values
+
+Most IPC functions return string messages indicating:
+- Success confirmation with current values
+- Error messages if operation fails
+- Status information for query functions
+- Empty/void return for simple action functions
+
+Functions that return void (like media controls) execute the action but don't provide feedback. Check the application state through other means if needed.
+
+## Next Steps
+
+See compositor-specific keybinding configuration in your compositor's documentation to integrate these IPC commands with your workflow.

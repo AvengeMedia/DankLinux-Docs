@@ -1,200 +1,320 @@
 ---
 title: Compositor Setup
-sidebar_position: 4
+sidebar_position: 8
 ---
 
 # Compositor Setup
 
-DankMaterialShell works with multiple Wayland compositors, providing first-class support for niri and Hyprland. This guide covers installation pointers, recommended configuration, and IPC bindings to unlock the full experience.
+DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for Niri and Hyprland. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
 
-## Supported Compositors at a Glance
+## Niri Configuration
 
-| Compositor | Support Level | Notes |
-| --- | --- | --- |
-| **niri** | Primary | Deep integration with scrollable workspaces, keybind export, theme sync. |
-| **Hyprland** | Full | Comprehensive IPC bindings, dock integration, dynamic gaps support. |
-| **Other Wayland** | Basic | Runs on wlroots-based compositors; some advanced features may be unavailable. |
+Niri uses the KDL configuration format. DankMaterialShell integrates seamlessly with Niri's scrollable tiling layout.
 
-## niri Setup
+### Quick Setup
 
-### Install niri
+When you run `dms` for the first time, it will offer to install a recommended Niri configuration. Alternatively, you can manually configure Niri using the examples below.
 
-# Arch
-```bash
-sudo pacman -S niri
-```
+### Key Configuration Sections
 
-# Fedora
-```bash
-sudo dnf copr enable yalter/niri
-sudo dnf install niri
-```
+#### Layer Rules
 
-See the [niri Getting Started guide](https://yalter.github.io/niri/Getting-Started.html) for additional distributions.
-
-### Launching the Shell
-
-Add these entries to your `config.kdl`:
+Tell Niri to place the wallpaper on the overview.
 
 ```kdl
-// Clipboard history service
-spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
-
-// Privilege escalation agent (optional but recommended)
-spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
-
-// Start DankMaterialShell
-spawn-at-startup "dms" "run"
-```
-
-### Recommended Keybinds
-
-Merge the following bindings with your existing configuration to control shell modals and system features:
-
-```kdl
-binds {
-  Mod+Space hotkey-overlay-title="Application Launcher" {
-    spawn "dms" "ipc" "call" "spotlight" "toggle"
-  }
-  Mod+V hotkey-overlay-title="Clipboard Manager" {
-    spawn "dms" "ipc" "call" "clipboard" "toggle"
-  }
-  Mod+M hotkey-overlay-title="Task Manager" {
-    spawn "dms" "ipc" "call" "processlist" "toggle"
-  }
-  Mod+N hotkey-overlay-title="Notification Center" {
-    spawn "dms" "ipc" "call" "notifications" "toggle"
-  }
-  Mod+Comma hotkey-overlay-title="Settings" {
-    spawn "dms" "ipc" "call" "settings" "toggle"
-  }
-  Mod+P hotkey-overlay-title="Notepad" {
-    spawn "dms" "ipc" "call" "notepad" "toggle"
-  }
-  Super+Alt+L hotkey-overlay-title="Lock Screen" {
-    spawn "dms" "ipc" "call" "lock" "lock"
-  }
-  Mod+X hotkey-overlay-title="Power Menu" {
-    spawn "dms" "ipc" "call" "powermenu" "toggle"
-  }
-  Mod+C hotkey-overlay-title="Control Center" {
-    spawn "dms" "ipc" "call" "control-center" "toggle"
-  }
-  XF86AudioRaiseVolume allow-when-locked=true {
-    spawn "dms" "ipc" "call" "audio" "increment" "3"
-  }
-  XF86AudioLowerVolume allow-when-locked=true {
-    spawn "dms" "ipc" "call" "audio" "decrement" "3"
-  }
-  XF86AudioMute allow-when-locked=true {
-    spawn "dms" "ipc" "call" "audio" "mute"
-  }
-  XF86AudioMicMute allow-when-locked=true {
-    spawn "dms" "ipc" "call" "audio" "micmute"
-  }
-  XF86MonBrightnessUp allow-when-locked=true {
-    spawn "dms" "ipc" "call" "brightness" "increment" "5" ""
-  }
-  XF86MonBrightnessDown allow-when-locked=true {
-    spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""
-  }
-  Mod+Shift+N allow-when-locked=true {
-    spawn "dms" "ipc" "call" "night" "toggle"
-  }
+layer-rule {
+    match namespace="^quickshell$"
+    place-within-backdrop true
 }
 ```
 
-### Theme Synchronization
+#### Startup
 
-For niri builds newer than commit `3933903`, include the generated layout and color files to keep compositor styling aligned with DMS:
+Launch DankMaterialShell and optional services:
 
-```bash
-echo 'include "dms/colors.kdl"' >> ~/.config/niri/config.kdl
-echo 'include "dms/layout.kdl"' >> ~/.config/niri/config.kdl
+```kdl
+// Clipboard history
+spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
+// Start the shell
+spawn-at-startup "dms" "run"
+// (Optional) replace with a polkit agent for escalation prompts
+// spawn-at-startup "{{POLKIT_AGENT_PATH}}"
 ```
 
-## Hyprland Setup
+#### Environment Variables
 
-### Install Hyprland
-
-# Arch
-```bash
-sudo pacman -S hyprland
+```kdl
+environment {
+  XDG_CURRENT_DESKTOP "niri"
+  QT_QPA_PLATFORM "wayland"
+  ELECTRON_OZONE_PLATFORM_HINT "auto"
+  QT_QPA_PLATFORMTHEME "gtk3"
+  QT_QPA_PLATFORMTHEME_QT6 "gtk3"
+}
 ```
 
-# Latest git snapshot
-```bash
-paru -S hyprland-git
+#### DMS Keybindings
+
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx)
+
+```kdl
+binds {
+    // Application Launchers
+    Mod+Space hotkey-overlay-title="Application Launcher" {
+        spawn "dms" "ipc" "call" "spotlight" "toggle";
+    }
+    Mod+V hotkey-overlay-title="Clipboard Manager" {
+        spawn "dms" "ipc" "call" "clipboard" "toggle";
+    }
+    Mod+M hotkey-overlay-title="Task Manager" {
+        spawn "dms" "ipc" "call" "processlist" "toggle";
+    }
+    Mod+Comma hotkey-overlay-title="Settings" {
+        spawn "dms" "ipc" "call" "settings" "toggle";
+    }
+    Mod+N hotkey-overlay-title="Notification Center" {
+        spawn "dms" "ipc" "call" "notifications" "toggle";
+    }
+    Mod+Y hotkey-overlay-title="Browse Wallpapers" {
+        spawn "dms" "ipc" "call" "dankdash" "wallpaper";
+    }
+
+    // Security
+    Mod+Alt+L hotkey-overlay-title="Lock Screen" {
+        spawn "dms" "ipc" "call" "lock" "lock";
+    }
+
+    // Audio Controls
+    XF86AudioRaiseVolume allow-when-locked=true {
+        spawn "dms" "ipc" "call" "audio" "increment" "3";
+    }
+    XF86AudioLowerVolume allow-when-locked=true {
+        spawn "dms" "ipc" "call" "audio" "decrement" "3";
+    }
+    XF86AudioMute allow-when-locked=true {
+        spawn "dms" "ipc" "call" "audio" "mute";
+    }
+
+    // Brightness Controls
+    XF86MonBrightnessUp allow-when-locked=true {
+       spawn "dms" "ipc" "call" "brightness" "increment" "5" "";
+    }
+    XF86MonBrightnessDown allow-when-locked=true {
+       spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
+    }
+}
 ```
 
-# Fedora
-```bash
-sudo dnf install hyprland
+### Window Rules
+
+Recommended window rules, tailor to your preferences:
+
+```kdl
+window-rule {
+    match app-id=r#"^org\.gnome\."#
+    draw-border-with-background false
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    match app-id="Alacritty"
+    match app-id="zen"
+    match app-id="com.mitchellh.ghostty"
+    match app-id="kitty"
+    draw-border-with-background false
+}
+
+window-rule {
+    match is-active=false
+    opacity 0.9
+}
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
 ```
 
-# Or the Copr for bleeding edge
-```bash
-sudo dnf copr enable solopasha/hyprland
-sudo dnf install hyprland
-```
+## Hyprland Configuration
 
-### Launching the Shell
+Hyprland uses a simple config file format at `~/.config/hypr/hyprland.conf`.
 
-Add these lines to `~/.config/hypr/hyprland.conf`:
+### Key Configuration Sections
+
+#### Startup
 
 ```conf
-# Clipboard history service
 exec-once = bash -c "wl-paste --watch cliphist store &"
-
-# Privilege escalation agent (optional but recommended)
-exec-once = /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
-
-# Start DankMaterialShell
 exec-once = dms run
+exec-once = {{POLKIT_AGENT_PATH}}
 ```
 
-### Recommended Keybinds
-
-Hyprland bindings mirror the niri configuration:
+#### Environment Variables
 
 ```conf
-bind = SUPER, Space, exec, dms ipc call spotlight toggle
-bind = SUPER, V, exec, dms ipc call clipboard toggle
-bind = SUPER, M, exec, dms ipc call processlist toggle
-bind = SUPER, N, exec, dms ipc call notifications toggle
-bind = SUPER, comma, exec, dms ipc call settings toggle
-bind = SUPER, P, exec, dms ipc call notepad toggle
-bind = SUPERALT, L, exec, dms ipc call lock lock
-bind = SUPER, X, exec, dms ipc call powermenu toggle
-bind = SUPER, C, exec, dms ipc call control-center toggle
-bindl = , XF86AudioRaiseVolume, exec, dms ipc call audio increment 3
-bindl = , XF86AudioLowerVolume, exec, dms ipc call audio decrement 3
-bindl = , XF86AudioMute, exec, dms ipc call audio mute
-bindl = , XF86AudioMicMute, exec, dms ipc call audio micmute
-bindl = , XF86MonBrightnessUp, exec, dms ipc call brightness increment 5 ""
-bindl = , XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5 ""
-bind = SUPERSHIFT, N, exec, dms ipc call night toggle
+env = QT_QPA_PLATFORM,wayland
+env = ELECTRON_OZONE_PLATFORM_HINT,auto
+env = QT_QPA_PLATFORMTHEME,gtk3
+env = QT_QPA_PLATFORMTHEME_QT6,gtk3
 ```
 
-### Extra Tips
+#### Layer Rules
 
-- Use `bind = , XF86AudioPlay, exec, dms ipc call mpris playPause` to control media players.
-- If you run custom window rules, load them before starting DMS to avoid race conditions.
+```conf
+layerrule = noanim, ^(quickshell)$
+```
 
-## Generic Wayland Support
+#### General Layout
 
-DankMaterialShell also runs on other wlroots-based compositors (Sway, River, Wayfire, etc.). Feature coverage will depend on compositor capabilities:
+```conf
+general {
+    gaps_in = 5
+    gaps_out = 5
+    border_size = 0
 
-- Idle management requires support for session locking APIs.
-- Monitor-aware widgets rely on accurate output naming.
-- Some IPC-powered widgets may not function without `dms` CLI access.
+    col.active_border = rgba(707070ff)
+    col.inactive_border = rgba(d0d0d0ff)
 
-Test with `dms run` and report compatibility findings to the community.
+    layout = dwindle
+}
+```
+
+#### Decoration
+
+```conf
+decoration {
+    rounding = 12
+
+    active_opacity = 1.0
+    inactive_opacity = 0.9
+
+    shadow {
+        enabled = true
+        range = 30
+        render_power = 5
+        offset = 0 5
+        color = rgba(00000070)
+    }
+}
+```
+
+#### DMS Keybindings
+
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx)
+
+```conf
+$mod = SUPER
+
+# Application Launchers
+bind = $mod, space, exec, dms ipc call spotlight toggle
+bind = $mod, V, exec, dms ipc call clipboard toggle
+bind = $mod, M, exec, dms ipc call processlist toggle
+bind = $mod, comma, exec, dms ipc call settings toggle
+bind = $mod, N, exec, dms ipc call notifications toggle
+bind = $mod, Y, exec, dms ipc call dankdash wallpaper
+bind = $mod, TAB, exec, dms ipc call hypr toggleOverview
+
+# Security
+bind = $mod ALT, L, exec, dms ipc call lock lock
+
+# Audio Controls
+bindel = , XF86AudioRaiseVolume, exec, dms ipc call audio increment 3
+bindel = , XF86AudioLowerVolume, exec, dms ipc call audio decrement 3
+bindl = , XF86AudioMute, exec, dms ipc call audio mute
+
+# Brightness Controls
+bindel = , XF86MonBrightnessUp, exec, dms ipc call brightness increment 5
+bindel = , XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5
+```
+
+### Window Rules
+
+```conf
+# Opacity for inactive windows
+windowrulev2 = opacity 0.9 0.9, floating:0, focus:0
+
+# GNOME apps
+windowrulev2 = rounding 12, class:^(org\.gnome\.)
+windowrulev2 = noborder, class:^(org\.gnome\.)
+
+# Terminal apps - no borders
+windowrulev2 = noborder, class:^(org\.wezfurlong\.wezterm)$
+windowrulev2 = noborder, class:^(Alacritty)$
+windowrulev2 = noborder, class:^(zen)$
+windowrulev2 = noborder, class:^(com\.mitchellh\.ghostty)$
+windowrulev2 = noborder, class:^(kitty)$
+
+# Floating windows
+windowrulev2 = float, class:^(gnome-calculator)$
+windowrulev2 = float, class:^(blueman-manager)$
+windowrulev2 = float, class:^(org\.gnome\.Nautilus)$
+```
+
+## Other Compositors
+
+DankMaterialShell works with any Wayland compositor that supports:
+- Layer shell protocol (for panels and overlays)
+- Session lock protocol (for lock screen)
+
+**Note:** Some compositor-specific features will be unavailable, such as workspace switching.
+
+### Basic Integration
+
+For other compositors, you need to:
+
+1. **Auto-start DMS:**
+   ```bash
+   dms run
+   ```
+
+2. **Configure keybindings** using the IPC commands from the [Keybinds & IPC](keybinds-ipc) guide
+
+3. **Set environment variables:**
+   ```bash
+   export QT_QPA_PLATFORM=wayland
+   ```
+
+### Example for Sway
+
+Add to `~/.config/sway/config`:
+
+```conf
+# Startup
+exec dms run
+exec wl-paste --watch cliphist store
+
+# DMS Keybindings
+bindsym $mod+space exec dms ipc call spotlight toggle
+bindsym $mod+v exec dms ipc call clipboard toggle
+bindsym $mod+m exec dms ipc call processlist toggle
+bindsym $mod+comma exec dms ipc call settings toggle
+
+# Audio controls
+bindsym XF86AudioRaiseVolume exec dms ipc call audio increment 3
+bindsym XF86AudioLowerVolume exec dms ipc call audio decrement 3
+bindsym XF86AudioMute exec dms ipc call audio mute
+
+# Brightness controls
+bindsym XF86MonBrightnessUp exec dms ipc call brightness increment 5
+bindsym XF86MonBrightnessDown exec dms ipc call brightness decrement 5
+```
 
 ## Troubleshooting
 
-- **Pw errors or missing clipboard history:** ensure `wl-clipboard` and `cliphist` are installed and your compositor configuration starts the watcher.
-- **Brightness controls failing:** install `brightnessctl` and verify your user has permission to access backlight devices.
-- **Keybind conflicts:** adjust modifiers to avoid overlapping existing compositor bindings.
+### DMS doesn't start automatically
 
-Continue to [Configuration](/docs/dankmaterialshell/configuration) for a deeper dive into widget layouts and system tweaks.
+Check your compositor's logs to ensure the `exec-once` or equivalent startup command is running. You can also manually start DMS with `dms run` to see any error messages.
+
+### Keybindings don't work
+
+Verify that:
+- DMS is running (`pgrep -f "dms run"`)
+- Your keybinding syntax matches your compositor's format
+
+## Next Steps
+
+- Customize your shell appearance in [Themes](themes)
+- Explore all available IPC commands in [Keybinds & IPC](keybinds-ipc)
+- Add functionality with [Plugins](plugins-overview)

@@ -1,0 +1,235 @@
+---
+title: Plugins - Types
+sidebar_position: 7
+---
+
+# Plugin Types & Development
+
+Build and ship your own DankMaterialShell plugins using the QML-based plugin framework. This guide walks through setup, project structure, development patterns, and publishing workflows.
+
+## Plugin Types
+
+DankMaterialShell supports three main plugin types:
+
+### Widget Plugins
+
+Widget plugins add visual components to the DankBar or control center. They can display information, provide controls, or integrate with external services.
+
+**Examples:** Weather widget, system monitor, calendar integration
+
+**Capabilities:**
+- `dankbar-widget` - Appears in the main bar
+- `control-center` - Adds tiles to control center
+
+### Launcher Plugins
+
+Launcher plugins extend the Spotlight search interface with custom triggers and search results. They can query external APIs, local data, or perform calculations.
+
+**Examples:** Calculator, emoji picker, web search, command runner
+
+**Capabilities:**
+- `launcher` - Adds search functionality to Spotlight
+
+### Daemon Plugins
+
+Daemon plugins run in the background without a UI component. They can monitor system events, automate tasks, or provide services to other plugins.
+
+**Examples:** Battery alerts, wallpaper automation, event hooks
+
+**Capabilities:**
+- `daemon` - Background service
+- `watch-events` - React to system events
+
+## Getting Started
+
+### 1. Setup Development Environment
+
+Ensure you have DankMaterialShell installed (via [DankLinux](/docs/danklinux/dankinstall) or manual setup).
+
+Create a workspace for plugins:
+
+```bash
+mkdir -p ~/.config/DankMaterialShell/plugins/MyPlugin
+cd ~/.config/DankMaterialShell/plugins/MyPlugin
+```
+
+### 2. Project Structure
+
+```
+MyPlugin/
+├── plugin.json        # Manifest (required)
+├── MyWidget.qml       # Main component (required)
+├── MySettings.qml     # Optional settings interface
+├── helpers.js         # Optional JavaScript utilities
+└── README.md          # Recommended documentation
+```
+
+### 3. Create Plugin Manifest
+
+Create `plugin.json` with the following structure:
+
+```json
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "description": "Description of what this plugin does",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "widget",
+  "capabilities": ["dankbar-widget"],
+  "component": "MyWidget.qml",
+  "settings": "MySettings.qml",
+  "permissions": ["settings_write"]
+}
+```
+
+**Key fields:**
+- `id`, `name`, `description`, `version` - Plugin metadata
+- `type` - Plugin type: `widget`, `launcher`, or `daemon`
+- `capabilities` - Features provided (e.g., `dankbar-widget`, `watch-events`)
+- `component` - Path to the main QML component
+- `settings` - Optional settings component path
+- `permissions` - Required permissions (e.g., `settings_write` for persistent configuration)
+
+## Development Workflow
+
+### 1. Load the Plugin
+
+Enable it under **Settings → Plugins** in DankMaterialShell.
+
+### 2. Iterate Quickly
+
+After changing QML files or settings schemas:
+
+```bash
+dms restart
+```
+
+### 3. Monitor Logs
+
+View real-time logs for debugging:
+
+```bash
+journalctl --user -fu dms
+```
+
+Or run `dms run` in a terminal for direct output.
+
+### 4. Use Global State
+
+Use `PluginGlobalVar` to share data between multiple widget instances.
+
+### 5. Integrate with Shell
+
+Call `dms ipc` from Dank Actions or hooks to control shell features.
+
+## Widget Plugin Development
+
+Widget plugins create visual components for the DankBar or control center.
+
+**Example widget component:**
+
+```qml
+import QtQuick 2.15
+import Quickshell 2.0
+
+Rectangle {
+  width: 100
+  height: 40
+  color: "transparent"
+
+  Text {
+    anchors.centerIn: parent
+    text: "Hello DMS"
+    color: "white"
+  }
+}
+```
+
+## Launcher Plugin Development
+
+Launcher plugins extend the Spotlight search interface.
+
+Set `"type": "launcher"` and provide a custom trigger string (e.g., `"#"`).
+
+Implement these functions in your QML component:
+
+```qml
+function getItems(query) {
+  // Return array of search results
+  return [
+    {
+      title: "Result 1",
+      description: "Description",
+      icon: "icon-name"
+    }
+  ]
+}
+
+function executeItem(item) {
+  // Handle item selection
+  console.log("Selected:", item.title)
+}
+```
+
+## Daemon Plugin Development
+
+Daemon plugins run in the background without UI.
+
+Set `"type": "daemon"` and implement background logic in your QML component.
+
+**Example daemon:**
+
+```qml
+import QtQuick 2.15
+import Quickshell 2.0
+
+QtObject {
+  Component.onCompleted: {
+    // Initialize daemon
+    console.log("Daemon started")
+  }
+
+  // Add timers, monitors, or event handlers
+}
+```
+
+## External Commands
+
+Use the provided helpers instead of raw `exec`:
+
+- `Proc.runCommand(id, args, callback, debounce)` – Run commands and capture output
+- `Quickshell.execDetached([...])` – Fire-and-forget commands (e.g., piping to `wl-copy`)
+
+## Testing Checklist
+
+- Validate your manifest using the `plugin-schema.json` in the main repository
+- Confirm settings load/save correctly when `settings_write` is declared
+- Test on both horizontal and vertical DankBar layouts if your widget renders differently
+- Verify optional dependencies (`wl-copy`, `curl`, etc.) are documented
+
+## Publishing Workflow
+
+1. Host your plugin in a public repository with a clear README, installation steps, and screenshots
+2. Add release tags if you plan to maintain versioned updates
+3. Submit metadata to the [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) to appear on [plugins.danklinux.com](https://plugins.danklinux.com/)
+4. Monitor issues and feedback, updating your plugin as DankMaterialShell evolves
+
+## Best Practices
+
+- Keep plugins focused on a single purpose
+- Document all dependencies and permissions
+- Provide screenshots and usage examples
+- Handle errors gracefully
+- Test with different themes and layouts
+- Follow the official plugin structure and naming conventions
+
+## Contributing
+
+- Share ideas or request new plugin APIs in the [DankMaterialShell issue tracker](https://github.com/AvengeMedia/DankMaterialShell/issues)
+- Improve the developer experience by opening pull requests against the core repo (e.g., new helper components or documentation updates)
+- Document best practices in your own plugin READMEs to help the next wave of developers
+
+## Examples
+
+Reference implementations are available in the [dms-plugins](https://github.com/AvengeMedia/dms-plugins) repository. Study these to understand patterns and best practices.

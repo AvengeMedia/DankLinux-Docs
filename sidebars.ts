@@ -40,26 +40,30 @@ const sidebars: SidebarsConfig = {
       items: [
         {
           type: 'doc',
-          id: 'dankmaterialshell/index',
-          label: 'Overview',
+          id: 'dankmaterialshell/overview',
+          label: 'Overview & Architecture',
         },
         'dankmaterialshell/installation',
-        'dankmaterialshell/configuration',
+        'dankmaterialshell/upgrading',
         'dankmaterialshell/compositors',
-        'dankmaterialshell/theming',
+        {
+          type: 'category',
+          label: 'Themes',
+          items: [
+            'dankmaterialshell/application-themes',
+            'dankmaterialshell/custom-themes',
+          ],
+        },
+        'dankmaterialshell/keybinds-ipc',
         {
           type: 'category',
           label: 'Plugins',
           items: [
-            'dankmaterialshell/plugins',
-            'dankmaterialshell/plugins-first-party',
-            'dankmaterialshell/plugins-third-party',
-            'dankmaterialshell/plugins-dev',
+            'dankmaterialshell/plugins-overview',
+            'dankmaterialshell/plugins-types',
           ],
         },
-        'dankmaterialshell/ipc',
-        'dankmaterialshell/greeter',
-        'dankmaterialshell/troubleshooting',
+        'dankmaterialshell/advanced-configuration',
       ],
     },
     {

@@ -3,33 +3,56 @@ title: Installation
 sidebar_position: 2
 ---
 
-## Distribution Packages
+# Installation
 
-### Arch Linux
+This guide covers installation of DankMaterialShell across different Linux distributions and methods.
 
-#### Stable release
+## Dependencies
+
+DankMaterialShell requires:
+
+- **Quickshell** (required) - The core framework
+- **dgop** (optional) - System telemetry for resource widgets
+- **dsearch** (optional) - Filesystem search engine
+- **matugen** (optional) - Material Design color palette generation
+- **brightnessctl** (optional) - Display and keyboard backlight control
+- **wl-clipboard** + **cliphist** (optional) - Clipboard history
+- **cava** (optional) - Audio visualizer widget
+- **qt6-multimedia** (optional) - System sound feedback
+
+## Arch & Derivatives
+
+dms is available on the [AUR](https://aur.archlinux.org/), it is assumed that you have an aur helper installed such as [paru](https://aur.archlinux.org/packages/paru) or [yay](https://aur.archlinux.org/packages/yay).
+
+For the sake of consistency, we will use `paru` in the examples.
+
+### Stable Release
+
 ```bash
 paru -S dms-shell-bin
 ```
-#### Latest development build
+
+### Latest Development Build
+
 ```bash
 paru -S dms-shell-git
 ```
 
 These packages ship the shell, widgets, and CLI. Pair them with the `niri` or `hyprland` packages from the official repositories for a complete desktop stack.
 
-### Fedora / RHEL / Rocky / Alma
+## Fedora & Derivatives
 
 Enable the COPR repositories managed by the team to install prebuilt packages:
 
+### Stable Release
 
-#### Stable release
 ```bash
 sudo dnf copr enable avengemedia/dms
 sudo dnf install dms
 ```
 
-### Latest development build
+### Latest Development Build
+
 ```bash
 sudo dnf copr enable avengemedia/dms-git
 sudo dnf install dms
@@ -37,55 +60,88 @@ sudo dnf install dms
 
 The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `ghostty`, and other utilities used by the default configuration.
 
-### NixOS (via flakes)
+## NixOS
 
 NixOS has its own documentation, see [here](./nixos.mdx) for details.
 
-## Manual Installation (All Distros)
+## All Other Distributions
 
-Use the manual path when packaging for a new distribution or running a stripped-down environment:
+*Note: this guide doesn't cover compositor installation - as there are many, you need a compatible Wayland compositor for dms such as niri, Hyprland, sway, dwl, etc.*
 
-1. **Install Quickshell**
-   ```bash
-   # Arch
-   paru -S quickshell-git
+### 1. Install Essential Dependencies
 
-   # Fedora
-   sudo dnf copr enable avengemedia/danklinux
-   sudo dnf install quickshell-git
-   ```
-   Build from source on Debian-based systems where packages are unavailable.
+#### Quickshell
 
-2. **Clone the shell sources**
-   ```bash
-   mkdir -p ~/.config/quickshell
-   git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quickshell/dms
-   ```
+If your distribution does not provide a quickshell package, you'll need to build it from source. Quickshell requires:
 
-3. **Install the CLI manager**
-   ```bash
-   sudo sh -c "curl -L https://github.com/AvengeMedia/danklinux/releases/latest/download/dms-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').gz | gunzip | tee /usr/local/bin/dms > /dev/null && chmod +x /usr/local/bin/dms"
-   ```
+**Base dependencies:**
+- cmake, qt6base, qt6declarative, qtshadertools, pkg-config, cli11
+- Private Qt headers for qt6declarative (and qt6wayland on Qt < 6.10)
+- Qt 6.6 or newer
 
-4. **Install optional integrations** for full functionality (see below).
+**Key features and their dependencies:**
+- **Wayland support** (enabled by default) - qt6wayland, wayland, wayland-protocols
+- **Crash reporter** (recommended) - google-breakpad
+- **Jemalloc** (recommended for better memory management) - jemalloc
+- **System tray** - qt6dbus
+- **PAM authentication** - pam
 
-After completing the manual steps, launch the shell with `dms run`. Use `dms restart` or `dms kill` to manage the session during upgrades.
+For complete build instructions and feature flags, see the [Quickshell BUILD.md](https://git.outfoxxed.me/quickshell/quickshell/raw/branch/master/BUILD.md).
 
-## Optional Components
+#### AccountsService
 
-While DankMaterialShell runs without extras, the following tools unlock signature features:
+While not strictly required, it is required to persist certain user profile configurations such as profile picture.
 
-- `dgop`: Enables detailed system metrics, process lists, and temperature widgets.
-- `matugen`: Generates Material Design color palettes from your wallpapers.
-- `brightnessctl`: Controls display backlight and keyboard lighting.
-- `wl-clipboard` + `cliphist`: Drives clipboard history and copy helpers.
-- `cava`: Powers the audio visualizer widget.
-- `qt6-multimedia`: Provides system sound feedback.
+It is available in most distributions' repositories as `accountsservice`.
 
-Install them through your package manager or the DankLinux installer. Consult the [Plugins](/docs/dankmaterialshell/plugins) and [Widgets](#) pages to learn how these dependencies are used.
+```bash
+# Arch + Friends
+sudo pacman -S accountsservice
+# Fedora + Friends
+sudo dnf install accountsservice
+# Debian, Ubuntu + Friends
+sudo apt install accountsservice
+# openSUSE + Friends
+sudo zypper install accountsservice
+```
 
-## Post Install Checklist
+### 2. Clone the DMS Frontend (QML)
 
-- Pick your compositor and finish keybinding setup via the [Compositor Setup](/docs/dankmaterialshell/compositors) guide.
-- Review [Configuration](/docs/dankmaterialshell/configuration) to tailor widgets, theming, and system preferences.
-- Explore optional modules like the [Greeter](/docs/dankmaterialshell/greeter) and the [Plugin Registry](https://plugins.danklinux.com/) for additional functionality.
+```bash
+mkdir -p ~/.config/quickshell
+git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quickshell/dms
+```
+
+### 3. Install the DMS Backend (CLI)
+
+*Requires GO 1.24+*
+
+```bash
+mkdir ~/repos && cd ~/repos
+git clone https://github.com/AvengeMedia/danklinux.git
+cd danklinux
+make && sudo make install
+```
+
+### 4. Install Optional Integrations
+
+Install optional components for full functionality using your distribution's package manager:
+
+- `dgop` - Detailed system metrics and process lists
+- `dsearch` - Filesystem search engine
+- `matugen` - Material Design color palette generation
+- `brightnessctl` - Display backlight and keyboard lighting
+- `ddcutil` - i2c monitor backlight control
+- `wl-clipboard` + `cliphist` - Clipboard history
+- `cava` - Audio visualizer widget
+- `qt6-multimedia` - System sound feedback
+
+## Post Install
+
+After completing installation:
+
+1. Launch the shell with `dms run`
+2. Use `dms restart` or `dms kill` to manage the session during upgrades
+3. Configure your compositor - see the [Keybinds & IPC](keybinds-ipc) guide
+4. Customize appearance via [Themes](themes)
+5. Extend functionality with [Plugins](plugins)

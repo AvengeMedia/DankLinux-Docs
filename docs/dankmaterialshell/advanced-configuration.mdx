@@ -1,0 +1,144 @@
+---
+title: Advanced Configuration
+sidebar_position: 9
+---
+
+# Advanced Configuration
+
+DankMaterialShell supports several advanced configuration options through environment variables prefixed with `DMS_`.
+
+## Core Configuration
+
+### DMS_RUN_GREETER
+
+Enables greeter/login screen mode instead of regular shell mode. Used for display manager integration with greetd.
+
+```bash
+DMS_RUN_GREETER=1 dms run
+```
+
+### DMS_GREET_CFG_DIR
+
+Specifies custom configuration directory for greeter mode (defaults to `/etc/greetd/.dms`). Useful for isolating greeter settings from user settings.
+
+```bash
+DMS_GREET_CFG_DIR=/custom/path dms run
+```
+
+### DMS_SOCKET
+
+Custom Unix socket path for DMS internal services communication. Used by DMSService, NetworkService, SessionService, and PortalService for IPC.
+
+```bash
+DMS_SOCKET=/tmp/custom-dms.sock dms run
+```
+
+## Display & Rendering
+
+### DMS_DISABLE_MATUGEN
+
+Disables matugen dynamic theming system for troubleshooting or when using static themes. Set to `1` or `true` to disable.
+
+```bash
+DMS_DISABLE_MATUGEN=1 dms run
+```
+
+### DMS_DISABLE_LAYER
+
+Disables layer effects on popout widgets for performance or compatibility reasons. Set to `true` to disable layer rendering.
+
+```bash
+DMS_DISABLE_LAYER=true dms run
+```
+
+### DMS_DANKBAR_LAYER
+
+Controls Wayland layer for DankBar panel. Valid values: `bottom`, `overlay`, `background`, or `top` (default). Useful for window stacking issues.
+
+```bash
+DMS_DANKBAR_LAYER=overlay dms run
+```
+
+## System Integration
+
+### DMS_PREFERRED_BATTERY
+
+Forces specific battery device when multiple batteries detected (e.g., dual-battery laptops). Provide the UPower device name/path.
+
+```bash
+DMS_PREFERRED_BATTERY=/org/freedesktop/UPower/devices/battery_BAT0 dms run
+```
+
+### DMS_HIDE_TRAYIDS
+
+Comma-separated list of system tray icon IDs to hide from the system tray bar.
+
+```bash
+DMS_HIDE_TRAYIDS=discord,spotify,steam dms run
+```
+
+## Setting Environment Variables
+
+### Niri
+
+Add to your niri config:
+
+```kdl
+environment {
+  DMS_DISABLE_MATUGEN "1"
+  DMS_DANKBAR_LAYER "overlay"
+  DMS_HIDE_TRAYIDS "discord,spotify"
+}
+```
+
+### Hyprland
+
+Add to your Hyprland config:
+
+```conf
+env = DMS_DISABLE_MATUGEN,1
+env = DMS_DANKBAR_LAYER,overlay
+env = DMS_HIDE_TRAYIDS,discord,spotify
+```
+
+### Manual Launch
+
+Set variables before launching:
+
+```bash
+export DMS_DISABLE_MATUGEN=1
+export DMS_DANKBAR_LAYER=overlay
+dms run
+```
+
+## Use Cases
+
+**Disable dynamic theming:**
+```bash
+DMS_DISABLE_MATUGEN=1
+```
+Useful for performance testing or when using only static themes.
+
+**Hide system tray icons:**
+```bash
+DMS_HIDE_TRAYIDS=discord,slack,teams
+```
+Clean up system tray by hiding unwanted application icons.
+
+**Fix bar layering issues:**
+```bash
+DMS_DANKBAR_LAYER=overlay
+```
+If DankBar appears behind windows or other issues, adjust the Wayland layer.
+
+**Dual battery laptops:**
+```bash
+DMS_PREFERRED_BATTERY=/org/freedesktop/UPower/devices/battery_BAT0
+```
+Force DMS to use a specific battery when multiple are detected.
+
+**Performance tuning:**
+```bash
+DMS_DISABLE_LAYER=true
+```
+Disable layer effects to improve performance on lower-end hardware.
