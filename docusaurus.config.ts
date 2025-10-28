@@ -267,10 +267,10 @@ const config: Config = {
           label: 'Docs',
           position: 'right',
           // Active on /docs/* EXCEPT getting-started and plugins
-          activeBaseRegex: '^/docs(?!/getting-started|/dankmaterialshell/plugins).*',
+          activeBaseRegex: '^/docs(?!/getting-started|/dankmaterialshell/plugins-overview).*',
         },
         {
-          to: '/docs/dankmaterialshell/plugins',
+          to: '/docs/dankmaterialshell/plugins-overview',
           label: 'Plugins',
           position: 'right',
           activeBasePath: 'none',

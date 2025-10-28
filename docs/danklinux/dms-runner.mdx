@@ -1,0 +1,60 @@
+---
+title: DMS Runner
+sidebar_position: 5
+---
+
+# dms Runner
+
+The `dms` CLI is the companion to DankMaterialShell. It manages sessions, exposes IPC endpoints, and installs auxiliary components such as the greeter. DankLinux ships the binary automatically, but it can also be built from source.
+
+## Core Commands
+
+| Command | Description |
+| --- | --- |
+| `dms` | Launches the interactive TUI for managing settings, logs, plugins, and greeter options. |
+| `dms run` | Starts the shell in the foreground. Useful for debugging or first-run testing. |
+| `dms run -d` | Starts the shell as a background daemon (systemd user service when available). |
+| `dms restart` | Gracefully restarts the running shell, reloading widgets and plugins. |
+| `dms kill` | Terminates all running DMS processes. |
+| `dms ipc call ...` | Sends an IPC command. See the [IPC Command Reference](/docs/dankmaterialshell/keybinds-ipc) for available targets. |
+| `dms greeter install` | Installs and configures the greetd-based DMS greeter (interactive). |
+
+## Example Workflow
+
+```bash
+# Stop an existing session
+dms kill
+
+# Start the shell in debug mode
+DMS_LOG=debug dms run
+
+# Apply configuration changes by restarting
+dms restart
+
+# Toggle night mode via IPC
+dms ipc call night toggle
+```
+
+## Building from Source
+
+The CLI is written in Go. Build it manually if packaging for a new distribution or customizing installer behavior.
+
+```bash
+# Requires Go 1.24+
+make        # Builds the binary under bin/
+sudo make install  # Installs to /usr/local/bin/dms
+```
+
+For distribution maintainers, use the stripped-down target that disables auto-update and greeter helpers:
+
+```bash
+make dist  # Produces bin/dms-linux-amd64 and bin/dms-linux-arm64
+```
+
+## Integration Tips
+
+- **Systemd User Service:** DankLinux installs a user service to manage the daemonized shell automatically. Inspect it via `systemctl --user status dms`.
+- **Logging:** Combine with `journalctl --user -fu dms` to tail logs while testing new widgets or plugins.
+- **Scripting:** The CLI makes automation simple—wrap `dms ipc` commands inside shell scripts or systemd timers to toggle features on schedules.
+
+For more CLI internals and API surfaces, read through the [DankLinux README](https://github.com/AvengeMedia/danklinux) or browse the Go source tree (`cmd/cli`).

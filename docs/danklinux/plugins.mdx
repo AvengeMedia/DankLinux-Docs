@@ -1,0 +1,87 @@
+---
+title: Plugins
+sidebar_position: 6
+---
+
+# Plugin Development
+
+> For the in-depth DankMaterialShell plugin developer guide, head to [Plugins → Plugin Development](/docs/dankmaterialshell/plugins-types). The notes below focus on the broader tooling that DankLinux provides.
+
+DankLinux ships the tooling required to build, test, and distribute plugins for DankMaterialShell. This page focuses on the developer workflow, complementing the end-user [Plugin ecosystem overview](/docs/dankmaterialshell/plugins-overview).
+
+## Development Environment
+
+After installing DankLinux you already have:
+
+- The latest DankMaterialShell source under `~/.config/quickshell/dms`
+- Quickshell with QML tooling
+- The `dms` CLI for reloading the shell and sending IPC commands
+
+Optional but recommended:
+
+- `dgop` for system metrics widgets
+- `matugen` for dynamic theming testing
+- A Git repository to version control your plugin
+
+## Plugin Structure Recap
+
+Each plugin resides in its own directory under `~/.config/DankMaterialShell/plugins/<PluginName>/` with:
+
+```
+plugin.json        # Manifest
+<Widget>.qml       # Main component
+<Settings>.qml     # Optional settings UI
+*.js               # Optional helpers
+README.md          # (Recommended) usage notes
+```
+
+Refer to `plugin-schema.json` in the DMS repository for manifest validation rules.
+
+## Iterative Workflow
+
+1. Duplicate `PLUGINS/ExampleEmojiPlugin` or `PLUGINS/LauncherExample` for a working baseline.
+2. Modify the QML components, leveraging the `PluginComponent` and `PluginSettings` wrappers.
+3. Run `dms restart` to reload the shell after changes or toggle the plugin in Settings.
+4. Use the built-in log viewer (`dms` TUI) or `journalctl --user -fu dms` for debugging output.
+
+## Permissions & Capabilities
+
+Declare only the permissions you need in `plugin.json`:
+
+- `settings_write` – Required to persist settings via `PluginSettings`.
+- `process` – Future-proof flag for executing external commands.
+- `network` – Planned for network-bound plugins.
+
+Misconfigured permissions surface explanatory errors directly in the settings UI to help you debug quickly.
+
+## Launcher Plugins
+
+Launcher plugins extend the Spotlight search with custom triggers. Set `"type": "launcher"` in the manifest and provide a `trigger` (e.g., `"#"`). Implement `getItems()` and `executeItem()` in your QML component to return search results and define actions. See `PLUGINS/LauncherExample` for a full demonstration.
+
+## Testing & Packaging
+
+- **Local Testing:** Keep plugins in your `~/.config/DankMaterialShell/plugins` directory while iterating.
+- **Packaging for Distribution:** Create a dedicated repository with a `README`, screenshots, and installation instructions. Use Git tags for versioning.
+- **Installer Integration:** DankLinux intentionally does not overwrite your plugin directory, so user-installed plugins persist across updates.
+
+## Publishing to the Registry
+
+Submit community plugins to the [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry):
+
+1. Review the contribution guidelines (`CONTRIBUTING.md`).
+2. Add your plugin metadata (name, description, capabilities, screenshots).
+3. Open a pull request for review. Approved entries appear on [plugins.danklinux.com](https://plugins.danklinux.com/).
+
+## Automation Hooks
+
+Leverage the official plugins hosted at [AvengeMedia/dms-plugins](https://github.com/AvengeMedia/dms-plugins) as examples of advanced patterns:
+
+- **Dank Hooks:** Event-based scripting (e.g., on wallpaper change or volume change).
+- **Dank Actions:** Custom command buttons with pop-out UIs.
+- **Dank Battery Alerts & Pomodoro:** Showcase notification integration and timers.
+
+Clone the repository locally to inspect real-world PluginService usage, popout design, and settings persistence patterns.
+
+## Contributing to the Core
+
+Enhancements to the plugin framework itself—new permissions, registry improvements, additional helper components—should be proposed via issues or pull requests on the main DankMaterialShell repository. Document new capabilities in both the developer README and this wiki to keep plugin authors informed.
