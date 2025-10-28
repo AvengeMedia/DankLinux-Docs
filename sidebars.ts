@@ -16,26 +16,10 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     'index',
     'getting-started',
+    'dankinstall',
     {
       type: 'category',
-      label: 'DankLinux',
-      collapsed: false,
-      items: [
-        {
-          type: 'doc',
-          id: 'danklinux/index',
-          label: 'Overview',
-        },
-        'danklinux/dankinstall',
-        'danklinux/configuration',
-        'danklinux/distributions',
-        'danklinux/dms-runner',
-        'danklinux/plugins',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'DankMaterialShell',
+      label: 'DankMaterialShell (dms)',
       collapsed: false,
       items: [
         {
@@ -68,7 +52,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'DankSearch',
+      label: 'DankSearch (dsearch)',
       collapsed: false,
       items: [
         {
@@ -83,7 +67,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'DGOP',
+      label: 'DankGOP (dgop)',
       collapsed: false,
       items: [
         {

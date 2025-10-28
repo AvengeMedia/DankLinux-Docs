@@ -1,0 +1,106 @@
+---
+title: DankInstall
+sidebar_position: 2.5
+---
+
+# DankInstall
+
+dankinstall sets up the full [DankMaterialShell](./dankmaterialshell/overview.mdx) desktop experience - wallpapers, auto-theming, notifications, lock screen, and everything else you'd expect from a modern desktop. It installs packages and configures user-level settings for your compositor and terminal. If you already have niri or Hyprland set up, dankinstall can work around your existing config (and always backs things up before making changes).
+
+## Quickstart
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+This downloads and runs an interactive installer that guides you through setup for your distribution. You can also grab the [latest release](https://github.com/AvengeMedia/danklinux/releases) manually.
+
+## What Gets Installed
+
+### Core Components
+- **[DankMaterialShell](./dankmaterialshell/overview.mdx)** - The desktop environment built with quickshell
+- **Compositor** - Your choice of [niri](https://github.com/YaLTeR/niri) or [Hyprland](https://hypr.land)
+- **Terminal** - Ghostty, with Kitty and Alacritty as alternatives
+- **dms CLI** - Backend service providing dbus APIs, plugin management, and wayland protocol implementations
+
+### Desktop Utilities
+- **quickshell** - The QML-based shell framework powering DMS
+- **matugen** - Auto-theming engine that generates color schemes from wallpapers
+- **dgop** - System resource monitoring (CPU, RAM, GPU, temperatures)
+- **dsearch** - Blazingly fast filesystem search.
+- **cliphist** - Clipboard history manager
+- **grim + slurp** - Screenshot utilities for Wayland (Hyprland only)
+- **hyprpicker** - Color picker tool
+- **wl-clipboard** - Clipboard utilities for Wayland
+
+### System Packages
+Standard stuff: git, jq, curl, wget, openssh, NetworkManager, pipewire, fonts, and more. The exact package list varies by distribution.
+
+## Supported Distributions
+
+### Arch Linux & Derivatives
+
+**Supported:** Arch, ArchARM, Archcraft, CachyOS, EndeavourOS, Manjaro
+
+Uses `pacman` for system packages from official repos. Builds quickshell, matugen (pre-compiled binary), and dgop from AUR using `makepkg` - no AUR helper needed. Both niri and hyprland are available in official repos.
+
+If you're using archinstall, the `minimal` profile with `NetworkManager` for networking is a good starting point.
+
+### Fedora & Derivatives
+
+**Supported:** Fedora, Nobara, Fedora Asahi Remix
+
+Almost everything comes from official repos or COPR repositories (`avengemedia/danklinux`, `avengemedia/dms`, `solopasha/hyprland`, `yalter/niri`). Only dgop needs to be built from source with Go.
+
+dankinstall is tested on Workstation Edition but should work fine on any Fedora flavor. Fedora Asahi Remix hasn't been tested yet, but should work since all dependencies have arm64 variants.
+
+### Ubuntu
+
+**Supported:** Ubuntu 25.04+
+
+Fair warning: this one's slow. Most packages need to be compiled from source since Ubuntu repos don't have everything yet. Hyprland comes from a PPA (`ppa:cppiber/hyprland`), but quickshell, matugen, dgop, and niri all get built during installation. Go compiler comes from `ppa:longsleep/golang-backports`.
+
+### Debian
+
+**Supported:** Debian 13+ (Trixie), Debian Testing, Debian sid
+
+**niri only** - Debian doesn't support Hyprland yet. Like Ubuntu, expect a slower install since quickshell, matugen, dgop, and niri all need to be compiled from source.
+
+### openSUSE Tumbleweed
+
+Best package availability out of the box. Niri, hyprland, ghostty, and most tools are in standard repos via `zypper`. Only quickshell and matugen need to be built from source. Even includes xwayland-satellite for niri X11 app support.
+
+## What About Manual Building?
+
+The installer handles all build dependencies and manual building for you when packages aren't in repos:
+
+- **quickshell** (Ubuntu, Debian, openSUSE) - Built with cmake, needs Qt6 dev libraries. openSUSE uses special CFLAGS.
+- **matugen** (Ubuntu, Debian, Fedora, openSUSE) - Built from Rust source, needs cargo. Installs to `/usr/local/bin`.
+- **dgop** (All distros) - Built from Go source, no dependencies. Installs to `/usr/local/bin`.
+- **niri** (Ubuntu, Debian) - Built from Rust source with cargo. More complex build with multiple dependencies.
+
+## Managing Your Setup
+
+Use the `dms` command to manage everything:
+
+```bash
+# Interactive management TUI
+dms
+
+# Start DankMaterialShell
+dms run
+
+# Run as daemon
+dms run -d
+
+# Restart the shell
+dms restart
+
+# Kill running shell processes
+dms kill
+
+# Send IPC commands to running shell
+dms ipc <command>
+```
+
+The interactive TUI gives you a nice interface for managing plugins, checking status, and configuring settings.
