@@ -15,25 +15,34 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for Niri and Hyprland. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
+DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri and Hyprland. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
 
-## Niri Configuration
+## niri Configuration
 
-Niri uses the KDL configuration format. DankMaterialShell integrates seamlessly with Niri's scrollable tiling layout.
+niri uses the KDL configuration format. DankMaterialShell integrates seamlessly with niri's scrollable tiling layout.
 
 ### Quick Setup
 
-When you run `dms` for the first time, it will offer to install a recommended Niri configuration. Alternatively, you can manually configure Niri using the examples below.
+When you run `dms` for the first time, it will offer to install a recommended niri configuration. Alternatively, you can manually configure niri using the examples below.
 
 ### Key Configuration Sections
 
 #### Layer Rules
 
-Tell Niri to place the wallpaper on the overview.
+Tell niri to place the wallpaper on the overview.
 
 ```kdl
 layer-rule {
     match namespace="^quickshell$"
+    place-within-backdrop true
+}
+```
+
+If "Blur Layer" is enabled, you can place the blurred wallpaper on the overview.
+
+```kdl
+layer-rule {
+    match namespace="dms:blurwallpaper"
     place-within-backdrop true
 }
 ```

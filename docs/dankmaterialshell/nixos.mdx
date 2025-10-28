@@ -68,9 +68,9 @@ programs.dankMaterialShell.enable = true;
 
 That's it! Rebuild your system and DankMaterialShell will be installed with sensible defaults.
 
-## Niri Integration
+## niri Integration
 
-If you're using the Niri compositor, DankMaterialShell provides additional integration options including automatic keybindings and startup configuration.
+If you're using the niri compositor, DankMaterialShell provides additional integration options including automatic keybindings and startup configuration.
 
 ### Prerequisites
 
@@ -91,9 +91,9 @@ imports = [
 ];
 ```
 
-### Enable Niri Module
+### Enable niri Module
 
-Now you can import and use the Niri-specific DankMaterialShell module:
+Now you can import and use the niri-specific DankMaterialShell module:
 
 ```nix
 imports = [
@@ -102,14 +102,14 @@ imports = [
 ];
 ```
 
-Enable Niri integration features:
+Enable niri integration features:
 
 ```nix
 programs.dankMaterialShell = {
   enable = true;
   niri = {
     enableKeybinds = true;  # Automatic keybinding configuration
-    enableSpawn = true;      # Auto-start DMS with Niri
+    enableSpawn = true;      # Auto-start DMS with niri
   };
 };
 ```
@@ -194,7 +194,7 @@ programs.dankMaterialShell = {
 
 For a complete list of available options, check the module files:
 - Base module: `nix/default.nix` in the DankMaterialShell repository
-- Niri module: `nix/niri.nix` in the DankMaterialShell repository
+- niri module: `nix/niri.nix` in the DankMaterialShell repository
 
 ## Rebuilding
 
@@ -214,15 +214,15 @@ sudo nixos-rebuild switch
 
 Make sure you have either:
 - `enableSystemd = true` for systemd-based startup, or
-- `niri.enableSpawn = true` for Niri-managed startup
+- `niri.enableSpawn = true` for niri-managed startup
 
 ### Missing dependencies
 
 Each feature has its own dependency set. If a feature isn't working, ensure the corresponding `enable` option is set to `true`. For example, clipboard history requires `enableClipboard = true` which installs `cliphist` and `wl-clipboard`.
 
-### Custom keybindings conflict with Niri defaults
+### Custom keybindings conflict with niri defaults
 
-If `niri.enableKeybinds = true` conflicts with your existing Niri configuration, you can disable it and manually configure keybindings using the examples in the [Keybinds & IPC](keybinds-ipc) guide.
+If `niri.enableKeybinds = true` conflicts with your existing niri configuration, you can disable it and manually configure keybindings using the examples in the [Keybinds & IPC](keybinds-ipc) guide.
 
 ## Next Steps
 
