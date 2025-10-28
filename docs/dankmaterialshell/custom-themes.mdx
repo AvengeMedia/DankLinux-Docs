@@ -4,6 +4,8 @@ sidebar_position: 4.1
 ---
 
 import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={`████████╗██╗  ██╗███████╗███╗   ███╗███████╗███████╗
@@ -15,11 +17,11 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell supports custom color themes using Material Design 3 color schemes. You can create your own themes or use pre-made ones.
+DankMaterialShell supports custom color themes using arbitrary color schemes. You can create your own themes or use pre-made ones.
 
 ## Theme Structure
 
-Custom themes are defined in JSON files with complete Material Design 3 color specifications. Themes can have separate `dark` and `light` variants, or use a single color scheme for both modes.
+Custom themes are defined in JSON files that generally map to [matugen color keywords](https://github.com/InioX/matugen/wiki/Configuration#colors). Themes can have separate `dark` and `light` variants, or use a single color scheme for both modes.
 
 ### Complete Theme Example
 
@@ -102,6 +104,15 @@ For themes without light/dark variants, define colors at the top level:
 - `surfaceTint` - Tint color applied to surfaces (usually derived from primary)
 
 ### Surface Colors
+
+<ThemedImage
+  alt="Surface Colors Hierarchy"
+  sources={{
+    light: useBaseUrl('/img/surfacecolorslight.jpg'),
+    dark: useBaseUrl('/img/surfacecolors.jpg'),
+  }}
+/>
+
 - `surface` - Default surface color for cards and panels
 - `surfaceText` - Primary text color on surface backgrounds
 - `surfaceVariant` - Alternate surface for subtle differentiation
