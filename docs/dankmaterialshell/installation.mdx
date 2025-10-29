@@ -19,7 +19,11 @@ This guide covers installation of DankMaterialShell across different Linux distr
 
 ## Dependencies
 
-DankMaterialShell requires:
+:::note
+
+Only **Quickshell** is required. All other dependencies are optional and enable specific features.
+
+:::
 
 - **Quickshell** (required) - The core framework
 - **dgop** (optional) - System telemetry for resource widgets
@@ -72,11 +76,19 @@ The COPR repositories also provide companion packages such as `quickshell-git`, 
 
 ## NixOS
 
-NixOS has its own documentation, see [here](./nixos.mdx) for details.
+:::tip
+
+NixOS has dedicated documentation. See the [NixOS installation guide](./nixos) for flake-based setup.
+
+:::
 
 ## All Other Distributions
 
-*Note: this guide doesn't cover compositor installation - as there are many, you need a compatible Wayland compositor for dms such as niri, Hyprland, sway, dwl, etc.*
+:::warning
+
+This guide doesn't cover compositor installation. You need a compatible Wayland compositor (niri, Hyprland, sway, dwl, etc.).
+
+:::
 
 ### 1. Install Essential Dependencies
 
@@ -100,9 +112,11 @@ For complete build instructions and feature flags, see the [Quickshell BUILD.md]
 
 #### AccountsService
 
-While not strictly required, it is required to persist certain user profile configurations such as profile picture.
+:::note
 
-It is available in most distributions' repositories as `accountsservice`.
+AccountsService is needed to persist user profile configurations such as profile pictures. Available in most repositories as `accountsservice`.
+
+:::
 
 ```bash
 # Arch + Friends

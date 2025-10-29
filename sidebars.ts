@@ -52,6 +52,20 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'DankGreeter (dgreeter)',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'dankgreeter/index',
+          label: 'Overview',
+        },
+        'dankgreeter/installation',
+        'dankgreeter/configuration',
+      ],
+    },
+    {
+      type: 'category',
       label: 'DankGOP (dgop)',
       collapsed: false,
       items: [

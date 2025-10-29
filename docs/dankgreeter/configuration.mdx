@@ -1,0 +1,302 @@
+---
+title: Configuration
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║  ███╗██████╔╝█████╗  █████╗     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══╝     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗╚██████╔╝██║  ██║███████╗███████╗   ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+                                                                            `}
+/>
+
+# Configuration
+
+## Custom Compositor Configuration
+
+:::tip
+
+Custom compositor configurations allow you to configure displays (resolution, refresh rate, position, etc.) specifically for the greeter.
+
+:::
+
+### niri
+
+1. Create a baseline configuration file at `/etc/greetd/dms-niri.kdl`:
+  ```bash
+  sudo tee /etc/greetd/niri.kdl > /dev/null << 'EOF'
+  hotkey-overlay {
+      skip-at-startup
+  }
+
+  environment {
+      DMS_RUN_GREETER "1"
+  }
+
+  gestures {
+    hot-corners {
+      off
+    }
+  }
+
+  layout {
+    background-color "#000000"
+  }
+  EOF
+  ```
+
+2. Update the command in `/etc/greetd/config.toml to use this configuration
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command niri -C /etc/greetd/niri.kdl"
+  #...existing configuration
+  ```
+
+3. Edit `/etc/greetd/niri.kdl` however you see fit, the greeter will run under this compositor configuration
+
+### Hyprland
+
+1. Create a baseline configuration file at `/etc/greetd/hypr.conf`:
+  ```bash
+  sudo tee /etc/greetd/hypr.conf > /dev/null << 'EOF'
+  env = DMS_RUN_GREETER,1
+
+  misc {
+      disable_hyprland_logo = true
+  }
+  EOF
+  ```
+
+2. Update the command in `/etc/greetd/config.toml to use this configuration
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command hyprland -C /etc/greetd/hypr.conf"
+  #...existing configuration
+  ```
+
+3. Edit `/etc/greetd/hypr.conf` however you see fit, the greeter will run under this compositor configuration
+
+
+### Sway
+
+1. Create a baseline configuration file at `/etc/greetd/sway`:
+  ```bash
+  sudo tee /etc/greetd/sway > /dev/null << 'EOF'
+  # Sway greeter configuration
+  # The exec command to launch the greeter is automatically appended by dms-greeter
+  EOF
+  ```
+
+2. Update the command in `/etc/greetd/config.toml to use this configuration
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command sway -C /etc/greetd/sway"
+  #...existing configuration
+  ```
+
+3. Edit `/etc/greetd/sway` however you see fit, the greeter will run under this compositor configuration
+
+## Syncing with DMS
+
+You can automatically sync the system greeter with the logged in user's wallpaper, themes, fonts, etc. by following these steps.
+
+1. Add your user to the `greeter` group
+  ```bash
+  sudo usermod -aG greeter <username>
+  ```
+
+:::note
+
+You will have to logout or reboot for group change to take effect
+
+:::
+
+2. Create configuration symlinks:
+
+:::note
+
+Make sure you have read/execute permissions on your home directory and DMS config directories for the `greeter` group.
+
+:::
+
+  ```bash
+  ln -sf ~/.config/DankMaterialShell/settings.json /var/cache/dms-greeter/settings.json
+  ln -sf ~/.local/state/DankMaterialShell/session.json /var/cache/dms-greeter/session.json
+  ln -sf ~/.cache/quickshell/dankshell/dms-colors.json /var/cache/dms-greeter/colors.json
+  ```
+
+## Manual Configuration
+
+The greeter uses three main configuration files located in `/var/cache/dms-greeter/` (or your custom `DMS_GREET_CFG_DIR`):
+
+- `settings.json` - Appearance, behavior, and widget settings
+- `session.json` - Wallpaper configuration
+- `colors.json` - Color scheme configuration
+
+:::note
+
+These files are read-only by the greeter, not written or updated.
+
+:::
+
+### Colors
+
+Colors can be configured in the exact same way described in [DankMaterialShell Custom Themes](/docs/dankmaterialshell/custom-themes)
+
+### Settings
+
+The `settings.json` file controls the greeter's appearance and behavior. Here's a complete reference:
+
+#### Clock & Time
+
+```json
+{
+  "use24HourClock": true,
+  "showSeconds": false,
+  "lockDateFormat": ""
+}
+```
+
+- `use24HourClock`: Use 24-hour format (`true`) or 12-hour format (`false`)
+- `showSeconds`: Display seconds in the clock
+- `lockDateFormat`: Custom Qt date format string (empty = `Locale.LongFormat`)
+
+#### Weather
+
+```json
+{
+  "weatherEnabled": true,
+  "weatherLocation": "New York, NY",
+  "weatherCoordinates": "40.7128,-74.0060",
+  "useAutoLocation": false,
+  "useFahrenheit": false
+}
+```
+
+- `weatherEnabled`: Show weather widget in top-right
+- `weatherLocation`: Display name for location
+- `weatherCoordinates`: `"latitude,longitude"` string
+- `useAutoLocation`: Auto-detect location via IP geolocation
+- `useFahrenheit`: Use Fahrenheit (`true`) or Celsius (`false`)
+
+#### Appearance
+
+```json
+{
+  "currentThemeName": "blue",
+  "customThemeFile": "",
+  "matugenScheme": "scheme-tonal-spot",
+  "iconTheme": "System Default",
+  "fontFamily": "Inter Variable",
+  "fontWeight": 400,
+  "fontScale": 1.0,
+  "cornerRadius": 12,
+  "widgetBackgroundColor": "sch",
+  "surfaceBase": "s",
+  "animationSpeed": 2
+}
+```
+
+- `currentThemeName`: Built-in theme name (`"blue"`, `"red"`, `"green"`, etc.)
+- `customThemeFile`: Path to custom matugen JSON theme file
+- `matugenScheme`: Matugen color scheme variant
+- `iconTheme`: Icon theme name for DankIcon fallbacks
+- `fontFamily`: Primary font family
+- `fontWeight`: Font weight (`400` = normal, `700` = bold)
+- `fontScale`: Font size multiplier (`1.0` = default)
+- `cornerRadius`: Corner radius in pixels for UI elements
+- `widgetBackgroundColor`: Widget background scheme (`"sch"`, `"s"`, `"sv"`)
+- `surfaceBase`: Surface base color scheme (`"s"`, `"sv"`, `"sb"`)
+- `animationSpeed`: Animation speed (`0` = fastest, `4` = slowest, `2` = default)
+
+#### Complete Example
+
+`/var/cache/dms-greeter/settings.json`:
+
+```json
+{
+  "use24HourClock": true,
+  "showSeconds": false,
+  "lockDateFormat": "",
+  "lockScreenShowPowerActions": true,
+  "useFahrenheit": false,
+  "weatherLocation": "New York, NY",
+  "weatherCoordinates": "40.7128,-74.0060",
+  "useAutoLocation": false,
+  "weatherEnabled": true,
+  "currentThemeName": "blue",
+  "customThemeFile": "",
+  "matugenScheme": "scheme-tonal-spot",
+  "nightModeEnabled": false,
+  "iconTheme": "System Default",
+  "fontFamily": "Inter Variable",
+  "fontWeight": 400,
+  "fontScale": 1.0,
+  "cornerRadius": 12,
+  "widgetBackgroundColor": "sch",
+  "surfaceBase": "s",
+  "animationSpeed": 2
+}
+```
+
+### Wallpapers
+
+The `session.json` file controls wallpaper settings.
+
+#### Basic Configuration
+
+```json
+{
+  "wallpaperPath": "/path/to/wallpaper.jpg",
+  "wallpaperFillMode": "PreserveAspectCrop"
+}
+```
+
+- `wallpaperPath`: Default wallpaper for all monitors
+- `wallpaperFillMode`: Qt fill mode
+  - `"PreserveAspectCrop"` - Crop to fill (default)
+  - `"PreserveAspectFit"` - Fit within bounds
+  - `"Stretch"` - Stretch to fill
+
+#### Per-Monitor Wallpapers
+
+```json
+{
+  "wallpaperPath": "/path/to/default.jpg",
+  "wallpaperFillMode": "PreserveAspectCrop",
+  "monitorWallpapers": {
+    "DP-1": "/path/to/monitor1-wallpaper.jpg",
+    "DP-2": "/path/to/monitor2-wallpaper.jpg",
+    "HDMI-A-1": "#1a1a1a"
+  }
+}
+```
+
+- `monitorWallpapers`: Per-monitor wallpaper overrides
+  - Key: Monitor name from `niri msg outputs` or `hyprctl monitors`
+  - Value formats:
+    - File paths: `/path/to/image.jpg`
+    - Solid colors: `#RRGGBB` format
+    - Wallpaper Engine: `we:workshop_id` format
+
+#### Complete Example
+
+`/var/cache/dms-greeter/session.json`:
+
+```json
+{
+  "wallpaperPath": "/usr/share/backgrounds/default.jpg",
+  "wallpaperFillMode": "PreserveAspectCrop",
+  "monitorWallpapers": {
+    "DP-1": "/home/user/Pictures/wallpaper-main.png",
+    "DP-2": "#2e3440",
+    "HDMI-A-1": "/home/user/Pictures/wallpaper-side.jpg"
+  }
+}
+```
+

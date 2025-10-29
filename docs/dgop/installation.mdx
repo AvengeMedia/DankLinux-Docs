@@ -17,7 +17,11 @@ import Hero from '@site/src/components/Hero';
 
 # DGOP Installation
 
-`dgop` has zero dependencies and can be compiled to a single binary.
+:::note
+
+`dgop` has zero dependencies and compiles to a single static binary.
+
+:::
 
 ### Distribution Packages
 
@@ -26,7 +30,7 @@ import Hero from '@site/src/components/Hero';
 paru -S dgop-bin
 ```
 
-#### Fedora/RHEL
+#### Fedora
 ```bash
 sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dgop
@@ -87,10 +91,11 @@ For enhanced functionality:
 
 ## Integration with DMS
 
-If you have DankMaterialShell installed, installing dgop will enable additional features:
+:::tip
 
-- **System Widgets**: CPU, RAM, GPU, Disk, and Network widgets
-- **Process Monitor**: Process overview sorted by cpu/ram usage
+DankMaterialShell users gain access to system widgets (CPU, RAM, GPU, Disk, Network) and process monitoring when dgop is installed.
+
+:::
 
 ## Next Steps
 

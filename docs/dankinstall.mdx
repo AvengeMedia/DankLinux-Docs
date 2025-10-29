@@ -23,7 +23,11 @@ import Hero from '@site/src/components/Hero';
 curl -fsSL https://install.danklinux.com | sh
 ```
 
-This downloads and runs an interactive installer that guides you through setup for your distribution. You can also grab the [latest release](https://github.com/AvengeMedia/danklinux/releases) manually.
+:::tip
+
+The installer is interactive and guides you through setup for your distribution. You can also download the [latest release](https://github.com/AvengeMedia/danklinux/releases) manually.
+
+:::
 
 ## What Gets Installed
 
@@ -68,13 +72,23 @@ dankinstall is tested on Workstation Edition but should work fine on any Fedora 
 
 **Supported:** Ubuntu 25.04+
 
-Fair warning: this one's slow. Most packages need to be compiled from source since Ubuntu repos don't have everything yet. Hyprland comes from a PPA (`ppa:cppiber/hyprland`), but quickshell, matugen, dgop, and niri all get built during installation. Go compiler comes from `ppa:longsleep/golang-backports`.
+:::warning
+
+Installation is slow. Most packages compile from source since Ubuntu repos lack recent versions. Expect 15-30 minutes depending on hardware.
+
+:::
+
+Hyprland comes from a PPA (`ppa:cppiber/hyprland`), but quickshell, matugen, dgop, and niri all get built during installation. Go compiler comes from `ppa:longsleep/golang-backports`.
 
 ### Debian
 
 **Supported:** Debian 13+ (Trixie), Debian Testing, Debian sid
 
-**niri only** - Debian doesn't support Hyprland yet. Like Ubuntu, expect a slower install since quickshell, matugen, dgop, and niri all need to be compiled from source.
+:::note
+
+**niri only** - Debian doesn't support Hyprland yet. Expect longer install times due to source compilation.
+
+:::
 
 ### openSUSE Tumbleweed
 
