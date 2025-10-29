@@ -66,6 +66,16 @@
   }
 }
 
+/* ===== BACKGROUND PATTERN OVERLAY ===== */
+.backgroundPattern {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+
 /* ===== GRID OVERLAY ===== */
 .gridOverlay {
   position: fixed;
@@ -77,6 +87,42 @@
   background-size: 50px 50px;
   pointer-events: none;
 }
+
+.gridOverlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(208, 188, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(208, 188, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+
+  /* Only show brighter grid at cursor position */
+  mask-image: radial-gradient(
+    circle 500px at var(--mouse-x) var(--mouse-y),
+    black 0%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 500px at var(--mouse-x) var(--mouse-y),
+    black 0%,
+    transparent 100%
+  );
+}
+
+/* .gridOverlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle 223px at var(--mouse-x) var(--mouse-y),
+    rgba(208, 188, 255, 0.008) 0%,
+    transparent 36%
+  );
+  pointer-events: none;
+  mix-blend-mode: screen;
+} */
 
 /* ===== CONTENT WRAPPER ===== */
 .content {
@@ -91,6 +137,8 @@
   align-items: center;
   justify-content: center;
   padding: 8rem 2rem 4rem;
+  position: relative;
+  transition: background 0.3s ease;
 }
 
 .heroContent {
@@ -357,6 +405,8 @@
   padding: 8rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  transition: background 0.3s ease;
 }
 
 .sectionHeader {
@@ -467,6 +517,8 @@
   padding: 8rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  transition: background 0.3s ease;
 }
 
 .screenshotsGrid {
@@ -607,6 +659,8 @@
   padding: 8rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  transition: background 0.3s ease;
 }
 
 .showcaseGrid {
@@ -704,5 +758,17 @@
 
   .showcaseGrid {
     grid-template-columns: 1fr;
+  }
+
+  /* Disable mouse effects on mobile */
+  .gridOverlay::before {
+    display: none;
+  }
+}
+
+/* Disable mouse effects on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .gridOverlay::before {
+    display: none;
   }
 }

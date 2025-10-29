@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
 export default function Home() {
-  const { siteConfig } = useDocusaurusContext();
   const [typed, setTyped] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const [mounted, setMounted] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
-  
 
   useEffect(() => {
-    setMounted(true);
+    const handleMouseMove = (e: MouseEvent) => {
+      // Set CSS custom properties for basic mouse tracking
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   useEffect(() => {
@@ -38,6 +41,9 @@ export default function Home() {
       title="Modern Desktop Environment"
       description="A modern Wayland desktop environment with beautiful widgets and powerful monitoring">
       <div className={styles.container}>
+        {/* Background pattern overlay */}
+        <div className={styles.backgroundPattern}></div>
+        
         {/* Animated gradient background orbs */}
         <div className={styles.gradientBackground}>
           <div className={styles.gradientOrb1}></div>
@@ -45,7 +51,7 @@ export default function Home() {
           <div className={styles.gradientOrb3}></div>
         </div>
 
-        {/* Animated grid overlay */}
+        {/* Animated grid overlay with basic mouse tracking */}
         <div className={styles.gridOverlay}></div>
 
         {/* Main Content */}
@@ -132,32 +138,32 @@ export default function Home() {
               <FeatureCard
                 icon=""
                 title="DankMaterialShell"
-                description="20+ widgets with dynamic theming and beautiful animations"
+                description="A modern and beautiful desktop shell with dynamic theming and smooth animations"
               />
               <FeatureCard
                 icon=""
-                title="System Monitoring"
-                description="Real-time metrics for CPU, memory, GPU, and network"
+                title="Dank Installer"
+                description="One line installer for an automated quick and easy setup"
               />
               <FeatureCard
                 icon=""
-                title="Wayland Native"
-                description="Optimized for niri and Hyprland compositors"
+                title="Dank GOP"
+                description="Stateless system and process monitoring for CPU, memory, GPU, and network"
               />
               <FeatureCard
                 icon=""
-                title="One-Line Install"
-                description="Get started in seconds with automated setup"
+                title="Dank Greeter"
+                description="An aesthetically pleasing greetd greeter for your desktop"
+              />
+              <FeatureCard
+                icon=""
+                title="Dank Search"
+                description="Dsearch is a native fast and efficient file system search tool"
               />
               <FeatureCard
                 icon=""
                 title="Fully Customizable"
-                description="Plugins, themes, and configs to make it yours"
-              />
-              <FeatureCard
-                icon=""
-                title="Open Source"
-                description="MIT licensed, community-driven development"
+                description="Plugins, widgets, themes, and configs to make it yours"
               />
             </div>
           </section>

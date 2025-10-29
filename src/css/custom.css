@@ -68,6 +68,10 @@ body.docs-page .navbar__link {
   color: rgba(255, 255, 255, 0.72);
 }
 
+body.docs-page .navbar__link--active {
+  color: var(--dank-purple-light) !important;
+}
+
 /* Light mode navbar overrides */
 html[data-theme='light'] body.landing-page,
 html[data-theme='light'] body.docs-page {
