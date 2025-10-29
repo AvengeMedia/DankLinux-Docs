@@ -138,7 +138,7 @@ export default function Home() {
               <FeatureCard
                 icon=""
                 title="DankMaterialShell"
-                description="A modern and beautiful desktop shell with dynamic theming and beautiful animations"
+                description="A modern and beautiful desktop shell with dynamic theming and smooth animations"
               />
               <FeatureCard
                 icon=""
