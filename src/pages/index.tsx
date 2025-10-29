@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
 export default function Home() {
-  const { siteConfig } = useDocusaurusContext();
   const [typed, setTyped] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const [mounted, setMounted] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
-  
 
   useEffect(() => {
-    setMounted(true);
+    const handleMouseMove = (e: MouseEvent) => {
+      // Set CSS custom properties for basic mouse tracking
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   useEffect(() => {
@@ -38,6 +41,9 @@ export default function Home() {
       title="Modern Desktop Environment"
       description="A modern Wayland desktop environment with beautiful widgets and powerful monitoring">
       <div className={styles.container}>
+        {/* Background pattern overlay */}
+        <div className={styles.backgroundPattern}></div>
+        
         {/* Animated gradient background orbs */}
         <div className={styles.gradientBackground}>
           <div className={styles.gradientOrb1}></div>
@@ -45,7 +51,7 @@ export default function Home() {
           <div className={styles.gradientOrb3}></div>
         </div>
 
-        {/* Animated grid overlay */}
+        {/* Animated grid overlay with basic mouse tracking */}
         <div className={styles.gridOverlay}></div>
 
         {/* Main Content */}
