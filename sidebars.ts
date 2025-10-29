@@ -52,7 +52,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'DankGreeter (dgreeter)',
+      label: 'DankGreeter (dms-greeter)',
       collapsed: false,
       items: [
         {
