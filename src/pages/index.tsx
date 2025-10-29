@@ -138,32 +138,32 @@ export default function Home() {
               <FeatureCard
                 icon=""
                 title="DankMaterialShell"
-                description="20+ widgets with dynamic theming and beautiful animations"
+                description="A modern and beautiful desktop shell with dynamic theming and beautiful animations"
               />
               <FeatureCard
                 icon=""
-                title="System Monitoring"
-                description="Real-time metrics for CPU, memory, GPU, and network"
+                title="Dank Installer"
+                description="One line installer for an automated quick and easy setup"
               />
               <FeatureCard
                 icon=""
-                title="Wayland Native"
-                description="Optimized for niri and Hyprland compositors"
+                title="Dank GOP"
+                description="Stateless system and process monitoring for CPU, memory, GPU, and network"
               />
               <FeatureCard
                 icon=""
-                title="One-Line Install"
-                description="Get started in seconds with automated setup"
+                title="Dank Greeter"
+                description="An aesthetically pleasing greetd greeter for your desktop"
+              />
+              <FeatureCard
+                icon=""
+                title="Dank Search"
+                description="Dsearch is a native fast and efficient file system search tool"
               />
               <FeatureCard
                 icon=""
                 title="Fully Customizable"
-                description="Plugins, themes, and configs to make it yours"
-              />
-              <FeatureCard
-                icon=""
-                title="Open Source"
-                description="MIT licensed, community-driven development"
+                description="Plugins, widgets, themes, and configs to make it yours"
               />
             </div>
           </section>
