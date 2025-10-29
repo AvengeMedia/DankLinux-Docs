@@ -87,6 +87,10 @@ Comma-separated list of system tray icon IDs to hide from the system tray bar.
 DMS_HIDE_TRAYIDS=discord,spotify,steam dms run
 ```
 
+```bash
+DMS_DWL_TAG_COUNT=5 dms run
+```
+
 ## Setting Environment Variables
 
 ### niri
@@ -109,6 +113,16 @@ Add to your Hyprland config:
 env = DMS_DISABLE_MATUGEN,1
 env = DMS_DANKBAR_LAYER,overlay
 env = DMS_HIDE_TRAYIDS,discord,spotify
+```
+
+### Sway
+
+Add to your Sway config:
+
+```conf
+set $DMS_DISABLE_MATUGEN 1
+set $DMS_DANKBAR_LAYER overlay
+set $DMS_HIDE_TRAYIDS discord,spotify
 ```
 
 ### Manual Launch

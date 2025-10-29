@@ -102,6 +102,21 @@ dsearch search "TODO" --field body
 
 # Search titles (for supported file types)
 dsearch search "introduction" --field title
+
+# Search EXIF metadata in images
+dsearch search "mountain" --field body
+```
+
+#### Virtual Folder Search
+
+Search within specific directories:
+
+```bash
+# Search all files in a specific folder
+dsearch search "*" --folder /home/user/Pictures
+
+# Combine with other filters
+dsearch search "vacation" --folder /home/user/Photos --ext .jpg
 ```
 
 ### Fuzzy Matching
@@ -252,6 +267,72 @@ dsearch search "" --ext .md --sort filename
 dsearch search "report" --ext .pdf --field filename
 ```
 
+### Search Photos by EXIF Metadata
+
+DankSearch can filter and search photos using EXIF metadata extracted from images.
+
+#### Camera Make and Model
+
+```bash
+# Find all photos from Canon cameras
+dsearch search "*" --ext .jpg --exif-make Canon
+
+# Find photos from a specific camera model
+dsearch search "*" --exif-model "Canon EOS 5D"
+
+# Combine with folder search
+dsearch search "*" --folder /home/user/Photos --exif-make Nikon
+```
+
+#### Sort by Date Taken
+
+```bash
+# Sort photos by date taken (newest first)
+dsearch search "*" --ext .jpg --sort exif_date --desc
+
+# Sort oldest first
+dsearch search "*" --ext .jpg --sort exif_date --desc=false
+```
+
+#### Camera Settings
+
+```bash
+# Find low-light shots (high ISO range)
+dsearch search "*" --exif-min-iso 1600 --exif-max-iso 6400
+
+# Find portrait shots (typical focal length range)
+dsearch search "*" --exif-min-focal-len 50 --exif-max-focal-len 135
+
+# Find wide aperture shots (shallow depth of field)
+dsearch search "*" --exif-min-aperture 1.4 --exif-max-aperture 2.8
+```
+
+#### Date Range
+
+```bash
+# Photos taken in a specific date range
+dsearch search "*" --exif-date-after "2024-06-01T00:00:00Z" --exif-date-before "2024-08-31T23:59:59Z"
+
+# Summer vacation photos from a specific location
+dsearch search "vacation" --folder /home/user/Photos/2024 \
+  --exif-date-after "2024-06-01T00:00:00Z" \
+  --exif-date-before "2024-08-31T23:59:59Z"
+```
+
+#### GPS Location
+
+```bash
+# GPS location filtering (bounding box)
+# Example: Photos taken in New York City area
+dsearch search "*" --exif-lat-min 40.0 --exif-lat-max 41.0 \
+  --exif-lon-min -74.0 --exif-lon-max -73.0
+
+# Combine location with camera settings
+dsearch search "*" --exif-lat-min 40.7 --exif-lat-max 40.8 \
+  --exif-lon-min -74.0 --exif-lon-max -73.9 \
+  --exif-make Canon --sort exif_date
+```
+
 ## Configuration File
 
 Override the default config location:
@@ -285,11 +366,18 @@ dsearch version
 - Use `--field filename` to skip content matching
 - Add `--ext` filters to narrow results
 - Keep `--limit` reasonable for large result sets
+- Use `--folder` to restrict search scope to specific directories
+- Combine EXIF filters to narrow photo searches efficiently
 
 **Efficient indexing:**
 - Use `index sync` instead of `generate` for updates
 - Configure `exclude_dirs` to skip unnecessary directories
 - Adjust `worker_count` in config based on CPU cores
+
+**Photo searches:**
+- Use `--folder` to limit searches to photo directories
+- Combine `--ext .jpg` with EXIF filters for better performance
+- Use `--sort exif_date` for chronological photo browsing
 
 ## Troubleshooting
 

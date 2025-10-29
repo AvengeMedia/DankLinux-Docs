@@ -599,3 +599,98 @@ figcaption {
   color: rgba(0, 0, 0, 0.6);
 }
 
+/* ========================================
+   IMAGE ZOOM (FULLSCREEN OVERLAY)
+   ======================================== */
+
+/* Images use medium-zoom for fullscreen overlay */
+.markdown img {
+  cursor: zoom-in;
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.2s ease;
+}
+
+/* Dark mode - dark overlay background */
+[data-theme='dark'] .medium-zoom-overlay {
+  background: rgba(17, 17, 17, 0.95) !important;
+}
+
+/* Light mode - light overlay background */
+[data-theme='light'] .medium-zoom-overlay {
+  background: rgba(248, 247, 251, 0.95) !important;
+}
+
+/* Smooth transitions */
+.medium-zoom-overlay,
+.medium-zoom-image {
+  transition: opacity 0.3s ease, transform 0.3s ease !important;
+}
+
+/* Ensure overlay is above everything */
+.medium-zoom-overlay {
+  z-index: 999 !important;
+}
+
+.medium-zoom-image--opened {
+  z-index: 1000 !important;
+  cursor: zoom-out;
+}
+
+/* ========================================
+   PANZOOM CONTROLS (for SVG/Mermaid diagrams)
+   ======================================== */
+
+/* Make Mermaid diagrams zoomable with cursor indicator */
+.mermaid svg {
+  cursor: grab;
+  transition: transform 0.1s ease;
+}
+
+.mermaid svg:active {
+  cursor: grabbing;
+}
+
+/* Panzoom wrapper styling - only for Mermaid diagrams */
+.mermaid[style*="overflow"],
+.docusaurus-mermaid-container > div[style*="overflow: hidden"] {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(208, 188, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin: 1rem 0;
+}
+
+[data-theme='light'] .mermaid[style*="overflow"],
+[data-theme='light'] .docusaurus-mermaid-container > div[style*="overflow: hidden"] {
+  border-color: rgba(128, 90, 213, 0.2);
+  background: rgba(248, 247, 251, 0.5);
+}
+
+/* Hint text for panzoom interaction on Mermaid only */
+.docusaurus-mermaid-container > div[style*="overflow: hidden"]::before {
+  content: "Scroll to zoom • Drag to pan • Double-click to reset";
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  color: rgba(208, 188, 255, 0.6);
+  background: rgba(17, 17, 17, 0.8);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+
+.docusaurus-mermaid-container > div[style*="overflow: hidden"]:hover::before {
+  opacity: 1;
+}
+
+[data-theme='light'] .docusaurus-mermaid-container > div[style*="overflow: hidden"]::before {
+  color: rgba(128, 90, 213, 0.8);
+  background: rgba(248, 247, 251, 0.9);
+  border: 1px solid rgba(128, 90, 213, 0.2);
+}
+

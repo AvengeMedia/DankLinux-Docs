@@ -232,6 +232,18 @@ const config: Config = {
         explicitSearchResultPath: true,
       },
     ],
+    [
+      require.resolve('plugin-image-zoom'),
+      {
+        id: 'image-zoom-fullscreen',
+      },
+    ],
+    [
+      require.resolve('@actinc/docusaurus-plugin-panzoom'),
+      {
+        id: 'mermaid-panzoom',
+      },
+    ],
   ],
 
   themeConfig: {
@@ -240,6 +252,15 @@ const config: Config = {
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
+    },
+    // Panzoom configuration for Mermaid diagrams only (images use fullscreen zoom)
+    zoom: {
+      selectors: [
+        'div.mermaid[data-processed="true"]',
+        'div.docusaurus-mermaid-container',
+      ],
+      wrap: true,
+      timeout: 1000,
     },
     // Algolia DocSearch configuration (placeholder for future setup)
     // algolia: {

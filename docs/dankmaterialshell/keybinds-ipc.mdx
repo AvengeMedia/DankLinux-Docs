@@ -285,12 +285,13 @@ Dashboard popup with multiple tabs.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
-| `open [tab]` | Show dashboard | tab: "", "overview", "media", "weather" (optional) |
+| `open [tab]` | Show dashboard | tab: "", "overview", "media", "weather" |
 | `close` | Hide dashboard | - |
-| `toggle [tab]` | Toggle dashboard | tab (optional) |
+| `toggle [tab]` | Toggle dashboard | tab |
 
 **Examples:**
 ```bash
+dms ipc call dash toggle ""
 dms ipc call dash open overview
 dms ipc call dash toggle media
 dms ipc call dash open weather

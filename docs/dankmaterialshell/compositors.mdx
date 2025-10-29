@@ -15,7 +15,7 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri and Hyprland. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
+DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri, Hyprland, [Sway](https://swaywm.org/), and dwl/MangoWC. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
 
 ## niri Configuration
 
@@ -26,10 +26,6 @@ niri uses the KDL configuration format. DankMaterialShell integrates seamlessly 
 niri's configuration is not repeatable. The settings below are snippets you must merge with existing configuration. You cannot have multiple `layout {}` sections.
 
 :::
-
-### Quick Setup
-
-When you run `dms` for the first time, it will offer to install a recommended niri configuration. Alternatively, you can manually configure niri using the examples below.
 
 ### Key Configuration Sections
 
@@ -316,6 +312,65 @@ windowrulev2 = float, class:^(gnome-calculator)$
 windowrulev2 = float, class:^(blueman-manager)$
 windowrulev2 = float, class:^(org\.gnome\.Nautilus)$
 ```
+
+## Sway Configuration
+
+[Sway](https://swaywm.org/) is an i3-compatible Wayland compositor. DankMaterialShell integrates with Sway's tiling layout.
+
+### Key Configuration Sections
+
+:::info Coming Soon
+
+Detailed Sway configuration sections are coming soon. Sway configuration will include:
+- Startup commands
+- Environment variables
+- DMS keybindings
+- Layer rules
+- Window rules
+
+For now, refer to the [Example for Sway](#example-for-sway) in the "Other Compositors" section below for basic setup.
+
+:::
+
+#### Startup
+
+Launch DankMaterialShell and optional services at compositor startup:
+
+```conf
+exec dms run
+exec wl-paste --watch cliphist store
+```
+
+#### DMS Keybindings
+
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). Basic Sway keybinding examples are available in the [Example for Sway](#example-for-sway) section below.
+
+## dwl/MangoWC Configuration
+
+[MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling Wayland compositor based on dwl. DankMaterialShell integrates with MangoWC's tiling layout.
+
+### Key Configuration Sections
+
+:::info Coming Soon
+
+Detailed MangoWC configuration sections are coming soon. MangoWC configuration will include:
+- Startup commands
+- Environment variables
+- DMS keybindings
+- Layer rules
+- Window rules
+
+For now, refer to the [MangoWC documentation](https://github.com/DreamMaoMao/mangowc) for basic setup.
+
+:::
+
+#### Startup
+
+Launch DankMaterialShell and optional services at compositor startup. The exact syntax will be documented once configuration format is finalized.
+
+#### DMS Keybindings
+
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). MangoWC keybinding configuration coming soon.
 
 ## Other Compositors
 
