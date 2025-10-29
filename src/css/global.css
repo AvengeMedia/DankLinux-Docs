@@ -116,7 +116,7 @@
 
 .navbar__link--active {
   color: var(--dank-purple-light);
-  background: rgba(208, 188, 255, 0.18);
+  background: transparent;
 }
 
 /* ========================================

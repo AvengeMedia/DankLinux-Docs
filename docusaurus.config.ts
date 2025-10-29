@@ -259,21 +259,19 @@ const config: Config = {
           to: '/docs/getting-started',
           label: 'Install',
           position: 'right',
-          // Only active on exactly this path
-          activeBasePath: 'none', 
+          activeBasePath: '/docs/getting-started',
         },
         {
           to: '/docs/',
           label: 'Docs',
           position: 'right',
-          // Active on /docs/* EXCEPT getting-started and plugins
           activeBaseRegex: '^/docs(?!/getting-started|/dankmaterialshell/plugins-overview).*',
         },
         {
           to: '/docs/dankmaterialshell/plugins-overview',
           label: 'Plugins',
           position: 'right',
-          activeBasePath: 'none',
+          activeBasePath: '/docs/dankmaterialshell/plugins-overview',
         },
         {
           type: 'search',
