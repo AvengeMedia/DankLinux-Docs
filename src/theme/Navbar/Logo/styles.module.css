@@ -1,0 +1,83 @@
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logoWrapper:hover {
+  text-decoration: none;
+}
+
+/* Base styles for both ASCII art versions */
+.asciiArtFull,
+.asciiArtShort {
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.3rem;
+  line-height: 0.3rem;
+  font-weight: 600;
+  color: #9F7AEA;
+  white-space: pre;
+  overflow: visible;
+  background: transparent;
+  align-self: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Show full by default, hide short */
+.asciiArtFull {
+  display: block;
+}
+
+.asciiArtShort {
+  display: none;
+}
+
+/* On medium screens, show short version only */
+@media (max-width: 900px) {
+  .asciiArtFull {
+    display: none;
+  }
+
+  .asciiArtShort {
+    display: block;
+  }
+}
+
+/* Hide both when there's absolutely no room */
+@media (max-width: 480px) {
+  .asciiArtFull,
+  .asciiArtShort {
+    display: none;
+  }
+}
+
+/* Slightly larger on bigger screens */
+@media (min-width: 1200px) {
+  .asciiArtFull,
+  .asciiArtShort {
+    font-size: 0.3rem;
+    line-height: 0.3rem;
+  }
+}
+
+/* Even larger on very wide screens */
+@media (min-width: 1600px) {
+  .asciiArtFull,
+  .asciiArtShort {
+    font-size: 0.35rem;
+    line-height: 0.35rem;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .asciiArtFull,
+[data-theme='dark'] .asciiArtShort {
+  color: #B794F4;
+}

@@ -270,7 +270,6 @@ const config: Config = {
     //   contextualSearch: true,
     // },
     navbar: {
-      title: 'danklinux',
       logo: {
         alt: 'Dank Linux Logo',
         src: 'img/danklinux.svg',

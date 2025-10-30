@@ -620,9 +620,15 @@ html[data-theme='light'] .clean-btn[title*='light'] {
   background: rgba(208, 188, 255, 0.1) !important;
 }
 
-/* Hide search bar on homepage/landing page */
-body.landing-page .navbar__items--right .navbar__search {
+/* Hide search bar on homepage/landing page - ensure no space is taken */
+body.landing-page .navbar__items--right .navbar__search,
+body.landing-page .navbar__items--right .navbarSearchContainer_Bca1 {
   display: none !important;
+  width: 0 !important;
+  max-width: 0 !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* Show search bar only on docs pages - desktop navbar */
