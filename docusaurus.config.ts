@@ -273,7 +273,8 @@ const config: Config = {
       title: 'danklinux',
       logo: {
         alt: 'Dank Linux Logo',
-        src: 'img/logo.svg',
+        src: 'img/danklinux.svg',
+        srcDark: 'img/danklinux-dark.svg',
       },
       items: [
         {
@@ -297,7 +298,6 @@ const config: Config = {
         {
           type: 'search',
           position: 'right',
-          className: 'navbar-search-hidden',
         },
         {
           href: 'https://github.com/AvengeMedia',

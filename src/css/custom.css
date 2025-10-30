@@ -92,12 +92,49 @@ html[data-theme='light'] .navbar__link:hover {
   color: var(--dank-purple-dark);
 }
 
+/* Light mode sidebar - full screen overlay */
 html[data-theme='light'] .navbar-sidebar {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }
 
-html[data-theme='light'] .navbar-sidebar__item .menu__link {
-  color: rgba(0, 0, 0, 0.85);
+html[data-theme='light'] .navbar-sidebar__brand {
+  border-bottom-color: rgba(128, 90, 213, 0.12);
+}
+
+html[data-theme='light'] .navbar-sidebar__items .menu__link {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+html[data-theme='light'] .navbar-sidebar__items .menu__link:hover {
+  background: rgba(128, 90, 213, 0.1) !important;
+  color: var(--dank-purple-dark) !important;
+}
+
+html[data-theme='light'] .navbar-sidebar__items .menu__link--active {
+  background: rgba(128, 90, 213, 0.15) !important;
+  color: var(--dank-purple-dark) !important;
+  border-left-color: var(--dank-purple-dark) !important;
+}
+
+html[data-theme='light'] .navbar-sidebar__items .header-github-link,
+html[data-theme='light'] .navbar-sidebar__items .navbar-discord-link {
+  color: rgba(0, 0, 0, 0.85) !important;
+}
+
+html[data-theme='light'] .navbar-sidebar__items .header-github-link:hover,
+html[data-theme='light'] .navbar-sidebar__items .navbar-discord-link:hover {
+  background: rgba(128, 90, 213, 0.1) !important;
+  color: var(--dank-purple-dark) !important;
+}
+
+html[data-theme='light'] .navbar-sidebar .navbar-sidebar__close {
+  color: var(--dank-purple-dark);
+}
+
+html[data-theme='light'] .navbar-sidebar .navbar-sidebar__close:hover {
+  background: rgba(128, 90, 213, 0.1);
 }
 
 html[data-theme='light'] .header-github-link,
@@ -108,6 +145,26 @@ html[data-theme='light'] .navbar-discord-link {
 /* Brand hover effect */
 .navbar__brand:hover {
   color: var(--dank-purple-light);
+}
+
+/* Make logo properly sized - desktop */
+.navbar__logo {
+  height: 3.5rem !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+/* Mobile responsive logo sizing */
+@media (max-width: 996px) {
+  .navbar__logo {
+    height: 2rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar__logo {
+    height: 1.75rem !important;
+  }
 }
 
 /* Dark mode toggle button */
@@ -564,13 +621,81 @@ html[data-theme='light'] .clean-btn[title*='light'] {
 }
 
 /* Hide search bar on homepage/landing page */
-body.landing-page .navbar-search-hidden {
+body.landing-page .navbar__items--right .navbar__search {
   display: none !important;
 }
 
-/* Show search bar only on docs pages */
-body.docs-page .navbar-search-hidden {
+/* Show search bar only on docs pages - desktop navbar */
+body.docs-page .navbar__items--right .navbar__search {
   display: block !important;
+}
+
+/* Mobile responsive search handling */
+@media (max-width: 996px) {
+  /* Hide search on mobile navbar - it appears in mobile sidebar automatically */
+  .navbar__items--right .navbar__search {
+    display: none !important;
+  }
+
+  /* Only show search in mobile sidebar on docs pages */
+  body.docs-page .navbar-sidebar__items .navbar__search {
+    display: block !important;
+    padding: 0.875rem 1.5rem !important;
+    margin: 0 !important;
+    width: 100% !important;
+    border-bottom: 1px solid rgba(208, 188, 255, 0.12) !important;
+    order: -1 !important;
+  }
+
+  /* Hide search in mobile sidebar on landing page */
+  body.landing-page .navbar-sidebar__items .navbar__search {
+    display: none !important;
+  }
+
+  /* Make primary menu a flex container so search can be ordered first */
+  .navbar-sidebar__items > .navbar-sidebar__item:first-child .menu {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Style search input in mobile sidebar */
+  .navbar-sidebar__items .navbar__search-input {
+    width: 100% !important;
+    background: rgba(208, 188, 255, 0.1) !important;
+    border: 1px solid rgba(208, 188, 255, 0.2) !important;
+    border-radius: 0.375rem !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    padding: 0.625rem 1rem 0.625rem 2.5rem !important;
+    font-size: 0.9375rem !important;
+  }
+
+  html[data-theme='light'] .navbar-sidebar__items .navbar__search {
+    border-top-color: rgba(128, 90, 213, 0.12) !important;
+    border-bottom-color: rgba(128, 90, 213, 0.12) !important;
+  }
+
+  html[data-theme='light'] .navbar-sidebar__items .navbar__search-input {
+    background: rgba(128, 90, 213, 0.1) !important;
+    border: 1px solid rgba(128, 90, 213, 0.2) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+  }
+}
+
+/* Additional mobile navbar adjustments for all pages */
+@media (max-width: 996px) {
+  /* Ensure backdrop filters work on mobile navbar */
+  body.landing-page .navbar,
+  body.docs-page .navbar {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+/* Very small screens - brand spacing */
+@media (max-width: 480px) {
+  .navbar__brand {
+    margin-right: 0.5rem;
+  }
 }
 
 /* ========================================

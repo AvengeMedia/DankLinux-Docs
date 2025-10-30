@@ -42,12 +42,28 @@
   height: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  overflow: visible;
 }
 
 .navbar__items {
   height: 100%;
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
+/* Ensure right items are properly aligned */
+.navbar__items--right {
+  flex: 1;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Prevent navbar items from shrinking on narrow screens */
+.navbar__items--right > * {
+  flex-shrink: 0;
 }
 
 .navbar__item {
@@ -125,38 +141,279 @@
 
 .navbar__toggle {
   color: var(--dank-purple-light);
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  display: none; /* Hidden by default, shown on mobile */
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
 }
 
 .navbar__toggle:hover {
   background: rgba(208, 188, 255, 0.1);
 }
 
+/* Show toggle on mobile */
+@media (max-width: 996px) {
+  .navbar__toggle {
+    display: flex !important;
+  }
+}
+
 /* ========================================
    NAVBAR SIDEBAR (Mobile Menu)
    ======================================== */
 
+/* Prevent body scroll when mobile menu is open */
+html:has(.navbar-sidebar--show) {
+  overflow: hidden !important;
+}
+
+body:has(.navbar-sidebar--show) {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+}
+
+/* Mobile sidebar - full screen overlay */
 .navbar-sidebar {
-  background: rgba(0, 0, 0, 0.92);
-  backdrop-filter: blur(20px);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important; /* Dynamic viewport height for mobile browsers */
+  background: rgba(0, 0, 0, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  z-index: 9999 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  display: block !important;
+  transform: none !important;
 }
 
+/* Sidebar backdrop */
+.navbar-sidebar__backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  z-index: calc(var(--ifm-z-index-fixed)) !important;
+}
+
+/* Sidebar brand area */
 .navbar-sidebar__brand {
-  border-bottom: 1px solid rgba(208, 188, 255, 0.12);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.75rem !important;
+  padding: 1rem 1.5rem !important;
+  border-bottom: 1px solid rgba(208, 188, 255, 0.12) !important;
+  height: 3.5rem !important;
+  width: 100% !important;
 }
 
+/* Brand logo in sidebar */
+.navbar-sidebar__brand .navbar__brand {
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-right: auto !important;
+}
+
+.navbar-sidebar__brand .navbar__logo {
+  height: 2rem !important;
+  margin-right: 0.5rem !important;
+}
+
+.navbar-sidebar__brand .navbar__title {
+  font-size: 1.125rem !important;
+}
+
+/* Dark mode toggle in sidebar brand */
+.navbar-sidebar__brand .toggle_vylO {
+  margin: 0 !important;
+}
+
+/* Sidebar close button */
+.navbar-sidebar__close {
+  color: var(--dank-purple-light) !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0.375rem !important;
+  transition: background 0.2s ease !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.navbar-sidebar__close:hover {
+  background: rgba(208, 188, 255, 0.1) !important;
+}
+
+/* Sidebar items container */
+.navbar-sidebar__items {
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  transition: transform 0.3s ease !important;
+  transform: translateX(0) !important;
+}
+
+/* When showing secondary panel (docs sidebar), slide to show it */
+.navbar-sidebar__items--show-secondary {
+  transform: translateX(-100%) !important;
+}
+
+/* Individual panels within the sidebar */
+.navbar-sidebar__items > .navbar-sidebar__item {
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  min-width: 100vw !important;
+}
+
+/* Menu list inside sidebar */
+.navbar-sidebar__items .menu {
+  padding: 0 !important;
+  width: 100% !important;
+  display: block !important;
+}
+
+.navbar-sidebar__items .menu__list {
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+  width: 100% !important;
+}
+
+/* Docs sidebar specific styles */
+.theme-doc-sidebar-menu {
+  padding: 0 !important;
+}
+
+/* Sidebar panels - Docusaurus uses a two-panel system on docs pages */
+.navbar-sidebar__item.menu {
+  width: 100% !important;
+}
+
+/* Hide back button on landing page, show on docs pages */
+body.landing-page .navbar-sidebar__back {
+  display: none !important;
+}
+
+body.docs-page .navbar-sidebar__back {
+  display: block !important;
+  padding: 0.875rem 1.5rem !important;
+  color: var(--dank-purple-light) !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  width: 100% !important;
+  text-align: left !important;
+  border-bottom: 1px solid rgba(208, 188, 255, 0.12) !important;
+  margin: 0 !important;
+}
+
+body.docs-page .navbar-sidebar__back:hover {
+  background: rgba(208, 188, 255, 0.1) !important;
+}
+
+/* Individual sidebar items */
 .navbar-sidebar__item {
-  padding: 0.5rem 1rem;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  list-style: none !important;
 }
 
-.navbar-sidebar__item .menu__link {
-  color: rgba(255, 255, 255, 0.85);
-  border-radius: 0.375rem;
-  transition: all 0.2s ease;
+/* Menu items in sidebar */
+.navbar-sidebar__items .menu__list-item {
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  list-style: none !important;
 }
 
-.navbar-sidebar__item .menu__link:hover {
-  background: rgba(208, 188, 255, 0.1);
-  color: var(--dank-purple-light);
+.navbar-sidebar__items .menu__link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  border-radius: 0 !important;
+  transition: all 0.2s ease !important;
+  padding: 0.875rem 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  width: 100% !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+.navbar-sidebar__items .menu__link:hover {
+  background: rgba(208, 188, 255, 0.1) !important;
+  color: var(--dank-purple-light) !important;
+}
+
+.navbar-sidebar__items .menu__link--active {
+  background: rgba(208, 188, 255, 0.15) !important;
+  color: var(--dank-purple-light) !important;
+  border-left: 3px solid var(--dank-purple-light) !important;
+}
+
+/* Ensure icon links in sidebar are properly displayed */
+.navbar-sidebar__items .header-github-link,
+.navbar-sidebar__items .navbar-discord-link {
+  width: 100% !important;
+  height: auto !important;
+  padding: 0.875rem 1.5rem !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none !important;
+}
+
+.navbar-sidebar__items .header-github-link:hover,
+.navbar-sidebar__items .navbar-discord-link:hover {
+  background: rgba(208, 188, 255, 0.1) !important;
+  color: var(--dank-purple-light) !important;
+}
+
+.navbar-sidebar__items .header-github-link::before,
+.navbar-sidebar__items .navbar-discord-link::before {
+  margin-right: 0.875rem !important;
+  flex-shrink: 0 !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+}
+
+.navbar-sidebar__items .header-github-link::after {
+  content: 'GitHub' !important;
+  font-size: 1rem !important;
+}
+
+.navbar-sidebar__items .navbar-discord-link::after {
+  content: 'Discord' !important;
+  font-size: 1rem !important;
 }
 
 /* ========================================
@@ -212,4 +469,136 @@
 .header-github-link,
 .navbar-discord-link {
   font-size: 0;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE NAVBAR
+   ======================================== */
+
+/* Docusaurus mobile breakpoint */
+@media (max-width: 996px) {
+  /* Adjust navbar padding on mobile */
+  :root {
+    --ifm-navbar-padding-horizontal: 1rem;
+    --ifm-navbar-height: 3.5rem;
+  }
+
+  /* Prevent navbar inner from overflowing */
+  .navbar__inner {
+    width: 100%;
+    overflow: visible;
+  }
+
+  /* Ensure items don't cause overflow */
+  .navbar__items {
+    gap: 0.25rem;
+    overflow: visible;
+  }
+
+  /* Right items should not overflow */
+  .navbar__items--right {
+    flex-shrink: 0;
+    overflow: visible;
+  }
+
+  /* Reduce logo size on mobile */
+  .navbar__logo {
+    height: 1.75rem;
+  }
+
+  /* Adjust title size on mobile */
+  .navbar__title {
+    font-size: 1rem;
+  }
+
+  /* Reduce icon link sizes on mobile */
+  .header-github-link,
+  .navbar-discord-link {
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+  }
+
+  .header-github-link::before,
+  .navbar-discord-link::before {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Ensure proper spacing between navbar items on mobile */
+  .navbar__item {
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  /* Hide search box on mobile - it appears in mobile menu instead */
+  .navbar__search {
+    display: none;
+  }
+
+  /* Ensure mobile menu toggle is visible */
+  .navbar__toggle {
+    display: flex !important;
+    flex-shrink: 0;
+  }
+
+  /* Hide text links on mobile - they appear in hamburger menu */
+  .navbar__items--right > .navbar__item.navbar__link {
+    display: none;
+  }
+
+  /* Hide search on mobile */
+  .navbar__items--right .navbar__search {
+    display: none !important;
+  }
+
+  /* Keep icon links visible */
+  .navbar__items--right .header-github-link,
+  .navbar__items--right .navbar-discord-link {
+    display: flex !important;
+  }
+}
+
+/* Very small mobile devices */
+@media (max-width: 480px) {
+  :root {
+    --ifm-navbar-padding-horizontal: 0.75rem;
+  }
+
+  /* Further reduce icon sizes on very small screens */
+  .header-github-link,
+  .navbar-discord-link {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .header-github-link::before,
+  .navbar-discord-link::before {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  /* Reduce spacing between items */
+  .navbar__item {
+    padding: 0;
+  }
+
+  /* Reduce logo size further */
+  .navbar__logo {
+    height: 1.5rem;
+  }
+
+  /* Smaller title */
+  .navbar__title {
+    font-size: 0.9rem;
+  }
+
+  /* Reduce gap between items */
+  .navbar__items {
+    gap: 0.125rem;
+  }
+
+  .navbar__items--right {
+    gap: 0.125rem;
+  }
 }
