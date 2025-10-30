@@ -628,13 +628,57 @@ body.landing-page .navbar__items--right .navbar__search {
 /* Show search bar only on docs pages - desktop navbar */
 body.docs-page .navbar__items--right .navbar__search {
   display: block !important;
+  max-width: 200px !important;
+  flex-shrink: 1 !important;
+}
+
+/* Search container styling - ensure it's in flex flow */
+.navbar__search,
+.navbarSearchContainer_Bca1 {
+  position: relative !important;
+  max-width: 200px;
+  min-width: 150px;
+  flex-shrink: 1;
+}
+
+/* Search input should not expand beyond container */
+.navbar__search-input {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* When search is focused/active, it can expand a bit more but still constrained */
+.navbar__search.focused_OWtg {
+  max-width: 250px !important;
+  transition: max-width 0.2s ease !important;
+}
+
+/* Ensure dropdown doesn't cause overflow */
+.navbar__search .dropdownMenu_qbY6 {
+  position: absolute !important;
+  z-index: 1000 !important;
 }
 
 /* Mobile responsive search handling */
 @media (max-width: 996px) {
-  /* Hide search on mobile navbar - it appears in mobile sidebar automatically */
-  .navbar__items--right .navbar__search {
-    display: none !important;
+  /* Make search wider on mobile */
+  .navbar__items--right .navbar__search,
+  .navbar__items--right .navbarSearchContainer_Bca1 {
+    position: relative !important;
+    max-width: 200px !important;
+    min-width: 160px !important;
+    flex-shrink: 1 !important;
+    display: flex !important;
+  }
+
+  .navbar__search-input {
+    font-size: 0.875rem !important;
+    padding: 0.375rem 0.75rem 0.375rem 2rem !important;
+  }
+
+  /* When focused, allow even more width */
+  .navbar__search.focused_OWtg {
+    max-width: 240px !important;
   }
 
   /* Only show search in mobile sidebar on docs pages */

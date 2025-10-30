@@ -58,12 +58,27 @@
 .navbar__items--right {
   flex: 1;
   justify-content: flex-end;
+  align-items: center;
   gap: 0.5rem;
+  min-width: 0; /* Allow flex items to shrink if needed */
+  display: flex;
+  flex-wrap: nowrap;
 }
 
-/* Prevent navbar items from shrinking on narrow screens */
-.navbar__items--right > * {
+/* Prevent navbar items from shrinking on narrow screens - except search */
+.navbar__items--right > .navbar__item {
   flex-shrink: 0;
+  position: relative;
+}
+
+/* Search can shrink if needed but has min/max width and stays in flow */
+.navbar__items--right > .navbarSearchContainer_Bca1,
+.navbar__items--right .navbar__search {
+  flex-shrink: 1;
+  flex-grow: 0;
+  position: relative !important;
+  display: flex;
+  align-items: center;
 }
 
 .navbar__item {
@@ -310,25 +325,9 @@ body:has(.navbar-sidebar--show) {
   width: 100% !important;
 }
 
-/* Hide back button on landing page, show on docs pages */
-body.landing-page .navbar-sidebar__back {
+/* Always hide back button - never show it */
+.navbar-sidebar__back {
   display: none !important;
-}
-
-body.docs-page .navbar-sidebar__back {
-  display: block !important;
-  padding: 0.875rem 1.5rem !important;
-  color: var(--dank-purple-light) !important;
-  font-size: 1rem !important;
-  font-weight: 500 !important;
-  width: 100% !important;
-  text-align: left !important;
-  border-bottom: 1px solid rgba(208, 188, 255, 0.12) !important;
-  margin: 0 !important;
-}
-
-body.docs-page .navbar-sidebar__back:hover {
-  background: rgba(208, 188, 255, 0.1) !important;
 }
 
 /* Individual sidebar items */
@@ -495,10 +494,11 @@ body.docs-page .navbar-sidebar__back:hover {
     overflow: visible;
   }
 
-  /* Right items should not overflow */
+  /* Right items should not overflow but allow search to shrink */
   .navbar__items--right {
     flex-shrink: 0;
     overflow: visible;
+    gap: 0.25rem !important;
   }
 
   /* Reduce logo size on mobile */
@@ -547,9 +547,17 @@ body.docs-page .navbar-sidebar__back:hover {
     display: none;
   }
 
-  /* Hide search on mobile */
-  .navbar__items--right .navbar__search {
-    display: none !important;
+  /* Reduce icon sizes slightly on mobile to make room */
+  .header-github-link,
+  .navbar-discord-link {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .header-github-link::before,
+  .navbar-discord-link::before {
+    width: 1.125rem;
+    height: 1.125rem;
   }
 
   /* Keep icon links visible */
