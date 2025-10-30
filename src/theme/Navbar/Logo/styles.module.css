@@ -6,6 +6,10 @@
   color: inherit;
 }
 
+.logo {
+  opacity: 0.8;
+}
+
 .logoWrapper:hover {
   text-decoration: none;
 }

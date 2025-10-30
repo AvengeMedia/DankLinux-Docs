@@ -31,6 +31,7 @@ export default function LogoWrapper(props: Props): JSX.Element {
             dark: logoImageUrlDark,
           }}
           alt={logo?.alt || title}
+          className={styles.logo}
         />
       </div>
       <pre className={styles.asciiArtFull}>
