@@ -3,9 +3,19 @@ import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
+const compositors = [
+  { name: 'niri', logo: '/img/niri.svg', duration: 500 },
+  { name: 'Hyprland', logo: '/img/hyprland.svg', duration: 500 },
+  { name: 'MangoWC', logo: '/img/mango.png', duration: 500 },
+  { name: 'Sway', logo: '/img/sway.svg', duration: 500 },
+  { name: 'wayland', logo: null, duration: 0 }, // End state - stays forever
+];
+
 export default function Home() {
   const [typed, setTyped] = useState('');
   const [showCursor, setShowCursor] = useState(true);
+  const [currentCompositor, setCurrentCompositor] = useState(-1);
+  const [showAllLogos, setShowAllLogos] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
 
   useEffect(() => {
@@ -35,6 +45,39 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const timeouts: NodeJS.Timeout[] = [];
+
+    // Show niri sooner - right after "for" starts animating
+    const showFirstTimeout = setTimeout(() => {
+      setCurrentCompositor(0);
+    }, 800);
+    timeouts.push(showFirstTimeout);
+
+    // Start rotation sequence - use a fixed rhythm for all
+    let cumulativeDelay = 800;
+    compositors.forEach((compositor, index) => {
+      if (index < compositors.length - 1) {
+        cumulativeDelay += compositor.duration;
+        const timeout = setTimeout(() => {
+          setCurrentCompositor(index + 1);
+
+          // Show all logos after wayland appears
+          if (index === compositors.length - 2) {
+            setTimeout(() => {
+              setShowAllLogos(true);
+            }, 400);
+          }
+        }, cumulativeDelay);
+        timeouts.push(timeout);
+      }
+    });
+
+    return () => {
+      timeouts.forEach(t => clearTimeout(t));
+    };
+  }, []);
+
 
   return (
     <Layout
@@ -61,14 +104,39 @@ export default function Home() {
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
                 <span className={styles.heroLine}>Modern Desktop</span>
-                <span className={styles.heroLine}>Built for</span>
-                <span className={`${styles.heroLine} ${styles.heroGradient}`}>Wayland</span>
+                <span className={styles.heroLine}>for</span>
+                <span className={styles.compositorRotatorWrapper}>
+                  <span className={styles.compositorRotator}>
+                    {compositors.map((compositor, index) => (
+                      <span
+                        key={compositor.name}
+                        className={`${styles.compositorSlide} ${
+                          index === currentCompositor ? styles.compositorActive : ''
+                        }`}
+                      >
+                        {compositor.logo && (
+                          <img
+                            src={compositor.logo}
+                            alt={compositor.name}
+                            className={styles.compositorLogo}
+                          />
+                        )}
+                        <span className={styles.compositorName}>{compositor.name}</span>
+                      </span>
+                    ))}
+                  </span>
+                  <span className={`${styles.allLogosRow} ${showAllLogos ? styles.showLogos : ''}`}>
+                    {compositors.slice(0, 4).map((compositor) => (
+                      <img
+                        key={compositor.name}
+                        src={compositor.logo}
+                        alt={compositor.name}
+                        className={styles.smallLogo}
+                      />
+                    ))}
+                  </span>
+                </span>
               </h1>
-
-              <p className={styles.heroSubtitle}>
-                A beautiful, powerful desktop environment built with Quickshell and GO. 
-                It includes customizable widgets, plugins, real-time system monitoring, and seamless Wayland compositor integration.
-              </p>
 
               {/* Call to action buttons */}
               <div className={styles.heroCTA}>
@@ -113,7 +181,7 @@ export default function Home() {
                           <span className={styles.success}>✓ Configuring DankMaterialShell</span>
                         </div>
                         <div className={`${styles.terminalLine} ${styles.fadeIn}`} style={{ animationDelay: '0.9s' }}>
-                          <span className={styles.success}>✓ Ready to rock! 🚀</span>
+                          <span className={styles.success}>✓ Ready to rock!</span>
                         </div>
                       </>
                     )}
