@@ -3,10 +3,11 @@ import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
-// Declare medium-zoom type
+// Declare medium-zoom and playerjs types
 declare global {
   interface Window {
     mediumZoom?: (target: string | HTMLElement | NodeListOf<HTMLElement>, options?: any) => any;
+    playerjs?: any;
   }
 }
 
@@ -31,6 +32,7 @@ export default function Home() {
   const [currentCompositor, setCurrentCompositor] = useState(-1);
   const [copied, setCopied] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
+  const videoRef = React.useRef<HTMLIFrameElement>(null);
 
   const handleCopyCommand = async () => {
     try {
@@ -152,6 +154,54 @@ export default function Home() {
 
     return () => {
       timeouts.forEach(t => clearTimeout(t));
+    };
+  }, []);
+
+  // Autoplay video when scrolled into view
+  useEffect(() => {
+    if (!videoRef.current || typeof window === 'undefined') return;
+
+    let player: any = null;
+
+    // Load player.js library
+    const script = document.createElement('script');
+    script.src = '//assets.mediadelivery.net/playerjs/playerjs-latest.min.js';
+    script.async = true;
+
+    script.onload = () => {
+      // @ts-ignore - playerjs is loaded from external script
+      if (window.playerjs && videoRef.current) {
+        // @ts-ignore
+        player = new window.playerjs.Player(videoRef.current);
+
+        player.on('ready', () => {
+          // Set up intersection observer after player is ready
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting && player) {
+                  player.play();
+                } else if (player) {
+                  player.pause();
+                }
+              });
+            },
+            { threshold: 0.5 }
+          );
+
+          if (videoRef.current) {
+            observer.observe(videoRef.current);
+          }
+        });
+      }
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
   }, []);
 
@@ -308,8 +358,9 @@ export default function Home() {
               <div className={`${styles.screenshotCard} ${styles.large}`}>
                 <div className={styles.screenshotFrame}>
                   <iframe
+                    ref={videoRef}
                     className={styles.screenshotVideo}
-                    src="https://player.mediadelivery.net/embed/526968/60f61b01-2825-4c48-935c-fbcc2f95edfd"
+                    src="https://player.mediadelivery.net/embed/526968/60f61b01-2825-4c48-935c-fbcc2f95edfd?muted=true&loop=true"
                     loading="lazy"
                     style={{ border: 0, width: '100%', height: '100%' }}
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
