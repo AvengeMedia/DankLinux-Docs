@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ master-disabled ]
+    branches: [ master ]
 
 concurrency:
   group: environment-${{ github.ref }}
