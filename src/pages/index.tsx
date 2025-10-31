@@ -158,8 +158,8 @@ export default function Home() {
 
   return (
     <Layout
-      title="Modern Desktop Environment"
-      description="A modern Wayland desktop environment with beautiful widgets and powerful monitoring">
+      title="Modern Desktop Suite"
+      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring">
       <div className={styles.container}>
         {/* Background pattern overlay */}
         <div className={styles.backgroundPattern}></div>

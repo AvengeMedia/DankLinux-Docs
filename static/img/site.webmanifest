@@ -1,7 +1,7 @@
 {
   "name": "Dank Linux",
   "short_name": "Dank Linux",
-  "description": "A modern Wayland desktop environment with beautiful widgets and powerful monitoring",
+  "description": "A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway.",
   "icons": [
     {
       "src": "/img/android-chrome-192x192.png",
