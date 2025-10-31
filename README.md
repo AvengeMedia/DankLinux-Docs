@@ -1,7 +1,7 @@
 # Dank Linux
 
 <div align="center">
-  <img src="static/img/danklinux.svg" alt="Dank Linux Logo" width="200">
+  <img src="static/img/path32.svg" alt="Dank Linux Logo" width="200">
   
   ### A modern Linux desktop suite with beautiful widgets and powerful monitoring
   
@@ -52,4 +52,4 @@ For installation guides, configuration, and detailed documentation, visit:
 
 - **Website**: [danklinux.com](https://danklinux.com)
 - **GitHub**: [AvengeMedia](https://github.com/AvengeMedia)
-- ☕ **Support**: [Ko-fi](https://ko-fi.com/danklinux)
+- **Support**: [Ko-fi](https://ko-fi.com/danklinux)☕ 
