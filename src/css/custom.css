@@ -333,9 +333,15 @@ body.landing-page #__docusaurus {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
 }
 
-/* Light mode keeps default dark icon */
+/* Light mode keeps default dark icon - match with placeholder color */
 [data-theme='light'] .navbar__search-input {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23000000' d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23667666' d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+  color: rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme='light'] .navbar__search-input::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+  opacity: 1 !important;
 }
 
 /* Code blocks with purple accent and proper styling */
@@ -666,7 +672,7 @@ body.landing-page .navbar__items--right .navbarSearchContainer_Bca1 {
 /* Show search bar only on docs pages - desktop navbar */
 body.docs-page .navbar__items--right .navbar__search {
   display: block !important;
-  max-width: 200px !important;
+  max-width: 220px !important;
   flex-shrink: 1 !important;
 }
 
@@ -674,8 +680,8 @@ body.docs-page .navbar__items--right .navbar__search {
 .navbar__search,
 .navbarSearchContainer_Bca1 {
   position: relative !important;
-  max-width: 200px;
-  min-width: 150px;
+  max-width: 220px;
+  min-width: 180px;
   flex-shrink: 1;
 }
 
@@ -683,11 +689,12 @@ body.docs-page .navbar__items--right .navbar__search {
 .navbar__search-input {
   width: 100% !important;
   max-width: 100% !important;
+  font-size: 0.9rem !important;
 }
 
 /* When search is focused/active, it can expand a bit more but still constrained */
 .navbar__search.focused_OWtg {
-  max-width: 250px !important;
+  max-width: 280px !important;
   transition: max-width 0.2s ease !important;
 }
 
@@ -703,8 +710,8 @@ body.docs-page .navbar__items--right .navbar__search {
   .navbar__items--right .navbar__search,
   .navbar__items--right .navbarSearchContainer_Bca1 {
     position: relative !important;
-    max-width: 200px !important;
-    min-width: 160px !important;
+    max-width: 220px !important;
+    min-width: 170px !important;
     flex-shrink: 1 !important;
     display: flex !important;
   }
@@ -716,7 +723,7 @@ body.docs-page .navbar__items--right .navbar__search {
 
   /* When focused, allow even more width */
   .navbar__search.focused_OWtg {
-    max-width: 240px !important;
+    max-width: 260px !important;
   }
 
   /* Only show search in mobile sidebar on docs pages */
