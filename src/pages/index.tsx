@@ -259,13 +259,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Dashboard */}
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="https://github.com/user-attachments/assets/a937cf35-a43b-4558-8c39-5694ff5fcac4"
+                    src="/img/homepage/dankdash_dark.png"
                     alt="DankDash - Overview Dashboard"
-                    className={styles.screenshotImage}
+                    className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                  />
+                  <img
+                    src="/img/homepage/dankdash_light.png"
+                    alt="DankDash - Overview Dashboard"
+                    className={`${styles.screenshotImage} ${styles.lightOnly}`}
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -274,13 +278,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Application Launcher */}
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="https://github.com/user-attachments/assets/2da00ea1-8921-4473-a2a9-44a44535a822"
+                    src="/img/homepage/launcher_dark.png"
                     alt="Spotlight Launcher"
-                    className={styles.screenshotImage}
+                    className={`${styles.screenshotImage} ${styles.darkOnly} ${styles.topAlign}`}
+                  />
+                  <img
+                    src="/img/homepage/launcher_light.png"
+                    alt="Spotlight Launcher"
+                    className={`${styles.screenshotImage} ${styles.lightOnly} ${styles.topAlign}`}
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -289,13 +297,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Control Center */}
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="/img/Control-Center.png"
+                    src="/img/homepage/controlcenter_dark.png"
                     alt="Control Center"
-                    className={styles.screenshotImage}
+                    className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                  />
+                  <img
+                    src="/img/homepage/controlcenter_light.png"
+                    alt="Control Center"
+                    className={`${styles.screenshotImage} ${styles.lightOnly}`}
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -304,13 +316,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* System Monitor */}
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="https://github.com/user-attachments/assets/b3c817ec-734d-4974-929f-2d11a1065349"
+                    src="/img/homepage/process_dark.png"
                     alt="System Monitor"
-                    className={styles.screenshotImage}
+                    className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                  />
+                  <img
+                    src="/img/homepage/process_light.png"
+                    alt="System Monitor"
+                    className={`${styles.screenshotImage} ${styles.lightOnly}`}
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -319,13 +335,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* More screenshots... */}
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="https://github.com/user-attachments/assets/903f7c60-146f-4fb3-a75d-a4823828f298"
+                    src="/img/homepage/widget_dark.png"
                     alt="Widget Customization"
-                    className={styles.screenshotImage}
+                    className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                  />
+                  <img
+                    src="/img/homepage/widget_light.png"
+                    alt="Widget Customization"
+                    className={`${styles.screenshotImage} ${styles.lightOnly}`}
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -334,13 +354,17 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Plugins */}
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="/img/Plugins.png"
+                    src="/img/homepage/plugins_dark.png"
                     alt="Plugins"
-                    className={styles.screenshotImage}
+                    className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                  />
+                  <img
+                    src="/img/homepage/plugins_light.png"
+                    alt="Plugins"
+                    className={`${styles.screenshotImage} ${styles.lightOnly}`}
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
