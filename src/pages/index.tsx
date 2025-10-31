@@ -391,31 +391,44 @@ export default function Home() {
                 icon=""
                 title="DankMaterialShell"
                 description="A modern and beautiful desktop shell with dynamic theming and smooth animations."
+                imageDark="/img/desktop.png"
+                imageLight="/img/desktoplight.png"
               />
               <FeatureCard
                 icon=""
                 title="Dank Install"
                 description="One line installer for an automated quick and easy setup."
+                imageDark="/img/dankinstall.png"
+                imageLight="/img/dankinstalallight.png"
               />
               <FeatureCard
                 icon=""
                 title="Dank GOP"
                 description="Stateless system and process monitoring for CPU, memory, GPU, disks, and network interfaces."
+                imageDark="/img/dgop.png"
+                imageLight="/img/dgoplight.png"
               />
               <FeatureCard
                 icon=""
                 title="Dank Greeter"
                 description="An aesthetically pleasing greetd greeter for your desktop."
+                imageDark="/img/dgreet.png"
+                imageLight="/img/dgreetlight.png"
               />
               <FeatureCard
                 icon=""
                 title="Dank Search"
                 description="Blazingly fast and efficient file system search tool."
+                imageDark="/img/dsearch.png"
+                imageLight="/img/dsearchlight.png"
+                imageAlign="top"
               />
               <FeatureCard
                 icon=""
                 title="Fully Customizable"
                 description="Plugins, widgets, themes, and configs to make it yours"
+                imageDark="/img/homepage/plugins_dark.png"
+                imageLight="/img/homepage/plugins_light.png"
               />
             </div>
           </section>
@@ -475,14 +488,33 @@ export default function Home() {
   );
 }
 
-function FeatureCard({ icon, title, description }: {
+function FeatureCard({ icon, title, description, imageDark, imageLight, imageAlign = 'center' }: {
   icon: string;
   title: string;
   description: string;
+  imageDark?: string;
+  imageLight?: string;
+  imageAlign?: 'top' | 'center';
 }) {
   return (
     <div className={styles.featureCard}>
-      <div className={styles.cardIcon}>{icon}</div>
+      {imageDark && imageLight && (
+        <div className={styles.cardImageContainer}>
+          <img
+            src={imageDark}
+            alt={title}
+            className={`${styles.cardImage} ${styles.darkOnly} ${imageAlign === 'top' ? styles.topAlign : ''}`}
+          />
+          <img
+            src={imageLight}
+            alt={title}
+            className={`${styles.cardImage} ${styles.lightOnly} ${imageAlign === 'top' ? styles.topAlign : ''}`}
+          />
+        </div>
+      )}
+      {!imageDark && !imageLight && icon && (
+        <div className={styles.cardIcon}>{icon}</div>
+      )}
       <h3 className={styles.cardTitle}>{title}</h3>
       <p className={styles.cardDesc}>{description}</p>
       <div className={styles.cardGlow}></div>

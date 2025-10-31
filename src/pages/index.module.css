@@ -296,6 +296,13 @@
   letter-spacing: -0.02em;
 }
 
+[data-theme='light'] .compositorName {
+  background: linear-gradient(135deg, #805AD5 0%, #6B46C1 50%, #553C9A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 
 .heroSubtitle {
   font-size: clamp(1.125rem, 2vw, 1.375rem);
@@ -645,7 +652,7 @@
 
 /* ===== FEATURES SECTION ===== */
 .features {
-  padding: 1.5rem 2rem;
+  padding: 1.5rem 2rem 6rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -666,6 +673,13 @@
 
 .gradientText {
   background: linear-gradient(135deg, #D0BCFF, #805AD5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme='light'] .gradientText {
+  background: linear-gradient(135deg, #805AD5, #6B46C1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -712,7 +726,7 @@
 
 .featureCard {
   position: relative;
-  padding: 2.5rem;
+  padding: 0;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(208, 188, 255, 0.1);
   border-radius: 20px;
@@ -751,6 +765,30 @@
   opacity: 1;
 }
 
+.cardImageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  margin-bottom: 0;
+  background: linear-gradient(135deg, rgba(208, 188, 255, 0.05), rgba(128, 90, 213, 0.05));
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cardImage.topAlign {
+  object-position: top center;
+}
+
+.featureCard:hover .cardImage {
+  transform: scale(1.05);
+}
+
 .cardIcon {
   font-size: 3rem;
   margin-bottom: 1.5rem;
@@ -761,6 +799,8 @@
   font-weight: 700;
   margin-bottom: 0.75rem;
   color: #ffffff;
+  padding: 0 2rem;
+  padding-top: 1.5rem;
 }
 
 [data-theme='light'] .cardTitle {
@@ -771,6 +811,7 @@
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
   font-size: 1.0625rem;
+  padding: 0 2rem 2rem;
 }
 
 [data-theme='light'] .cardDesc {
@@ -952,6 +993,9 @@
 
 [data-theme='light'] .screenshotLabel h3 {
   background: linear-gradient(135deg, #805AD5, #6B46C1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .screenshotLabel p {
@@ -965,7 +1009,7 @@
 
 /* ===== SHOWCASE SECTION ===== */
 .showcase {
-  padding: 1.5rem 2rem;
+  padding: 4rem 2rem 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;

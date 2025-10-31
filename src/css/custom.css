@@ -295,6 +295,21 @@ body.landing-page * {
   --ifm-background-color: #000000 !important;
 }
 
+/* Light mode landing page background */
+[data-theme='light'] html:has(body.landing-page) {
+  background-color: #f8f7fb !important;
+}
+
+[data-theme='light'] body.landing-page {
+  background: #f8f7fb !important;
+  background-color: #f8f7fb !important;
+}
+
+[data-theme='light'] body.landing-page,
+[data-theme='light'] body.landing-page * {
+  --ifm-background-color: #f8f7fb !important;
+}
+
 body.landing-page #__docusaurus,
 body.landing-page .main-wrapper,
 body.landing-page main,
@@ -448,6 +463,12 @@ body.landing-page .footer {
   background: transparent !important;
   border-top: 1px solid rgba(208, 188, 255, 0.1) !important;
   padding: 2rem 0;
+}
+
+/* Landing page footer - light mode needs proper background */
+[data-theme='light'] body.landing-page .footer {
+  background: rgba(248, 247, 251, 0.95) !important;
+  border-top: 1px solid rgba(128, 90, 213, 0.2) !important;
 }
 
 /* Docs page footer */
