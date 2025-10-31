@@ -147,9 +147,26 @@ html[data-theme='light'] .navbar-discord-link {
   color: var(--dank-purple-light);
 }
 
+/* Make navbar taller */
+:root {
+  --ifm-navbar-height: 5rem;
+}
+
+@media (max-width: 996px) {
+  :root {
+    --ifm-navbar-height: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --ifm-navbar-height: 3.5rem;
+  }
+}
+
 /* Make logo properly sized - desktop */
 .navbar__logo {
-  height: 3.5rem !important;
+  height: 4.5rem !important;
   width: auto !important;
   max-width: none !important;
 }
@@ -157,13 +174,13 @@ html[data-theme='light'] .navbar-discord-link {
 /* Mobile responsive logo sizing */
 @media (max-width: 996px) {
   .navbar__logo {
-    height: 2rem !important;
+    height: 3rem !important;
   }
 }
 
 @media (max-width: 480px) {
   .navbar__logo {
-    height: 1.75rem !important;
+    height: 2.25rem !important;
   }
 }
 

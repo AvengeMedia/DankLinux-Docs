@@ -1,87 +1,54 @@
 .logoWrapper {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.5rem;
   text-decoration: none;
   color: inherit;
 }
 
 .logo {
-  opacity: 0.8;
+  opacity: 0.95;
 }
 
 .logoWrapper:hover {
   text-decoration: none;
 }
 
-/* Base styles for both ASCII art versions */
-.asciiArtFull,
-.asciiArtShort {
-  margin: 0;
-  padding: 0;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.3rem;
-  line-height: 0.3rem;
-  font-weight: 600;
-  color: #9F7AEA;
-  white-space: pre;
-  overflow: visible;
-  background: transparent;
-  align-self: center;
+.logoWrapper:hover .logo {
+  opacity: 1;
+}
+
+.logoWrapper:hover .brandText {
+  opacity: 1;
+}
+
+/* Brand text styling */
+.brandText {
+  font-family: var(--ifm-font-family-base);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.08em;
+  opacity: 0.95;
+  transition: opacity 0.2s ease, text-shadow 0.2s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  line-height: 1;
+  padding-top: 0.15rem;
 }
 
-/* Show full by default, hide short */
-.asciiArtFull {
-  display: block;
+/* Light mode text */
+[data-theme='light'] .brandText {
+  color: rgba(0, 0, 0, 0.95);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
-.asciiArtShort {
-  display: none;
-}
-
-/* On medium screens, show short version only */
-@media (max-width: 900px) {
-  .asciiArtFull {
-    display: none;
-  }
-
-  .asciiArtShort {
-    display: block;
-  }
-}
-
-/* Hide both when there's absolutely no room */
+/* Hide text on very small screens to save space */
 @media (max-width: 480px) {
-  .asciiArtFull,
-  .asciiArtShort {
+  .brandText {
     display: none;
   }
-}
-
-/* Slightly larger on bigger screens */
-@media (min-width: 1200px) {
-  .asciiArtFull,
-  .asciiArtShort {
-    font-size: 0.3rem;
-    line-height: 0.3rem;
-  }
-}
-
-/* Even larger on very wide screens */
-@media (min-width: 1600px) {
-  .asciiArtFull,
-  .asciiArtShort {
-    font-size: 0.35rem;
-    line-height: 0.35rem;
-  }
-}
-
-/* Dark mode adjustments */
-[data-theme='dark'] .asciiArtFull,
-[data-theme='dark'] .asciiArtShort {
-  color: #B794F4;
 }
