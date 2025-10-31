@@ -553,10 +553,42 @@ body.docs-page .footer {
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+  /* Tighten footer padding on mobile */
+  .footer {
+    padding: 1rem 0 0.75rem !important;
+  }
+
+  .footer__links {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .footer__link-item {
+    padding: 0.375rem 0.875rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  .footer__copyright {
+    margin-top: 0.25rem !important;
+    font-size: 0.8125rem !important;
+  }
+
   .footer-icon-links {
     position: static;
     justify-content: center;
-    margin-top: 1.5rem;
+    margin-top: 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .footer-github-link,
+  .footer-discord-link {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+
+  .footer-github-link::before,
+  .footer-discord-link::before {
+    width: 1.125rem !important;
+    height: 1.125rem !important;
   }
 }
 

@@ -4,19 +4,36 @@ import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
 const compositors = [
-  { name: 'niri', logo: '/img/niri.svg', duration: 500 },
-  { name: 'Hyprland', logo: '/img/hyprland.svg', duration: 500 },
-  { name: 'MangoWC', logo: '/img/mango.png', duration: 500 },
-  { name: 'Sway', logo: '/img/sway.svg', duration: 500 },
-  { name: 'wayland', logo: null, duration: 0 }, // End state - stays forever
+  { name: 'niri', logo: '/img/niri.svg', duration: 600 },
+  { name: 'Hyprland', logo: '/img/hyprland.svg', duration: 600 },
+  { name: 'MangoWC', logo: '/img/mango.png', duration: 600 },
+  { name: 'Sway', logo: '/img/sway.svg', duration: 600 },
+  { name: 'Wayland', logo: null, duration: 0 }, // End state - stays forever
 ];
+
+const compositorLinks: Record<string, string> = {
+  'niri': 'https://github.com/YaLTeR/niri',
+  'Hyprland': 'https://hyprland.org/',
+  'MangoWC': 'https://github.com/YukiWorkshop/MangoWC',
+  'Sway': 'https://swaywm.org/',
+};
 
 export default function Home() {
   const [typed, setTyped] = useState('');
   const [showCursor, setShowCursor] = useState(true);
   const [currentCompositor, setCurrentCompositor] = useState(-1);
-  const [showAllLogos, setShowAllLogos] = useState(false);
+  const [copied, setCopied] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
+
+  const handleCopyCommand = async () => {
+    try {
+      await navigator.clipboard.writeText(fullText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -61,13 +78,6 @@ export default function Home() {
         cumulativeDelay += compositor.duration;
         const timeout = setTimeout(() => {
           setCurrentCompositor(index + 1);
-
-          // Show all logos after wayland appears
-          if (index === compositors.length - 2) {
-            setTimeout(() => {
-              setShowAllLogos(true);
-            }, 400);
-          }
         }, cumulativeDelay);
         timeouts.push(timeout);
       }
@@ -125,16 +135,6 @@ export default function Home() {
                       </span>
                     ))}
                   </span>
-                  <span className={`${styles.allLogosRow} ${showAllLogos ? styles.showLogos : ''}`}>
-                    {compositors.slice(0, 4).map((compositor) => (
-                      <img
-                        key={compositor.name}
-                        src={compositor.logo}
-                        alt={compositor.name}
-                        className={styles.smallLogo}
-                      />
-                    ))}
-                  </span>
                 </span>
               </h1>
 
@@ -153,20 +153,58 @@ export default function Home() {
 
               {/* Floating terminal window */}
               <div className={styles.terminalFloat}>
-                <div className={styles.terminalWindow}>
-                  <div className={styles.terminalHeader}>
-                    <div className={styles.terminalDots}>
-                      <span></span>
-                      <span></span>
-                      <span></span>
+                <div className={styles.terminalWindow} onClick={handleCopyCommand}>
+                  {copied && (
+                    <div className={styles.copiedIndicator}>
+                      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ marginRight: '0.5rem' }}>
+                        <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Copied!
                     </div>
-                    <div className={styles.terminalTitle}>~</div>
-                    <div className={styles.terminalSpacer}></div>
+                  )}
+                  <div className={styles.terminalHeader}>
+                    <div className={styles.terminalLogos}>
+                      {compositors.slice(0, 4).map((compositor) => (
+                        <a
+                          key={compositor.name}
+                          href={compositorLinks[compositor.name]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={compositor.name}
+                          className={styles.terminalLogoLink}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <img
+                            src={compositor.logo}
+                            alt={compositor.name}
+                            className={styles.terminalLogo}
+                          />
+                        </a>
+                      ))}
+                    </div>
                   </div>
                   <div className={styles.terminalBody}>
                     <div className={styles.terminalLine}>
                       <span className={styles.prompt}>❯</span>
-                      <span className={styles.typedCommand}>{typed}</span>
+                      <span className={styles.typedCommand}>
+                        {typed.length > 0 && (
+                          <>
+                            <span className={styles.cmdCommand}>{typed.slice(0, Math.min(4, typed.length))}</span>
+                            {typed.length > 4 && (
+                              <span className={styles.cmdFlag}>{typed.slice(4, Math.min(10, typed.length))}</span>
+                            )}
+                            {typed.length > 10 && (
+                              <span className={styles.cmdUrl}>{typed.slice(10, Math.min(42, typed.length))}</span>
+                            )}
+                            {typed.length > 42 && (
+                              <span className={styles.cmdPipe}>{typed.slice(42, Math.min(45, typed.length))}</span>
+                            )}
+                            {typed.length > 45 && (
+                              <span className={styles.cmdCommand}>{typed.slice(45)}</span>
+                            )}
+                          </>
+                        )}
+                      </span>
                       <span className={`${styles.terminalCursor} ${!showCursor ? styles.hidden : ''}`}>█</span>
                     </div>
                     {typed.length >= fullText.length && (
