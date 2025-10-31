@@ -191,53 +191,8 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Features section with cards */}
-          <section className={styles.features}>
-            <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>
-                Everything <span className={styles.gradientText}>you need</span>
-              </h2>
-              <p className={styles.sectionDesc}>
-                A complete desktop experience, out of the box
-              </p>
-            </div>
-
-            <div className={styles.featuresGrid}>
-              <FeatureCard
-                icon=""
-                title="DankMaterialShell"
-                description="A modern and beautiful desktop shell with dynamic theming and smooth animations"
-              />
-              <FeatureCard
-                icon=""
-                title="Dank Installer"
-                description="One line installer for an automated quick and easy setup"
-              />
-              <FeatureCard
-                icon=""
-                title="Dank GOP"
-                description="Stateless system and process monitoring for CPU, memory, GPU, and network"
-              />
-              <FeatureCard
-                icon=""
-                title="Dank Greeter"
-                description="An aesthetically pleasing greetd greeter for your desktop"
-              />
-              <FeatureCard
-                icon=""
-                title="Dank Search"
-                description="Dsearch is a native fast and efficient file system search tool"
-              />
-              <FeatureCard
-                icon=""
-                title="Fully Customizable"
-                description="Plugins, widgets, themes, and configs to make it yours"
-              />
-            </div>
-          </section>
-
-          {/* Screenshot Gallery */}
-          <section className={styles.screenshotGallery}>
+                    {/* Screenshot Gallery */}
+                    <section className={styles.screenshotGallery}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
                 See it <span className={styles.gradientText}>in action</span>
@@ -359,6 +314,51 @@ export default function Home() {
                   <p>Browse and install plugins from the DMS registry</p>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* Features section with cards */}
+          <section className={styles.features}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>
+                Everything <span className={styles.gradientText}>you need</span>
+              </h2>
+              <p className={styles.sectionDesc}>
+                A complete desktop experience, out of the box
+              </p>
+            </div>
+
+            <div className={styles.featuresGrid}>
+              <FeatureCard
+                icon=""
+                title="DankMaterialShell"
+                description="A modern and beautiful desktop shell with dynamic theming and smooth animations"
+              />
+              <FeatureCard
+                icon=""
+                title="Dank Installer"
+                description="One line installer for an automated quick and easy setup"
+              />
+              <FeatureCard
+                icon=""
+                title="Dank GOP"
+                description="Stateless system and process monitoring for CPU, memory, GPU, and network"
+              />
+              <FeatureCard
+                icon=""
+                title="Dank Greeter"
+                description="An aesthetically pleasing greetd greeter for your desktop"
+              />
+              <FeatureCard
+                icon=""
+                title="Dank Search"
+                description="Dsearch is a native fast and efficient file system search tool"
+              />
+              <FeatureCard
+                icon=""
+                title="Fully Customizable"
+                description="Plugins, widgets, themes, and configs to make it yours"
+              />
             </div>
           </section>
 
