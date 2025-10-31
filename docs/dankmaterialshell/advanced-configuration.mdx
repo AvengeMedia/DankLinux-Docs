@@ -71,6 +71,14 @@ DMS_DANKBAR_LAYER=overlay dms run
 
 ## System Integration
 
+### DMS_DISABLE_POLKIT
+
+Disable's the native polkit integration, if you prefer to use a different polkit agent.
+
+```bash
+DMS_DISABLE_POLKIT=1 dms run
+```
+
 ### DMS_PREFERRED_BATTERY
 
 Forces specific battery device when multiple batteries detected (e.g., dual-battery laptops). Provide the UPower device name/path.
