@@ -425,6 +425,7 @@
 /* ===== TERMINAL WINDOW ===== */
 .terminalFloat {
   animation: fadeInUp 0.8s ease-out 0.6s backwards;
+  margin-top: 3.5rem;
 }
 
 .terminalWindow {
