@@ -3,6 +3,13 @@ import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import styles from './index.module.css';
 
+// Declare medium-zoom type
+declare global {
+  interface Window {
+    mediumZoom?: (target: string | HTMLElement | NodeListOf<HTMLElement>, options?: any) => any;
+  }
+}
+
 const compositors = [
   { name: 'niri', logo: '/img/niri.svg', duration: 600 },
   { name: 'Hyprland', logo: '/img/hyprland.svg', duration: 600 },
@@ -60,6 +67,66 @@ export default function Home() {
       setShowCursor(prev => !prev);
     }, 500);
     return () => clearInterval(interval);
+  }, []);
+
+  // Initialize image zoom for screenshots and feature cards
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const initZoom = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        let mediumZoom: any;
+
+        if (window.mediumZoom) {
+          mediumZoom = window.mediumZoom;
+        } else {
+          try {
+            const zoomModule = await import('medium-zoom');
+            mediumZoom = zoomModule.default || zoomModule;
+          } catch (e) {
+            return;
+          }
+        }
+
+        if (!mediumZoom) return;
+
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const background = isLight 
+          ? 'rgba(248, 247, 251, 0.95)' 
+          : 'rgba(17, 17, 17, 0.95)';
+
+        let zoomableImages = document.querySelectorAll('img[data-zoom]');
+        
+        if (zoomableImages.length < 10) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          zoomableImages = document.querySelectorAll('img[data-zoom]');
+        }
+        
+        if (zoomableImages.length > 0) {
+          mediumZoom(zoomableImages, {
+            background,
+            margin: 24,
+          });
+        }
+      } catch (err) {
+        console.warn('Could not initialize image zoom:', err);
+      }
+    };
+
+    initZoom();
+
+    const observer = new MutationObserver(() => {
+      initZoom();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -265,11 +332,13 @@ export default function Home() {
                     src="/img/homepage/dankdash_dark.png"
                     alt="DankDash - Overview Dashboard"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    data-zoom
                   />
                   <img
                     src="/img/homepage/dankdash_light.png"
                     alt="DankDash - Overview Dashboard"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    data-zoom
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -284,11 +353,13 @@ export default function Home() {
                     src="/img/homepage/launcher_dark.png"
                     alt="Spotlight Launcher"
                     className={`${styles.screenshotImage} ${styles.darkOnly} ${styles.topAlign}`}
+                    data-zoom
                   />
                   <img
                     src="/img/homepage/launcher_light.png"
                     alt="Spotlight Launcher"
                     className={`${styles.screenshotImage} ${styles.lightOnly} ${styles.topAlign}`}
+                    data-zoom
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -303,11 +374,13 @@ export default function Home() {
                     src="/img/homepage/controlcenter_dark.png"
                     alt="Control Center"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    data-zoom
                   />
                   <img
                     src="/img/homepage/controlcenter_light.png"
                     alt="Control Center"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    data-zoom
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -322,11 +395,13 @@ export default function Home() {
                     src="/img/homepage/process_dark.png"
                     alt="System Monitor"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    data-zoom
                   />
                   <img
                     src="/img/homepage/process_light.png"
                     alt="System Monitor"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    data-zoom
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -341,11 +416,13 @@ export default function Home() {
                     src="/img/homepage/widget_dark.png"
                     alt="Widget Customization"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    data-zoom
                   />
                   <img
                     src="/img/homepage/widget_light.png"
                     alt="Widget Customization"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    data-zoom
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -360,11 +437,13 @@ export default function Home() {
                     src="/img/homepage/plugins_dark.png"
                     alt="Plugins"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    data-zoom
                   />
                   <img
                     src="/img/homepage/plugins_light.png"
                     alt="Plugins"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    data-zoom
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
@@ -504,11 +583,13 @@ function FeatureCard({ icon, title, description, imageDark, imageLight, imageAli
             src={imageDark}
             alt={title}
             className={`${styles.cardImage} ${styles.darkOnly} ${imageAlign === 'top' ? styles.topAlign : ''}`}
+            data-zoom
           />
           <img
             src={imageLight}
             alt={title}
             className={`${styles.cardImage} ${styles.lightOnly} ${imageAlign === 'top' ? styles.topAlign : ''}`}
+            data-zoom
           />
         </div>
       )}

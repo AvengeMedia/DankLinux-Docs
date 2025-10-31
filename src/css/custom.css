@@ -330,6 +330,16 @@ body.landing-page #__docusaurus {
   min-height: 100vh !important;
 }
 
+/* Scroll snap for landing page sections */
+html {
+  scroll-behavior: smooth;
+}
+
+body.landing-page {
+  scroll-snap-type: y proximity;
+  overflow-y: scroll;
+}
+
 
 /* Sidebar link styling matching Nextra */
 .theme-doc-sidebar-item-link {
@@ -900,7 +910,6 @@ figcaption {
    IMAGE ZOOM (FULLSCREEN OVERLAY)
    ======================================== */
 
-/* Images use medium-zoom for fullscreen overlay */
 .markdown img {
   cursor: zoom-in;
   max-width: 100%;
@@ -908,23 +917,19 @@ figcaption {
   transition: transform 0.2s ease;
 }
 
-/* Dark mode - dark overlay background */
 [data-theme='dark'] .medium-zoom-overlay {
   background: rgba(17, 17, 17, 0.95) !important;
 }
 
-/* Light mode - light overlay background */
 [data-theme='light'] .medium-zoom-overlay {
   background: rgba(248, 247, 251, 0.95) !important;
 }
 
-/* Smooth transitions */
 .medium-zoom-overlay,
 .medium-zoom-image {
   transition: opacity 0.3s ease, transform 0.3s ease !important;
 }
 
-/* Ensure overlay is above everything */
 .medium-zoom-overlay {
   z-index: 999 !important;
 }
@@ -932,6 +937,10 @@ figcaption {
 .medium-zoom-image--opened {
   z-index: 1000 !important;
   cursor: zoom-out;
+  max-width: 45vw !important;
+  max-height: 45vh !important;
+  object-fit: contain !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* ========================================
