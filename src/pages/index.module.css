@@ -367,6 +367,14 @@
   opacity: 1;
 }
 
+[data-theme='light'] .primaryCTA {
+  color: #1a1625 !important;
+}
+
+[data-theme='light'] .primaryCTA:hover {
+  color: #1a1625 !important;
+}
+
 .ctaArrow {
   transition: transform 0.3s ease;
 }
@@ -397,6 +405,18 @@
   transform: translateY(-2px);
   color: #ffffff !important;
   text-decoration: none;
+}
+
+[data-theme='light'] .secondaryCTA {
+  color: #1a1625 !important;
+  background: rgba(128, 90, 213, 0.08);
+  border-color: rgba(128, 90, 213, 0.3);
+}
+
+[data-theme='light'] .secondaryCTA:hover {
+  color: #1a1625 !important;
+  background: rgba(128, 90, 213, 0.15);
+  border-color: rgba(128, 90, 213, 0.5);
 }
 
 /* ===== TERMINAL WINDOW ===== */
