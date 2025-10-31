@@ -262,7 +262,7 @@ exclude_dirs = [
 - Reduce `max_depth` for large directory trees
 
 **Search isn't finding files:**
-- Run `dsearch reindex` to rebuild the index
+- Run `dsearch index generate` to rebuild the index
 - Check if the file's directory is in an `index_paths` block
 - Verify the file isn't in an excluded directory
 - Check that `exclude_hidden = false` if searching for hidden files

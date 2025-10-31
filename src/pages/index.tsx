@@ -307,18 +307,14 @@ export default function Home() {
               {/* Featured Video - DankMaterialShell Overview */}
               <div className={`${styles.screenshotCard} ${styles.large}`}>
                 <div className={styles.screenshotFrame}>
-                  <video
+                  <iframe
                     className={styles.screenshotVideo}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    controls
-                    controlsList="nodownload"
-                  >
-                    <source src="https://github.com/user-attachments/assets/1200a739-7770-4601-8b85-695ca527819a" type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+                    src="https://player.mediadelivery.net/embed/526968/60f61b01-2825-4c48-935c-fbcc2f95edfd"
+                    loading="lazy"
+                    style={{ border: 0, width: '100%', height: '100%' }}
+                    allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                    allowFullScreen={true}
+                  />
                 </div>
                 <div className={styles.screenshotLabel}>
                   <h3>DankMaterialShell in Action</h3>
