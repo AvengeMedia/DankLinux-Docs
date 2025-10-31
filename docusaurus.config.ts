@@ -335,10 +335,9 @@ const config: Config = {
           activeBaseRegex: '^/docs(?!/getting-started|/dankmaterialshell/plugins-overview).*',
         },
         {
-          to: '/docs/dankmaterialshell/plugins-overview',
+          href: 'https://plugins.danklinux.com',
           label: 'Plugins',
           position: 'right',
-          activeBasePath: '/docs/dankmaterialshell/plugins-overview',
         },
         {
           type: 'search',
