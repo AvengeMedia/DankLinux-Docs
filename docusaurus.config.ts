@@ -272,8 +272,8 @@ const config: Config = {
     navbar: {
       logo: {
         alt: 'Dank Linux Logo',
-        src: 'img/path32_black.png',
-        srcDark: 'img/path32.png',
+        src: 'img/path32_black.svg',
+        srcDark: 'img/path32.svg',
       },
       items: [
         {
