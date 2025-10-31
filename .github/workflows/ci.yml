@@ -2,16 +2,26 @@ name: CI
 
 on:
   push:
-    branches: [ nobranchyet ]
+    branches: [ master ]
+
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build_and_publish:
-    name: Build and Publish Image
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_RUN_ID: ${{ github.run_id }}
+  setup_env:
+    name: ⚙️ Setup environment
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@master
+      - name: Add SHORT_SHA env property
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA::7}`" >> $GITHUB_ENV
+
+      - name: Put commit msg in environment
+        run: echo "COMMIT_MSG=${{ github.event.head_commit.message }}" >> $GITHUB_ENV
+
+      - name: Escape commit message
+        run: |
+          echo "COMMIT_MSG=$(echo $COMMIT_MSG | tr -d \'\\\")" >> $GITHUB_ENV
 
       - name: Get branch name (merge)
         if: github.event_name != 'pull_request'
@@ -23,48 +33,95 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
 
-      - name: Login to registry
-        uses: actions-hub/docker/login@master
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USER }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set build start in env variable
+        run: echo "BUILD_START=$(date +%s)" >> $GITHUB_ENV
 
-      - name: Build and tag
-        if: success()
-        run: docker build -t bbedward/dlx-docs:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }} .
+    outputs:
+      short_sha: ${{ env.SHORT_SHA }}
+      commit_msg: ${{ env.COMMIT_MSG }}
+      branch_name: ${{ env.BRANCH_NAME }}
+      build_start: ${{ env.BUILD_START }}
 
-      - name: Push image
-        if: success()
-        uses: actions-hub/docker@master
-        with:
-          args: push bbedward/dlx-docs:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }}
-
-  deploy_image:
-    name: Deploy app
-    needs: build_and_publish
-    runs-on: ubuntu-latest
+  build_and_publish:
+    name: Build dlx-docs
+    needs: setup_env
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            runs-on: ubuntu-24.04
+            arch: amd64
+          - platform: linux/arm64
+            runs-on: ubuntu-24.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.runs-on }}
     env:
       GITHUB_RUN_ID: ${{ github.run_id }}
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push image
+        if: success()
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: ${{ matrix.platform }}
+          provenance: false
+          push: true
+          file: ./Dockerfile
+          tags: ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}-${{ matrix.arch }}
+
+  create_manifest:
+    name: 📦 Create Multi-Arch Manifest
+    runs-on: ubuntu-24.04
+    needs: [setup_env, build_and_publish]
+    env:
+      GITHUB_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push manifest
+        run: |
+          docker manifest create ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }} \
+            --amend ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}-amd64 \
+            --amend ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}-arm64
+
+          docker manifest annotate --arch amd64 --os linux ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }} ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}-amd64
+          docker manifest annotate --arch arm64 --os linux ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }} ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}-arm64
+
+          docker manifest push ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}
+
+  deploy_image:
+    name: Deploy dlx-docs
+    needs: [setup_env, create_manifest]
+    runs-on: ubuntu-24.04
+    env:
+      GITHUB_RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
       - uses: imranismail/setup-kustomize@v1
         with:
           kustomize-version: "3.5.4"
 
-      - name: Get branch name (merge)
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
-
-      - name: Get branch name (pull request)
-        if: github.event_name == 'pull_request'
-        shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF} | tr / -)" >> $GITHUB_ENV
-
       - name: Set image
         working-directory: ./k8s
         run: |
-          kustomize edit set image replaceme=bbedward/dlx-docs:${{ env.BRANCH_NAME }}-${{ env.GITHUB_RUN_ID }}
+          kustomize edit set image replaceme=ghcr.io/avengemedia/dlx-docs:${{ needs.setup_env.outputs.branch_name }}-${{ env.GITHUB_RUN_ID }}
           kustomize build . > deployment-k.yaml
 
       - name: Deploy image to k8s cluster

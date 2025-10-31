@@ -374,7 +374,8 @@ body:has(.navbar-sidebar--show) {
 
 /* Ensure icon links in sidebar are properly displayed */
 .navbar-sidebar__items .header-github-link,
-.navbar-sidebar__items .navbar-discord-link {
+.navbar-sidebar__items .navbar-discord-link,
+.navbar-sidebar__items .navbar-kofi-link {
   width: 100% !important;
   height: auto !important;
   padding: 0.875rem 1.5rem !important;
@@ -392,13 +393,15 @@ body:has(.navbar-sidebar--show) {
 }
 
 .navbar-sidebar__items .header-github-link:hover,
-.navbar-sidebar__items .navbar-discord-link:hover {
+.navbar-sidebar__items .navbar-discord-link:hover,
+.navbar-sidebar__items .navbar-kofi-link:hover {
   background: rgba(208, 188, 255, 0.1) !important;
   color: var(--dank-purple-light) !important;
 }
 
 .navbar-sidebar__items .header-github-link::before,
-.navbar-sidebar__items .navbar-discord-link::before {
+.navbar-sidebar__items .navbar-discord-link::before,
+.navbar-sidebar__items .navbar-kofi-link::before {
   margin-right: 0.875rem !important;
   flex-shrink: 0 !important;
   width: 1.25rem !important;
@@ -415,12 +418,18 @@ body:has(.navbar-sidebar--show) {
   font-size: 1rem !important;
 }
 
+.navbar-sidebar__items .navbar-kofi-link::after {
+  content: 'Support' !important;
+  font-size: 1rem !important;
+}
+
 /* ========================================
    NAVBAR ICON LINKS (GitHub, Discord, etc.)
    ======================================== */
 
 .header-github-link,
-.navbar-discord-link {
+.navbar-discord-link,
+.navbar-kofi-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -431,10 +440,12 @@ body:has(.navbar-sidebar--show) {
   transition: background 0.2s ease, color 0.2s ease;
   padding: 0;
   overflow: visible;
+  flex-shrink: 0;
 }
 
 .header-github-link::before,
-.navbar-discord-link::before {
+.navbar-discord-link::before,
+.navbar-kofi-link::before {
   content: '';
   width: 1.5rem;
   height: 1.5rem;
@@ -458,15 +469,22 @@ body:has(.navbar-sidebar--show) {
   -webkit-mask-image: url('/img/discord.svg');
 }
 
+.navbar-kofi-link::before {
+  mask-image: url('/img/kofi.svg');
+  -webkit-mask-image: url('/img/kofi.svg');
+}
+
 .header-github-link:hover,
-.navbar-discord-link:hover {
+.navbar-discord-link:hover,
+.navbar-kofi-link:hover {
   background: rgba(208, 188, 255, 0.15);
   color: var(--dank-purple-light);
 }
 
 /* Hide text in icon-only links */
 .header-github-link,
-.navbar-discord-link {
+.navbar-discord-link,
+.navbar-kofi-link {
   font-size: 0;
 }
 
@@ -513,14 +531,16 @@ body:has(.navbar-sidebar--show) {
 
   /* Reduce icon link sizes on mobile */
   .header-github-link,
-  .navbar-discord-link {
+  .navbar-discord-link,
+  .navbar-kofi-link {
     width: 2.25rem;
     height: 2.25rem;
     flex-shrink: 0;
   }
 
   .header-github-link::before,
-  .navbar-discord-link::before {
+  .navbar-discord-link::before,
+  .navbar-kofi-link::before {
     width: 1.25rem;
     height: 1.25rem;
   }
@@ -549,20 +569,23 @@ body:has(.navbar-sidebar--show) {
 
   /* Reduce icon sizes slightly on mobile to make room */
   .header-github-link,
-  .navbar-discord-link {
+  .navbar-discord-link,
+  .navbar-kofi-link {
     width: 2rem;
     height: 2rem;
   }
 
   .header-github-link::before,
-  .navbar-discord-link::before {
+  .navbar-discord-link::before,
+  .navbar-kofi-link::before {
     width: 1.125rem;
     height: 1.125rem;
   }
 
   /* Keep icon links visible */
   .navbar__items--right .header-github-link,
-  .navbar__items--right .navbar-discord-link {
+  .navbar__items--right .navbar-discord-link,
+  .navbar__items--right .navbar-kofi-link {
     display: flex !important;
   }
 }
@@ -575,13 +598,15 @@ body:has(.navbar-sidebar--show) {
 
   /* Further reduce icon sizes on very small screens */
   .header-github-link,
-  .navbar-discord-link {
+  .navbar-discord-link,
+  .navbar-kofi-link {
     width: 2rem;
     height: 2rem;
   }
 
   .header-github-link::before,
-  .navbar-discord-link::before {
+  .navbar-discord-link::before,
+  .navbar-kofi-link::before {
     width: 1.125rem;
     height: 1.125rem;
   }

@@ -355,6 +355,12 @@ const config: Config = {
           className: 'navbar-discord-link',
           'aria-label': 'Discord community',
         },
+        {
+          href: 'https://ko-fi.com/danklinux',
+          position: 'right',
+          className: 'navbar-kofi-link',
+          'aria-label': 'Support on Ko-fi',
+        },
       ],
     },
     footer: {

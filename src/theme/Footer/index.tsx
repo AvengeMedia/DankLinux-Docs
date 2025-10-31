@@ -24,6 +24,13 @@ export default function FooterWrapper(props: Props): JSX.Element {
           className="footer-discord-link"
           aria-label="Discord community"
         />
+        <a
+          href="https://ko-fi.com/danklinux"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-kofi-link"
+          aria-label="Support on Ko-fi"
+        />
       </div>
     </div>
   );
