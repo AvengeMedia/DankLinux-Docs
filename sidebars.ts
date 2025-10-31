@@ -28,6 +28,11 @@ const sidebars: SidebarsConfig = {
           label: 'Overview & Architecture',
         },
         'dankmaterialshell/installation',
+        {
+          type: 'doc',
+          id: 'dankmaterialshell/nixos',
+          label: 'Installation - NixOS',
+        },
         'dankmaterialshell/updating',
         'dankmaterialshell/compositors',
         {
