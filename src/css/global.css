@@ -1,3 +1,15 @@
+/* ========================================
+   ADWAITA SANS FONT
+   ======================================== */
+
+@font-face {
+  font-family: 'Adwaita Sans';
+  src: url('/fonts/AdwaitaSans-Regular.woff2') format('woff2');
+  font-weight: 100 950;
+  font-style: normal;
+  font-display: swap;
+}
+
 /**
  * Global CSS - Docusaurus Base Overrides
  * This file sets our defaults for Docusaurus components
@@ -9,6 +21,9 @@
    ======================================== */
 
 :root {
+  /* Font family - Adwaita Sans as primary with system font fallbacks */
+  --ifm-font-family-base: 'Adwaita Sans', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+
   /* Navbar dimensions */
   --ifm-navbar-height: 4.5rem;
   --ifm-navbar-padding-horizontal: 2rem;
