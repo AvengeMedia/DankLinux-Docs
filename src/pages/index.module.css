@@ -273,7 +273,7 @@
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 0;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   animation: fadeInUp 0.8s ease-out 0.5s backwards;
 }
 
@@ -495,6 +495,11 @@
   opacity: 0;
 }
 
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
 @keyframes blink {
   0%, 50% {
     opacity: 1;
@@ -513,7 +518,8 @@
 }
 
 .fadeIn {
-  animation: fadeIn 0.5s ease-out backwards;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
 }
 
 @keyframes fadeIn {
@@ -529,7 +535,7 @@
 
 /* ===== FEATURES SECTION ===== */
 .features {
-  padding: 8rem 2rem;
+  padding: 1.5rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -538,7 +544,7 @@
 
 .sectionHeader {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 }
 
 .sectionTitle {
@@ -641,7 +647,7 @@
 
 /* ===== SCREENSHOT GALLERY ===== */
 .screenshotGallery {
-  padding: 8rem 2rem;
+  padding: 0 2rem 1.5rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
@@ -652,7 +658,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -783,7 +789,7 @@
 
 /* ===== SHOWCASE SECTION ===== */
 .showcase {
-  padding: 8rem 2rem;
+  padding: 1.5rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
   position: relative;

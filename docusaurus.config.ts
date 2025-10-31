@@ -332,7 +332,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} Dank Linux • MIT Licensed`,
+      copyright: `© ${new Date().getFullYear()} Dank Linux • Free & Open Source`,
     },
     prism: {
       theme: dankPurpleLight,

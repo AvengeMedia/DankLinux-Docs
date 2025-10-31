@@ -207,22 +207,18 @@ export default function Home() {
                       </span>
                       <span className={`${styles.terminalCursor} ${!showCursor ? styles.hidden : ''}`}>█</span>
                     </div>
-                    {typed.length >= fullText.length && (
-                      <>
-                        <div className={`${styles.terminalLine} ${styles.fadeIn}`}>
-                          <span className={styles.output}>→ Detecting distribution...</span>
-                        </div>
-                        <div className={`${styles.terminalLine} ${styles.fadeIn}`} style={{ animationDelay: '0.3s' }}>
-                          <span className={styles.success}>✓ Installing dependencies</span>
-                        </div>
-                        <div className={`${styles.terminalLine} ${styles.fadeIn}`} style={{ animationDelay: '0.6s' }}>
-                          <span className={styles.success}>✓ Configuring DankMaterialShell</span>
-                        </div>
-                        <div className={`${styles.terminalLine} ${styles.fadeIn}`} style={{ animationDelay: '0.9s' }}>
-                          <span className={styles.success}>✓ Ready to rock!</span>
-                        </div>
-                      </>
-                    )}
+                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`}>
+                      <span className={styles.output}>→ Detecting distribution...</span>
+                    </div>
+                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.3s' }}>
+                      <span className={styles.success}>✓ Installing dependencies</span>
+                    </div>
+                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.6s' }}>
+                      <span className={styles.success}>✓ Configuring DankMaterialShell</span>
+                    </div>
+                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.9s' }}>
+                      <span className={styles.success}>✓ Ready to rock!</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -273,8 +269,8 @@ export default function Home() {
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
-                  <h3>Dashboard Overview</h3>
-                  <p>Calendar, weather, system info at a glance</p>
+                  <h3>Dank Dash</h3>
+                  <p>Media controls, weather, calendar, and system info at a glance</p>
                 </div>
               </div>
 
@@ -288,8 +284,8 @@ export default function Home() {
                   />
                 </div>
                 <div className={styles.screenshotLabel}>
-                  <h3>App Launcher</h3>
-                  <p>Quick access to all your applications</p>
+                  <h3>Launcher</h3>
+                  <p>Launch applications, filesystem searches, and more with the launcher & plugins.</p>
                 </div>
               </div>
 
@@ -304,7 +300,7 @@ export default function Home() {
                 </div>
                 <div className={styles.screenshotLabel}>
                   <h3>Control Center</h3>
-                  <p>System settings and quick toggles</p>
+                  <p>Fully configurable system settings and quick toggles.</p>
                 </div>
               </div>
 
@@ -319,7 +315,7 @@ export default function Home() {
                 </div>
                 <div className={styles.screenshotLabel}>
                   <h3>System Monitor</h3>
-                  <p>Real-time performance metrics</p>
+                  <p>Real-time system & process metrics</p>
                 </div>
               </div>
 
@@ -349,7 +345,7 @@ export default function Home() {
                 </div>
                 <div className={styles.screenshotLabel}>
                   <h3>Plugins</h3>
-                  <p>Browse and install plugins from the DMS registry</p>
+                  <p>Extend functionality with new widgets, launcher features, and more.</p>
                 </div>
               </div>
             </div>
@@ -370,27 +366,27 @@ export default function Home() {
               <FeatureCard
                 icon=""
                 title="DankMaterialShell"
-                description="A modern and beautiful desktop shell with dynamic theming and smooth animations"
+                description="A modern and beautiful desktop shell with dynamic theming and smooth animations."
               />
               <FeatureCard
                 icon=""
-                title="Dank Installer"
-                description="One line installer for an automated quick and easy setup"
+                title="Dank Install"
+                description="One line installer for an automated quick and easy setup."
               />
               <FeatureCard
                 icon=""
                 title="Dank GOP"
-                description="Stateless system and process monitoring for CPU, memory, GPU, and network"
+                description="Stateless system and process monitoring for CPU, memory, GPU, disks, and network interfaces."
               />
               <FeatureCard
                 icon=""
                 title="Dank Greeter"
-                description="An aesthetically pleasing greetd greeter for your desktop"
+                description="An aesthetically pleasing greetd greeter for your desktop."
               />
               <FeatureCard
                 icon=""
                 title="Dank Search"
-                description="Dsearch is a native fast and efficient file system search tool"
+                description="Blazingly fast and efficient file system search tool."
               />
               <FeatureCard
                 icon=""
@@ -409,7 +405,7 @@ export default function Home() {
                 </h2>
                 <p className={styles.showcaseDesc}>
                   Dynamic theming powered by matugen extracts colors from your wallpaper
-                  to create cohesive, personalized experiences.
+                  to create a cohesive experience.
                 </p>
                 <ul className={styles.showcaseFeatures}>
                   <li>
@@ -417,6 +413,12 @@ export default function Home() {
                       <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                     <span>Material Design 3 color schemes</span>
+                  </li>
+                  <li>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    <span>Automatic theming for system applications.</span>
                   </li>
                   <li>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
