@@ -726,7 +726,7 @@
 
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: 1fr;
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
@@ -1194,6 +1194,15 @@
   /* Terminal logos mobile adjustments */
   .terminalLogo {
     height: 16px;
+  }
+
+  .terminalBody {
+    padding: 1.5rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .terminalLine {
+    gap: 0.375rem;
   }
 
   /* Disable mouse effects on mobile */
