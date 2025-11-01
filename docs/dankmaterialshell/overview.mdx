@@ -46,99 +46,40 @@ DankMaterialShell (dms) is a Wayland desktop shell built with [Quickshell](https
 DankMaterialShell uses a client-server architecture where a Go backend (`dms`) manages system integrations and spawns the Quickshell-based UI as a child process. Communication happens over Unix sockets using REQ/REP and PUB/SUB patterns.
 
 ```mermaid
-graph LR
-  %% ===== UI Layer =====
-  subgraph UI["Desktop Shell (UI)"]
-    QS["Quickshell Base
-    (Qt6 framework)
-    • D-Bus integrations
-    • Wayland integrations"]
-    QML["DankMaterialShell
-    (QML app)"]
+flowchart TD
+    DMS[dms Go Backend]
+    QS[Quickshell Qt6]
+    QML[QML App]
+    SOCK[Unix Sockets]
+
+    WL[Wayland Compositor]
+    DBUS[System D-Bus]
+
+    DMS -->|spawns| QS
     QS --> QML
-  end
+    QML <-->|REQ/REP<br/>PUB/SUB| SOCK
+    SOCK <--> DMS
 
-  %% ===== IPC Sockets =====
-  subgraph IPC["App ↔ Backend IPC"]
-    REQ["REQ/REP Socket"]
-    PUB["PUB/SUB Socket"]
-  end
+    DMS -->|D-Bus| DBUS
+    DMS -->|Wayland| WL
+    QS -->|D-Bus| DBUS_OTHER[Other D-Bus Services]
+    QS -->|Wayland| WL
 
-  %% ===== Go Backend =====
-  subgraph dms
-    GO["dms process"]
-    SRV["Socket Server (Req/Rep + Pub/Sub)"]
-    DB["go-dbus
-    (single D-Bus connection)"]
-    WL["go-wayland"]
-    PLUG["Plugin Service
-    (DMS plugin system)"]
-    NET["Networking Abstraction
-    (auto-detects backend)"]
-    BLZ["BlueZ Pairing Agent
-    (prompt handler)"]
-    ACC["AccountsService Client"]
-    LCTL["loginctl Client"]
-    GMA["Wayland Gamma Control
-    (native)"]
-
-    GO --> SRV
-    GO --> DB
-    GO --> WL
-    GO --> PLUG
-    GO --> NET
-    GO --> BLZ
-    GO --> ACC
-    GO --> LCTL
-    GO --> GMA
-  end
-
-  %% ===== System/OS Services =====
-  subgraph OS["System Services / OS"]
-    BUS["System D-Bus"]
-    NM["NetworkManager"]
-    IWD["iwd"]
-    NETD["systemd-networkd"]
-    BLUEZ["BlueZ"]
-    ACCSVC["accountsservice"]
-    LOGIND["systemd-logind"]
-    WLC["Wayland Compositor"]
-  end
-
-  %% ===== Relationships =====
-
-  %% Backend spawns UI and injects env var for socket
-  GO -. "spawns child & sets UNIX socket env var" .-> QS
-
-  %% QML ↔ Backend over two sockets
-  QML --- REQ
-  QML --- PUB
-  REQ --- SRV
-  PUB --- SRV
-
-  %% Backend's single D-Bus connection fans out to services
-  DB --- BUS
-  BUS --- NM
-  BUS --- IWD
-  BUS --- NETD
-  BUS --- BLUEZ
-  BUS --- ACCSVC
-  BUS --- LOGIND
-
-  %% Backend Wayland paths
-  WL --> WLC
-  GMA --> WLC
-
-  %% Conceptual: backend agents via D-Bus
-  NET -. via D-Bus .- BUS
-  BLZ -. via D-Bus .- BLUEZ
-  ACC -. via D-Bus .- ACCSVC
-  LCTL -. via D-Bus .- LOGIND
-
-  %% Quickshell's own integrations
-  QS -. "D-Bus integrations" .- BUS
-  QS -. "Wayland integrations" .-> WLC
+    DBUS --> NM[NetworkManager]
+    DBUS --> IWD[iwd]
+    DBUS --> NETD[systemd-networkd]
+    DBUS --> BLZ[BlueZ]
+    DBUS --> CUPS[CUPS]
+    DBUS --> ACC[accountsservice]
+    DBUS --> LOGIN[systemd-logind]
 ```
+
+**Key Points:**
+
+- **dms** spawns **Quickshell** as a child process
+- **dms** and **Quickshell** both integrate with Wayland and D-Bus APIs independently
+- **dms** fills gaps that Quickshell doesn't handle natively
+- Communication between QML app and dms backend happens via Unix sockets
 
 ### Component Overview
 
