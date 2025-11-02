@@ -240,6 +240,26 @@ echo "include dank-tabs.conf" >> ~/.config/kitty/kitty.conf
 echo "include dank-theme.conf" >> ~/.config/kitty/kitty.conf
 ```
 
+### foot
+
+foot requires absolute paths in its configuration, edit `~/.config/foot/foot.ini` to add the include:
+
+```ini
+[main]
+include=/home/<USERNAME>/.config/foot/dank-colors.ini
+```
+
+### alacritty
+
+Add the alacritty theme to your imports secton in `~/.config/alacritty/alacritty.toml`
+
+```bash
+[general]
+import = [
+    "~/.config/alacritty/dank-theme.toml"
+]
+```
+
 Reload or restart the terminal to apply colors.
 
 ## Troubleshooting

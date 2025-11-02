@@ -43,7 +43,7 @@ DankMaterialShell (dms) is a Wayland desktop shell built with [Quickshell](https
 
 ## Architecture
 
-DankMaterialShell uses a client-server architecture where a Go backend (`dms`) manages system integrations and spawns the Quickshell-based UI as a child process. Communication happens over Unix sockets using REQ/REP and PUB/SUB patterns.
+DankMaterialShell uses a client-server architecture where a Go backend (`dms`) manages system integrations and spawns the Quickshell-based UI as a child process. Communication happens over Unix socket using REQ/REP and PUB/SUB patterns.
 
 <div style={{overflowX: 'auto', maxWidth: '100%'}}>
 
@@ -52,7 +52,7 @@ flowchart TD
     DMS[dms Go Backend]
     QS[Quickshell Qt6]
     QML[QML App]
-    SOCK[Unix Sockets]
+    SOCK[Unix Socket]
 
     WL[Wayland Compositor]
     DBUS[System D-Bus]
@@ -83,7 +83,7 @@ flowchart TD
 - **dms** spawns **Quickshell** as a child process
 - **dms** and **Quickshell** both integrate with Wayland and D-Bus APIs independently
 - **dms** fills gaps that Quickshell doesn't handle natively
-- Communication between QML app and dms backend happens via Unix sockets
+- Communication between QML app and dms backend happens via Unix socket
 
 ### Component Overview
 
