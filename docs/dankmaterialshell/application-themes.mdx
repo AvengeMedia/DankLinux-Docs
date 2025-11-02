@@ -4,6 +4,8 @@ sidebar_position: 4.2
 ---
 
 import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={`████████╗██╗  ██╗███████╗███╗   ███╗███████╗███████╗
@@ -196,9 +198,28 @@ Restart DMS to generate the palette, then enable Pywalfox in the browser.
 - Keep userChrome/userContent overrides under version control
 - Disable conflicting theme extensions when using DMS-managed colors
 
+## Editors
+
+Editors use a mix of `dank16` and matugen to produce a colorful, theme-honoring template with contrast in the editor itself.
+
+### VSCode
+
+Open the command palette with `ctrl`+`shift`+`p`, choose `Preferences: Color Scheme` and then pick `Dynamic Base16 DankShell`
+
+<ThemedImage
+  alt="VS Code theme selection"
+  sources={{
+    light: useBaseUrl('/img/vscodelight.png'),
+    dark: useBaseUrl('/img/vscode.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%' }}
+/>
+
+
+
 ## Terminal Applications
 
-Matugen automatically generates theme files for supported terminal emulators.
+Terminal editors use a custom `dank16` algorithm alongside matugen to generate a palette that honors the theme aesthetic while also providing 16 ansi colors.
 
 ### Ghostty
 
