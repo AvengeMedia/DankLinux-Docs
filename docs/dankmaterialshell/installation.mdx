@@ -29,7 +29,6 @@ Only **Quickshell** is required. All other dependencies are optional and enable 
 - **dgop** (optional) - System telemetry for resource widgets
 - **dsearch** (optional) - Filesystem search engine
 - **matugen** (optional) - Material Design color palette generation
-- **brightnessctl** (optional) - Display and keyboard backlight control
 - **wl-clipboard** + **cliphist** (optional) - Clipboard history
 - **cava** (optional) - Audio visualizer widget
 - **qt6-multimedia** (optional) - System sound feedback
@@ -145,6 +144,16 @@ mkdir ~/repos && cd ~/repos
 git clone https://github.com/AvengeMedia/danklinux.git
 cd danklinux
 make && sudo make install
+# Install udev rules for brightness/backlight/led control
+sudo make install-config
+```
+
+#### 3.1 Add user to groups
+
+`video` is usually required to control display/backlight devices, while `input` is usually required to control LEDs (such as keyboard lighting)
+
+```bash
+sudo usermod -aG video,input $USER
 ```
 
 ### 4. Install Optional Integrations
@@ -154,7 +163,6 @@ Install optional components for full functionality using your distribution's pac
 - `dgop` - Detailed system metrics and process lists
 - `dsearch` - Filesystem search engine
 - `matugen` - Material Design color palette generation
-- `brightnessctl` - Display backlight and keyboard lighting
 - `ddcutil` - i2c monitor backlight control
 - `wl-clipboard` + `cliphist` - Clipboard history
 - `cava` - Audio visualizer widget
