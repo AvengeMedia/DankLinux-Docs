@@ -28,6 +28,7 @@ DankMaterialShell (dms) is a Wayland desktop shell built with [Quickshell](https
 - Bluetooth Management (via BlueZ)
 - Audio Management (via PipeWire)
 - Idle & Power Management
+- Brightness controls (Backlight, LEDs, and i2c/ddc)
 - Lock Screen
 - Process & System Monitoring
 - Theming (Light, Dark, Automatic Colors, Premade themes, and Custom Accent Colors)
@@ -73,7 +74,7 @@ flowchart TD
     DBUS --> BLZ[BlueZ]
     DBUS --> CUPS[CUPS]
     DBUS --> ACC[accountsservice]
-    DBUS --> LOGIN[systemd-logind]
+    DBUS --> LOGIN[login1]
 ```
 
 </div>
