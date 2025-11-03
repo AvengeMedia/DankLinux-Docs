@@ -28,6 +28,32 @@ export DMS_DISABLE_MATUGEN=1
 dms run
 ```
 
+## Custom Matugen Templates
+
+You can add your own matugen templates to theme additional applications. Templates must use absolute paths and be defined under the `[config]` section. DMS will execute these templates alongisde its built-in templates.
+
+See the [matugen wiki](https://github.com/InioX/matugen/wiki/Configuration) for full configuration and templating options.
+
+Create or edit `~/.config/matugen/config.toml`:
+
+```toml
+[config]
+
+[templates.mytemplate]
+input_path = '/home/username/.config/matugen/templates/mytemplate.toml'
+output_path = '/home/username/.local/share/mytemplate/themes/matugen.toml'
+
+[templates.myapp]
+input_path = '/home/username/.config/matugen/templates/myapp.conf'
+output_path = '/home/username/.config/myapp/colors.conf'
+```
+
+**Important notes:**
+- Use absolute paths, not relative paths like `./templates/`
+- All template definitions must be under the `[config]` section
+- Templates will regenerate on wallpaper changes and theme switches
+
+
 ## Generated Files
 
 When matugen is enabled, theme files are always generated regardless of the "Apply GTK/Qt Themes" toggle:
