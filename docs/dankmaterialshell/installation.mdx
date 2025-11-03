@@ -144,16 +144,6 @@ mkdir ~/repos && cd ~/repos
 git clone https://github.com/AvengeMedia/danklinux.git
 cd danklinux
 make && sudo make install
-# Install udev rules for brightness/backlight/led control
-sudo make install-config
-```
-
-#### 3.1 Add user to groups
-
-`video` is usually required to control display/backlight devices, while `input` is usually required to control LEDs (such as keyboard lighting)
-
-```bash
-sudo usermod -aG video,input $USER
 ```
 
 ### 4. Install Optional Integrations
