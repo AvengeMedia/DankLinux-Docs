@@ -333,7 +333,7 @@ dms ipc call dankdash wallpaper
 
 ### niri
 
-Screenshot functionality for the Niri compositor. Captures are opened in Swappy for markup and annotation.
+Screenshot functionality for the Niri compositor. Captures are opened in your configured editor for markup and annotation.
 
 | Function | Description |
 | --- | --- |
@@ -348,7 +348,19 @@ dms ipc call niri screenshotScreen
 dms ipc call niri screenshotWindow
 ```
 
-**Requirements:** Niri compositor and Swappy must be installed.
+**Configuration:**
+
+Set the `DMS_SCREENSHOT_EDITOR` environment variable to choose your preferred screenshot editor backend:
+
+```bash
+# Use Swappy (default)
+export DMS_SCREENSHOT_EDITOR=swappy
+
+# Use Satty
+export DMS_SCREENSHOT_EDITOR=satty
+```
+
+**Requirements:** Niri compositor and your chosen screenshot editor (Swappy or Satty) must be installed.
 
 ### systemupdater
 
