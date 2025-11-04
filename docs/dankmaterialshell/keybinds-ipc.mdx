@@ -326,6 +326,25 @@ dms ipc call dankdash wallpaper
 
 ## System Utilities
 
+### niri
+
+Screenshot functionality for the Niri compositor. Captures are opened in Swappy for markup and annotation.
+
+| Function | Description |
+| --- | --- |
+| `screenshot` | Interactive selection screenshot |
+| `screenshotScreen` | Capture entire screen |
+| `screenshotWindow` | Capture focused window |
+
+**Examples:**
+```bash
+dms ipc call niri screenshot
+dms ipc call niri screenshotScreen
+dms ipc call niri screenshotWindow
+```
+
+**Requirements:** Niri compositor and Swappy must be installed.
+
 ### systemupdater
 
 System updater external check request.
