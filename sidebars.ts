@@ -35,6 +35,7 @@ const sidebars: SidebarsConfig = {
         },
         'dankmaterialshell/updating',
         'dankmaterialshell/compositors',
+        'dankmaterialshell/layers',
         {
           type: 'category',
           label: 'Themes',

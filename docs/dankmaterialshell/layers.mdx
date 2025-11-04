@@ -1,0 +1,130 @@
+---
+title: Layer Namespaces & Blur
+description: Getting blur working properly on DMS components
+sidebar_position: 7
+---
+
+# Wayland Layer Shell & Blur
+
+Configuring blur for Wayland layer shells can be tricky since each compositor handles it differently.
+
+## Overview
+
+DMS uses Wayland's layer shell protocol for all UI components: the bar, popups, modals, OSDs, and notifications. Each component type gets its own namespace, allowing your compositor to target them individually for blur effects.
+
+Layer shell surfaces differ from regular windows—they're UI overlays positioned at specific layers (background, bottom, top, overlay). By assigning unique namespaces to each component type, you can apply blur selectively (e.g., "blur all modals" or "blur all popouts") without affecting other elements.
+
+## Component Namespaces
+
+DMS uses the following namespaces for layer shell components:
+
+### `dms:modal`
+Full-screen modal dialogs including settings, power menu, and clipboard history. These overlay the entire screen and optionally dim the background.
+
+### `dms:popout`
+Popup panels triggered by bar widgets, such as the control center, app drawer, and notification center. These are anchored to the bar and slide out accordingly.
+
+### `dms:osd`
+On-screen displays for volume and brightness indicators. These appear briefly to show status information and fade out automatically.
+
+### `quickshell:bar`
+The main panel, which can be positioned at the top, bottom, left, or right edge of the screen.
+
+### `quickshell:notification`
+Toast notifications displayed when applications request user attention.
+
+### `quickshell:dock`
+Application dock (optional component).
+
+### `quickshell:slideout`
+Sliding panels from screen edges (optional component).
+
+## Hyprland Example
+
+### Blur Settings
+
+```conf
+decoration {
+    blur {
+        enabled = true
+        size = 10
+        passes = 4
+
+        ignore_opacity = true
+        new_optimizations = true
+        xray = false
+
+        noise = 0.02
+        contrast = 1.1
+        vibrancy = 0.2
+        vibrancy_darkness = 0.3
+    }
+
+    drop_shadow = true
+    shadow_range = 20
+    shadow_render_power = 3
+    col.shadow = rgba(00000099)
+}
+```
+
+### Layer Rules
+
+Add these layer rules to enable blur for DMS components:
+
+```conf
+# Modals
+layerrule = blur, dms:modal
+layerrule = ignorezero, dms:modal
+layerrule = blurpopups, dms:modal
+
+# Popouts
+layerrule = blur, dms:popout
+layerrule = ignorezero, dms:popout
+layerrule = blurpopups, dms:popout
+
+# OSDs
+layerrule = blur, dms:osd
+layerrule = ignorezero, dms:osd
+
+# Bar
+layerrule = blur, quickshell:bar
+layerrule = ignorezero, quickshell:bar
+layerrule = blurpopups, quickshell:bar
+
+# Notifications
+layerrule = blur, quickshell:notification
+layerrule = ignorezero, quickshell:notification
+layerrule = blurpopups, quickshell:notification
+
+# Dock (if you're using it)
+layerrule = blur, quickshell:dock
+layerrule = ignorezero, quickshell:dock
+layerrule = blurpopups, quickshell:dock
+```
+
+**Layer rule explanations:**
+- `blur` — enables blur for the specified namespace
+- `ignorezero` — applies blur behind fully transparent areas, ensuring proper rendering of rounded corners
+- `blurpopups` — applies blur to popup sub-surfaces within the layer
+
+## Performance Tuning
+
+If blur is impacting system performance, try these optimizations in order:
+
+1. **Reduce passes**: Set `passes = 2` instead of 4
+2. **Reduce size**: Set `size = 6` instead of 10
+3. **Disable OSD blur**: Comment out the `dms:osd` layer rules
+4. **Use xray mode**: Set `xray = true` to reduce blur on stacked layers
+
+You can test blur impact in real-time:
+```bash
+hyprctl keyword decoration:blur:enabled false
+# Test performance
+hyprctl keyword decoration:blur:enabled true
+```
+## Other Compositors
+
+Not all compositors support blur, check the relevant compositors documentation for how to add layer-rules.
+
+DMS is compositor-agnostic—it only sets namespaces and lets the compositor handle the effects. Once you determine the appropriate layer rule syntax for your compositor, you can target the same namespaces listed above.
+
