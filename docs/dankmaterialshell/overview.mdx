@@ -57,6 +57,8 @@ flowchart TD
 
     WL[Wayland Compositor]
     DBUS[System D-Bus]
+    I2C[i2c/DDC]
+    SYSFS[sysfs]
 
     DMS -->|spawns| QS
     QS --> QML
@@ -65,6 +67,8 @@ flowchart TD
 
     DMS -->|D-Bus| DBUS
     DMS -->|Wayland| WL
+    DMS -->|brightness| I2C
+    DMS -->|hardware| SYSFS
     QS -->|D-Bus| DBUS_OTHER[Other D-Bus Services]
     QS -->|Wayland| WL
 
