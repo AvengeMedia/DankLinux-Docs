@@ -770,27 +770,36 @@ body.docs-page .navbar__items--right .navbar__search {
   position: absolute !important;
   z-index: 1000 !important;
 }
-
 /* Mobile responsive search handling */
 @media (max-width: 996px) {
-  /* Make search wider on mobile */
-  .navbar__items--right .navbar__search,
-  .navbar__items--right .navbarSearchContainer_Bca1 {
-    position: relative !important;
-    max-width: 220px !important;
-    min-width: 170px !important;
-    flex-shrink: 1 !important;
+  body.docs-page .navbar__items--right .navbar__search {
     display: flex !important;
+    position: relative !important;
+    max-width: 140px !important;
+    min-width: 136px !important;
+    flex-shrink: 1 !important;
+    margin-left: auto !important;
+    margin-right: 0.5rem !important;
+  }
+
+  body.docs-page .navbar__items--right .navbarSearchContainer_Bca1 {
+    display: flex !important;
+    position: relative !important;
+    max-width: 140px !important;
+    min-width: 136px !important;
+    flex-shrink: 1 !important;
+    margin-left: auto !important;
+    margin-right: 0.5rem !important;
   }
 
   .navbar__search-input {
-    font-size: 0.875rem !important;
-    padding: 0.375rem 0.75rem 0.375rem 2rem !important;
+    font-size: 0.8rem !important;
+    padding: 0.375rem 0.5rem 0.375rem 2.25rem !important;
   }
 
   /* When focused, allow even more width */
   .navbar__search.focused_OWtg {
-    max-width: 260px !important;
+    max-width: 150px !important;
   }
 
   /* Only show search in mobile sidebar on docs pages */
