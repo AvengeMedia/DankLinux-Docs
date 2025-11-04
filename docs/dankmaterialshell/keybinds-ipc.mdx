@@ -55,12 +55,17 @@ Control display brightness for internal and external displays.
 | `decrement <step> [device]` | Decrease brightness | step, device (optional) |
 | `status` | Get current brightness status | - |
 | `list` | List all brightness devices | - |
+| `enableLogarithmic [device]` | Enable logarithmic brightness mode | device (optional, uses current if not specified) |
+| `disableLogarithmic [device]` | Disable logarithmic brightness mode | device (optional, uses current if not specified) |
+| `toggleLogarithmic [device]` | Toggle logarithmic brightness mode | device (optional, uses current if not specified) |
 
 **Examples:**
 ```bash
 dms ipc call brightness set 80
 dms ipc call brightness increment 10 ""
 dms ipc call brightness decrement 5 "intel_backlight"
+dms ipc call brightness enableLogarithmic "backlight:intel_backlight"
+dms ipc call brightness toggleLogarithmic
 ```
 
 ### night
