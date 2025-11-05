@@ -22,7 +22,7 @@ const compositors = [
 const compositorLinks: Record<string, string> = {
   'niri': 'https://github.com/YaLTeR/niri',
   'Hyprland': 'https://hyprland.org/',
-  'MangoWC': 'https://github.com/YukiWorkshop/MangoWC',
+  'MangoWC': 'https://github.com/DreamMaoMao/mangowc',
   'Sway': 'https://swaywm.org/',
 };
 
