@@ -769,7 +769,12 @@ body.docs-page .navbar__items--right .navbar__search {
 .navbar__search .dropdownMenu_qbY6 {
   position: absolute !important;
   z-index: 1000 !important;
+  left: auto !important;
+  right: 0 !important;
+  top: 100% !important;
+  min-width: 280px !important;
 }
+
 /* Mobile responsive search handling */
 @media (max-width: 996px) {
   body.docs-page .navbar__items--right .navbar__search {
@@ -800,6 +805,20 @@ body.docs-page .navbar__items--right .navbar__search {
   /* When focused, allow even more width */
   .navbar__search.focused_OWtg {
     max-width: 150px !important;
+  }
+
+  /* Mobile dropdown positioning */
+  .navbar__search .dropdownMenu_qbY6 {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    min-width: calc(100vw - 1rem) !important;
+    max-width: calc(100vw - 1rem) !important;
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+    z-index: 1000 !important;
   }
 
   /* Only show search in mobile sidebar on docs pages */
