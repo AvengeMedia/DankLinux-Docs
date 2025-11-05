@@ -3,7 +3,7 @@
 <div align="center">
   <img src="static/img/path32.svg" alt="Dank Linux Logo" width="200">
   
-  ### A modern Linux desktop suite with beautiful widgets and powerful monitoring 
+  ### A modern Linux desktop suite with beautiful widgets and powerful monitoring
   
   Optimized for niri, Hyprland, MangoWC, dwl, and Sway
 </div>

@@ -49,36 +49,61 @@ DankMaterialShell uses a client-server architecture where a Go backend (`dms`) m
 <div style={{overflowX: 'auto', maxWidth: '100%'}}>
 
 ```mermaid
-flowchart TD
-    DMS[dms Go Backend]
-    QS[Quickshell Qt6]
-    QML[QML App]
-    SOCK[Unix Socket]
+flowchart TB
+    DMS[dms]
 
-    WL[Wayland Compositor]
-    DBUS[System D-Bus]
-    I2C[i2c/DDC]
-    SYSFS[sysfs]
+    subgraph UI[" "]
+        QS[Quickshell Qt6]
+        QML[QML App]
+        SOCK[Unix Socket<br/>REQ/REP & PUB/SUB]
+    end
+
+    subgraph SystemInterfaces["System Interfaces"]
+        WL[Wayland]
+        DBUS_DMS[D-Bus]
+        I2C[i2c/DDC]
+        SYSFS[sysfs]
+        IPP[IPP]
+    end
+
+    subgraph QuickshellInterfaces[" "]
+        DBUS_QS[D-Bus]
+        WL_QS[Wayland]
+    end
+
+    subgraph DBusServices["D-Bus Services"]
+        NM[NetworkManager]
+        IWD[iwd]
+        NETD[systemd-networkd]
+        BLZ[BlueZ]
+        ACC[accountsservice]
+        LOGIN[login1]
+    end
+
+    CUPS[CUPS]
 
     DMS -->|spawns| QS
     QS --> QML
-    QML <-->|REQ/REP<br/>PUB/SUB| SOCK
+    QML <--> SOCK
     SOCK <--> DMS
 
-    DMS -->|D-Bus| DBUS
-    DMS -->|Wayland| WL
-    DMS -->|brightness| I2C
-    DMS -->|hardware| SYSFS
-    QS -->|D-Bus| DBUS_OTHER[Other D-Bus Services]
-    QS -->|Wayland| WL
+    DMS --> WL
+    DMS --> DBUS_DMS
+    DMS --> I2C
+    DMS --> SYSFS
+    DMS --> IPP
 
-    DBUS --> NM[NetworkManager]
-    DBUS --> IWD[iwd]
-    DBUS --> NETD[systemd-networkd]
-    DBUS --> BLZ[BlueZ]
-    DBUS --> CUPS[CUPS]
-    DBUS --> ACC[accountsservice]
-    DBUS --> LOGIN[login1]
+    QS --> DBUS_QS
+    QS --> WL_QS
+
+    DBUS_DMS --> NM
+    DBUS_DMS --> IWD
+    DBUS_DMS --> NETD
+    DBUS_DMS --> BLZ
+    DBUS_DMS --> ACC
+    DBUS_DMS --> LOGIN
+
+    IPP --> CUPS
 ```
 
 </div>
