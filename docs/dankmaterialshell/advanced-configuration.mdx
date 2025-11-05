@@ -99,6 +99,40 @@ DMS_HIDE_TRAYIDS=discord,spotify,steam dms run
 DMS_DWL_TAG_COUNT=5 dms run
 ```
 
+## Printing Configuration
+
+### DMS_IPP_HOST
+
+Specifies the hostname or IP address of the IPP/CUPS print server. Defaults to `localhost` if not set.
+
+```bash
+DMS_IPP_HOST=printserver.local dms run
+```
+
+### DMS_IPP_PORT
+
+Specifies the port number for the IPP/CUPS print server. Defaults to `631` (standard IPP port) if not set.
+
+```bash
+DMS_IPP_PORT=631 dms run
+```
+
+### DMS_IPP_USERNAME
+
+Username for authenticating with the IPP/CUPS print server. Leave unset if authentication is not required.
+
+```bash
+DMS_IPP_USERNAME=printuser dms run
+```
+
+### DMS_IPP_PASSWORD
+
+Password for authenticating with the IPP/CUPS print server. Leave unset if authentication is not required.
+
+```bash
+DMS_IPP_PASSWORD=secret dms run
+```
+
 ## Setting Environment Variables
 
 ### niri
@@ -174,3 +208,12 @@ Force DMS to use a specific battery when multiple are detected.
 DMS_DISABLE_LAYER=true
 ```
 Disable layer effects to improve performance on lower-end hardware.
+
+**Remote print server:**
+```bash
+DMS_IPP_HOST=printserver.local
+DMS_IPP_PORT=631
+DMS_IPP_USERNAME=printuser
+DMS_IPP_PASSWORD=secret
+```
+Connect to a remote CUPS/IPP print server with authentication.
