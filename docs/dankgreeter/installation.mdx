@@ -32,7 +32,7 @@ Then go to [Enabling Greeter](#enabling-greeter-all-distros)
 ## Fedora
 
 ```bash
-sudo dnf copr enable avengemedia/dms
+sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dms-greeter
 ```
 
@@ -55,25 +55,9 @@ Some distributions may have different user/group names for the greetd user.
 
 :::
 
-### Prerequisites for Theme Syncing
+#### Prerequisites for Theme Syncing
 
-If you want to sync your user's theme with the greeter, ensure the `acl` package is installed:
-
-**Fedora/RHEL:**
-```bash
-sudo dnf install acl
-```
-
-**Debian/Ubuntu:**
-```bash
-sudo apt-get install acl
-```
-
-**Arch Linux:**
-```bash
-sudo pacman -S acl
-```
-
+If you want to sync your user's theme with the greeter, ensure the `acl` package is installed.
 ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files.
 
 :::tip

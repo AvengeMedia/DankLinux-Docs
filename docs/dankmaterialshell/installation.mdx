@@ -167,3 +167,42 @@ After completing installation:
 3. Configure your compositor - see the [Keybinds & IPC](keybinds-ipc) guide
 4. Customize appearance via [Themes](application-themes)
 5. Extend functionality with [Plugins](plugins-overview)
+
+### Systemd Integration
+
+:::tip Available on Arch, Fedora, and Source Builds
+
+DMS now supports native systemd management for automatic startup and lifecycle control.
+
+:::
+
+**Enable autostart:**
+
+```bash
+systemctl --user enable dms.service
+```
+
+**Manual control:**
+
+```bash
+# Start DMS now
+systemctl --user start dms.service
+
+# Check status
+systemctl --user status dms.service
+
+# View logs
+journalctl --user -u dms.service -f
+
+# Restart DMS
+systemctl --user restart dms.service
+
+# Disable autostart
+systemctl --user disable dms.service
+```
+
+:::warning
+
+If using systemd autostart, remove `dms run` / `spawn "dms" "run"` from your compositor's configuration to avoid running DMS twice.
+
+:::
