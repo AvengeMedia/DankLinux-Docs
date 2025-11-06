@@ -209,7 +209,8 @@ export default function Home() {
   return (
     <Layout
       title="Modern Desktop Suite"
-      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring">
+      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway."
+      image="/img/og-homepage.png">
       <div className={styles.container}>
         {/* Background pattern overlay */}
         <div className={styles.backgroundPattern}></div>

@@ -180,7 +180,7 @@ const config: Config = {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
 
-  // Add favicon and icon tags for various devices
+  // Add favicon, icons, and Open Graph meta tags
   headTags: [
     {
       tagName: 'link',
@@ -222,6 +222,29 @@ const config: Config = {
       attributes: {
         rel: 'manifest',
         href: '/img/site.webmanifest',
+      },
+    },
+    // Open Graph meta tags for social media previews (fallback - per-page images override this)
+    {
+      tagName: 'meta',
+      attributes: {
+        property: 'og:type',
+        content: 'website',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        property: 'og:site_name',
+        content: 'Dank Linux',
+      },
+    },
+    // Twitter Card meta tags
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'twitter:card',
+        content: 'summary_large_image',
       },
     },
   ],
@@ -293,8 +316,8 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/danklinux-social-card.jpg',
+    // Replace with your project's social card (fallback for pages without images)
+    image: 'img/og-default.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
