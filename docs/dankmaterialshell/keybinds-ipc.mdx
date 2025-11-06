@@ -55,17 +55,17 @@ Control display brightness for internal and external displays.
 | `decrement <step> [device]` | Decrease brightness | step, device (optional) |
 | `status` | Get current brightness status | - |
 | `list` | List all brightness devices | - |
-| `enableLogarithmic [device]` | Enable logarithmic brightness mode | device (optional, uses current if not specified) |
-| `disableLogarithmic [device]` | Disable logarithmic brightness mode | device (optional, uses current if not specified) |
-| `toggleLogarithmic [device]` | Toggle logarithmic brightness mode | device (optional, uses current if not specified) |
+| `enableExponential [device]` | Enable exponential brightness mode | device (optional, uses current if not specified) |
+| `disableExponential [device]` | Disable exponential brightness mode | device (optional, uses current if not specified) |
+| `toggleExponential [device]` | Toggle exponential brightness mode | device (optional, uses current if not specified) |
 
 **Examples:**
 ```bash
 dms ipc call brightness set 80
 dms ipc call brightness increment 10 ""
 dms ipc call brightness decrement 5 "intel_backlight"
-dms ipc call brightness enableLogarithmic "backlight:intel_backlight"
-dms ipc call brightness toggleLogarithmic
+dms ipc call brightness disableExponential "backlight:intel_backlight"
+dms ipc call brightness toggleExponential
 ```
 
 ### night
@@ -363,6 +363,47 @@ export DMS_SCREENSHOT_EDITOR=satty
 ```
 
 **Requirements:** Niri compositor and your chosen screenshot editor (Swappy or Satty) must be installed.
+
+### hypr
+
+**Hyprland-only features**
+
+Hyprland-specific controls including keybinds cheatsheet and workspace overview.
+
+| Function | Description |
+| --- | --- |
+| `openBinds` | Show Hyprland keybinds cheatsheet modal |
+| `closeBinds` | Hide Hyprland keybinds cheatsheet modal |
+| `toggleBinds` | Toggle Hyprland keybinds cheatsheet visibility |
+| `openOverview` | Show Hyprland workspace overview |
+| `closeOverview` | Hide Hyprland workspace overview |
+| `toggleOverview` | Toggle Hyprland workspace overview visibility |
+
+**Examples:**
+```bash
+dms ipc call hypr toggleBinds
+dms ipc call hypr toggleOverview
+```
+
+**Keybinds Cheatsheet:**
+
+The keybinds cheatsheet automatically parses your Hyprland configuration from `~/.config/hypr` and displays all keybinds organized into three columns:
+- **Window / Monitor** - Window and monitor management keybinds (sorted by dispatcher)
+- **Workspace** - Workspace switching and management (sorted by dispatcher)
+- **Execute** - Application launchers and commands (sorted by keybind)
+
+**Workspace Overview:**
+
+The workspace overview shows all your workspaces across all monitors with live window previews:
+- **Multi-monitor support** - Shows workspaces from all connected monitors with monitor name labels
+- **Live window previews** - Real-time screen capture of all windows on each workspace
+- **Drag-and-drop** - Move windows between workspaces and monitors by dragging
+- **Keyboard navigation** - Use Left/Right arrow keys to switch between workspaces on current monitor
+- **Visual indicators** - Active workspace highlighted when it contains windows
+- **Click to switch** - Click any workspace to switch to it
+- **Click outside or press Escape** - Close the overview
+
+**Note:** All hypr functions return `HYPR_NOT_AVAILABLE` if not running Hyprland.
 
 ### systemupdater
 
