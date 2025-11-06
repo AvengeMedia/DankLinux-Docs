@@ -210,7 +210,7 @@ export default function Home() {
     <Layout
       title="Modern Desktop Suite"
       description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway."
-      image="/img/og-homepage.png">
+      image="img/homepage/danklinux-preview.png">
       <div className={styles.container}>
         {/* Background pattern overlay */}
         <div className={styles.backgroundPattern}></div>

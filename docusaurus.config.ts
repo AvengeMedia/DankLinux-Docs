@@ -317,7 +317,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card (fallback for pages without images)
-    image: 'img/og-default.png',
+    image: 'img/dankdash.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
