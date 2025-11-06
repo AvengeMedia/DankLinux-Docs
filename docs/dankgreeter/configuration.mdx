@@ -103,26 +103,133 @@ Custom compositor configurations allow you to configure displays (resolution, re
 
 ## Syncing with DMS
 
-You can automatically sync the system greeter with the logged in user's wallpaper, themes, fonts, etc. by following these steps.
+You can automatically sync the system greeter with the logged in user's wallpaper, themes, fonts, etc.
 
-1. Add your user to the `greeter` group
+### Automatic Sync (Recommended)
+
+If you installed DMS using [dankinstall](/docs/dankinstall), simply run:
+
+```bash
+dms greeter sync
+```
+
+This command will automatically:
+- Add your user to the `greeter` group (if needed)
+- Set up ACL permissions on parent directories for greeter access
+- Configure group permissions on DMS config directories
+- Create symlinks to sync settings, wallpapers, and color themes
+
+:::note
+
+You will need to log out and log back in for group membership changes to take effect. After logging back in, your greeter will automatically reflect your current DMS theme, wallpaper, and settings.
+
+:::
+
+:::tip
+
+Run `dms greeter status` to check your greeter configuration and verify that all syncing is working correctly.
+
+:::
+
+### Manual Sync
+
+If you prefer to set up syncing manually:
+
+1. Add your user to the `greeter` group:
   ```bash
   sudo usermod -aG greeter <username>
   ```
 
+2. Set up ACL permissions on parent directories:
+  ```bash
+  setfacl -m u:greeter:x ~
+  setfacl -m u:greeter:x ~/.config
+  setfacl -m u:greeter:x ~/.local
+  setfacl -m u:greeter:x ~/.cache
+  setfacl -m u:greeter:x ~/.local/state
+  ```
+
+3. Set group permissions on DMS config directories:
+  ```bash
+  sudo chgrp -R greeter ~/.config/DankMaterialShell
+  sudo chmod -R g+rX ~/.config/DankMaterialShell
+
+  sudo chgrp -R greeter ~/.local/state/DankMaterialShell
+  sudo chmod -R g+rX ~/.local/state/DankMaterialShell
+
+  sudo chgrp -R greeter ~/.cache/quickshell
+  sudo chmod -R g+rX ~/.cache/quickshell
+  ```
+
+4. Create configuration symlinks:
+  ```bash
+  sudo ln -sf ~/.config/DankMaterialShell/settings.json /var/cache/dms-greeter/settings.json
+  sudo ln -sf ~/.local/state/DankMaterialShell/session.json /var/cache/dms-greeter/session.json
+  sudo ln -sf ~/.cache/quickshell/dankshell/dms-colors.json /var/cache/dms-greeter/colors.json
+  ```
+
 :::note
 
-You will have to logout or reboot for group change to take effect
+You will have to logout or reboot for group change to take effect.
 
 :::
 
-2. Create configuration symlinks:
+## Checking Sync Status
 
-  ```bash
-  ln -sf ~/.config/DankMaterialShell/settings.json /var/cache/dms-greeter/settings.json
-  ln -sf ~/.local/state/DankMaterialShell/session.json /var/cache/dms-greeter/session.json
-  ln -sf ~/.cache/quickshell/dankshell/dms-colors.json /var/cache/dms-greeter/colors.json
-  ```
+To verify that your greeter is properly configured and syncing with your user settings, run:
+
+```bash
+dms greeter status
+```
+
+This will check:
+- ✓ Group membership (whether your user is in the `greeter` group)
+- ✓ Cache directory existence
+- ✓ Configuration symlinks (settings, wallpaper, colors)
+- ✓ Whether source files exist and are readable
+
+### Example Output
+
+```
+=== DMS Greeter Status ===
+
+Group Membership:
+  ✓ User is in greeter group
+
+Greeter Cache Directory:
+  ✓ /var/cache/dms-greeter exists
+
+Configuration Symlinks:
+  ✓ Settings: synced correctly
+  ✓ Session state: synced correctly
+  ✓ Color theme: synced correctly
+
+✓ All checks passed! Greeter is properly configured.
+```
+
+### Troubleshooting
+
+If `dms greeter status` shows issues:
+
+**User not in greeter group:**
+```bash
+dms greeter sync
+# Then log out and log back in
+```
+
+**Symlinks missing or broken:**
+```bash
+dms greeter sync
+```
+
+**ACL permission issues (themes/wallpapers not appearing):**
+```bash
+# Check if ACLs are set
+getfacl ~ ~/.config ~/.local ~/.cache ~/.local/state | grep "user:greeter"
+
+# If not, run sync again
+dms greeter sync
+```
 
 ## Manual Configuration
 

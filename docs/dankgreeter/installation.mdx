@@ -55,9 +55,41 @@ Some distributions may have different user/group names for the greetd user.
 
 :::
 
+### Prerequisites for Theme Syncing
+
+If you want to sync your user's theme with the greeter, ensure the `acl` package is installed:
+
+**Fedora/RHEL:**
+```bash
+sudo dnf install acl
+```
+
+**Debian/Ubuntu:**
+```bash
+sudo apt-get install acl
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S acl
+```
+
+ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files.
+
 :::tip
 
-If you installed using [dankinstall](/docs/dankinstall) you can automate most of the steps using `dms greeter install`
+If you installed DMS using [dankinstall](/docs/dankinstall), you can automate the installation and configuration using:
+
+```bash
+dms greeter install
+```
+
+This will automatically:
+- Install greetd (if not already installed)
+- Set up the dms-greeter wrapper
+- Configure permissions and ACLs for theme syncing
+- Create the greeter cache directory
+- Configure greetd to use DMS
 
 :::
 
