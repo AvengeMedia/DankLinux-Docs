@@ -250,7 +250,7 @@ const config: Config = {
   ],
 
   // Set the production url of your site here
-  url: 'https://docs.danklinux.com',
+  url: 'https://danklinux.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -317,7 +317,7 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card (fallback for pages without images)
-    image: 'img/dankdash.png',
+    image: 'img/homepage/danklinux-preview.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
