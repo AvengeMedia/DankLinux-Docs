@@ -145,11 +145,11 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
         >
           <div
             style={{
-              fontSize: '28px',
+              fontSize: '36px',
               color: '#B794F4',
               fontFamily: 'Adwaita Sans',
               fontWeight: 500,
-              marginBottom: '24px',
+              marginBottom: '28px',
               letterSpacing: '0.5px',
             }}
           >
@@ -158,11 +158,11 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
 
           <div
             style={{
-              fontSize: '72px',
+              fontSize: '88px',
               color: '#ffffff',
               fontFamily: 'Adwaita Sans',
-              fontWeight: 500,
-              lineHeight: 1.2,
+              fontWeight: 700,
+              lineHeight: 1.15,
               maxWidth: '900px',
             }}
           >
