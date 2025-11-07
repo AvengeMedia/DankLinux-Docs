@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "prestart": "tsc --project tsconfig.client.json",
     "start": "docusaurus start",
+    "prebuild": "tsc --project tsconfig.client.json",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
@@ -15,6 +17,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@acid-info/docusaurus-og": "^1.0.3-beta.2",
     "@actinc/docusaurus-plugin-panzoom": "^1.0.1",
     "@dipakparmar/docusaurus-plugin-umami": "^2.3.0",
     "@docusaurus/core": "3.9.2",

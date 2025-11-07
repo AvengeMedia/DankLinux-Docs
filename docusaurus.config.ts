@@ -322,6 +322,16 @@ const config: Config = {
         dataDomains: 'danklinux.com',
       },
     ],
+    [
+      '@acid-info/docusaurus-og',
+      {
+        path: './preview-images',
+        imageRenderers: {
+          'docusaurus-plugin-content-docs': require('./lib/ImageRenderers').docs,
+          'docusaurus-plugin-content-pages': require('./lib/ImageRenderers').pages,
+        },
+      },
+    ],
   ],
 
   themeConfig: {
@@ -382,7 +392,7 @@ const config: Config = {
           'aria-label': 'GitHub repository',
         },
         {
-          href: 'https://discord.gg/danklinux',
+          href: 'https://discord.gg/ppWTpKmPgT',
           position: 'right',
           className: 'navbar-discord-link',
           'aria-label': 'Discord community',

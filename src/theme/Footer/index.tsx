@@ -18,7 +18,7 @@ export default function FooterWrapper(props: Props): JSX.Element {
           aria-label="GitHub repository"
         />
         <a
-          href="https://discord.gg/danklinux"
+          href="https://discord.gg/ppWTpKmPgT"
           target="_blank"
           rel="noopener noreferrer"
           className="footer-discord-link"
