@@ -145,19 +145,6 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
         >
           <div
             style={{
-              fontSize: '36px',
-              color: '#B794F4',
-              fontFamily: 'Adwaita Sans',
-              fontWeight: 500,
-              marginBottom: '28px',
-              letterSpacing: '0.5px',
-            }}
-          >
-            {category}
-          </div>
-
-          <div
-            style={{
               fontSize: '88px',
               color: '#ffffff',
               fontFamily: 'Adwaita Sans',
@@ -187,7 +174,7 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
               fontWeight: 500,
             }}
           >
-            DANK LINUX
+            {category}
           </div>
         </div>
       </div>
