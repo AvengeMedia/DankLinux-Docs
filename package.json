@@ -15,7 +15,6 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@acid-info/docusaurus-og": "^1.0.3-beta.2",
     "@actinc/docusaurus-plugin-panzoom": "^1.0.1",
     "@docusaurus/core": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
