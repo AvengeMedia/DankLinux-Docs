@@ -19,67 +19,17 @@
   --ifm-navbar-background-color: transparent;
 }
 
-/* Landing Page - Override Docusaurus navbar variables */
-body.landing-page {
-  --ifm-navbar-background-color: rgba(0, 0, 0, 0.8);
-  --ifm-navbar-shadow: none;
-}
-
-body.landing-page .navbar--dark,
-body.landing-page .navbar--primary {
-  --ifm-navbar-background-color: rgba(0, 0, 0, 0.8);
-}
-
-body.landing-page .navbar {
+/* Navbar - same style everywhere */
+.navbar {
   background: rgba(0, 0, 0, 0.8) !important;
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid rgba(208, 188, 255, 0.1);
-}
-
-/* Adjust main content padding for fixed navbar */
-body.landing-page main {
-  padding-top: var(--ifm-navbar-height);
-}
-
-/* Docs Page - Override Docusaurus navbar variables */
-body.docs-page {
-  --ifm-navbar-background-color: rgba(20, 19, 24, 0.85);
   --ifm-navbar-shadow: none;
 }
 
-body.docs-page .navbar--dark,
-body.docs-page .navbar--primary {
-  --ifm-navbar-background-color: rgba(20, 19, 24, 0.85);
-}
-
-body.docs-page .navbar {
-  position: sticky;
-  background: rgba(20, 19, 24, 0.85) !important;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(208, 188, 255, 0.08);
-  transition: background 0.3s ease, border-color 0.3s ease;
-  z-index: var(--ifm-z-index-fixed);
-}
-
-/* Docs page navbar link color adjustment */
-body.docs-page .navbar__link {
-  color: rgba(255, 255, 255, 0.72);
-}
-
-body.docs-page .navbar__link--active {
-  color: var(--dank-purple-light) !important;
-}
-
-/* Light mode navbar overrides */
-html[data-theme='light'] body.landing-page,
-html[data-theme='light'] body.docs-page {
-  --ifm-navbar-background-color: rgba(255, 255, 255, 0.65);
-}
-
-html[data-theme='light'] body.landing-page .navbar,
-html[data-theme='light'] body.docs-page .navbar {
+/* Light mode navbar */
+html[data-theme='light'] .navbar {
   background: rgba(255, 255, 255, 0.65) !important;
   border-bottom-color: rgba(128, 90, 213, 0.12);
 }
@@ -721,24 +671,16 @@ html[data-theme='light'] .clean-btn[title*='light'] {
   background: rgba(208, 188, 255, 0.1) !important;
 }
 
-/* Hide search bar on homepage/landing page - ensure no space is taken */
-body.landing-page .navbar__items--right .navbar__search,
-body.landing-page .navbar__items--right .navbarSearchContainer_Bca1 {
+/* Hide search bar by default */
+.navbar__items--right .navbar__search,
+.navbar__items--right .navbarSearchContainer_Bca1 {
   display: none !important;
-  width: 0 !important;
-  max-width: 0 !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
 
-/* Show search bar only on docs pages - desktop navbar */
-body.docs-page .navbar__items--right .navbar__search {
+/* Show search bar ONLY on docs pages */
+body.docs-page .navbar__items--right .navbar__search,
+body.docs-page .navbar__items--right .navbarSearchContainer_Bca1 {
   display: block !important;
-  max-width: 220px !important;
-  flex-shrink: 1 !important;
-  margin-left: 0 !important;
-  margin-right: 1.5rem !important;
 }
 
 /* Search container styling - ensure it's in flex flow */
