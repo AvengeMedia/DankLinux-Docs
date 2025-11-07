@@ -2,6 +2,10 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type {PrismTheme} from 'prism-react-renderer';
+import type {ImageRenderer} from '@acid-info/docusaurus-og';
+import React from 'react';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -170,6 +174,117 @@ const dankPurpleLight: PrismTheme = {
   ],
 };
 
+// Load font for OG image generation (Satori requires TTF, not WOFF2)
+let fontData: ArrayBuffer | null = null;
+try {
+  const configDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+  const fontPath = path.join(configDir, 'static', 'fonts', 'FiraCodeNerdFontMono-Regular.ttf');
+  if (fs.existsSync(fontPath)) {
+    const buffer = fs.readFileSync(fontPath);
+    fontData = buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+  }
+} catch (e) {
+  console.warn('Failed to load font for OG images:', e);
+}
+
+const defaultImageRenderer: ImageRenderer = (data, context) => {
+  const title = data.metadata?.title || data.title || context.siteConfig.title;
+  const description = data.metadata?.description || data.description || context.siteConfig.tagline || '';
+  
+  // Brand colors
+  const primaryColor = '#805AD5';
+  const lightAccent = '#D0BCFF';
+  const darkBackground = '#111111';
+  const lightBackground = '#f8f7fb';
+  
+  // Use dark theme by default 
+  const bgColor = darkBackground;
+  const textColor = '#ffffff';
+  const accentColor = lightAccent;
+  
+  const fonts = fontData ? [
+    {
+      name: 'FiraCode Nerd Font Mono',
+      data: fontData,
+      weight: 400 as const,
+      style: 'normal' as const,
+    },
+  ] : [];
+  
+  return [
+    React.createElement(
+      'div',
+      {
+        style: {
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+          background: `linear-gradient(135deg, ${bgColor} 0%, ${primaryColor}20 100%)`,
+          padding: '80px',
+          fontFamily: fontData ? 'FiraCode Nerd Font Mono' : 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+        },
+      },
+      React.createElement(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px',
+            width: '100%',
+          },
+        },
+        React.createElement(
+          'div',
+          {
+            style: {
+              fontSize: '72px',
+              fontWeight: 'bold',
+              color: accentColor,
+              lineHeight: '1.1',
+              marginBottom: '16px',
+            },
+          },
+          title
+        ),
+        description && React.createElement(
+          'div',
+          {
+            style: {
+              fontSize: '32px',
+              color: textColor,
+              opacity: 0.8,
+              lineHeight: '1.4',
+              maxWidth: '90%',
+            },
+          },
+          description.length > 120 ? `${description.substring(0, 120)}...` : description
+        ),
+        React.createElement(
+          'div',
+          {
+            style: {
+              marginTop: 'auto',
+              fontSize: '24px',
+              color: accentColor,
+              opacity: 0.7,
+            },
+          },
+          'danklinux.com'
+        )
+      )
+    ),
+    {
+      width: 1200,
+      height: 630,
+      fonts,
+    },
+  ];
+};
+
 const config: Config = {
   title: 'Dank Linux',
   tagline: 'A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway.',
@@ -311,6 +426,16 @@ const config: Config = {
       require.resolve('@actinc/docusaurus-plugin-panzoom'),
       {
         id: 'mermaid-panzoom',
+      },
+    ],
+    [
+      require.resolve('@acid-info/docusaurus-og'),
+      {
+        path: './preview-images',
+        imageRenderers: {
+          'docusaurus-plugin-content-docs': defaultImageRenderer,
+          'docusaurus-plugin-content-pages': defaultImageRenderer,
+        },
       },
     ],
   ],
