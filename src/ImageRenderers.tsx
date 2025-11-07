@@ -33,6 +33,14 @@ const fonts = [
   {
     name: 'Adwaita Sans',
     data: readFileSync(
+      join(__dirname, '../static/fonts/AdwaitaSans-SemiBold.ttf'),
+    ),
+    weight: 600 as const,
+    style: 'normal' as const,
+  },
+  {
+    name: 'Adwaita Sans',
+    data: readFileSync(
       join(__dirname, '../static/fonts/AdwaitaSans-Bold.ttf'),
     ),
     weight: 700 as const,
@@ -271,13 +279,14 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
             style={{
               fontSize: '48px',
               fontFamily: 'Adwaita Sans',
-              fontWeight: 500,
-              color: '#ffffff',
-              letterSpacing: '-1px',
+              fontWeight: 800,
+              color: '#fffffff2',
+              letterSpacing: '0.08em',
               textRendering: 'optimizeLegibility',
               fontSmooth: 'always',
               WebkitFontSmoothing: 'antialiased',
               MozOsxFontSmoothing: 'grayscale',
+              lineHeight: 1,
             }}
           >
             DANK LINUX
