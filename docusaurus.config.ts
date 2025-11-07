@@ -180,7 +180,7 @@ const config: Config = {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
 
-  // Add favicon and icon tags for various devices
+  // Add favicon, icons, and Open Graph meta tags
   headTags: [
     {
       tagName: 'link',
@@ -224,10 +224,33 @@ const config: Config = {
         href: '/img/site.webmanifest',
       },
     },
+    // Open Graph meta tags for social media previews (fallback - per-page images override this)
+    {
+      tagName: 'meta',
+      attributes: {
+        property: 'og:type',
+        content: 'website',
+      },
+    },
+    {
+      tagName: 'meta',
+      attributes: {
+        property: 'og:site_name',
+        content: 'Dank Linux',
+      },
+    },
+    // Twitter Card meta tags
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+    },
   ],
 
   // Set the production url of your site here
-  url: 'https://docs.danklinux.com',
+  url: 'https://danklinux.com',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -290,11 +313,20 @@ const config: Config = {
         id: 'mermaid-panzoom',
       },
     ],
+    [
+      '@dipakparmar/docusaurus-plugin-umami',
+      {
+        websiteID: 'b79205dd-087a-4fbd-b7d7-c60650c76414',
+        analyticsDomain: 'umami.danklinux.com',
+        dataAutoTrack: true,
+        dataDomains: 'danklinux.com',
+      },
+    ],
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/danklinux-social-card.jpg',
+    // Replace with your project's social card (fallback for pages without images)
+    image: 'img/homepage/danklinux-preview.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,

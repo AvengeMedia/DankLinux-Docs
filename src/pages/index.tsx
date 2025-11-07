@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
+import Head from '@docusaurus/Head';
 import styles from './index.module.css';
 
 // Declare medium-zoom and playerjs types
@@ -209,7 +210,13 @@ export default function Home() {
   return (
     <Layout
       title="Modern Desktop Suite"
-      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring">
+      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway.">
+      <Head>
+        <meta property="og:image" content="https://danklinux.com/img/homepage/danklinux-preview.png" />
+        <meta property="og:image:width" content="2145" />
+        <meta property="og:image:height" content="1365" />
+        <meta name="twitter:image" content="https://danklinux.com/img/homepage/danklinux-preview.png" />
+      </Head>
       <div className={styles.container}>
         {/* Background pattern overlay */}
         <div className={styles.backgroundPattern}></div>
