@@ -313,6 +313,15 @@ const config: Config = {
         id: 'mermaid-panzoom',
       },
     ],
+    [
+      '@dipakparmar/docusaurus-plugin-umami',
+      {
+        websiteID: 'b79205dd-087a-4fbd-b7d7-c60650c76414',
+        analyticsDomain: 'umami.danklinux.com',
+        dataAutoTrack: true,
+        dataDomains: 'danklinux.com',
+      },
+    ],
   ],
 
   themeConfig: {
