@@ -187,6 +187,20 @@ try {
   console.warn('Failed to load font for OG images:', e);
 }
 
+// Load logo for OG image generation
+let logoDataUrl: string | null = null;
+try {
+  const configDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+  const logoPath = path.join(configDir, 'static', 'img', 'path32_black.png');
+  if (fs.existsSync(logoPath)) {
+    const logoBuffer = fs.readFileSync(logoPath);
+    const logoBase64 = logoBuffer.toString('base64');
+    logoDataUrl = `data:image/png;base64,${logoBase64}`;
+  }
+} catch (e) {
+  console.warn('Failed to load logo for OG images:', e);
+}
+
 const defaultImageRenderer: ImageRenderer = (data, context) => {
   const title = data.metadata?.title || data.title || context.siteConfig.title;
   const description = data.metadata?.description || data.description || context.siteConfig.tagline || '';
@@ -222,11 +236,26 @@ const defaultImageRenderer: ImageRenderer = (data, context) => {
           justifyContent: 'center',
           width: '100%',
           height: '100%',
-          background: `linear-gradient(135deg, ${bgColor} 0%, ${primaryColor}20 100%)`,
+          background: bgColor, // Removed gradient for better readability
           padding: '80px',
           fontFamily: fontData ? 'FiraCode Nerd Font Mono' : 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+          position: 'relative',
         },
       },
+      // Logo in top-right corner
+      logoDataUrl && React.createElement(
+        'img',
+        {
+          src: logoDataUrl,
+          style: {
+            position: 'absolute',
+            top: '60px',
+            right: '60px',
+            width: '120px',
+            height: 'auto',
+          },
+        }
+      ),
       React.createElement(
         'div',
         {
@@ -235,6 +264,7 @@ const defaultImageRenderer: ImageRenderer = (data, context) => {
             flexDirection: 'column',
             gap: '24px',
             width: '100%',
+            maxWidth: logoDataUrl ? '75%' : '90%', // Adjust width if logo is present
           },
         },
         React.createElement(
@@ -256,9 +286,8 @@ const defaultImageRenderer: ImageRenderer = (data, context) => {
             style: {
               fontSize: '32px',
               color: textColor,
-              opacity: 0.8,
+              opacity: 0.9, // Increased opacity for better readability
               lineHeight: '1.4',
-              maxWidth: '90%',
             },
           },
           description.length > 120 ? `${description.substring(0, 120)}...` : description
@@ -270,7 +299,7 @@ const defaultImageRenderer: ImageRenderer = (data, context) => {
               marginTop: 'auto',
               fontSize: '24px',
               color: accentColor,
-              opacity: 0.7,
+              opacity: 0.8, // Increased opacity for better visibility
             },
           },
           'danklinux.com'
