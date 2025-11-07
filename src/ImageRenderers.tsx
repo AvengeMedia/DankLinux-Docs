@@ -81,9 +81,9 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
         'dgop': 'DankGOP',
         'danksearch': 'DankSearch',
       }
-      return categoryMap[categorySlug] || 'Documentation'
+      return categoryMap[categorySlug] || 'Dank Linux'
     }
-    return 'Documentation'
+    return 'Dank Linux'
   }
 
   const category = getCategoryFromPath(data.metadata.permalink)
@@ -129,7 +129,7 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
             position: 'absolute',
             top: '50px',
             right: '50px',
-            opacity: 0.25,
+            opacity: 0.6,
             width: '120px',
             height: '120px',
           }}
@@ -145,19 +145,33 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
         >
           <div
             style={{
-              fontSize: '88px',
+              fontSize: '54px',
+              color: '#B794F4',
+              fontFamily: 'Adwaita Sans',
+              fontWeight: 500,
+              marginLeft: '4px',
+              marginBottom: '18px',
+              letterSpacing: '0.5px',
+            }}
+          >
+            {category}
+          </div>
+
+          <div
+            style={{
+              fontSize: '96px',
               color: '#ffffff',
               fontFamily: 'Adwaita Sans',
               fontWeight: 700,
               lineHeight: 1.15,
-              maxWidth: '900px',
+              maxWidth: '1000px',
             }}
           >
             {title}
           </div>
         </div>
 
-        <div
+        {/* <div
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -168,15 +182,15 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
         >
           <div
             style={{
-              fontSize: '32px',
-              color: 'rgba(183, 148, 244, 0.7)',
+              fontSize: '36px',
+              color: '#ffffff',
               fontFamily: 'Adwaita Sans',
               fontWeight: 500,
             }}
           >
-            {category}
+            Dank Linux
           </div>
-        </div>
+        </div> */}
       </div>
     </div>,
     {
