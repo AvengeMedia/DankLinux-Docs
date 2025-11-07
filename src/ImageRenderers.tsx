@@ -84,10 +84,10 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
     if (segments.length > 1 && segments[0] === 'docs') {
       const categorySlug = segments[1]
       const categoryMap: Record<string, string> = {
-        'dankmaterialshell': 'DankMaterialShell',
-        'dankgreeter': 'DankGreeter',
-        'dgop': 'DankGOP',
-        'danksearch': 'DankSearch',
+        'dankmaterialshell': 'DMS',
+        'dankgreeter': 'DMS Greeter',
+        'dgop': 'dgop',
+        'danksearch': 'dsearch',
       }
       return categoryMap[categorySlug] || 'Dank Linux'
     }
