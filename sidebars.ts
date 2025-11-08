@@ -50,7 +50,7 @@ const sidebars: SidebarsConfig = {
           label: 'Plugins',
           items: [
             'dankmaterialshell/plugins-overview',
-            'dankmaterialshell/plugins-types',
+            'dankmaterialshell/plugin-development',
           ],
         },
         'dankmaterialshell/advanced-configuration',

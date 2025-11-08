@@ -95,6 +95,47 @@ Hyprland comes from a PPA (`ppa:cppiber/hyprland`), but quickshell, matugen, dgo
 
 Best package availability out of the box. niri, hyprland, ghostty, and most tools are in standard repos via `zypper`. Only quickshell and matugen need to be built from source. Even includes xwayland-satellite for niri X11 app support.
 
+### Gentoo
+
+**Supported:** Gentoo (amd64, arm64)
+
+:::warning
+
+Gentoo installs are highly variable and user-specific. Success is not guaranteed. `dankinstall` works best on fresh stage3/systemd systems. If not using binary packages, prepare for long compilation times.
+
+:::
+
+Uses Portage with GURU overlay. Automatically configures global USE flags in `/etc/portage/make.conf` (creates or appends to existing), package-specific USE flags in `/etc/portage/package.use/danklinux`, and unmasks packages in `/etc/portage/package.accept_keywords/danklinux`.
+
+Ghostty is not available due to extremely long compilation times for its dependencies.
+
+**Package Sources:**
+| Package | Source | Notes |
+|---------|---------|-------|
+| System packages (git, etc.) | Official repos | Via `emerge` |
+| niri | GURU overlay | With dbus and screencast USE flags |
+| hyprland | GURU/Official | Depends on variant selection, with X USE flag |
+| quickshell | GURU overlay | Always uses live ebuild (`**` keywords), full feature set |
+| matugen | GURU overlay | Color generation tool |
+| cliphist | GURU overlay | Clipboard manager |
+| hyprpicker | GURU overlay | Color picker for Hyprland |
+| xdg-desktop-portal-gtk | Official repos | With wayland and X USE flags |
+| mate-polkit | Official repos | PolicyKit authentication agent |
+| accountsservice | Official repos | User account management |
+| dgop | Manual | Built from source with Go |
+| xwayland-satellite | Manual | For niri X11 app support |
+| grimblast | Manual | For Hyprland screenshot utility |
+| DankMaterialShell | Manual | Git clone to `~/.config/quickshell/dms` |
+
+**Global USE Flags:**
+`wayland vulkan opengl accessibility policykit X udev alsa gdbm qml gtk qt6 jpeg webp png gif tiff brotli dbus svg`
+
+**Package-Specific USE Flags:**
+- `sys-apps/xdg-desktop-portal-gtk`: wayland X
+- `gui-wm/niri`: dbus screencast
+- `gui-wm/hyprland`: X
+- `gui-apps/quickshell`: -breakpad jemalloc sockets wayland layer-shell session-lock toplevel-management screencopy X pipewire tray mpris pam hyprland hyprland-global-shortcuts hyprland-focus-grab i3 i3-ipc bluetooth
+
 ## What About Manual Building?
 
 The installer handles all build dependencies and manual building for you when packages aren't in repos:
