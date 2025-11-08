@@ -97,17 +97,17 @@ Best package availability out of the box. niri, hyprland, ghostty, and most tool
 
 ### Gentoo
 
-**Supported:** Gentoo (amd64, arm64)
-
-:::warning
-
-Gentoo installs are highly variable and user-specific. Success is not guaranteed. `dankinstall` works best on fresh stage3/systemd systems. If not using binary packages, prepare for long compilation times.
-
-:::
-
-Uses Portage with GURU overlay. Automatically configures global USE flags in `/etc/portage/make.conf` (creates or appends to existing), package-specific USE flags in `/etc/portage/package.use/danklinux`, and unmasks packages in `/etc/portage/package.accept_keywords/danklinux`.
-
-Ghostty is not available due to extremely long compilation times for its dependencies.
+**Special Notes:**
+- Gentoo installs are **highly variable** and user-specific, success is not guaranteed.
+  - `dankinstall` is most likely to succeed on a fresh stage3/systemd system
+- Uses Portage package manager with GURU overlay for additional packages
+- Automatically configures global USE flags in `/etc/portage/make.conf`
+  - Will create or append to your existing USE flags.
+- Automatically configures package-specific USE flags in `/etc/portage/package.use/danklinux`
+- Unmasks packages as-needed with architecture keywords in `/etc/portage/package.accept_keywords/danklinux`
+- Supports both `amd64` and `arm64` architectures dynamically
+- If not using bin packages, prepare for long compilation times
+- **Ghostty** is removed from the options, due to extremely long compilation time of its
 
 **Package Sources:**
 | Package | Source | Notes |
@@ -128,12 +128,16 @@ Ghostty is not available due to extremely long compilation times for its depende
 | DankMaterialShell | Manual | Git clone to `~/.config/quickshell/dms` |
 
 **Global USE Flags:**
-`wayland vulkan opengl accessibility policykit X udev alsa gdbm qml gtk qt6 jpeg webp png gif tiff brotli dbus svg`
+`X dbus udev alsa policykit jpeg png webp gif tiff svg brotli gdbm accessibility gtk qt6 egl gbm`
 
 **Package-Specific USE Flags:**
 - `sys-apps/xdg-desktop-portal-gtk`: wayland X
 - `gui-wm/niri`: dbus screencast
 - `gui-wm/hyprland`: X
+- `dev-qt/qtbase`: wayland opengl vulkan widgets
+- `dev-qt/qtdeclarative`: opengl vulkan
+- `media-libs/mesa`: opengl vulkan
+- `dev-libs/wlroots`: X
 - `gui-apps/quickshell`: -breakpad jemalloc sockets wayland layer-shell session-lock toplevel-management screencopy X pipewire tray mpris pam hyprland hyprland-global-shortcuts hyprland-focus-grab i3 i3-ipc bluetooth
 
 ## What About Manual Building?
