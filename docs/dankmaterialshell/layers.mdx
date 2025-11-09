@@ -21,37 +21,39 @@ Every component namespace starts with `dms:` followed by the rest of the namespa
 ### Modals
 Full-screen modal dialogs including settings, power menu, and clipboard history. These overlay the entire screen and optionally dim the background.
 
-| Component            | Namespace                |
-| -------------------- | ------------------------ |
-| Clipboard history    | `dms:clipboard`          |
-| File browser         | `dms:file-browser`       |
-| Settings             | `dms:settings`           |
-| Spotlight            | `dms:spotlight`          |
-| Bluetooth pairing    | `dms:bluetooth-pairing`  |
-| Color picker         | `dms:color-picker`       |
-| Hyprkeybinds         | `dms:hyprkeybinds`       |
-| Network info         | `dms:network-info`       |
-| Network info (wired) | `dms:network-info-wired` |
-| Notification         | `dms:notification-modal` |
-| Polkit               | `dms:polkit`             |
-| Power menu           | `dms:power-menu`         |
-| Process list         | `dms:process-list-modal` |
-| Wifi password        | `dms:wifi-password`      |
-| Fallback namespace   | `dms:modal`              |
+
+| Component            | Namespace                       |
+| -------------------- | ------------------------------- |
+| Clipboard history    | `dms:clipboard`                 |
+| File browser         | `dms:file-browser`              |
+| Settings             | `dms:settings`                  |
+| Spotlight            | `dms:spotlight`                 |
+| Bluetooth pairing    | `dms:bluetooth-pairing`         |
+| Color picker         | `dms:color-picker`              |
+| Hyprkeybinds         | `dms:hyprkeybinds`              |
+| Network info         | `dms:network-info`              |
+| Network info (wired) | `dms:network-info-wired`        |
+| Notification         | `dms:notification-center-modal` |
+| Polkit               | `dms:polkit`                    |
+| Power menu           | `dms:power-menu`                |
+| Process list         | `dms:process-list-modal`        |
+| Wifi password        | `dms:wifi-password`             |
+| Fallback namespace   | `dms:modal`                     |
 
 ### Popouts
 Popup panels triggered by bar widgets, such as the control center, app drawer, and notification center. These are anchored to the bar and slide out accordingly.
 
-| Component           | Namespace                 |
-| ------------------- | ------------------------- |
-| App drawer          | `dms:app-launcher`        |
-| Control center      | `dms:control-center`      |
-| Battery             | `dms:battery`             |
-| Vpn                 | `dms:vpn`                 |
-| DankDash            | `dms:dash`                |
-| Notification center | `dms:notification-center` |
-| Process list        | `dms:process-list-popout` |
-| Fallback namespace  | `dms:popout`              |
+
+| Component           | Namespace                        |
+| ------------------- | -------------------------------- |
+| App drawer          | `dms:app-launcher`               |
+| Control center      | `dms:control-center`             |
+| Battery             | `dms:battery`                    |
+| Vpn                 | `dms:vpn`                        |
+| DankDash            | `dms:dash`                       |
+| Notification center | `dms:notification-center-popout` |
+| Process list        | `dms:process-list-popout`        |
+| Fallback namespace  | `dms:popout`                     |
 
 ### Misc Components
 Namespaces for other component that aren't modals or popouts.
@@ -70,6 +72,15 @@ Namespaces for other component that aren't modals or popouts.
 > If you are unsure about a component's namespace and are on Hyprland, you can run `hyprctl layers` with the layer opened.
 
 ## Hyprland Example
+
+:::info
+
+In order to for some layer rules (such as `animation`, `blur and `dimaround`), you will have to disable the shell's animations and dim effect.
+
+- You can disable animations in **Settings**>**Personalization**>Animation Speed** and set to **None**.
+- You can disable the dim in **Theme & Colors**>**Widget Styling** and untoggle **Darken Modal Background**.
+
+:::
 
 ### Blur Settings
 
@@ -105,7 +116,7 @@ Add these layer rules to enable blur for DMS components:
 ```conf
 # Animations
 layerrule = animation slide right, dms:control-center
-layerrule = animation slide top, dms:dms:workspace-overview
+layerrule = animation slide top, dms:workspace-overview
 # You can find all available animations here: https://wiki.hypr.land/Configuring/Animations/#animation-tree
 
 # Blur
@@ -117,7 +128,21 @@ layerrule = blur, $blur_layer
 # Dim (if you prefer a dim instead of a blur effect)
 layerrule = dimaround, $blur_layer
 ```
+### Examples
 
+<details>
+<summary>Examples</summary>
+#### Add a blur effect on the shell's Components
+
+Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
+```conf
+$blur_layer = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
+layerrule = blur, $blur_layer
+$blur_shell = dms:(bar|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
+layerrule = blur, $blur_shell
+layerrule = ignorezero, $blur_shell 
+```
+</details>
 ### Performance Tuning
 
 If blur is impacting system performance, try these optimizations in order:
@@ -141,6 +166,6 @@ Not all compositors support blur, check the relevant compositors documentation f
 
 DMS is compositor-agnostic—it only sets namespaces and lets the compositor handle the effects. Once you determine the appropriate layer rule syntax for your compositor, you can target the same namespaces listed above.
 
-[niri's layer rules wiki page.](https://yalter.github.io/niri/Configuration%3A-Layer-Rules.html)
+[Niri's layer rules wiki page.](https://yalter.github.io/niri/Configuration%3A-Layer-Rules.html)
 
 [MangoWC's layer rules wiki page.](https://github.com/DreamMaoMao/mangowc/wiki#layer-rules)
