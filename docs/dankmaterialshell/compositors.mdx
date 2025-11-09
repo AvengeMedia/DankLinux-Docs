@@ -1,6 +1,5 @@
 ---
 title: Compositor Setup
-description: Configure DankMaterialShell for niri, Hyprland, dwl, and Sway
 sidebar_position: 8
 ---
 
@@ -78,6 +77,7 @@ layer-rule {
     place-within-backdrop true
 }
 ```
+For more about layer rules see [layer rules](./layers.mdx).
 
 #### Startup
 
@@ -225,8 +225,9 @@ env = QT_QPA_PLATFORMTHEME_QT6,gtk3
 #### Layer Rules
 
 ```conf
-layerrule = noanim, ^(quickshell)$
+layerrule = noanim, ^(dms)$
 ```
+For more about layer rules see [layer rules](./layers.mdx).
 
 #### General Layout
 
