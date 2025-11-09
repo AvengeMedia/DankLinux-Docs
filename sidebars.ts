@@ -47,6 +47,20 @@ const sidebars: SidebarsConfig = {
         'dankmaterialshell/keybinds-ipc',
         {
           type: 'category',
+          label: 'CLI',
+          items: [
+            'dankmaterialshell/cli-process-management',
+            'dankmaterialshell/cli-keybinds-cheatsheets',
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-dank16',
+              label: 'Dank16 (ANSI Colors)',
+            },
+            'dankmaterialshell/cli-brightness',
+          ],
+        },
+        {
+          type: 'category',
           label: 'Plugins',
           items: [
             'dankmaterialshell/plugins-overview',

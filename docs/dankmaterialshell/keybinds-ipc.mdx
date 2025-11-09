@@ -365,33 +365,48 @@ export DMS_SCREENSHOT_EDITOR=satty
 
 **Requirements:** niri compositor and your chosen screenshot editor (Swappy or Satty) must be installed.
 
+### keybinds
+
+Dynamic keybinds cheatsheet modal that works with multiple providers.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open <provider>` | Show keybinds modal | provider name (e.g., "hyprland", "sway", "mangowc") |
+| `close` | Hide keybinds modal | - |
+| `toggle <provider>` | Toggle keybinds modal visibility | provider name |
+
+**Examples:**
+```bash
+dms ipc call keybinds toggle hyprland
+dms ipc call keybinds toggle sway
+dms ipc call keybinds toggle mangowc
+dms ipc call keybinds open tmux
+```
+
+**Supported Providers:**
+
+The keybinds modal supports all providers available through the `dms keybinds` CLI:
+- **Built-in providers**: Hyprland, Sway, MangoWC (automatically parse compositor configs)
+- **Custom cheatsheets**: Any JSON-based cheatsheet in `~/.config/DankMaterialShell/cheatsheets/`
+
+The modal automatically parses configuration files and displays keybinds organized by category with optional subcategories. See the [Keybinds & Cheatsheets](/docs/dankmaterialshell/cli-keybinds-cheatsheets) documentation for more details on providers and creating custom cheatsheets.
+
 ### hypr
 
 **Hyprland-only features**
 
-Hyprland-specific controls including keybinds cheatsheet and workspace overview.
+Hyprland-specific workspace overview control.
 
 | Function | Description |
 | --- | --- |
-| `openBinds` | Show Hyprland keybinds cheatsheet modal |
-| `closeBinds` | Hide Hyprland keybinds cheatsheet modal |
-| `toggleBinds` | Toggle Hyprland keybinds cheatsheet visibility |
 | `openOverview` | Show Hyprland workspace overview |
 | `closeOverview` | Hide Hyprland workspace overview |
 | `toggleOverview` | Toggle Hyprland workspace overview visibility |
 
 **Examples:**
 ```bash
-dms ipc call hypr toggleBinds
 dms ipc call hypr toggleOverview
 ```
-
-**Keybinds Cheatsheet:**
-
-The keybinds cheatsheet automatically parses your Hyprland configuration from `~/.config/hypr` and displays all keybinds organized into three columns:
-- **Window / Monitor** - Window and monitor management keybinds (sorted by dispatcher)
-- **Workspace** - Workspace switching and management (sorted by dispatcher)
-- **Execute** - Application launchers and commands (sorted by keybind)
 
 **Workspace Overview:**
 
