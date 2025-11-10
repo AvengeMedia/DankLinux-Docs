@@ -15,13 +15,13 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-The `dms` command provides process management functionality for running, restarting, and killing DankMaterialShell instances. These commands manage both the DMS backend server and the Quickshell UI process, configuring IPC communication between them.
+The `dms` command provides process management functionality for running, restarting, and killing DankMaterialShell instances. These commands manage the DMS backend server, which in turn spawns and manages the Quickshell UI process as a child, configuring IPC communication between them.
 
 ## Overview
 
-DankMaterialShell consists of a Go backend server and a Quickshell UI frontend. The process management commands orchestrate both components:
+DankMaterialShell consists of a Go backend server that spawns and manages a Quickshell UI frontend as a child process. The process management commands orchestrate both components:
 - Launching the DMS backend server
-- Starting Quickshell with DMS configuration
+- Spawning Quickshell as a child process with DMS configuration
 - Configuring IPC communication between backend and frontend
 - Restarting both processes to apply configuration changes
 - Managing daemon and session modes
@@ -81,7 +81,7 @@ dms run --session
 
 ### `dms restart`
 
-Kill all existing DMS processes (both backend and Quickshell) and relaunch them. This is useful when you've made configuration changes and want to reload the shell.
+Kill the DMS backend server (along with its Quickshell child process) and relaunch them. This is useful when you've made configuration changes and want to reload the shell.
 
 ```bash
 dms restart [flags]
@@ -98,9 +98,9 @@ dms restart
 ```
 
 **What it does**:
-1. Terminates the DMS backend server
-2. Kills all running Quickshell processes with DMS configuration
-3. Relaunches both backend and frontend
+1. Terminates the DMS backend server (which also kills its Quickshell child process)
+2. Cleans up any orphaned Quickshell processes if needed
+3. Relaunches the backend, which spawns a fresh Quickshell instance
 4. Re-establishes IPC communication
 
 **Use cases**:
@@ -111,7 +111,7 @@ dms restart
 
 ### `dms kill`
 
-Kill all running DMS processes (both backend server and Quickshell UI) without restarting.
+Kill the DMS backend server (which automatically terminates its Quickshell child process) without restarting.
 
 ```bash
 dms kill [flags]
@@ -212,21 +212,21 @@ journalctl --user -u dms.service -f
 DMS operates as a multi-process system with IPC communication:
 
 1. **DMS Backend Server** (Go): Handles IPC requests, plugin management, system monitoring, and CLI operations
-2. **Quickshell UI Process**: Qt/QML runtime that renders the shell interface
+2. **Quickshell UI Process**: Qt/QML runtime that renders the shell interface (spawned as a child of the backend)
 3. **IPC Layer**: Unix socket communication between backend and frontend
 4. **Plugins**: Optional processes that extend functionality
 
 **Process hierarchy**:
 ```
 compositor (hyprland/sway/niri/etc)
-├── dms backend server
-│   ├── IPC server (Unix socket)
-│   └── Plugin manager
-└── quickshell (dms configuration)
-    └── Connects to backend via IPC
+└── dms backend server
+    ├── IPC server (Unix socket)
+    ├── Plugin manager
+    └── quickshell (child process)
+        └── Connects to parent via IPC
 ```
 
-When you run `dms run`, the backend server starts first, creates the IPC socket, then launches Quickshell. Quickshell connects to the backend via the Unix socket for commands like brightness control, keybind displays, and other system operations.
+When you run `dms run`, the backend server starts first, creates the IPC socket, then spawns Quickshell as a child process. Quickshell connects back to its parent via the Unix socket for commands like brightness control, keybind displays, and other system operations.
 
 ## Troubleshooting
 
@@ -284,7 +284,7 @@ DMS is designed to work with Wayland compositors. The process management command
 - **Niri**: Use `spawn-at-startup` for autostart
 - **MangoWC**: Use compositor-specific autostart mechanism
 
-When the compositor exits, DMS processes should automatically terminate. If they don't, run `dms kill` before logging out.
+When the compositor exits, the DMS backend should automatically terminate, which will also kill its Quickshell child process. If processes don't clean up properly, run `dms kill` before logging out.
 
 ## Command Reference
 

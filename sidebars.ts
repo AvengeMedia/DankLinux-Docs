@@ -39,8 +39,10 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Themes',
+          collapsed: false,
           items: [
             'dankmaterialshell/application-themes',
+            'dankmaterialshell/icon-theming',
             'dankmaterialshell/custom-themes',
           ],
         },
@@ -48,6 +50,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'CLI',
+          collapsed: false,
           items: [
             'dankmaterialshell/cli-process-management',
             'dankmaterialshell/cli-keybinds-cheatsheets',
@@ -62,6 +65,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'category',
           label: 'Plugins',
+          collapsed: false,
           items: [
             'dankmaterialshell/plugins-overview',
             'dankmaterialshell/plugin-development',

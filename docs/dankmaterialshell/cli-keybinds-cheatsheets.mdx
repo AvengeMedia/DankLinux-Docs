@@ -4,6 +4,8 @@ description: Manage and display keybinds and cheatsheets for various application
 ---
 
 import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={`██╗  ██╗███████╗██╗   ██╗██████╗ ██╗███╗   ██╗██████╗ ███████╗
@@ -55,6 +57,15 @@ dms ipc call keybinds toggle <provider>
 ```
 This opens a modal overlay showing the keybinds in the shell interface.
 :::
+
+<ThemedImage
+  alt="DMS Keybinds UI display"
+  sources={{
+    light: useBaseUrl('/img/keybinds_light.png'),
+    dark: useBaseUrl('/img/keybinds.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
+/>
 
 ## Built-in Providers
 

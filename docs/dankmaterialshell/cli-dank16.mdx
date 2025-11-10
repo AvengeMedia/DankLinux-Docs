@@ -4,6 +4,8 @@ description: Generate Base16 color palettes from a single color with intelligent
 ---
 
 import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██╗ ██████╗
@@ -27,6 +29,15 @@ Dank16 takes a single hex color and generates a full Base16-compatible palette s
 - Advanced contrast algorithms (Delta Phi Star or WCAG)
 - Multiple output formats (terminal configs, JSON, VSCode)
 - Custom background color support
+
+<ThemedImage
+  alt="Dank16 color palette example showing 16 ANSI colors"
+  sources={{
+    light: useBaseUrl('/img/dank16_light.png'),
+    dark: useBaseUrl('/img/dank16.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%', marginTop: '1.5rem', marginBottom: '1.5rem' }}
+/>
 
 ## Quick Start
 
