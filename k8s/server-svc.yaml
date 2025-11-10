@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: dlx-docs-server
+  namespace: default
+spec:
+  selector:
+    app: dlx-docs-server
+  type: ClusterIP
+  ports:
+    - port: 8337
+      targetPort: 8337
