@@ -117,9 +117,9 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("plugin.json missing version")
 	}
 
-	repository, err := p.client.GetRepository(ctx, owner, repo)
+	lastCommit, err := p.client.GetLastCommit(ctx, owner, repo, pluginPath)
 	if err != nil {
-		return models.Plugin{}, fmt.Errorf("failed to fetch repository metadata: %w", err)
+		return models.Plugin{}, fmt.Errorf("failed to fetch last commit: %w", err)
 	}
 
 	plugin := models.Plugin{
@@ -139,7 +139,7 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		Version:      metadata.Version,
 		Icon:         metadata.Icon,
 		Permissions:  metadata.Permissions,
-		UpdatedAt:    repository.UpdatedAt,
+		UpdatedAt:    lastCommit.Commit.Committer.Date,
 	}
 
 	if metadata.Author != "" {

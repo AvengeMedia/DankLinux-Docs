@@ -110,22 +110,33 @@ func (c *Client) GetFileContents(ctx context.Context, url string) ([]byte, error
 	return body, nil
 }
 
-type Repository struct {
-	UpdatedAt time.Time `json:"updated_at"`
+type Commit struct {
+	Commit struct {
+		Committer struct {
+			Date time.Time `json:"date"`
+		} `json:"committer"`
+	} `json:"commit"`
 }
 
-func (c *Client) GetRepository(ctx context.Context, owner, repo string) (*Repository, error) {
-	apiPath := fmt.Sprintf("/repos/%s/%s", owner, repo)
+func (c *Client) GetLastCommit(ctx context.Context, owner, repo, path string) (*Commit, error) {
+	apiPath := fmt.Sprintf("/repos/%s/%s/commits?per_page=1", owner, repo)
+	if path != "" {
+		apiPath += fmt.Sprintf("&path=%s", path)
+	}
 
 	body, err := c.do(ctx, http.MethodGet, apiPath)
 	if err != nil {
 		return nil, err
 	}
 
-	var repository Repository
-	if err := json.Unmarshal(body, &repository); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal repository: %w", err)
+	var commits []Commit
+	if err := json.Unmarshal(body, &commits); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal commits: %w", err)
 	}
 
-	return &repository, nil
+	if len(commits) == 0 {
+		return nil, fmt.Errorf("no commits found")
+	}
+
+	return &commits[0], nil
 }
