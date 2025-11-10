@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: dlx-docs-server-deployment
-  namespace: default
+  namespace: danklinux
   labels:
     app: dlx-docs-server
 spec:
@@ -38,3 +38,8 @@ spec:
               value: "8337"
             - name: ENVIRONMENT
               value: "production"
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-token
+                  key: token
