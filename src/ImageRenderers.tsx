@@ -4,8 +4,9 @@ import { join } from 'path'
 import React from 'react'
 
 interface PagesPageData {
-  route: string
+  route?: string
   metadata?: {
+    permalink?: string
     title?: string
   }
 }
@@ -210,7 +211,119 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
 }
 
 export const pages: ImageRenderer<PagesPageData> = (data) => {
-  const isHomePage = data.route === '/'
+  const route = data.route || data.metadata?.permalink || '/'
+  const isHomePage = route === '/'
+  const isPluginsPage = route === '/plugins' || route === '/plugins/'
+
+  if (isPluginsPage) {
+    return [
+      <div
+        style={{
+          display: 'flex',
+          width: BASE_WIDTH,
+          height: BASE_HEIGHT,
+          background: '#000000',
+          position: 'relative',
+          overflow: 'hidden',
+          fontSmooth: 'always',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: 'radial-gradient(circle at 10% 20%, rgba(128, 90, 213, 0.3) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(208, 188, 255, 0.05) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(107, 70, 193, 0.2) 0%, transparent 35%)',
+          }}
+        />
+
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: 'linear-gradient(to bottom, rgba(208, 188, 255, 0.03) 1px, transparent 1px), linear-gradient(to right, rgba(208, 188, 255, 0.03) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+          }}
+        />
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            padding: '60px',
+            position: 'relative',
+            zIndex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '24px',
+              marginBottom: '40px',
+            }}
+          >
+            <img
+              src={logoDataUrl}
+              style={{
+                width: '80px',
+                height: '80px',
+              }}
+            />
+            <div
+              style={{
+                fontSize: '48px',
+                fontFamily: 'Adwaita Sans',
+                fontWeight: 800,
+                color: '#fffffff2',
+                letterSpacing: '0.08em',
+                textRendering: 'optimizeLegibility',
+                fontSmooth: 'always',
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale',
+                lineHeight: 1,
+              }}
+            >
+              DANK LINUX
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: '96px',
+              fontWeight: 800,
+              letterSpacing: '-2px',
+              background: 'linear-gradient(135deg, #D0BCFF 0%, #805AD5 50%, #6B46C1 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: 'transparent',
+              textRendering: 'optimizeLegibility',
+              fontSmooth: 'always',
+              WebkitFontSmoothing: 'antialiased',
+              MozOsxFontSmoothing: 'grayscale',
+              textAlign: 'center',
+            }}
+          >
+            Plugin Registry
+          </div>
+        </div>
+      </div>,
+      {
+        width: BASE_WIDTH,
+        height: BASE_HEIGHT,
+        fonts,
+      },
+    ]
+  }
 
   return [
     <div

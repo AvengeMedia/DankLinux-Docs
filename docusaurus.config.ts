@@ -377,9 +377,10 @@ const config: Config = {
           activeBaseRegex: '^/docs(?!/getting-started|/dankmaterialshell/plugins-overview).*',
         },
         {
-          href: 'https://plugins.danklinux.com',
+          to: '/plugins',
           label: 'Plugins',
           position: 'right',
+          activeBasePath: '/plugins',
         },
         {
           type: 'search',
