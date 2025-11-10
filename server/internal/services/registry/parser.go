@@ -117,6 +117,11 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("plugin.json missing version")
 	}
 
+	repository, err := p.client.GetRepository(ctx, owner, repo)
+	if err != nil {
+		return models.Plugin{}, fmt.Errorf("failed to fetch repository metadata: %w", err)
+	}
+
 	plugin := models.Plugin{
 		ID:           regPlugin.ID,
 		Name:         regPlugin.Name,
@@ -134,6 +139,7 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		Version:      metadata.Version,
 		Icon:         metadata.Icon,
 		Permissions:  metadata.Permissions,
+		UpdatedAt:    repository.UpdatedAt,
 	}
 
 	if metadata.Author != "" {

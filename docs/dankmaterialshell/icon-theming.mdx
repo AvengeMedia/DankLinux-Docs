@@ -172,10 +172,6 @@ cat ~/.config/kdeglobals | grep -A 1 "\[Icons\]"
 - **Adwaita**: GNOME's default, clean and simple
 - **breeze**: KDE's default, professional appearance
 
-### Colorful Style
-- **Nordzy**: Nord color palette
-- **Candy Icons**: Vibrant, playful design
-
 ## Troubleshooting
 
 ### Icons not changing
@@ -206,10 +202,6 @@ Verify that your platform theme environment variable matches your configuration:
 ```bash
 # Check current setting
 echo $QT_QPA_PLATFORMTHEME
-
-# Verify compositor config matches
-# For niri: ~/.config/niri/config.kdl
-# For Hyprland: ~/.config/hypr/hyprland.conf
 ```
 
 If you change `QT_QPA_PLATFORMTHEME`, you must restart your compositor session for the change to take effect.

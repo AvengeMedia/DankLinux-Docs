@@ -109,3 +109,23 @@ func (c *Client) GetFileContents(ctx context.Context, url string) ([]byte, error
 
 	return body, nil
 }
+
+type Repository struct {
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (c *Client) GetRepository(ctx context.Context, owner, repo string) (*Repository, error) {
+	apiPath := fmt.Sprintf("/repos/%s/%s", owner, repo)
+
+	body, err := c.do(ctx, http.MethodGet, apiPath)
+	if err != nil {
+		return nil, err
+	}
+
+	var repository Repository
+	if err := json.Unmarshal(body, &repository); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal repository: %w", err)
+	}
+
+	return &repository, nil
+}

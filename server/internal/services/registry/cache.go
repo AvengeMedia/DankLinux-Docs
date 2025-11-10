@@ -62,7 +62,7 @@ func (c *Cache) GetLastUpdate() time.Time {
 type FilterOptions struct {
 	Category   string
 	Compositor string
-	FirstParty *bool
+	FirstParty bool
 	Capability string
 }
 
@@ -85,7 +85,7 @@ func matchesFilter(plugin models.Plugin, opts FilterOptions) bool {
 		return false
 	}
 
-	if opts.FirstParty != nil && plugin.FirstParty != *opts.FirstParty {
+	if opts.FirstParty && !plugin.FirstParty {
 		return false
 	}
 

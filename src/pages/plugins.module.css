@@ -201,6 +201,27 @@
   border-color: rgba(128, 90, 213, 0.2);
 }
 
+.topControls {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.controlsRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sortGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .filterRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -225,7 +246,8 @@
 }
 
 .searchInput {
-  width: 100%;
+  flex: 1;
+  min-width: 280px;
   padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(208, 188, 255, 0.2);
@@ -233,7 +255,6 @@
   color: #ffffff;
   font-size: 0.9375rem;
   transition: all 0.3s ease;
-  margin-bottom: 0.75rem;
 }
 
 [data-theme='light'] .searchInput {
@@ -259,6 +280,62 @@
 
 [data-theme='light'] .searchInput::placeholder {
   color: rgba(26, 22, 37, 0.4);
+}
+
+.sortSelect {
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(208, 188, 255, 0.2);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23D0BCFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  min-width: 160px;
+}
+
+[data-theme='light'] .sortSelect {
+  background-color: rgba(128, 90, 213, 0.08);
+  border-color: rgba(128, 90, 213, 0.3);
+  color: #1a1625;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23805AD5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.sortSelect:hover {
+  background-color: rgba(208, 188, 255, 0.1);
+  border-color: rgba(208, 188, 255, 0.4);
+}
+
+[data-theme='light'] .sortSelect:hover {
+  background-color: rgba(128, 90, 213, 0.15);
+  border-color: rgba(128, 90, 213, 0.5);
+}
+
+.sortSelect:focus {
+  outline: none;
+  border-color: rgba(208, 188, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] .sortSelect:focus {
+  border-color: rgba(128, 90, 213, 0.5);
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.sortSelect option {
+  background: #1a1625;
+  color: #ffffff;
+}
+
+[data-theme='light'] .sortSelect option {
+  background: #ffffff;
+  color: #1a1625;
 }
 
 .filterButtons {
@@ -701,7 +778,30 @@
   }
 
   .filters {
-    padding: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .topControls {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .searchInput {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .controlsRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sortGroup {
+    flex-direction: row;
+  }
+
+  .sortSelect {
+    min-width: 140px;
   }
 
   .pluginsGrid {

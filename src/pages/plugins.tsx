@@ -20,6 +20,7 @@ interface Plugin {
   icon?: string;
   permissions?: string[];
   requires_dms?: string;
+  updated_at: string;
 }
 
 interface PluginsResponse {
@@ -51,6 +52,12 @@ const compositors = [
   { id: 'any', label: 'Any' },
 ];
 
+const sortOptions = [
+  { id: 'updated_at', label: 'Recently Updated' },
+  { id: 'name', label: 'Name' },
+  { id: 'random', label: 'Random' },
+];
+
 export default function Plugins() {
   const [plugins, setPlugins] = useState<Plugin[]>([]);
   const [filteredPlugins, setFilteredPlugins] = useState<Plugin[]>([]);
@@ -61,10 +68,11 @@ export default function Plugins() {
   const [selectedCompositor, setSelectedCompositor] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
+  const [sortBy, setSortBy] = useState('updated_at');
 
   useEffect(() => {
     fetchPlugins();
-  }, []);
+  }, [sortBy]);
 
   useEffect(() => {
     filterPlugins();
@@ -74,7 +82,8 @@ export default function Plugins() {
     try {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
-      const apiUrl = isDev ? 'http://localhost:8337/plugins' : 'https://api.danklinux.com/plugins';
+      const baseUrl = isDev ? 'http://localhost:8337/plugins' : 'https://api.danklinux.com/plugins';
+      const apiUrl = `${baseUrl}?sortBy=${sortBy}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch plugins');
@@ -120,12 +129,6 @@ export default function Plugins() {
       );
     }
 
-    filtered.sort((a, b) => {
-      if (a.firstParty && !b.firstParty) return -1;
-      if (!a.firstParty && b.firstParty) return 1;
-      return Math.random() - 0.5;
-    });
-
     setFilteredPlugins(filtered);
   };
 
@@ -153,6 +156,33 @@ export default function Plugins() {
       );
     }
     return null;
+  };
+
+  const formatUpdatedAt = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    if (diffInDays === 0) {
+      return 'Updated today';
+    }
+    if (diffInDays === 1) {
+      return 'Updated yesterday';
+    }
+    if (diffInDays < 7) {
+      return `Updated ${diffInDays} days ago`;
+    }
+    if (diffInDays < 30) {
+      const weeks = Math.floor(diffInDays / 7);
+      return `Updated ${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`;
+    }
+    if (diffInDays < 365) {
+      const months = Math.floor(diffInDays / 30);
+      return `Updated ${months} ${months === 1 ? 'month' : 'months'} ago`;
+    }
+    const years = Math.floor(diffInDays / 365);
+    return `Updated ${years} ${years === 1 ? 'year' : 'years'} ago`;
   };
 
   return (
@@ -187,7 +217,7 @@ export default function Plugins() {
           </section>
 
           <section className={styles.filters}>
-            <div className={styles.filterGroup}>
+            <div className={styles.topControls}>
               <input
                 type="text"
                 placeholder="Search plugins..."
@@ -195,6 +225,32 @@ export default function Plugins() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
+              <div className={styles.controlsRight}>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={showFirstPartyOnly}
+                    onChange={(e) => setShowFirstPartyOnly(e.target.checked)}
+                    className={styles.checkbox}
+                  />
+                  <span>Official only</span>
+                </label>
+                <div className={styles.sortGroup}>
+                  <label className={styles.filterLabel} htmlFor="sort-select">Sort by</label>
+                  <select
+                    id="sort-select"
+                    className={styles.sortSelect}
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                  >
+                    {sortOptions.map(option => (
+                      <option key={option.id} value={option.id}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div className={styles.filterRow}>
@@ -242,18 +298,6 @@ export default function Plugins() {
                   ))}
                 </div>
               </div>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <label className={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={showFirstPartyOnly}
-                  onChange={(e) => setShowFirstPartyOnly(e.target.checked)}
-                  className={styles.checkbox}
-                />
-                <span>Official plugins only</span>
-              </label>
             </div>
 
             <div className={styles.resultsCount}>
@@ -307,6 +351,9 @@ export default function Plugins() {
                         <span className={styles.tag}>{plugin.category}</span>
                         {plugin.version && (
                           <span className={styles.tag}>v{plugin.version}</span>
+                        )}
+                        {plugin.updated_at && (
+                          <span className={styles.tag}>{formatUpdatedAt(plugin.updated_at)}</span>
                         )}
                       </div>
 
@@ -370,6 +417,7 @@ export default function Plugins() {
                   setSelectedCompositor('all');
                   setSearchQuery('');
                   setShowFirstPartyOnly(false);
+                  setSortBy('updated_at');
                 }}
                 className={styles.resetButton}
               >
