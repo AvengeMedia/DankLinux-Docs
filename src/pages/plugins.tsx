@@ -120,6 +120,12 @@ export default function Plugins() {
       );
     }
 
+    filtered.sort((a, b) => {
+      if (a.firstParty && !b.firstParty) return -1;
+      if (!a.firstParty && b.firstParty) return 1;
+      return Math.random() - 0.5;
+    });
+
     setFilteredPlugins(filtered);
   };
 
