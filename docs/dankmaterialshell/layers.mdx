@@ -58,7 +58,6 @@ Popup panels triggered by bar widgets, such as the control center, app drawer, a
 ### Misc Components
 Namespaces for other component that aren't modals or popouts.
 
-
 | Component          | Namespace                | Use                                                                                                                                  |
 | ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
 | DankBar            | `dms:bar`                | The main panel, which can be positioned at the top, bottom, left, or right edge of the screen.                                       |
@@ -67,7 +66,10 @@ Namespaces for other component that aren't modals or popouts.
 | Notification popup | `dms:notification-popup` | Toast notifications displayed when applications request user attention.                                                              |
 | OSD                | `dms:osd`                | On-screen displays for volume and brightness indicators. These appear briefly to show status information and fade out automatically. |
 | Slideout           | `dms:slideout`           | Sliding panels from screen edges (optional component).                                                                               |
-
+| Tooltip            | `dms:tooltip`            | Tooltip shown for example when hovering an app on the dock.                                                                          |
+| Dock context menu  | `dock-context-menu`      | Context menu when right clicking an app on the dock.                                                                                 |
+| Toast              | `dms:toast`              | Toast appearing on top middle of the screen.                                                                                         |
+| Tray menu window   | `dms:tray-menu-window`   | Menu appearing when right clicking an applet in the system tray.                                                                     |
 
 > If you are unsure about a component's namespace and are on Hyprland, you can run `hyprctl layers` with the layer opened.
 
@@ -138,7 +140,7 @@ Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
 ```conf
 $blur_layer = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
 layerrule = blur, $blur_layer
-$blur_shell = dms:(bar|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
+$blur_shell = dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
 layerrule = blur, $blur_shell
 layerrule = ignorezero, $blur_shell 
 ```
