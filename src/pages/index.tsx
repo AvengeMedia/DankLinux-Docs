@@ -17,7 +17,6 @@ const compositors = [
   { name: 'Hyprland', logo: '/img/hyprland.svg', duration: 600 },
   { name: 'MangoWC', logo: '/img/mango.png', duration: 600 },
   { name: 'Sway', logo: '/img/sway.svg', duration: 600 },
-  { name: 'labwc', logo: '/img/labwc.png', duration: 600 },
   { name: 'Wayland', logo: null, duration: 0 }, // End state - stays forever
 ];
 
@@ -26,7 +25,6 @@ const compositorLinks: Record<string, string> = {
   'Hyprland': 'https://hyprland.org/',
   'MangoWC': 'https://github.com/DreamMaoMao/mangowc',
   'Sway': 'https://swaywm.org/',
-  'labwc': 'https://labwc.github.io/',
 };
 
 export default function Home() {
@@ -290,7 +288,7 @@ export default function Home() {
                   )}
                   <div className={styles.terminalHeader}>
                     <div className={styles.terminalLogos}>
-                      {compositors.slice(0, 5).map((compositor) => (
+                      {compositors.slice(0, 4).map((compositor) => (
                         <a
                           key={compositor.name}
                           href={compositorLinks[compositor.name]}

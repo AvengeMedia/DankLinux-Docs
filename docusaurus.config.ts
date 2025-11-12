@@ -172,7 +172,7 @@ const dankPurpleLight: PrismTheme = {
 
 const config: Config = {
   title: 'Dank Linux',
-  tagline: 'A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, labwc, and Sway.',
+  tagline: 'A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway.',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
