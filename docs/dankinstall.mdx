@@ -114,7 +114,7 @@ Good package availability out of the box. niri, hyprland, ghostty, and most tool
 |---------|---------|-------|
 | System packages (git, etc.) | Official repos | Via `emerge` |
 | niri | GURU overlay | With dbus and screencast USE flags |
-| hyprland | GURU/Official | Depends on variant selection, with X USE flag |
+| hyprland | Official repos (GURU for -git) | Depends on variant selection, with X USE flag |
 | quickshell | GURU overlay | Always uses live ebuild (`**` keywords), full feature set |
 | matugen | GURU overlay | Color generation tool |
 | cliphist | GURU overlay | Clipboard manager |
@@ -124,11 +124,11 @@ Good package availability out of the box. niri, hyprland, ghostty, and most tool
 | accountsservice | Official repos | User account management |
 | dgop | Manual | Built from source with Go |
 | xwayland-satellite | Manual | For niri X11 app support |
-| grimblast | Manual | For Hyprland screenshot utility |
+| grimblast (hyprland-contrib) | GURU overlay | For Hyprland screenshot utility |
 | DankMaterialShell | Manual | Git clone to `~/.config/quickshell/dms` |
 
 **Global USE Flags:**
-`X dbus udev alsa policykit jpeg png webp gif tiff svg brotli gdbm accessibility gtk qt6 egl gbm`
+`dbus udev alsa policykit jpeg png webp gif tiff svg brotli gdbm accessibility gtk qt6 egl gbm`
 
 **Package-Specific USE Flags:**
 - `sys-apps/xdg-desktop-portal-gtk`: wayland X
