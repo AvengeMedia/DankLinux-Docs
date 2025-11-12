@@ -426,7 +426,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} Dank Linux • Free & Open Source`,
+      copyright: `© ${new Date().getFullYear()} Dank Linux • Free Forever • MIT License`,
     },
     prism: {
       theme: dankPurpleLight,
