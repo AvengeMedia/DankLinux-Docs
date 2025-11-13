@@ -132,14 +132,14 @@ sudo zypper install accountsservice
 sudo emerge --ask sys-apps/accountsservice
 ```
 
-### 2. Clone the DMS Frontend (QML)
+### 2. Clone the DMS Repository
 
 ```bash
 mkdir -p ~/.config/quickshell
 git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quickshell/dms
 ```
 
-### 3. Install the DMS Backend (CLI)
+### 3. Compile & Install the DMS Backend
 
 *Requires GO 1.24+*
 
@@ -155,7 +155,7 @@ Install optional components for full functionality using your distribution's pac
 - `dgop` - Detailed system metrics and process lists
 - `dsearch` - Filesystem search engine
 - `matugen` - Material Design color palette generation
-- `ddcutil` - i2c monitor backlight control
+- `i2c-tools` - ddc monitor backlight control
 - `wl-clipboard` + `cliphist` - Clipboard history
 - `cava` - Audio visualizer widget
 - `qt6-multimedia` - System sound feedback
