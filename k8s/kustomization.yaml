@@ -8,3 +8,4 @@ resources:
 - server-deployment.yaml
 - server-svc.yaml
 - server-ingress.yaml
+- dankinstall-ingress.yaml
