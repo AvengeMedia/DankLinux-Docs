@@ -21,7 +21,6 @@ Every component namespace starts with `dms:` followed by the rest of the namespa
 ### Modals
 Full-screen modal dialogs including settings, power menu, and clipboard history. These overlay the entire screen and optionally dim the background.
 
-
 | Component            | Namespace                       |
 | -------------------- | ------------------------------- |
 | Clipboard history    | `dms:clipboard`                 |
@@ -42,7 +41,6 @@ Full-screen modal dialogs including settings, power menu, and clipboard history.
 
 ### Popouts
 Popup panels triggered by bar widgets, such as the control center, app drawer, and notification center. These are anchored to the bar and slide out accordingly.
-
 
 | Component           | Namespace                        |
 | ------------------- | -------------------------------- |
@@ -70,14 +68,18 @@ Namespaces for other component that aren't modals or popouts.
 | Dock context menu  | `dock-context-menu`      | Context menu when right clicking an app on the dock.                                                                                 |
 | Toast              | `dms:toast`              | Toast appearing on top middle of the screen.                                                                                         |
 | Tray menu window   | `dms:tray-menu-window`   | Menu appearing when right clicking an applet in the system tray.                                                                     |
-
+ 
 > If you are unsure about a component's namespace and are on Hyprland, you can run `hyprctl layers` with the layer opened.
 
+### Plugins
+By default, plugins without namespaces will fallback to `dms-plugin:plugin`, if the plugin has a specific namespaces you will have to run the command above or look at the plugin's code to know it if you do by looking at the code note the it will be `dms-plugin:` + the namespace, for example `dms-plugin:emoji-launcher`).
+
+If you're a plugin dev, see the [plugin development](./plugin-development.mdx#widget-with-popout) page to add your layer namespace.
 ## Hyprland Example
 
 :::info
 
-In order to for some layer rules (such as `animation`, `blur and `dimaround`), you will have to disable the shell's animations and dim effect.
+In order to for some layer rules (such as `animation`, `blur` and `dimaround`), you will have to disable the shell's animations and dim effect.
 
 - You can disable animations in **Settings**>**Personalization**>Animation Speed** and set to **None**.
 - You can disable the dim in **Theme & Colors**>**Widget Styling** and untoggle **Darken Modal Background**.
