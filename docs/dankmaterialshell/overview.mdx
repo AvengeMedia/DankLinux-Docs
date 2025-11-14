@@ -65,6 +65,7 @@ flowchart TB
         I2C[i2c/DDC]
         SYSFS[sysfs]
         IPP[IPP]
+        EVDEV[evdev]
     end
 
     subgraph QuickshellInterfaces[" "]
@@ -93,6 +94,7 @@ flowchart TB
     DMS --> I2C
     DMS --> SYSFS
     DMS --> IPP
+    DMS --> EVDEV
 
     QS --> DBUS_QS
     QS --> WL_QS
