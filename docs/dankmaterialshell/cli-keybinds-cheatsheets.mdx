@@ -87,7 +87,7 @@ The Hyprland provider automatically parses your Hyprland configuration files and
 dms keybinds show hyprland
 
 # Specify custom path
-dms keybinds show hyprland --hyprland-path /path/to/hypr/config
+dms keybinds show hyprland --path /path/to/hypr/config
 ```
 
 **Description Priority**:
@@ -145,7 +145,7 @@ The Sway provider automatically parses your Sway configuration files and extract
 dms keybinds show sway
 
 # Specify custom path
-dms keybinds show sway --sway-path /path/to/sway/config
+dms keybinds show sway --path /path/to/sway/config
 ```
 
 **Example Sway config**:
@@ -185,7 +185,7 @@ The MangoWC provider automatically parses your MangoWC (dwl) configuration and e
 dms keybinds show mangowc
 
 # Specify custom path
-dms keybinds show mangowc --mangowc-path /path/to/mangowc/config
+dms keybinds show mangowc --path /path/to/mangowc/config
 ```
 
 ## Custom Cheatsheets
@@ -374,9 +374,7 @@ dms keybinds show <provider> [flags]
 ```
 
 **Flags**:
-- `--hyprland-path <path>`: Path to Hyprland config directory (default: `$HOME/.config/hypr`)
-- `--sway-path <path>`: Path to Sway config file (default: `$HOME/.config/sway/config`)
-- `--mangowc-path <path>`: Path to MangoWC config directory
+- `--path <path>`: Override the default config location for any provider
 - `-h, --help`: Show help for the command
 
 **Examples**:
@@ -386,13 +384,13 @@ dms keybinds show <provider> [flags]
 dms keybinds show hyprland
 
 # Show Hyprland keybinds from custom location
-dms keybinds show hyprland --hyprland-path /custom/path/to/hypr
+dms keybinds show hyprland --path /custom/path/to/hypr
 
-# Show Sway keybinds
-dms keybinds show sway
+# Show Sway keybinds with custom config
+dms keybinds show sway --path /etc/sway/config
 
-# Show MangoWC keybinds
-dms keybinds show mangowc
+# Show MangoWC keybinds with custom config
+dms keybinds show mangowc --path /custom/mangowc/config
 
 # Show custom cheatsheet
 dms keybinds show vim

@@ -372,8 +372,10 @@ Dynamic keybinds cheatsheet modal that works with multiple providers.
 | Function | Description | Parameters |
 | --- | --- | --- |
 | `open <provider>` | Show keybinds modal | provider name (e.g., "hyprland", "sway", "mangowc") |
+| `openWithPath <provider> <path>` | Show keybinds modal with custom config path | provider name, path to config |
 | `close` | Hide keybinds modal | - |
 | `toggle <provider>` | Toggle keybinds modal visibility | provider name |
+| `toggleWithPath <provider> <path>` | Toggle keybinds modal with custom config path | provider name, path to config |
 
 **Examples:**
 ```bash
@@ -381,6 +383,10 @@ dms ipc call keybinds toggle hyprland
 dms ipc call keybinds toggle sway
 dms ipc call keybinds toggle mangowc
 dms ipc call keybinds open tmux
+
+# With custom config paths
+dms ipc call keybinds openWithPath hyprland /custom/path/to/hypr
+dms ipc call keybinds toggleWithPath sway /etc/sway/config
 ```
 
 **Supported Providers:**
