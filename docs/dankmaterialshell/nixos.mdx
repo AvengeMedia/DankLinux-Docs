@@ -34,16 +34,10 @@ First, add the required flake inputs to your `flake.nix`:
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    dms-cli = {
-      url = "github:AvengeMedia/danklinux";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     dankMaterialShell = {
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.dgop.follows = "dgop";
-      inputs.dms-cli.follows = "dms-cli";
     };
   };
 }
@@ -109,7 +103,7 @@ Enable niri integration features:
 programs.dankMaterialShell = {
   enable = true;
   niri = {
-    enableKeybinds = true;  # Automatic keybinding configuration
+    enableKeybinds = true;   # Automatic keybinding configuration
     enableSpawn = true;      # Auto-start DMS with niri
   };
 };
@@ -127,8 +121,12 @@ DankMaterialShell provides numerous configuration options to customize your inst
 programs.dankMaterialShell = {
   enable = true;
 
+  systemd = {
+    enable = true;             # Systemd service for auto-start
+    restartIfChanged = true;   # Auto-restart dms.service when dankMaterialShell changes
+  };
+  
   # Core features
-  enableSystemd = true;              # Systemd service for auto-start
   enableSystemMonitoring = true;     # System monitoring widgets (dgop)
   enableClipboard = true;            # Clipboard history manager
   enableVPN = true;                  # VPN management widget
@@ -214,7 +212,7 @@ sudo nixos-rebuild switch
 ### DMS doesn't start automatically
 
 Make sure you have either:
-- `enableSystemd = true` for systemd-based startup, or
+- `systemd.enable = true` for systemd-based startup, or
 - `niri.enableSpawn = true` for niri-managed startup
 
 ### Missing dependencies

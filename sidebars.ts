@@ -85,6 +85,11 @@ const sidebars: SidebarsConfig = {
           label: 'Overview',
         },
         'dankgreeter/installation',
+        {
+          type: 'doc',
+          id: 'dankgreeter/nixos',
+          label: 'Installation - NixOS',
+        },
         'dankgreeter/configuration',
       ],
     },

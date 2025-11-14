@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
 import { useLocation } from '@docusaurus/router';
+import { Prism } from "prism-react-renderer";
+
+// Nix syntax highlighting isn't loaded by default
+(typeof global !== "undefined" ? global : window).Prism = Prism;
+import("prismjs/components/prism-nix");
 
 export default function Root({ children }: { children: React.ReactNode }) {
   const location = useLocation();
