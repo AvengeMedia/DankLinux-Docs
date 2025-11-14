@@ -106,15 +106,24 @@ Custom compositor configurations allow you to configure displays (resolution, re
 
 You can automatically sync the system greeter with the logged in user's wallpaper, themes, fonts, etc.
 
-### Automatic Sync (Recommended)
+### Automatic Sync
 
-If you installed DMS using [dankinstall](/docs/dankinstall), simply run:
+You can use `dms greeter sync` to automatically set up theme syncing. This command is available for:
+- dankinstall users
+- Arch AUR users
+- Fedora COPR users
+
+:::note
+
+**NixOS users:** The `dms greeter sync` command is not available on NixOS. Please follow the manual sync steps below.
+
+:::
 
 ```bash
 dms greeter sync
 ```
 
-This command will automatically:
+This will:
 - Add your user to the `greeter` group (if needed)
 - Set up ACL permissions on parent directories for greeter access
 - Configure group permissions on DMS config directories
@@ -122,13 +131,7 @@ This command will automatically:
 
 :::note
 
-You will need to log out and log back in for group membership changes to take effect. After logging back in, your greeter will automatically reflect your current DMS theme, wallpaper, and settings.
-
-:::
-
-:::tip
-
-Run `dms greeter status` to check your greeter configuration and verify that all syncing is working correctly.
+After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect. After logging back in, your greeter will automatically reflect your current DMS theme, wallpaper, and settings.
 
 :::
 
@@ -183,7 +186,7 @@ To verify that your greeter is properly configured and syncing with your user se
 dms greeter status
 ```
 
-This will check:
+This command is available for all users and will check:
 - ✓ Group membership (whether your user is in the `greeter` group)
 - ✓ Cache directory existence
 - ✓ Configuration symlinks (settings, wallpaper, colors)
