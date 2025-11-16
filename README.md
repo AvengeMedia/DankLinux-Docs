@@ -5,7 +5,7 @@
   
   ### A modern Linux desktop suite with beautiful widgets and powerful monitoring
   
-  Optimized for niri, Hyprland, MangoWC, dwl, and Sway
+  Optimized for niri, Hyprland, MangoWC, dwl, labwc, and Sway
 </div>
 
 ---

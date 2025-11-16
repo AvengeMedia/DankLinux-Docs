@@ -15,7 +15,7 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri, Hyprland, [Sway](https://swaywm.org/), and dwl/MangoWC. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
+DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri, Hyprland, Sway, dwl/MangoWC, and labwc. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
 
 ## niri Configuration
 
@@ -374,11 +374,37 @@ Launch DankMaterialShell and optional services at compositor startup. The exact 
 
 For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). MangoWC keybinding configuration coming soon.
 
+## labwc Configuration
+
+[labwc](https://labwc.github.io/) is a wlroots-based window-stacking compositor for Wayland, inspired by Openbox.
+
+### Key Configuration Sections
+
+:::info Coming Soon
+
+Detailed labwc configuration sections are coming soon. labwc configuration will include:
+- Startup commands
+- Environment variables
+- DMS keybindings
+- Layer rules
+- Window rules
+
+For now, refer to the [labwc documentation](https://labwc.github.io/manual.html) for basic setup.
+
+:::
+
+
+#### DMS Keybindings
+
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). MangoWC keybinding configuration coming soon.
+
 ## Other Compositors
 
 DankMaterialShell works with any Wayland compositor that supports:
 - Layer shell protocol (for panels and overlays)
 - Session lock protocol (for lock screen)
+- ext-workspace-v1 protocol (for workspace management)
+- wlr-output-management-unstable-v1 protocol (for interface scaling + output management)
 
 **Note:** Some compositor-specific features will be unavailable, such as workspace switching.
 
