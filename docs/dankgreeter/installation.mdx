@@ -20,61 +20,7 @@ import Hero from '@site/src/components/Hero';
 
 ## Installation Methods
 
-### For dankinstall users
-
-If you installed DMS using [dankinstall](/docs/dankinstall), you can automate the entire installation and setup process:
-
-#### 1. Install and Configure
-
-```bash
-dms greeter install
-```
-
-This command will automatically:
-- Install greetd (if not already installed)
-- Set up the dms-greeter wrapper
-- Configure permissions and ACLs for theme syncing
-- Create the greeter cache directory
-- Configure greetd to use DMS
-
-:::warning
-
-**Important:** The `dms greeter install` command should **ONLY** be run if you installed DMS via dankinstall. If you installed DMS via Arch AUR, Fedora COPR, or NixOS, skip this step and use the installation instructions below.
-
-:::
-
-#### 2. Enable the Greeter
-
-```bash
-dms greeter enable
-```
-
-This will:
-- Configure `/etc/greetd/config.toml` with the correct compositor command
-- Disable conflicting display managers (gdm, lightdm, sddm)
-- Enable and start the greetd service
-
-#### 3. Sync with Your User Theme
-
-```bash
-dms greeter sync
-```
-
-This will:
-- Add your user to the `greeter` group (if needed)
-- Set up ACL permissions on parent directories for greeter access
-- Configure group permissions on DMS config directories
-- Create symlinks to sync settings, wallpapers, and color themes
-
-:::note
-
-After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect.
-
-:::
-
-### For Arch AUR and Fedora users
-
-Follow the installation steps below for your distribution, then proceed to [Completing Setup](#completing-setup) to enable and sync the greeter.
+Choose the installation method for your distribution:
 
 ## Arch Linux
 
@@ -99,7 +45,26 @@ After installation, proceed to [Completing Setup](#completing-setup) below.
 
 ## Other distributions
 
-Install `greetd`, `quickshell`, and then the greeter:
+### For dankinstall users
+
+If you installed DMS using [dankinstall](/docs/dankinstall) on a distribution other than Arch or Fedora, use this automated command:
+
+```bash
+dms greeter install
+```
+
+This command will automatically:
+- Install greetd (if not already installed)
+- Set up the dms-greeter wrapper
+- Configure permissions and ACLs for theme syncing
+- Create the greeter cache directory
+- Configure greetd to use DMS
+
+Then proceed to [Completing Setup](#completing-setup) below.
+
+### Manual installation
+
+For non-dankinstall users, install `greetd`, `quickshell`, and then the greeter:
 
 ```bash
 sudo mkdir -p /etc/xdg/quickshell
@@ -123,9 +88,9 @@ ACLs (Access Control Lists) are required to allow the greeter user to traverse y
 
 After installing the greeter package, you can use automated commands to complete setup, or follow manual steps.
 
-### Automated Setup (Arch and Fedora users)
+### Automated Setup (All users)
 
-After installing the greeter package, you can use these commands:
+After installing the greeter package, you can use these commands to enable and sync the greeter:
 
 #### 1. Enable the Greeter
 
@@ -180,7 +145,7 @@ If you prefer to set up the greeter manually, follow these steps:
 
 :::tip
 
-**Arch and Fedora users:** You can use `dms greeter enable` to automate this process instead of following the manual steps below.
+**All users:** You can use `dms greeter enable` to automate this process instead of following the manual steps below.
 
 :::
 
