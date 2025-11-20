@@ -276,7 +276,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/AvengeMedia/dms-docs/tree/main',
+          editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/main',
         },
         blog: false, // Disable blog for now
         theme: {
@@ -387,7 +387,7 @@ const config: Config = {
           position: 'right',
         },
         {
-          href: 'https://github.com/AvengeMedia',
+          href: 'https://github.com/AvengeMedia/DankMaterialShell',
           position: 'right',
           className: 'header-github-link',
           'aria-label': 'GitHub repository',
