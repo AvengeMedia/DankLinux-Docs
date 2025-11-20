@@ -276,7 +276,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/main',
+          editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
         },
         blog: false, // Disable blog for now
         theme: {
