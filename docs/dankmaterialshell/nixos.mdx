@@ -16,9 +16,9 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell can be installed on NixOS using home-manager with a declarative configuration. This guide covers the flake-based installation method.
+DankMaterialShell can be installed on NixOS using the NixOS module or home-manager with a declarative configuration. This guide covers the flake-based installation method.
 
-## Installation via home-manager
+## Installation
 
 ### 1. Add Flake Inputs
 
@@ -43,10 +43,16 @@ First, add the required flake inputs to your `flake.nix`:
 }
 ```
 
-### 2. Import the Home Module
+### 2. Import the NixOS/Home Module
 
-Add the DankMaterialShell home module to your home-manager imports:
+Add the relevant DankMaterialShell module to your configuration imports:
 
+```nix
+imports = [
+  inputs.dankMaterialShell.nixosModules.dankMaterialShell.default
+];
+```
+or
 ```nix
 imports = [
   inputs.dankMaterialShell.homeModules.dankMaterialShell.default
@@ -55,7 +61,7 @@ imports = [
 
 ### 3. Enable DankMaterialShell
 
-In your home-manager configuration, enable DankMaterialShell:
+In your configuration, enable DankMaterialShell:
 
 ```nix
 programs.dankMaterialShell.enable = true;
@@ -65,7 +71,7 @@ That's it! Rebuild your system and DankMaterialShell will be installed with sens
 
 ## niri Integration
 
-If you're using the niri compositor, DankMaterialShell provides additional integration options including automatic keybindings and startup configuration.
+If you're using the niri compositor, the home module provides additional integration options including automatic keybindings and startup configuration.
 
 ### Prerequisites
 
