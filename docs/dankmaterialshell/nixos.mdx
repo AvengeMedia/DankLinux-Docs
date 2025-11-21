@@ -145,7 +145,18 @@ programs.dankMaterialShell = {
 };
 ```
 
-### Default Settings
+### Custom Quickshell Package
+
+If you need a specific version of Quickshell:
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+  quickshell.package = pkgs.quickshell; # or your custom package
+};
+```
+
+### Home Module: Default Settings
 
 You can pre-configure default settings that will be used on first launch:
 
@@ -167,18 +178,7 @@ programs.dankMaterialShell = {
 
 These defaults are only applied if the settings files don't already exist, so they won't override your existing configuration.
 
-### Custom Quickshell Package
-
-If you need a specific version of Quickshell:
-
-```nix
-programs.dankMaterialShell = {
-  enable = true;
-  quickshell.package = pkgs.quickshell; # or your custom package
-};
-```
-
-### Plugins
+### Home Module: Plugins
 
 Install DankMaterialShell plugins declaratively:
 
@@ -198,7 +198,8 @@ programs.dankMaterialShell = {
 ## Advanced Configuration
 
 For a complete list of available options, check the module files:
-- Base module: `distro/nix/default.nix` in the DankMaterialShell repository
+- Common options: `distro/nix/options.nix` in the DankMaterialShell repository
+- Home module: `distro/nix/home.nix` in the DankMaterialShell repository
 - niri module: `distro/nix/niri.nix` in the DankMaterialShell repository
 
 ## Rebuilding
