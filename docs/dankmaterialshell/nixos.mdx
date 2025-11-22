@@ -25,7 +25,7 @@ Choose one of the following installation methods based on your needs:
 - **NixOS Module**: System-wide installation, ideal for multi-user systems or when you want DMS available to all users
 - **Home-Manager Module**: Per-user installation, ideal for single-user setups or when you want user-specific configurations
 
-## Installation via NixOS Module (System-wide)
+## Installation
 
 ### 1. Add Flake Inputs
 
@@ -50,9 +50,11 @@ First, add the required flake inputs to your `flake.nix`:
 }
 ```
 
-### 2. Import the NixOS Module
+### 2. Import the NixOS or home-manager Module
 
-Add the DankMaterialShell NixOS module to your system configuration:
+Add the relevant DankMaterialShell module to your configuration imports:
+
+If you're using the NixOS module:
 
 ```nix
 imports = [
@@ -60,26 +62,7 @@ imports = [
 ];
 ```
 
-### 3. Enable DankMaterialShell
-
-In your NixOS configuration, enable DankMaterialShell:
-
-```nix
-programs.dankMaterialShell.enable = true;
-```
-
-That's it! Rebuild your system and DankMaterialShell will be installed system-wide with sensible defaults.
-
-## Installation via home-manager (Per-user)
-
-### 1. Add Flake Inputs
-
-Add the required flake inputs to your `flake.nix` (same as above for NixOS module).
-
-### 2. Import the Home Module
-
-Add the DankMaterialShell home module to your home-manager imports:
-
+Alternatively, if you're using the home-manager module:
 ```nix
 imports = [
   inputs.dankMaterialShell.homeModules.dankMaterialShell.default
@@ -88,17 +71,17 @@ imports = [
 
 ### 3. Enable DankMaterialShell
 
-In your home-manager configuration, enable DankMaterialShell:
+In your configuration, enable DankMaterialShell:
 
 ```nix
 programs.dankMaterialShell.enable = true;
 ```
 
-That's it! Rebuild your system and DankMaterialShell will be installed for your user with sensible defaults.
+That's it! Rebuild your system (or standalone home-manager configuration) and DankMaterialShell will be installed  with sensible defaults.
 
 ## niri Integration
 
-If you're using the niri compositor, DankMaterialShell provides additional integration options including automatic keybindings and startup configuration.
+If you're using the niri compositor, the home-manager module provides additional integration options including automatic keybindings and startup configuration.
 
 :::note
 niri integration requires [niri-flake](https://github.com/sodiboo/niri-flake) to be configured in your system.
@@ -194,6 +177,17 @@ programs.dankMaterialShell = {
 };
 ```
 
+### Custom Quickshell Package
+
+If you need a specific version of Quickshell:
+
+```nix
+programs.dankMaterialShell = {
+  enable = true;
+  quickshell.package = pkgs.quickshell; # or your custom package
+};
+```
+
 ### Default Settings (home-manager only)
 
 You can pre-configure default settings that will be used on first launch:
@@ -215,17 +209,6 @@ programs.dankMaterialShell = {
 ```
 
 These defaults are only applied if the settings files don't already exist, so they won't override your existing configuration.
-
-### Custom Quickshell Package
-
-If you need a specific version of Quickshell:
-
-```nix
-programs.dankMaterialShell = {
-  enable = true;
-  quickshell.package = pkgs.quickshell; # or your custom package
-};
-```
 
 ### Plugins (home-manager only)
 
