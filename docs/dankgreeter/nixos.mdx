@@ -56,13 +56,13 @@ imports = [
 
 :::note
 
-This import is of the NixOS module, rather than the home-manager module on the dms NixOS installation page.
+DankGreeter is only available as a NixOS module (not as a home-manager module), since it needs to run at the system level for login management.
 
 :::
 
 ### 3. Enable DankGreeter
 
-Enable and configure the greeter:
+Enable and configure the greeter in your NixOS configuration:
 
 ```nix
 programs.dankMaterialShell.greeter = {
@@ -71,9 +71,9 @@ programs.dankMaterialShell.greeter = {
 };
 ```
 
-:::note
+:::info
 
-This is in your NixOS top-level configuration, not in the home-manager configuration like in the dms NixOS installation page.
+Unlike DankMaterialShell which can be installed via either the NixOS module or home-manager module, DankGreeter must be configured in your NixOS system configuration (not in home-manager).
 
 :::
 

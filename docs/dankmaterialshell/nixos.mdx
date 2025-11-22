@@ -16,9 +16,16 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell can be installed on NixOS using home-manager with a declarative configuration. This guide covers the flake-based installation method.
+DankMaterialShell can be installed on NixOS either system-wide using the NixOS module or per-user using home-manager. This guide covers both flake-based installation methods.
 
-## Installation via home-manager
+## Installation Methods
+
+Choose one of the following installation methods based on your needs:
+
+- **NixOS Module**: System-wide installation, ideal for multi-user systems or when you want DMS available to all users
+- **Home-Manager Module**: Per-user installation, ideal for single-user setups or when you want user-specific configurations
+
+## Installation via NixOS Module (System-wide)
 
 ### 1. Add Flake Inputs
 
@@ -43,6 +50,32 @@ First, add the required flake inputs to your `flake.nix`:
 }
 ```
 
+### 2. Import the NixOS Module
+
+Add the DankMaterialShell NixOS module to your system configuration:
+
+```nix
+imports = [
+  inputs.dankMaterialShell.nixosModules.dankMaterialShell
+];
+```
+
+### 3. Enable DankMaterialShell
+
+In your NixOS configuration, enable DankMaterialShell:
+
+```nix
+programs.dankMaterialShell.enable = true;
+```
+
+That's it! Rebuild your system and DankMaterialShell will be installed system-wide with sensible defaults.
+
+## Installation via home-manager (Per-user)
+
+### 1. Add Flake Inputs
+
+Add the required flake inputs to your `flake.nix` (same as above for NixOS module).
+
 ### 2. Import the Home Module
 
 Add the DankMaterialShell home module to your home-manager imports:
@@ -61,11 +94,15 @@ In your home-manager configuration, enable DankMaterialShell:
 programs.dankMaterialShell.enable = true;
 ```
 
-That's it! Rebuild your system and DankMaterialShell will be installed with sensible defaults.
+That's it! Rebuild your system and DankMaterialShell will be installed for your user with sensible defaults.
 
 ## niri Integration
 
 If you're using the niri compositor, DankMaterialShell provides additional integration options including automatic keybindings and startup configuration.
+
+:::note
+niri integration requires [niri-flake](https://github.com/sodiboo/niri-flake) to be configured in your system.
+:::
 
 ### Prerequisites
 
@@ -85,6 +122,10 @@ imports = [
   inputs.niri.homeModules.niri
 ];
 ```
+
+:::tip
+If you're using the niri-flake's NixOS module (`inputs.niri.nixosModules.niri`), you don't need to import the home-manager module separately as it's already included.
+:::
 
 ### Enable niri Module
 
@@ -111,7 +152,21 @@ programs.dankMaterialShell = {
 
 This will automatically configure keybindings for launcher, notifications, settings, and all other DankMaterialShell features.
 
+### Polkit Agent
+
+If you want to use DankMaterialShell's built-in polkit agent and use the niri-flake's NixOS module, you'll need to disable niri-flake's default polkit agent to avoid conflicts:
+
+```nix
+systemd.user.services.niri-flake-polkit.enable = false;
+```
+
 ## Configuration Options
+
+:::info
+The configuration options below work for **both** the NixOS module and the home-manager module. However, note that:
+- **NixOS module**: Installs packages system-wide and places quickshell configs in `/etc/xdg/quickshell/dms`
+- **Home-manager module**: Additionally supports plugins, default settings, and default session configuration
+:::
 
 DankMaterialShell provides numerous configuration options to customize your installation. Here are the main options:
 
@@ -139,7 +194,7 @@ programs.dankMaterialShell = {
 };
 ```
 
-### Default Settings
+### Default Settings (home-manager only)
 
 You can pre-configure default settings that will be used on first launch:
 
@@ -172,7 +227,7 @@ programs.dankMaterialShell = {
 };
 ```
 
-### Plugins
+### Plugins (home-manager only)
 
 Install DankMaterialShell plugins declaratively:
 
@@ -191,9 +246,11 @@ programs.dankMaterialShell = {
 
 ## Advanced Configuration
 
-For a complete list of available options, check the module files:
-- Base module: `distro/nix/default.nix` in the DankMaterialShell repository
-- niri module: `distro/nix/niri.nix` in the DankMaterialShell repository
+For a complete list of available options, check the module files in the DankMaterialShell repository:
+- **NixOS module**: `distro/nix/nixos.nix`
+- **Home-manager module**: `distro/nix/home.nix`
+- **niri module**: `distro/nix/niri.nix`
+- **Common options**: `distro/nix/options.nix`
 
 ## Rebuilding
 
