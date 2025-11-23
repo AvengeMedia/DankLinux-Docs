@@ -186,6 +186,13 @@ window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
 }
+
+// DMS Settings window as floating by default
+window-rule {
+    match app-id=r#"org.quickshell$"#
+    match title="Settings"
+    open-floating true
+}
 ```
 
 ## Hyprland Configuration
@@ -313,6 +320,9 @@ windowrulev2 = noborder, class:^(kitty)$
 windowrulev2 = float, class:^(gnome-calculator)$
 windowrulev2 = float, class:^(blueman-manager)$
 windowrulev2 = float, class:^(org\.gnome\.Nautilus)$
+
+# DMS Settings window as floating by default
+windowrulev2 = float, class:^(org.quickshell)$, title:^(Settings)$
 ```
 
 ## Sway Configuration

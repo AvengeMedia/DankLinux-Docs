@@ -224,19 +224,27 @@ dms ipc call theme dark
 
 ### bar
 
-Top bar visibility control.
+Control individual bars by index.
 
-| Function | Description |
-| --- | --- |
-| `reveal` | Show the top bar |
-| `hide` | Hide the top bar |
-| `toggle` | Toggle top bar visibility |
-| `status` | Get visibility status |
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `reveal <index>` | Show bar at specific index | index (1-based, e.g., 1, 2, 3, 4) |
+| `hide <index>` | Hide bar at specific index | index (1-based, e.g., 1, 2, 3, 4) |
+| `toggle <index>` | Toggle bar visibility at index | index (1-based, e.g., 1, 2, 3, 4) |
+| `status <index>` | Get bar visibility status | index (1-based, e.g., 1, 2, 3, 4) |
+
+**Bar configuration:**
+- You can configure up to 4 bars with indices 1-4
+- Each bar can be assigned to any monitor through Settings
+- These commands control the `visible` property (manual show/hide)
+- The bar must be enabled in Settings for visibility control to work
 
 **Examples:**
 ```bash
-dms ipc call bar toggle
-dms ipc call bar hide
+dms ipc call bar hide 1
+dms ipc call bar reveal 2
+dms ipc call bar toggle 1
+dms ipc call bar status 2
 ```
 
 ### dock
