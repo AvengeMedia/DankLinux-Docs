@@ -75,6 +75,96 @@ sudo dnf install dms
 
 The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `ghostty`, and other utilities used by the default configuration.
 
+## Debian & Ubuntu
+
+DankMaterialShell is available through Open Build Service (OBS) for Debian and Launchpad PPA for Ubuntu.
+
+### Debian
+
+Debian 13 (Trixie) and Debian Testing are supported via OBS.
+
+#### Stable Release
+
+```bash
+# Add the repository
+echo "deb https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/avengemedia-dms.gpg > /dev/null
+sudo apt update
+
+# Install DMS
+sudo apt install dms
+```
+
+#### Latest Development Build
+
+```bash
+# Add the repository
+echo "deb https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/avengemedia-dms-git.gpg > /dev/null
+sudo apt update
+
+# Install DMS
+sudo apt install dms-git
+```
+
+### Ubuntu
+
+Ubuntu 25.10+ (Questing) is supported via Launchpad PPA.
+
+#### Stable Release
+
+```bash
+sudo add-apt-repository ppa:avengemedia/dms
+sudo apt update
+sudo apt install dms
+```
+
+#### Latest Development Build
+
+```bash
+sudo add-apt-repository ppa:avengemedia/dms-git
+sudo apt update
+sudo apt install dms-git
+```
+
+:::tip
+
+Visit the [DankLinux Repository](../danklinux) page for OBS and PPA links and more information about available packages.
+
+:::
+
+## OpenSUSE & Derivatives
+
+DankMaterialShell is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed.
+
+### Stable Release
+
+```bash
+# Add the repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Tumbleweed/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+### Latest Development Build
+
+```bash
+# Add the repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Tumbleweed/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+:::tip
+
+Visit the [OBS project page](https://build.opensuse.org/project/show/home:AvengeMedia:dms) for more information about available packages.
+
+:::
+
 ## NixOS
 
 :::tip

@@ -77,6 +77,18 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'DankLinux Repository',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'danklinux/index',
+          label: 'Overview',
+        },
+      ],
+    },
+    {
+      type: 'category',
       label: 'DankGreeter (dms-greeter)',
       collapsed: false,
       items: [
