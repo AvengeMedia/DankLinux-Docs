@@ -762,8 +762,25 @@ PluginComponent {
 1. Enable plugin: Settings → Plugins → Scan → Toggle on
 2. Add to bar: Settings → DankBar → Add widget
 3. Check console: Look for errors in shell output
-4. Reload shell: `Ctrl+Shift+R` or `dms restart`
+4. Hot-reload your plugin: `dms ipc call plugins reload myPlugin`
 5. Check settings file: `~/.config/DankMaterialShell/settings.json`
+
+### Hot Reloading
+
+During development you can reload plugins without restarting the shell:
+
+```bash
+# Reload your plugin after making changes
+dms ipc call plugins reload myPlugin
+
+# Check if it's running
+dms ipc call plugins status myPlugin
+
+# List all plugins and their state
+dms ipc call plugins list
+```
+
+This is way faster than `dms restart` when you're iterating on your code.
 
 ## Publishing
 

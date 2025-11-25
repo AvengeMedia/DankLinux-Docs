@@ -474,6 +474,34 @@ The workspace overview shows all your workspaces across all monitors with live w
 
 **Note:** All hypr functions return `HYPR_NOT_AVAILABLE` if not running Hyprland.
 
+### plugins
+
+Manage plugins at runtime - useful for development and troubleshooting.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `list` | List all available plugins with status | - |
+| `status <pluginId>` | Check if a plugin is loaded | plugin ID |
+| `reload <pluginId>` | Hot-reload a plugin without restarting | plugin ID |
+| `enable <pluginId>` | Enable a disabled plugin | plugin ID |
+| `disable <pluginId>` | Disable a loaded plugin | plugin ID |
+
+**Examples:**
+```bash
+# See what plugins are available
+dms ipc call plugins list
+
+# Check if a specific plugin is running
+dms ipc call plugins status myPlugin
+
+# Hot-reload during development (no shell restart needed)
+dms ipc call plugins reload myPlugin
+
+# Toggle plugins on/off
+dms ipc call plugins enable myPlugin
+dms ipc call plugins disable myPlugin
+```
+
 ### systemupdater
 
 System updater external check request.
