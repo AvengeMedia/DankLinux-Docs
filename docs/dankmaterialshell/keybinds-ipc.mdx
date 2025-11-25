@@ -264,6 +264,28 @@ dms ipc call dock hide
 dms ipc call dock reveal
 ```
 
+### widget
+
+Control bar widget popouts and menus, including plugins.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `toggle <widgetId>` | Toggle widget popout visibility | widget ID |
+| `list` | List all registered widget IDs | - |
+| `status <widgetId>` | Get widget popout visibility status | widget ID |
+
+**Examples:**
+```bash
+dms ipc call widget list
+dms ipc call widget toggle clock
+dms ipc call widget status weather
+```
+
+**Notes:**
+- Use `list` to discover available widget IDs on your current bar configuration
+- Widget IDs depend on which widgets are enabled in your bar settings
+- The `status` function returns "visible" or "hidden" for the widget popout state
+
 ## Modal Controls
 
 These targets control various modal windows and overlays.

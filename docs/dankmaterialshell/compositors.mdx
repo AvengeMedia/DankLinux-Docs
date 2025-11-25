@@ -187,10 +187,9 @@ window-rule {
     clip-to-geometry true
 }
 
-// DMS Settings window as floating by default
+// Open DMS windows as floating by default
 window-rule {
     match app-id=r#"org.quickshell$"#
-    match title="Settings"
     open-floating true
 }
 ```
@@ -321,8 +320,8 @@ windowrulev2 = float, class:^(gnome-calculator)$
 windowrulev2 = float, class:^(blueman-manager)$
 windowrulev2 = float, class:^(org\.gnome\.Nautilus)$
 
-# DMS Settings window as floating by default
-windowrulev2 = float, class:^(org.quickshell)$, title:^(Settings)$
+# Open DMS windows as floating by default
+windowrulev2 = float, class:^(org.quickshell)$
 ```
 
 ## Sway Configuration
