@@ -15,29 +15,129 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-The **DankLinux Repository** provides pre-built packages for **DankMaterialShell** and **niri**!
-
 ## Overview
 
-DankMaterialShell is now available on more distributions than ever before! We've expanded beyond Arch to include:
+The **DankLinux Repository** provides pre-built packages for **DankMaterialShell** and **niri**! \
+DankMaterialShell is now available on more distributions than ever before!
 
-- **Fedora** (via COPR)
-- **Debian** (via Open Build Service)
-- **Ubuntu** (via Launchpad PPA)
-- **OpenSUSE** (via Open Build Service)
+- [**Fedora**](https://fedoraproject.org/) |  [**OpenSUSE**](https://www.opensuse.org/) 
+- [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/)
 
-These repositories are maintained by the AvengeMedia team and provide both stable releases and bleeding-edge development builds.
-
-## What's Included
-
-The DankLinux repositories provide:
-
+### Desktop Environment
 - **DankMaterialShell (dms)**: The complete desktop shell with widgets and CLI tools
-- **dgop**: System telemetry daemon for resource monitoring
-- **dsearch**: Filesystem search engine
-- [**niri**](https://github.com/YaLTeR/niri): Scrollable - Tiling Wayland compositor
-- [**Quickshell**](https://github.com/quickshell-mirror/quickshell): The underlying framework (when not available in official repos)
-- **Related Dependencies**: Optional components like `cliphist`, `matugen`, and more
+- **DankMaterialShell (dms-git)**: Development build with latest features
+
+### Compositors
+- [**Niri**](https://github.com/YaLTeR/niri): Scrollable-tiling Wayland compositor
+- [**Niri-git**](https://github.com/YaLTeR/niri): Development build of niri
+
+### Core Framework
+- [**Quickshell**](https://github.com/quickshell-mirror/quickshell): QtQuick-based Wayland desktop shell framework
+- [**Quickshell-git**](https://github.com/quickshell-mirror/quickshell): Development build of Quickshell
+
+### Utilities
+- [**cliphist**](https://github.com/sentriz/cliphist): Wayland clipboard manager with history support
+- [**dgop**](https://github.com/AvengeMedia/dgop): Stateless CPU/GPU monitor system by Avenge Media
+- [**dsearch**](https://github.com/AvengeMedia/danksearch): a Blazingly fast filesystem search tool by Avenge Media
+- [**matugen**](https://github.com/InioX/matugen): Material Design 3 color palette generator for themes
+- [**xWayland-Satellite**](https://github.com/YaLTeR/xwayland-satellite): XWayland integration tool
+- [**xWayland-Satellite-git**](https://github.com/YaLTeR/xwayland-satellite): Development build of xWayland-Satellite
+
+## How to Install
+
+### Installing DankMaterialShell (DMS)
+
+For complete DMS installation instructions including repository setup, see the [DankMaterialShell Installation Guide](../dankmaterialshell/installation).
+
+:::tip Quick Start
+
+- **Fedora**: See the [Fedora & Derivatives](../dankmaterialshell/installation#fedora--derivatives) section in the installation guide
+- **Ubuntu/Debian**: See the [Ubuntu & Debian](../dankmaterialshell/installation#debian--ubuntu) section in the installation guide
+- **OpenSUSE**: See the [OpenSUSE](../dankmaterialshell/installation#opensuse--derivatives) section in the installation guide
+
+:::
+
+### Installing Standalone Packages
+
+All packages in the DankLinux repository can be installed independently. First, add the DankLinux repository for your distribution, then install the packages you need.
+
+:::note
+
+**xWayland-Satellite** is automatically installed as a dependency when installing **niri** or **niri-git**. You don't need to install it separately.
+
+:::
+
+#### Debian
+
+```bash
+# Add DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+
+# Install stable packages (recommended for production)
+sudo apt install quickshell niri
+
+# Or install development packages (latest features)
+sudo apt install quickshell-git niri-git
+```
+
+#### Ubuntu
+
+```bash
+# Add DankLinux PPA
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+
+# Install stable packages (recommended for production)
+sudo apt install quickshell niri
+
+# Or install development packages (latest features)
+sudo apt install quickshell-git niri-git
+```
+
+#### OpenSUSE
+
+```bash
+# Add DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+
+# Install stable packages (recommended for production)
+sudo zypper install quickshell niri
+
+# Or install development packages (latest features)
+sudo zypper install quickshell-git niri-git
+```
+
+#### Fedora
+
+```bash
+# Add DankLinux COPR
+sudo dnf copr enable avengemedia/danklinux
+
+# Install stable packages (recommended for production)
+sudo dnf install quickshell niri
+
+# Or install development packages (latest features) 
+sudo dnf install quickshell-git niri-git
+```
+
+:::note
+
+Package availability may vary by distribution. Some packages may only be available on Debian, Ubuntu, and OpenSUSE via OBS/PPA.
+
+:::
+
+### Niri Scrollable-Tiling Wayland Compositor
+
+Niri packages are available in both stable and development variants. Supported on distributions where niri is not available in the official repositories.
+
+**xWayland-Satellite** is automatically installed as a dependency when installing **niri** or **niri-git**, providing XWayland integration out of the box.
+
+[**Wiki**](https://yalter.github.io/niri/) | [**GitHub**](https://github.com/YaLTeR/niri)
 
 ## Repository Links
 
@@ -66,46 +166,17 @@ The Launchpad PPAs provide packages for Ubuntu distributions:
 - **DMS Stable PPA**: [ppa:avengemedia/dms](https://launchpad.net/~avengemedia/+archive/ubuntu/dms)
 - **DMS Development PPA**: [ppa:avengemedia/dms-git](https://launchpad.net/~avengemedia/+archive/ubuntu/dms-git)
 
-## Installation
-
-For detailed installation instructions for your distribution, see the [DankMaterialShell Installation Guide](../dankmaterialshell/installation).
-
-:::tip Quick Start
-
-- **Fedora**: See the [Fedora & Derivatives](../dankmaterialshell/installation#fedora--derivatives) section in the installation guide
-- **Ubuntu/Debian**: See the [Ubuntu & Debian](../dankmaterialshell/installation#debian--ubuntu) section in the installation guide
-- **OpenSUSE**: See the [OpenSUSE](../dankmaterialshell/installation#opensuse--derivatives) section in the installation guide
-
-:::
-
-### Stable Release (`dms`)
-
-- Tagged releases with tested features
-- Recommended for production use
-- Updated with major version releases
-
-### Development Build (`dms-git`)
-
-- Latest commits from the master branch
-- Cutting-edge features and fixes
-- May contain experimental changes
-
-### Niri Scrollable-Tiling Wayland Compositor
-- Niri packages are available in both stable and development variants
-- Supported on distributions where niri is not available in the official repos\
-[**Wiki**](https://yalter.github.io/niri/) | [**GitHub**](https://github.com/YaLTeR/niri)
-
 ## GitHub Repository
 
 The packaging configurations and build scripts are maintained in the official DankLinux repository:
 
 **Repository**: [github.com/AvengeMedia/DankLinux](https://github.com/AvengeMedia/DankLinux)
 
-This repository contains:
-- OBS packaging specifications (`.spec` files, build configs)
-- Debian packaging files (`debian/` directories)
-- CI/CD workflows for automated builds
-- Release management tooling
+:::note
+
+**Official Avenge Media packages**: `dms`, `dms-git`, `dgop`, and `dsearch` are developed and maintained by the Avenge Media team. Other packages in these repositories are maintained by Avenge Media but originate from upstream projects by their respective authors, credited in the package listings below.
+
+:::
 
 ## Support
 
@@ -119,3 +190,4 @@ If you encounter issues with the repositories or packages:
 ## Contributing
 
 Interested in maintaining packages for other distributions? Contributions to the DankLinux repository are welcome! Check out the [Contributing Guide](../contributing) to get started.
+
