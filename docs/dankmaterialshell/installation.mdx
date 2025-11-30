@@ -21,19 +21,22 @@ This guide covers installation of DankMaterialShell across different Linux distr
 
 ## Dependencies
 
+- [**Quickshell**](https://github.com/quickshell-mirror/quickshell) (required) - The core framework
+- [**cava**](https://github.com/karlstav/cava) (optional) - Audio visualizer widget
+- [**cliphist**](https://github.com/sentriz/cliphist) + [**wl-clipboard**](https://github.com/bugaevc/wl-clipboard) (optional) - Clipboard history
+- [**dgop**](https://github.com/AvengeMedia/dgop) (optional) - System telemetry for resource widgets
+- [**dsearch**](https://github.com/AvengeMedia/danksearch) (optional) - Filesystem search engine
+- [**matugen**](https://github.com/InioX/matugen) (optional) - Material Design color palette generation
+- [**niri**](https://github.com/YaLTeR/niri) (optional) - DMS Team's choice of Wayland compositor
+- [**qt6-multimedia**](https://github.com/qt/qtmultimedia) (optional) - System sound feedback
+
+For pre-built packages on Fedora, Debian, Ubuntu, and OpenSUSE, see the [DankLinux Repository](../danklinux) page.
+
 :::note
 
 Only **Quickshell** is required. All other dependencies are optional and enable specific features.
 
 :::
-
-- **Quickshell** (required) - The core framework
-- **dgop** (optional) - System telemetry for resource widgets
-- **dsearch** (optional) - Filesystem search engine
-- **matugen** (optional) - Material Design color palette generation
-- **wl-clipboard** + **cliphist** (optional) - Clipboard history
-- **cava** (optional) - Audio visualizer widget
-- **qt6-multimedia** (optional) - System sound feedback
 
 ## Arch & Derivatives
 
@@ -86,9 +89,17 @@ Debian 13 (Trixie) and Debian Testing are supported via OBS.
 #### Stable Release
 
 ```bash
-# Add the repository
-echo "deb https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
-curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/avengemedia-dms.gpg > /dev/null
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
 sudo apt update
 
 # Install DMS
@@ -98,9 +109,17 @@ sudo apt install dms
 #### Latest Development Build
 
 ```bash
-# Add the repository
-echo "deb https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
-curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/avengemedia-dms-git.gpg > /dev/null
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
 sudo apt update
 
 # Install DMS
@@ -114,6 +133,7 @@ Ubuntu 25.10+ (Questing) is supported via Launchpad PPA.
 #### Stable Release
 
 ```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
 sudo add-apt-repository ppa:avengemedia/dms
 sudo apt update
 sudo apt install dms
@@ -122,6 +142,7 @@ sudo apt install dms
 #### Latest Development Build
 
 ```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
 sudo add-apt-repository ppa:avengemedia/dms-git
 sudo apt update
 sudo apt install dms-git
@@ -129,7 +150,8 @@ sudo apt install dms-git
 
 :::tip
 
-Visit the [DankLinux Repository](../danklinux) page for OBS and PPA links and more information about available packages.
+Visit the [DankLinux Repository](../danklinux) page for OBS and PPA links and more information about available packages.\
+Add **niri** or **niri-git** to your system to get the best experience.
 
 :::
 
@@ -140,7 +162,10 @@ DankMaterialShell is available through the Open Build Service (OBS) for OpenSUSE
 ### Stable Release
 
 ```bash
-# Add the repository
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+
+# DMS repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Tumbleweed/home:AvengeMedia:dms.repo
 sudo zypper refresh
 
@@ -151,19 +176,16 @@ sudo zypper install dms
 ### Latest Development Build
 
 ```bash
-# Add the repository
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+
+# DMS repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Tumbleweed/home:AvengeMedia:dms-git.repo
 sudo zypper refresh
 
 # Install DMS
 sudo zypper install dms-git
 ```
-
-:::tip
-
-Visit the [OBS project page](https://build.opensuse.org/project/show/home:AvengeMedia:dms) for more information about available packages.
-
-:::
 
 ## NixOS
 
@@ -262,7 +284,7 @@ After completing installation:
 
 ### Systemd Integration
 
-:::tip Available on Arch, Fedora, and Source Builds
+:::tip Available on Arch, Fedora, Debian, Ubuntu, OpenSUSE and Source Builds
 
 DMS now supports native systemd management for automatic startup and lifecycle control.
 
