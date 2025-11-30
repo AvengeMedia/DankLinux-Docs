@@ -84,9 +84,7 @@ DankMaterialShell is available through Open Build Service (OBS) for Debian and L
 
 ### Debian
 
-Debian 13 (Trixie) and Debian Testing are supported via OBS.
-
-#### Stable Release
+For **Debian 13 (Trixie)**:
 
 ```bash
 # DankLinux repository
@@ -95,18 +93,21 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
-curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | \
+# DMS stable repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
-echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | \
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
-sudo apt update
 
-# Install DMS
-sudo apt install dms
+# DMS development repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
+sudo apt update
 ```
 
-#### Latest Development Build
+For **Debian Testing**:
 
 ```bash
 # DankLinux repository
@@ -115,14 +116,31 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
+# DMS stable repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+
+# DMS development repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
 sudo apt update
+```
 
-# Install DMS
+#### Install Packages
+
+Install the **stable release**:
+
+```bash
+sudo apt install dms
+```
+
+Install the **latest development build**:
+
+```bash
 sudo apt install dms-git
 ```
 
