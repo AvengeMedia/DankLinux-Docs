@@ -224,44 +224,68 @@ dms ipc call theme dark
 
 ### bar
 
-Control individual bars by index.
+Control individual bars using flexible selectors.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
-| `reveal <index>` | Show bar at specific index | index (1-based, e.g., 1, 2, 3, 4) |
-| `hide <index>` | Hide bar at specific index | index (1-based, e.g., 1, 2, 3, 4) |
-| `toggle <index>` | Toggle bar visibility at index | index (1-based, e.g., 1, 2, 3, 4) |
-| `status <index>` | Get bar visibility status | index (1-based, e.g., 1, 2, 3, 4) |
+| `reveal <selector> <value>` | Show a bar | selector + value |
+| `hide <selector> <value>` | Hide a bar | selector + value |
+| `toggle <selector> <value>` | Toggle bar visibility | selector + value |
+| `status <selector> <value>` | Get bar visibility status | selector + value |
+| `autoHide <selector> <value>` | Enable auto-hide mode | selector + value |
+| `manualHide <selector> <value>` | Disable auto-hide mode | selector + value |
+| `toggleAutoHide <selector> <value>` | Toggle auto-hide mode | selector + value |
 
-**Bar configuration:**
-- You can configure up to 4 bars with indices 1-4
-- Each bar can be assigned to any monitor through Settings
-- These commands control the `visible` property (manual show/hide)
-- The bar must be enabled in Settings for visibility control to work
+**Selectors:**
+- `index` - Select by position (0-based)
+- `id` - Select by unique bar ID
+- `name` - Select by bar name
 
 **Examples:**
 ```bash
-dms ipc call bar hide 1
-dms ipc call bar reveal 2
-dms ipc call bar toggle 1
-dms ipc call bar status 2
+# By index
+dms ipc call bar hide index 0
+dms ipc call bar reveal index 1
+dms ipc call bar toggle index 0
+
+# By name
+dms ipc call bar toggle name "Main Bar"
+dms ipc call bar status name "Secondary"
+
+# By ID
+dms ipc call bar reveal id abc123
+
+# Auto-hide controls
+dms ipc call bar autoHide index 0
+dms ipc call bar manualHide name "Main Bar"
+dms ipc call bar toggleAutoHide index 1
 ```
 
 ### dock
 
-Dock visibility control.
+Dock visibility and behavior control.
 
 | Function | Description |
 | --- | --- |
 | `reveal` | Show the dock |
 | `hide` | Hide the dock |
 | `toggle` | Toggle dock visibility |
+| `status` | Get dock visibility status |
+| `autoHide` | Enable auto-hide mode |
+| `manualHide` | Disable auto-hide mode |
+| `toggleAutoHide` | Toggle auto-hide mode |
 
 **Examples:**
 ```bash
 dms ipc call dock toggle
 dms ipc call dock hide
 dms ipc call dock reveal
+dms ipc call dock status
+
+# Auto-hide controls
+dms ipc call dock autoHide
+dms ipc call dock manualHide
+dms ipc call dock toggleAutoHide
 ```
 
 ### widget
@@ -315,7 +339,6 @@ All these modals support `open`, `close`, and `toggle` functions:
 
 - **clipboard** - Clipboard history manager
 - **notifications** - Notification center
-- **settings** - Settings modal
 - **processlist** - System process list and performance monitor
 - **powermenu** - Power menu for system actions
 - **control-center** - Quick settings (network, bluetooth, audio, etc.)
@@ -325,12 +348,33 @@ All these modals support `open`, `close`, and `toggle` functions:
 ```bash
 dms ipc call clipboard toggle
 dms ipc call notifications open
-dms ipc call settings toggle
 dms ipc call processlist open
 dms ipc call powermenu toggle
 dms ipc call control-center toggle
 dms ipc call notepad open
 ```
+
+### settings
+
+Settings modal with additional read/write access to configuration values.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show settings modal | - |
+| `close` | Hide settings modal | - |
+| `toggle` | Toggle settings modal | - |
+| `get <key>` | Get a setting value | setting key name |
+| `set <key> <value>` | Set a setting value | setting key, new value |
+
+**Examples:**
+```bash
+dms ipc call settings toggle
+dms ipc call settings get barPosition
+dms ipc call settings set showSeconds true
+dms ipc call settings set opacity 0.9
+```
+
+**Note:** The `set` function supports boolean, number, and string values. Objects and arrays are not currently supported.
 
 ### dash
 
