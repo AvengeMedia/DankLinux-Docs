@@ -118,10 +118,10 @@ binds {
         spawn "dms" "ipc" "call" "clipboard" "toggle";
     }
     Mod+M hotkey-overlay-title="Task Manager" {
-        spawn "dms" "ipc" "call" "processlist" "toggle";
+        spawn "dms" "ipc" "call" "processlist" "focusOrToggle";
     }
     Mod+Comma hotkey-overlay-title="Settings" {
-        spawn "dms" "ipc" "call" "settings" "toggle";
+        spawn "dms" "ipc" "call" "settings" "focusOrToggle";
     }
     Mod+N hotkey-overlay-title="Notification Center" {
         spawn "dms" "ipc" "call" "notifications" "toggle";
@@ -279,8 +279,8 @@ $mod = SUPER
 # Application Launchers
 bind = $mod, space, exec, dms ipc call spotlight toggle
 bind = $mod, V, exec, dms ipc call clipboard toggle
-bind = $mod, M, exec, dms ipc call processlist toggle
-bind = $mod, comma, exec, dms ipc call settings toggle
+bind = $mod, M, exec, dms ipc call processlist focusOrToggle
+bind = $mod, comma, exec, dms ipc call settings focusOrToggle
 bind = $mod, N, exec, dms ipc call notifications toggle
 bind = $mod, Y, exec, dms ipc call dankdash wallpaper
 bind = $mod, TAB, exec, dms ipc call hypr toggleOverview
@@ -445,8 +445,8 @@ exec wl-paste --watch cliphist store
 # DMS Keybindings
 bindsym $mod+space exec dms ipc call spotlight toggle
 bindsym $mod+v exec dms ipc call clipboard toggle
-bindsym $mod+m exec dms ipc call processlist toggle
-bindsym $mod+comma exec dms ipc call settings toggle
+bindsym $mod+m exec dms ipc call processlist focusOrToggle
+bindsym $mod+comma exec dms ipc call settings focusOrToggle
 
 # Audio controls
 bindsym XF86AudioRaiseVolume exec dms ipc call audio increment 3

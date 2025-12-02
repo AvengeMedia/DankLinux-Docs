@@ -339,7 +339,7 @@ All these modals support `open`, `close`, and `toggle` functions:
 
 - **clipboard** - Clipboard history manager
 - **notifications** - Notification center
-- **processlist** - System process list and performance monitor
+- **processlist** - System process list and performance monitor (also supports `focusOrToggle`)
 - **powermenu** - Power menu for system actions
 - **control-center** - Quick settings (network, bluetooth, audio, etc.)
 - **notepad** - Quick notepad/scratchpad
@@ -363,6 +363,7 @@ Settings modal with additional read/write access to configuration values.
 | `open` | Show settings modal | - |
 | `close` | Hide settings modal | - |
 | `toggle` | Toggle settings modal | - |
+| `focusOrToggle` | Focus settings if open, otherwise toggle | - |
 | `get <key>` | Get a setting value | setting key name |
 | `set <key> <value>` | Set a setting value | setting key, new value |
 
