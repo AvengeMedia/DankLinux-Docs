@@ -265,8 +265,7 @@ sudo emerge --ask sys-apps/accountsservice
 ### 2. Clone the DMS Repository
 
 ```bash
-mkdir -p ~/.config/quickshell
-git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quickshell/dms
+git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/dms
 ```
 
 ### 3. Compile & Install the DMS Backend
@@ -274,9 +273,15 @@ git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/.config/quicksh
 *Requires GO 1.24+*
 
 ```bash
-cd ~/.config/quickshell/dms/core
-make && sudo make install
+cd ~/dms
+sudo make install
 ```
+
+:::note
+
+To uninstall a source build, run `sudo make uninstall` from the repository directory.
+
+:::
 
 ### 4. Install Optional Integrations
 
@@ -311,26 +316,26 @@ DMS now supports native systemd management for automatic startup and lifecycle c
 **Enable autostart:**
 
 ```bash
-systemctl --user enable dms.service
+systemctl --user enable dms
 ```
 
 **Manual control:**
 
 ```bash
 # Start DMS now
-systemctl --user start dms.service
+systemctl --user start dms
 
 # Check status
-systemctl --user status dms.service
+systemctl --user status dms
 
 # View logs
-journalctl --user -u dms.service -f
+journalctl --user -u dms -f
 
 # Restart DMS
-systemctl --user restart dms.service
+systemctl --user restart dms
 
 # Disable autostart
-systemctl --user disable dms.service
+systemctl --user disable dms
 ```
 
 :::warning
