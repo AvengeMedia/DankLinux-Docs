@@ -40,6 +40,12 @@ sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dsearch
 ```
 
+Distribution packages include the systemd user service. Enable it for automatic index updates:
+
+```bash
+systemctl --user enable --now dsearch
+```
+
 ### Pre-built Binaries
 
 Download the latest release for your architecture:
@@ -52,13 +58,15 @@ chmod +x dsearch-linux-amd64
 sudo mv dsearch-linux-amd64 /usr/local/bin/dsearch
 ```
 
-Install the systemd user unit and enable it.
+Install and enable the systemd user service for automatic index updates:
 
 ```bash
-wget https://raw.githubusercontent.com/AvengeMedia/danksearch/refs/heads/master/assets/dsearch.service
-mv dsearch.service ~/.config/systemd/user
+mkdir -p ~/.config/systemd/user
+wget https://raw.githubusercontent.com/AvengeMedia/danksearch/refs/heads/master/assets/dsearch.service -O ~/.config/systemd/user/dsearch.service
 systemctl --user enable --now dsearch
 ```
+
+The service runs the API server with file watching, automatically updating the index when files change.
 
 ### From Source
 
@@ -70,6 +78,7 @@ cd danksearch
 make
 sudo make install
 make install-service
+systemctl --user enable --now dsearch
 ```
 
 ## Verification
