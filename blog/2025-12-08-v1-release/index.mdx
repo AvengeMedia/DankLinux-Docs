@@ -21,7 +21,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 We're excited to announce DankMaterialShell (DMS) v1.0! What started as a small hobby project has grown into a full desktop shell and application suite with thousands of users and dozens of contributors.
 
-This release marks more than just a version number, it's a commitment to stability and predictability. Going forward, DMS will follow a bi-monthly release cycle, with bug-fix releases as needed, as we continue to mature the project and expand the community and ecosystem.
+This release marks more than just a version number, it's a commitment to stability and predictability. Going forward, DMS will follow a milestone/roadmap-based release cycle, with bug-fix releases as needed, as we continue to mature the project and expand the community and ecosystem.
 
 <div className={styles.statsGrid}>
   <div className={styles.statCard}>
@@ -29,7 +29,7 @@ This release marks more than just a version number, it's a commitment to stabili
     <span className={styles.statLabel}>Commits</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>2.2k+</span>
+    <span className={styles.statNumber}>2.3k+</span>
     <span className={styles.statLabel}>GitHub Stars</span>
   </div>
   <div className={styles.statCard}>
@@ -104,6 +104,8 @@ Set default applications for different file types and protocols directly from DM
   <figcaption>Open with dialog for selecting default applications</figcaption>
 </figure>
 
+Special thanks to [@devnullvoid](https://github.com/devnullvoid) for the contribution.
+
 ### Packages for Debian, Ubuntu, OpenSUSE, Fedora, and Arch
 
 DMS is now available on Debian, Ubuntu, OpenSUSE, Fedora, and Arch Linux - via OBS, PPA, COPR, and Arch User Repository (AUR).
@@ -112,7 +114,17 @@ DMS is now available on Debian, Ubuntu, OpenSUSE, Fedora, and Arch Linux - via O
 
 ### Available on nixpkgs
 
-DMS is now available on nixpkgs
+DMS is now available on nixpkgs. This simplifies installation significantly for NixOS users and those using Nix package manager and represents a major step towards broader adoption.
+
+Special thanks to [@LuckShiba](https://github.com/LuckShiba) for creating the nixpkgs package and [marcusramberg](https://github.com/marcusramberg) for approving!
+
+{/* TODO: link */}
+
+### Dank Color Picker
+
+The color picker is not new, but the eye dropper/color picker tool is now built-in to DMS - no more need for third-party tools! It is now integrated into DMS and available as a standalone tool for Wayland compositors. See the [CLI color picker documentation](https://danklinux.com/docs/dankmaterialshell/cli-color-picker).
+
+
 
 {/* TODO: List major features */}
 
