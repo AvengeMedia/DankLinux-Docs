@@ -263,9 +263,19 @@ Restart DMS to generate the palette, then enable Pywalfox in the browser.
 
 Editors use a mix of `dank16` and matugen to produce a colorful, theme-honoring template with contrast in the editor itself.
 
-### VSCode/VSCodium/VSCode-oss
+### VSCode / Codium / Cursor / Windsurf
 
-Open the command palette with `ctrl`+`shift`+`p`, choose `Preferences: Color Scheme` and then pick `Dynamic Base16 DankShell`
+**Install the theme:**
+
+```bash
+wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/matugen/dynamic-base16-dankshell.vsix
+code --install-extension dynamic-base16-dankshell.vsix
+# or: codium / cursor / windsurf --install-extension ...
+```
+
+**Activate:** Open command palette (`Ctrl+Shift+P`), select `Preferences: Color Theme`, choose `Dynamic Base16 DankShell`.
+
+**Trigger colors:** Restart DMS or change wallpaper/theme to generate dynamic colors.
 
 <ThemedImage
   alt="VS Code theme selection"
