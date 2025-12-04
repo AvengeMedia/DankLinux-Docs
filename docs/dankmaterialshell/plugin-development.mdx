@@ -675,7 +675,17 @@ property string theme: pluginData.theme || "dark"
 - `parentScreen` - Screen reference
 - `widgetThickness` - Widget height/width
 - `barThickness` - Bar height/width
+- `iconSize` - Recommended icon size for the current bar context
 - `variants` - Variant instances
+
+Use `iconSize` for consistent icon sizing that adapts to bar orientation and user preferences:
+
+```qml
+DankIcon {
+    name: "settings"
+    size: root.iconSize
+}
+```
 
 ### Saving Data Manually
 
