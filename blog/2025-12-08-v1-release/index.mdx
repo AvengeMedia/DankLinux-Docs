@@ -1,5 +1,5 @@
 ---
-title: DMS 1.0 Released
+title: DMS 1.0 Release - What's New and What's Next
 description: DMS v1.0 is here! Let's reflect and celebrate the first major release of DankMaterialShell!
 slug: v1-release
 authors: danklinux
@@ -7,23 +7,21 @@ tags: [release, announcement]
 ---
 
 import styles from './styles.module.css';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true" />
   <div className={styles.heroContent}>
     <h1 className={styles.heroTitle}>
-      DMS <span className={styles.gradientText}>1.0</span> Release
+      DMS <span className={styles.gradientText}>1.0</span>
     </h1>
-    <p className={styles.heroSubtitle}>
-      The modern Linux desktop experience for Wayland.
-    </p>
   </div>
 </div>
 
 We're excited to announce DankMaterialShell (DMS) v1.0! What started as a small hobby project has grown into a full desktop shell and application suite with thousands of users and dozens of contributors.
 
 This release marks more than just a version number, it's a commitment to stability and predictability. Going forward, DMS will follow a bi-monthly release cycle, with bug-fix releases as needed, as we continue to mature the project and expand the community and ecosystem.
-
-## By the Numbers
 
 <div className={styles.statsGrid}>
   <div className={styles.statCard}>
@@ -42,11 +40,79 @@ This release marks more than just a version number, it's a commitment to stabili
 
 ## What's New
 
-### Omega Bars
+### OMEGA Bar
 
-Add up to *4* bar configurations, each with their own set of widgets, layout, and style. Configure which monitor each bar appears on and independently control each bar with new IPCs.
+Add up to **4** bar configurations, each with their own set of widgets, layout, and style. Configure which monitor each bar appears on and independently control each bar with new IPCs.
 
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Omega Bars"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/omegabar_light.png'),
+      dark: useBaseUrl('/img/blog/v1/omegabar_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Multiple bar configurations with independent widgets and styles</figcaption>
+</figure>
 
+### Comprehensive Keyboard Shortcuts (niri)
+
+Configure global keyboard shortcuts - available to niri users who are using quickshell unstable (pre-release).
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Keyboard Shortcuts"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/keybinds_light.png'),
+      dark: useBaseUrl('/img/blog/v1/keybinds_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Keyboard shortcuts configuration with conflict detection</figcaption>
+</figure>
+
+### Comprehensive Network Management
+
+Comprehensive network view with support for NetworkManager, IWD, and systemd-networkd. Import VPN profiles, manage connections, and connect to Wi-Fi networks.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Network Management"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/network_light.png'),
+      dark: useBaseUrl('/img/blog/v1/network_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Network settings with WiFi and VPN management</figcaption>
+</figure>
+
+### File-Type Associations
+
+Set default applications for different file types and protocols directly from DMS Settings. Easily manage which apps open specific file formats and choose your preferred applications for handling various file types and links.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="App Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/apppicker_light.png'),
+      dark: useBaseUrl('/img/blog/v1/apppicker_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Open with dialog for selecting default applications</figcaption>
+</figure>
+
+### Packages for Debian, Ubuntu, OpenSUSE, Fedora, and Arch
+
+DMS is now available on Debian, Ubuntu, OpenSUSE, Fedora, and Arch Linux - via OBS, PPA, COPR, and Arch User Repository (AUR).
+
+{/* TODO: screenshot meshup of distros*/}
+
+### Available on nixpkgs
+
+DMS is now available on nixpkgs
 
 {/* TODO: List major features */}
 
