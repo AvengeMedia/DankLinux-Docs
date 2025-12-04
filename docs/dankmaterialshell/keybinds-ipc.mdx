@@ -36,6 +36,7 @@ Manage audio output and input devices.
 | `mute` | Toggle output mute | - |
 | `setmic <percentage>` | Set microphone volume | percentage (0-100) |
 | `micmute` | Toggle microphone mute | - |
+| `cycleoutput` | Cycle through audio output devices | - |
 | `status` | Get current audio status | - |
 
 **Examples:**
@@ -43,6 +44,7 @@ Manage audio output and input devices.
 dms ipc call audio setvolume 50
 dms ipc call audio increment 10
 dms ipc call audio mute
+dms ipc call audio cycleoutput
 ```
 
 ### brightness
