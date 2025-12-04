@@ -1,4 +1,4 @@
-import type { ImageRenderer, DocsPageData } from '@acid-info/docusaurus-og'
+import type { ImageRenderer, DocsPageData, BlogPageData } from '@acid-info/docusaurus-og'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import React from 'react'
@@ -470,6 +470,110 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
         </div>
 
         <div style={{ height: '40px' }} />
+      </div>
+    </div>,
+    {
+      width: BASE_WIDTH,
+      height: BASE_HEIGHT,
+      fonts,
+    },
+  ]
+}
+
+export const blog: ImageRenderer<BlogPageData> = (data) => {
+  // Handle different blog page types
+  let title = 'Blog'
+  if (data.pageType === 'post' && 'title' in data.data) {
+    title = String(data.data.title)
+  } else if (data.pageType === 'tag' && 'label' in data.data) {
+    title = `Tag: ${String(data.data.label)}`
+  } else if (data.pageType === 'archive') {
+    title = 'Blog Archive'
+  } else if (data.pageType === 'tags') {
+    title = 'Blog Tags'
+  }
+
+  return [
+    <div
+      style={{
+        display: 'flex',
+        width: BASE_WIDTH,
+        height: BASE_HEIGHT,
+        background: 'linear-gradient(135deg, #1a1318 0%, #2d1b3d 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        fontSmooth: 'always',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          background: 'radial-gradient(circle at 20% 50%, rgba(128, 90, 213, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(208, 188, 255, 0.12) 0%, transparent 50%)',
+        }}
+      />
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          height: '100%',
+          padding: '60px',
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        <img
+          src={logoDataUrl}
+          style={{
+            position: 'absolute',
+            top: '50px',
+            right: '50px',
+            opacity: 0.6,
+            width: '120px',
+            height: '120px',
+          }}
+        />
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            flex: 1,
+            justifyContent: 'center',
+          }}
+        >
+          <div
+            style={{
+              fontSize: '54px',
+              color: '#B794F4',
+              fontFamily: 'Adwaita Sans',
+              fontWeight: 500,
+              marginLeft: '4px',
+              marginBottom: '18px',
+              letterSpacing: '0.5px',
+            }}
+          >
+            Blog
+          </div>
+
+          <div
+            style={{
+              fontSize: '96px',
+              color: '#ffffff',
+              fontFamily: 'Adwaita Sans',
+              fontWeight: 700,
+              lineHeight: 1.15,
+              maxWidth: '1000px',
+            }}
+          >
+            {title}
+          </div>
+        </div>
       </div>
     </div>,
     {
