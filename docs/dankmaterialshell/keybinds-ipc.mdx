@@ -363,15 +363,31 @@ Settings modal with additional read/write access to configuration values.
 | Function | Description | Parameters |
 | --- | --- | --- |
 | `open` | Show settings modal | - |
+| `openWith <tab>` | Open settings to specific tab | tab ID |
 | `close` | Hide settings modal | - |
 | `toggle` | Toggle settings modal | - |
+| `toggleWith <tab>` | Toggle settings to specific tab | tab ID |
 | `focusOrToggle` | Focus settings if open, otherwise toggle | - |
+| `focusOrToggleWith <tab>` | Focus/toggle to specific tab | tab ID |
+| `tabs` | List available tab IDs | - |
 | `get <key>` | Get a setting value | setting key name |
 | `set <key> <value>` | Set a setting value | setting key, new value |
+
+**Available Tab IDs:**
+- **Personalization:** `personalization`, `wallpaper`, `theme`, `typography`, `time_weather`, `sounds`
+- **Dankbar:** `dankbar`, `dankbar_settings`, `dankbar_widgets`
+- **Widgets:** `workspaces_widgets`, `workspaces`, `media_player`, `notifications`, `osd`, `running_apps`, `updater`
+- **Dock & Launcher:** `dock_launcher`, `dock`, `launcher`
+- **System:** `keybinds`, `displays`, `network`, `printers`
+- **Power & Security:** `power_security`, `lock_screen`, `power_sleep`
+- **Other:** `plugins`, `about`
 
 **Examples:**
 ```bash
 dms ipc call settings toggle
+dms ipc call settings openWith theme
+dms ipc call settings toggleWith dock
+dms ipc call settings tabs
 dms ipc call settings get barPosition
 dms ipc call settings set showSeconds true
 dms ipc call settings set opacity 0.9
