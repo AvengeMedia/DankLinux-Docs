@@ -60,6 +60,11 @@ const sidebars: SidebarsConfig = {
               id: 'dankmaterialshell/cli-dank16',
               label: 'Dank16 (ANSI Colors)',
             },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-color-picker',
+              label: 'Color Picker',
+            },
             'dankmaterialshell/cli-brightness',
           ],
         },
