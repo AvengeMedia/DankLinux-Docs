@@ -66,6 +66,7 @@ const sidebars: SidebarsConfig = {
               label: 'Color Picker',
             },
             'dankmaterialshell/cli-brightness',
+            'dankmaterialshell/cli-screenshot',
           ],
         },
         {
