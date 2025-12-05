@@ -188,6 +188,126 @@ dms keybinds show mangowc
 dms keybinds show mangowc --path /path/to/mangowc/config
 ```
 
+### Niri
+
+The Niri provider parses KDL-format Niri configuration files and extracts keybinds. Unlike the other providers, Niri is **writable**—you can create and manage keybind overrides through DMS.
+
+**Features**:
+- Parses KDL-format config files
+- Follows `include` directives to merge all keybind sources
+- Supports DMS overrides via `~/.config/niri/dms/binds.kdl`
+- Detects conflicts between DMS defaults and your binds
+- Validates config before writing using `niri validate`
+- Supports bind options: `repeat`, `cooldown-ms`, `allow-when-locked`
+
+**Usage**:
+
+```bash
+# Use default Niri config path (~/.config/niri)
+dms keybinds show niri
+
+# Specify custom config directory
+dms keybinds show niri --path /path/to/niri/config
+```
+
+#### Writing Keybinds
+
+Set overrides that get written to `~/.config/niri/dms/binds.kdl`:
+
+```bash
+# Basic keybind
+dms keybinds set niri "Mod+T" "spawn kitty"
+
+# With description (shown in hotkey overlay)
+dms keybinds set niri "Mod+T" "spawn kitty" --desc "Open terminal"
+
+# With options
+dms keybinds set niri "Mod+V" "spawn pavucontrol" \
+  --desc "Volume control" \
+  --allow-when-locked
+
+# Disable key repeat
+dms keybinds set niri "Mod+Q" "close-window" --no-repeat
+
+# Set cooldown between activations
+dms keybinds set niri "Mod+Print" "screenshot" --cooldown-ms 500
+
+# Replace an existing keybind with a new key
+dms keybinds set niri "Mod+Shift+T" "spawn kitty" \
+  --desc "Open terminal" \
+  --replace-key "Mod+T"
+```
+
+Remove a keybind:
+
+```bash
+dms keybinds remove niri "Mod+T"
+```
+
+#### Niri Config Setup
+
+Include the DMS binds file in your Niri config:
+
+```kdl
+// ~/.config/niri/config.kdl
+
+// Include DMS keybind overrides
+include "~/.config/niri/dms/binds.kdl"
+
+binds {
+    Mod+Q { close-window; }
+    Mod+T { spawn "kitty"; }
+}
+```
+
+:::tip Include Order Matters
+- DMS include **before** your binds: Your binds override DMS defaults
+- DMS include **after** your binds: DMS binds take priority
+
+The cheatsheet output includes conflict detection showing which binds are overridden.
+:::
+
+#### Bind Options
+
+| Option | Flag | Description |
+|--------|------|-------------|
+| repeat | `--no-repeat` | Disable key repeat (default: enabled) |
+| cooldown-ms | `--cooldown-ms <ms>` | Minimum time between activations |
+| allow-when-locked | `--allow-when-locked` | Allow bind when screen is locked |
+| hotkey-overlay-title | `--desc <text>` | Description shown in Niri's hotkey overlay |
+
+#### Action Formats
+
+```bash
+# Simple action
+dms keybinds set niri "Mod+F" "fullscreen"
+
+# Action with argument
+dms keybinds set niri "Mod+1" "focus-workspace 1"
+
+# Spawn with simple command
+dms keybinds set niri "Mod+T" "spawn kitty"
+
+# Spawn with shell command
+dms keybinds set niri "Mod+P" "spawn sh -c \"wofi --show drun\""
+```
+
+#### Category Logic
+
+Binds are auto-categorized based on their action:
+
+| Category | Actions |
+|----------|---------|
+| Alt-Tab | `next-window`, `previous-window` |
+| Screenshot | Anything containing "screenshot" |
+| Overview | `show-hotkey-overlay`, `toggle-overview` |
+| System | `quit`, `power-off-monitors`, DPMS actions |
+| Execute | `spawn` commands |
+| Workspace | Actions containing "workspace" |
+| Monitor | `focus-monitor-*`, `move-*-to-monitor-*` |
+| Window | Focus, move, swap, resize, column actions |
+| Other | Everything else |
+
 ## Custom Cheatsheets
 
 You can create custom cheatsheets for any application by adding JSON files to the cheatsheets directory.
