@@ -272,7 +272,7 @@ export default function Home() {
                     <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </Link>
-                <Link to="/docs" className={styles.secondaryCTA}>
+                <Link to="/docs/" className={styles.secondaryCTA}>
                   Documentation
                 </Link>
               </div>
