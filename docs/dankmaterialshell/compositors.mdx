@@ -21,28 +21,27 @@ DankMaterialShell works with any Wayland compositor, but we provide optimized co
 
 niri uses the KDL configuration format. DankMaterialShell integrates seamlessly with niri's scrollable tiling layout.
 
-:::warning
-
-niri's configuration is not repeatable. The settings below are snippets you must merge with existing configuration. You cannot have multiple `layout {}` sections.
-
-:::
 
 ### Key Configuration Sections
 
-:::tip
+DMS will automatically apply key binds, gaps, window radius, and colors if you include the following files in your niri config.
 
-The next niri release will support automatic gap and color synchronization with DMS. Not available in current stable.
-
-:::
 
 ```kdl
-// Add to the top of ~/.config/niri/config.kdl
-include "dms/binds.kdl"
-
 // Add to the end of ~/.config/niri/config.kdl
 include "dms/colors.kdl"
 include "dms/layout.kdl"
+include "dms/alttab.kdl"
+include "dms/binds.kdl"
 ```
+
+:::tip
+Be sure that all files exist before including them in the niri configuration.
+```bash
+mkdir -p ~/.config/niri/dms
+touch ~/.config/niri/dms/{colors,layout,alttab,binds}.kdl
+```
+:::
 
 For manual configuration recommendations, continue below.
 
