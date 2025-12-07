@@ -51,7 +51,29 @@ output_path = '/home/username/.config/myapp/colors.conf'
 
 ### Available Template Variables
 
-Your templates have access to all standard [matugen color keywords](https://github.com/InioX/matugen/wiki/Configuration#colors), plus DMS provides the full `dank16` palette for terminal and editor theming. Each dank16 color includes `hex`, `hex_stripped`, `r`, `g`, and `b` values.
+Your templates have access to all standard [matugen color keywords](https://github.com/InioX/matugen/wiki/Configuration#colors), plus DMS provides the full `dank16` palette for terminal and editor theming.
+
+#### dank16 Color Structure
+
+dank16 colors use a variant structure matching the material color system:
+
+```
+{{dank16.color0.default.hex}}
+{{dank16.color0.dark.hex}}
+{{dank16.color0.light.hex}}
+```
+
+| Variant | Use Case |
+|---------|----------|
+| `.default` | Mode-aware colors (recommended for most uses) |
+| `.dark` | Always dark, regardless of system mode |
+| `.light` | Always light, regardless of system mode |
+
+Each variant includes `hex` and `hex_stripped` values.
+
+#### Terminal Templates
+
+Terminal templates should use `.default` variants. The **Terminals - Always use Dark Theme** setting automatically substitutes `.default` with `.dark` at build time for terminal configs (kitty, alacritty, ghostty, foot, wezterm).
 
 Here's an example kitty template using both matugen colors and dank16:
 
@@ -65,22 +87,31 @@ selection_foreground  {{colors.on_secondary.default.hex}}
 selection_background  {{colors.secondary_fixed_dim.default.hex}}
 url_color             {{colors.primary.default.hex}}
 
-color0   {{dank16.color0.hex}}
-color1   {{dank16.color1.hex}}
-color2   {{dank16.color2.hex}}
-color3   {{dank16.color3.hex}}
-color4   {{dank16.color4.hex}}
-color5   {{dank16.color5.hex}}
-color6   {{dank16.color6.hex}}
-color7   {{dank16.color7.hex}}
-color8   {{dank16.color8.hex}}
-color9   {{dank16.color9.hex}}
-color10  {{dank16.color10.hex}}
-color11  {{dank16.color11.hex}}
-color12  {{dank16.color12.hex}}
-color13  {{dank16.color13.hex}}
-color14  {{dank16.color14.hex}}
-color15  {{dank16.color15.hex}}
+color0   {{dank16.color0.default.hex}}
+color1   {{dank16.color1.default.hex}}
+color2   {{dank16.color2.default.hex}}
+color3   {{dank16.color3.default.hex}}
+color4   {{dank16.color4.default.hex}}
+color5   {{dank16.color5.default.hex}}
+color6   {{dank16.color6.default.hex}}
+color7   {{dank16.color7.default.hex}}
+color8   {{dank16.color8.default.hex}}
+color9   {{dank16.color9.default.hex}}
+color10  {{dank16.color10.default.hex}}
+color11  {{dank16.color11.default.hex}}
+color12  {{dank16.color12.default.hex}}
+color13  {{dank16.color13.default.hex}}
+color14  {{dank16.color14.default.hex}}
+color15  {{dank16.color15.default.hex}}
+```
+
+#### Migration
+
+Update custom matugen templates from the old format:
+
+```diff
+- {{dank16.color0.hex}}
++ {{dank16.color0.default.hex}}
 ```
 
 **Important notes:**

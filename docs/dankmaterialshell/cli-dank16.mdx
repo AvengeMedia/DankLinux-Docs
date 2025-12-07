@@ -153,18 +153,40 @@ Generates configuration for the Ghostty terminal emulator.
 dms dank16 "#8b5cf6" --json
 ```
 
-Outputs the palette as a JSON object with detailed color information:
+Outputs the palette as a JSON object with detailed color information.
+
+### Variants Format
+
+```bash
+dms dank16 "#8b5cf6" --variants [--light] [--background <color>]
+```
+
+Outputs all color variants in a single call:
 
 ```json
 {
-  "color0": {"hex": "#1a1a1a", "hex_stripped": "1a1a1a", "r": 26, "g": 26, "b": 26},
-  "color1": {"hex": "#e25743", "hex_stripped": "e25743", "r": 226, "g": 87, "b": 67},
-  "color2": {"hex": "#6ed677", "hex_stripped": "6ed677", "r": 110, "g": 214, "b": 119},
+  "color0": {
+    "dark": { "hex": "#1a1a1a", "hex_stripped": "1a1a1a" },
+    "light": { "hex": "#f8f8f8", "hex_stripped": "f8f8f8" },
+    "default": { "hex": "#1a1a1a", "hex_stripped": "1a1a1a" }
+  },
   ...
 }
 ```
 
-Each color includes the hex value (with and without `#`), plus individual RGB components. This format is also what gets injected into matugen templates as the `dank16` object.
+| Variant | Description |
+|---------|-------------|
+| `dark` | Always dark mode colors |
+| `light` | Always light mode colors |
+| `default` | Mode-aware (uses `--light` flag to determine which variant) |
+
+Use `--primary-dark` and `--primary-light` to specify different primary colors for each mode:
+
+```bash
+dms dank16 --variants --primary-dark "#8b5cf6" --primary-light "#6d28d9"
+```
+
+This is the format injected into matugen templates as the `dank16` object.
 
 ## Contrast Algorithms
 
@@ -347,4 +369,8 @@ dms dank16 <hex_color> [flags]
 - `--alacritty`: Output in Alacritty terminal format
 - `--ghostty`: Output in Ghostty terminal format
 - `--json`: Output as JSON object with hex, hex_stripped, and RGB values
+- `--variants`: Output all variants (dark/light/default) as JSON
+- `--primary-dark <hex>`: Primary color for dark mode (use with `--variants`)
+- `--primary-light <hex>`: Primary color for light mode (use with `--variants`)
+- `--wezterm`: Output in Wezterm terminal format
 - `-h, --help`: Show help
