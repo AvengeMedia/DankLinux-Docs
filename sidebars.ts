@@ -34,7 +34,11 @@ const sidebars: SidebarsConfig = {
           label: 'Installation - NixOS',
         },
         'dankmaterialshell/calendar-integration',
-        'dankmaterialshell/updating',
+        {
+          type: 'doc',
+          id: 'dankmaterialshell/managing',
+          label: 'Managing Your Installation',
+        },
         'dankmaterialshell/compositors',
         'dankmaterialshell/layers',
         {

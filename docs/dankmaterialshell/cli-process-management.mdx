@@ -135,6 +135,35 @@ dms kill
 
 ## Running DMS at Login
 
+:::tip DankInstall Users
+
+If you used [dankinstall](../dankinstall), DMS is already configured as a systemd service and starts automatically. You don't need to configure anything here.
+
+:::
+
+### Systemd User Service (Recommended)
+
+Systemd provides automatic startup, session integration, and logging via journalctl. This is the default for dankinstall setups.
+
+```bash
+# Enable and start
+systemctl --user enable --now dms
+
+# Check status
+systemctl --user status dms
+
+# View logs
+journalctl --user -u dms -f
+```
+
+The `dms restart` and `dms kill` commands work regardless of whether you're using systemd or manual startup.
+
+:::warning
+
+If using systemd, don't add `dms run` to your compositor config - you'll end up with two instances.
+
+:::
+
 ### Manual Launch
 
 Add to your compositor's autostart configuration:
@@ -154,11 +183,9 @@ exec dms run
 spawn-at-startup "dms" "run"
 ```
 
-### Systemd User Unit
+### Custom Systemd Unit (Advanced)
 
-Create a systemd user service for automatic session management:
-
-**File**: `~/.config/systemd/user/dms.service`
+Package installations and dankinstall ship a systemd unit file. If you need a custom unit (e.g., for a source build without `make install`), create `~/.config/systemd/user/dms.service`:
 
 ```ini
 [Unit]
@@ -178,33 +205,11 @@ TimeoutStopSec=10
 WantedBy=graphical-session.target
 ```
 
-**Enable and start**:
+Then reload and enable:
 
 ```bash
-# Reload systemd to recognize the new unit
 systemctl --user daemon-reload
-
-# Enable DMS to start at login
-systemctl --user enable dms.service
-
-# Start DMS now
-systemctl --user start dms.service
-
-# Check status
-systemctl --user status dms.service
-```
-
-**Managing with systemd**:
-
-```bash
-# Restart DMS (useful after config changes)
-systemctl --user restart dms.service
-
-# Stop DMS
-systemctl --user stop dms.service
-
-# View logs
-journalctl --user -u dms.service -f
+systemctl --user enable --now dms
 ```
 
 ## Process Architecture

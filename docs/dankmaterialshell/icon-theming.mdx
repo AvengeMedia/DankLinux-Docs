@@ -145,8 +145,16 @@ Check which platform theme you're currently using:
 echo $QT_QPA_PLATFORMTHEME
 ```
 
+:::tip DankInstall Users
+
+dankinstall sets `QT_QPA_PLATFORMTHEME=gtk3` in `~/.config/environment.d/90-dms.conf`. Check this file to see your current setting.
+
+:::
+
 :::note
-This variable must be exposed to the `dms` process. This can be done in `~/.config/environment.d/`, in your compositor's configuration file, or in your systemd unit file - depending on how you launch DMS.
+
+This variable must be exposed to the `dms` process. dankinstall users have this in `~/.config/environment.d/90-dms.conf`. Manual setups typically set it in the compositor config or a custom environment.d file.
+
 :::
 
 Check icon theme for each configuration:

@@ -44,8 +44,6 @@ The installer is interactive and guides you through setup for your distribution.
 - **dgop** - System resource monitoring (CPU, RAM, GPU, temperatures)
 - **dsearch** - Blazingly fast filesystem search.
 - **cliphist** - Clipboard history manager
-- **grim + slurp** - Screenshot utilities for Wayland (Hyprland only)
-- **hyprpicker** - Color picker tool
 - **wl-clipboard** - Clipboard utilities for Wayland
 
 ### System Packages
@@ -97,6 +95,12 @@ Good package availability out of the box. niri, hyprland, ghostty, and most tool
 
 ### Gentoo
 
+:::warning
+
+Gentoo requires a **systemd** installation. OpenRC is not supported.
+
+:::
+
 **Special Notes:**
 - Gentoo installs are **highly variable** and user-specific, success is not guaranteed.
   - `dankinstall` is most likely to succeed on a fresh stage3/systemd system
@@ -118,13 +122,11 @@ Good package availability out of the box. niri, hyprland, ghostty, and most tool
 | quickshell | GURU overlay | Always uses live ebuild (`**` keywords), full feature set |
 | matugen | GURU overlay | Color generation tool |
 | cliphist | GURU overlay | Clipboard manager |
-| hyprpicker | GURU overlay | Color picker for Hyprland |
 | xdg-desktop-portal-gtk | Official repos | With wayland and X USE flags |
 | mate-polkit | Official repos | PolicyKit authentication agent |
 | accountsservice | Official repos | User account management |
 | dgop | Manual | Built from source with Go |
 | xwayland-satellite | Manual | For niri X11 app support |
-| grimblast (hyprland-contrib) | GURU overlay | For Hyprland screenshot utility |
 | DankMaterialShell | Manual | Git clone to `~/.config/quickshell/dms` |
 
 **Global USE Flags:**
@@ -150,26 +152,31 @@ The installer handles all build dependencies and manual building for you when pa
 
 ## Managing Your Setup
 
-Use the `dms` command to manage everything:
+dankinstall configures DMS as a **systemd user service** by default. The shell starts automatically when you log in - no need to add anything to your compositor config.
 
 ```bash
-# Interactive management TUI
-dms
-
-# Start DankMaterialShell
-dms run
-
-# Run as daemon
-dms run -d
-
-# Restart the shell
+# Restart the shell (works with both systemd and manual setups)
 dms restart
 
-# Kill running shell processes
-dms kill
+# Check service status
+systemctl --user status dms
+
+# View logs
+journalctl --user -u dms -f
+
+# Interactive management TUI
+dms
 
 # Send IPC commands to running shell
 dms ipc <command>
 ```
 
-The interactive TUI gives you a nice interface for managing plugins, checking status, and configuring settings.
+:::tip
+
+See [Managing Your Installation](./dankmaterialshell/managing) for details on switching between systemd and manual startup, environment variable configuration, and more.
+
+:::
+
+### Environment Variables
+
+dankinstall creates `~/.config/environment.d/90-dms.conf` with environment variables for Qt/GTK theming and Wayland compatibility. If you need to change Qt platform theming (e.g., switching from `gtk3` to `qt6ct`), edit this file and log out/in for changes to take effect.
