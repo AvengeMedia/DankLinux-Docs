@@ -463,9 +463,9 @@ For other compositors, you need to:
 
 2. **Configure keybindings** using the IPC commands from the [Keybinds & IPC](keybinds-ipc) guide
 
-3. **Set environment variables:**
-   ```bash
-   export QT_QPA_PLATFORM=wayland
+3. **Set environment variables** in `~/.config/environment.d/90-dms.conf` (for systemd users) or your compositor config:
+   ```ini
+   QT_QPA_PLATFORM=wayland
    ```
 
 ### Example for Sway
