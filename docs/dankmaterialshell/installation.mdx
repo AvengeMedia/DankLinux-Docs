@@ -344,3 +344,27 @@ systemctl --user disable dms
 If using systemd autostart, remove `dms run` / `spawn "dms" "run"` from your compositor's configuration to avoid running DMS twice.
 
 :::
+
+### Hyprland Users
+
+Hyprland doesn't initialize the systemd user session by default. If DMS doesn't start with systemd, you have two options:
+
+**Option 1:** Use [uwsm](https://github.com/Vladimir-csp/uwsm) to manage your session.
+
+**Option 2:** Create a session target manually:
+
+```ini title="~/.config/systemd/user/hyprland-session.target"
+[Unit]
+Description=Hyprland Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+Then add to your Hyprland config (after any `env =` lines):
+
+```ini title="~/.config/hypr/hyprland.conf"
+exec-once = dbus-update-activation-environment --systemd --all
+exec-once = systemctl --user start hyprland-session.target
+```
+
+This exports your environment to systemd and starts services bound to `graphical-session.target`.
