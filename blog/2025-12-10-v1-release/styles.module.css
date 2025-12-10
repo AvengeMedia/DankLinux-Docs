@@ -2,7 +2,7 @@
 .blogHero {
   position: relative;
   padding: 3rem 2rem;
-  margin: -1rem -1rem 3rem -1rem;
+  margin: 1rem -1rem 3rem -1rem;
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(208, 188, 255, 0.2) 0%, transparent 60%),
     linear-gradient(180deg, rgba(128, 90, 213, 0.06) 0%, transparent 100%);

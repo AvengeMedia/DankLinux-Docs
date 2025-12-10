@@ -686,7 +686,7 @@ body.blog-page .main-wrapper {
 }
 
 body.blog-page main {
-  padding-top: var(--ifm-navbar-height);
+  padding-top: 0;
 }
 
 /* Markdown headers with purple accent */
