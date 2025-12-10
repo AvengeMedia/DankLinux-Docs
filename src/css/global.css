@@ -67,10 +67,7 @@
   padding: var(--ifm-navbar-padding-vertical) 0;
   box-shadow: var(--ifm-navbar-shadow);
   background: var(--ifm-navbar-background-color);
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: var(--ifm-z-index-fixed);
+  /* Let Docusaurus handle positioning for proper announcement bar integration */
 }
 
 .navbar__inner {

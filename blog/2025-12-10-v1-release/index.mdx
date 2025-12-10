@@ -1,0 +1,487 @@
+---
+title: DMS 1.0 "The Dark Night" Released
+description: DMS 1.0 is here! Read about the first major release of DankMaterialShell!
+slug: v1-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true">
+    {/* Far left edge */}
+    <div style={{ position: 'absolute', top: '12%', left: '2%', transform: 'rotate(-15deg) scale(0.62)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim1}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '45%', left: '1%', transform: 'rotate(8deg) scale(0.7)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim3}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '75%', left: '3%', transform: 'rotate(-22deg) scale(0.58)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim2}`} style={{ color: '#B794F4' }} />
+    </div>
+    {/* Left inner - closer to text */}
+    <div style={{ position: 'absolute', top: '8%', left: '12%', transform: 'rotate(5deg) scale(0.75)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim2}`} style={{ color: '#6B46C1' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '32%', left: '15%', transform: 'rotate(-10deg) scale(0.65)' }}>
+      <span className={`${styles.bat} ${styles.bat7} ${styles.batAnim1}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '58%', left: '10%', transform: 'rotate(18deg) scale(0.55)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim3}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '82%', left: '14%', transform: 'rotate(-8deg) scale(0.68)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim1}`} style={{ color: '#B794F4' }} />
+    </div>
+    {/* Top area - above text */}
+    <div style={{ position: 'absolute', top: '5%', left: '28%', transform: 'rotate(12deg) scale(0.52)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim2}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '2%', left: '45%', transform: 'rotate(-6deg) scale(0.6)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim3}`} style={{ color: '#6B46C1' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '8%', left: '68%', transform: 'rotate(20deg) scale(0.48)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim1}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    {/* Bottom area - below text */}
+    <div style={{ position: 'absolute', top: '88%', left: '32%', transform: 'rotate(-18deg) scale(0.55)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim3}`} style={{ color: '#B794F4' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '92%', left: '55%', transform: 'rotate(10deg) scale(0.62)' }}>
+      <span className={`${styles.bat} ${styles.bat7} ${styles.batAnim1}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '85%', left: '72%', transform: 'rotate(-12deg) scale(0.5)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim2}`} style={{ color: '#6B46C1' }} />
+    </div>
+    {/* Right inner - closer to text */}
+    <div style={{ position: 'absolute', top: '10%', left: '82%', transform: 'rotate(-14deg) scale(0.72)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim3}`} style={{ color: '#B794F4' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '35%', left: '78%', transform: 'rotate(8deg) scale(0.58)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim2}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '55%', left: '84%', transform: 'rotate(-20deg) scale(0.65)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim1}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '78%', left: '80%', transform: 'rotate(15deg) scale(0.6)' }}>
+      <span className={`${styles.bat} ${styles.bat7} ${styles.batAnim3}`} style={{ color: '#6B46C1' }} />
+    </div>
+    {/* Far right edge */}
+    <div style={{ position: 'absolute', top: '18%', left: '94%', transform: 'rotate(22deg) scale(0.65)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim1}`} style={{ color: '#B794F4' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '48%', left: '96%', transform: 'rotate(-5deg) scale(0.72)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim2}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '70%', left: '93%', transform: 'rotate(16deg) scale(0.55)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim3}`} style={{ color: '#9F7AEA' }} />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.0</span>
+    </h1>
+    <p className={styles.heroSubtitle}>The Dark Knight</p>
+  </div>
+</div>
+
+We're excited to announce DankMaterialShell (DMS) 1.0! What started as a small hobby project has grown into a full desktop shell and application suite with thousands of users and dozens of contributors - with first class support for [niri](https://github.com/YaLTeR/niri), [Hyprland](https://hypr.land), [Sway](https://swaywm.org), [MangoWC](https://mangowc.vercel.app/), and [LabWC](https://labwc.github.io/). As well as general support for all compositors implementing select wayland protocols.
+
+{/* truncate */}
+
+This release marks more than just a version number, it's a commitment to stability and predictability. Going forward, DMS will follow a milestone/roadmap-based release cycle, with bug-fix releases as needed in-between major versions.
+
+DMS has come a long way since its inception, and we're excited to pivot towards a more structured development process - which represents a step towards making DMS a mainstream Linux desktop project.
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>2,300+</span>
+    <span className={styles.statLabel}>Commits</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>2.4k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>75+</span>
+    <span className={styles.statLabel}>Contributors</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>26</span>
+    <span className={styles.statLabel}>Community Plugins</span>
+  </div>
+</div>
+
+## What's New
+
+### OMEGA Bar
+
+Add up to **4** bar configurations, each with their own set of widgets, layout, and style. Configure which monitor each bar appears on and independently control each bar with new [IPCs](/docs/dankmaterialshell/keybinds-ipc#bar).
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Omega Bars"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/omegabar_light.png'),
+      dark: useBaseUrl('/img/blog/v1/omegabar_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Multiple bar configurations with independent widgets and styles</figcaption>
+</figure>
+
+### Comprehensive Keyboard Shortcuts (niri)
+
+Configure global keyboard shortcuts - available to niri users. Requires quickshell version from DankLinux repositories or quickshell-git from AUR.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Keyboard Shortcuts"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/keybinds_light.png'),
+      dark: useBaseUrl('/img/blog/v1/keybinds_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Keyboard shortcuts configuration with conflict detection</figcaption>
+</figure>
+
+### Printer Management (CUPS)
+
+Manage printers directly from DMS Settings with CUPS integration. Add, remove, and configure printers with ease. A new control center widget allows viewing printers and managing print jobs.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Printer Management"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/printers_light.png'),
+      dark: useBaseUrl('/img/blog/v1/printers_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>CUPS printer management with status monitoring and job control</figcaption>
+</figure>
+
+### Comprehensive Network Management
+
+Comprehensive network view with support for NetworkManager, IWD, and systemd-networkd. Import VPN profiles, manage connections, and connect to Wi-Fi networks.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Network Management"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/network_light.png'),
+      dark: useBaseUrl('/img/blog/v1/network_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Network settings with WiFi and VPN management</figcaption>
+</figure>
+
+### Polkit Agent
+
+DMS now includes its own Polkit agent for handling privilege escalation requests. No more need for external polkit agents like `polkit-gnome`, `mate-polkit`, or `kde-polkit`.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Polkit Agent"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/polkit_light.png'),
+      dark: useBaseUrl('/img/blog/v1/polkit_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Native polkit authentication dialog for privilege escalation</figcaption>
+</figure>
+
+### File-Type Associations
+
+Set default applications for different file types and protocols directly from DMS Settings. Easily manage which apps open specific file formats and choose your preferred applications for handling various file types and links.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="App Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/apppicker_light.png'),
+      dark: useBaseUrl('/img/blog/v1/apppicker_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Open with dialog for selecting default applications</figcaption>
+</figure>
+
+Special thanks to [@devnullvoid](https://github.com/devnullvoid) for the contribution.
+
+### Dank Color Picker
+
+The color picker is not new, but the eye dropper/color picker tool is now built-in to DMS - no more need for third-party tools! It is now integrated into DMS and available as a standalone tool for Wayland compositors. See the [CLI color picker documentation](https://danklinux.com/docs/dankmaterialshell/cli-color-picker).
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Color Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/colorpick_light.png'),
+      dark: useBaseUrl('/img/blog/v1/colorpick_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Pick colors from anywhere on your screen with multiple output formats</figcaption>
+</figure>
+
+### Dank Screenshot
+
+DMS now ships with its own screenshot tool - no need for grim, slurp, or grimblast anymore. Capture a region, a single screen, all screens, or currently focused window (Hyprland/MangoWC/DWL only). Save to clipboard, file, stdout, or mix and match. Get notified when it's done. Supports PNG, JPEG, and PPM formats. See the [CLI screenshot documentation](https://danklinux.com/docs/dankmaterialshell/cli-screenshot).
+
+Compatible with many Wayland compositors including Hyprland, Sway, MangoWC, and niri.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Screenshot Tool"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/screenshot_light.png'),
+      dark: useBaseUrl('/img/blog/v1/screenshot_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Region selection with live dimensions across multiple monitors</figcaption>
+</figure>
+
+### DMS Plugin System
+
+DMS features a powerful plugin system that allows developers and enthusiasts to extend the shell with custom functionality. The plugin ecosystem now includes 26 community-created plugins, with 6 new additions since the v0.6.2 release. From system utilities to creative tools, the plugin system makes it possible to add custom widgets, integrate with external services, or build entirely new features on top of DMS.
+
+Explore the [full plugins directory](https://danklinux.com/plugins) to discover community contributions including wallpaper engines, system monitors, media controls, container management, and more. New plugins are being added regularly as the community continues to build amazing extensions.
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/v1/dms_plugins.png')}
+    alt="DMS Plugin System"
+    style={{ maxWidth: '600px', width: '100%', borderRadius: '8px' }}
+  />
+  <figcaption>26 community plugins extending DMS functionality</figcaption>
+</figure>
+
+Special thanks to [rochacbruno](https://github.com/rochacbruno) for developing and iterating on the plugin system, as well as maintaining the [plugin registry](https://github.com/AvengeMedia/dms-plugin-registry).
+
+## Packages for Ubuntu, Debian, OpenSUSE, Fedora, and Arch Linux
+
+<div className={`${styles.distroMashup} ${styles.noZoom}`}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+  </div>
+</div>
+
+DMS is now available through the [DankLinux Repository](/docs/danklinux) with official packages for Ubuntu, Debian, OpenSUSE, and Fedora via PPA, OBS, and COPR. Arch Linux users can grab it from the Arch User Repository (AUR).
+
+This includes not only DMS itself but also core dependencies that may be used with or without DMS including:
+
+- **niri** - Ubuntu, Debian, and OpenSUSE (includes **xwayland-satellite**)
+- **quickshell** - Ubuntu, Debian, OpenSUSE, and Fedora
+- **dgop** - All supported distributions
+- **dsearch** - All supported distributions
+- **dms-greeter** - AUR, Fedora, and Ubuntu (more via DankInstaller)
+- **matugen** - Ubuntu, Debian, OpenSUSE, and Fedora
+- **cliphist** - All supported distributions
+- **ghostty** - Fedora, Debian and Ubuntu
+
+*Development packages/nightly builds are also available via the same repositories*
+
+### Available on nixpkgs
+
+<div className={styles.noZoom}>
+  <a href="https://search.nixos.org/options?channel=unstable&query=dms-" style={{ display: 'inline-block', margin: '1rem 0' }}>
+    <ThemedImage
+      alt="Packaged for Nixpkgs"
+      sources={{
+        light: useBaseUrl('/img/distros/nixpkgs-light.svg'),
+        dark: useBaseUrl('/img/distros/nixpkgs-dark.svg'),
+      }}
+      style={{ maxWidth: '240px' }}
+    />
+  </a>
+</div>
+
+DMS is now available on nixpkgs unstable. This simplifies installation significantly for NixOS users and those using Nix package manager and represents a major step towards broader adoption. Check the available options on [search.nixos.org](https://search.nixos.org/options?channel=unstable&query=dms-).
+
+Special thanks to [@LuckShiba](https://github.com/LuckShiba) for creating the nixpkgs package and [@marcusramberg](https://github.com/marcusramberg) for approving!
+
+## More than just a Shell
+
+DMS has become more than just a desktop shell. It is a comprehensive suite of tools that provide core desktop features in a cohesive, integrated way - or as completely standalone utilities to enrich non-DMS desktops.
+
+
+- **DankMaterialShell (qml)** - The quickshell-based part of the shell
+- **DankMaterialShell (go)** - A comprehensive backend service and suite of tools
+  - **Dank16** - A contrast-aware color palette generator for Base16-style themes
+  - **Matugen** - A custom matugen runner that enriches matugen templates with Dank16 and custom colors
+  - **Brightness** - A complete management CLI and socket service for backlight, LED, and ddc/ci brightness control.
+  - **Networking** - Native dbus integration with NetworkManager, IWD, and systemd-networkd for comprehensive network management - including VPNs, WiFi, and Ethernet.
+  - **Keybinds** - A complete keybinds system with pluggable providers for reading and writing keybinds for cheatsheets and management interfaces.
+  - **Color Picker** - A CLI color picker with multiple output formats and an eye dropper tool for Wayland.
+  - **Screenshot** - A complete screenshot tool with region selection, window capture, and multiple output formats.
+  - **Plugins** - A plugin system for extending the shell and launcher with custom functionality.
+- **dgop** - A stateless system monitoring tool with a unique cursor-based approach. CLI and fully documented (With OpenAPI 3.1) REST API.
+- **dsearch** - A blazingly fast, indexed filesystem search server with incremental indexes. Fully configurable - choose depth, folders, exclusions, metadata, content, and more. CLI, Unix Socket, and Rest API.
+
+**TL;DR** *DMS* replaces many tools commonly used for Wayland desktops. No `brightnessctl`, `ddcutil`, `grimblast`, `nmcli`, `iwctl`, `grim`, `slurp`, `wofi`, `fuzzel`, `swayidle`, `hyprlock`, `mate/gnome/kde polkit`, `mako/dunst`, `hyprpicker`, `sddm`, or (a bunch of other stuff) needed anymore. Fully optional, and completely standalone from DMS itself.
+
+## Bug Fixes and Improvements
+
+<details style={{
+  border: '1px solid rgba(128, 90, 213, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(128, 90, 213, 0.08) 0%, rgba(107, 70, 193, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- View Details (300+ commits) -|</summary>
+
+Since the last v0.6.2 release, DMS has received extensive bug fixes and stability improvements across all components:
+
+**Screenshot & Color Picker**
+- Handle 24-bit frames from compositor and RGB888 bit flipping
+- Color space and scaling fixes
+- Handle transformed and multi-monitor displays
+- Save button display fixes with eye dropper
+- Fallback to niri picker when on niri
+
+**Bar & Dock**
+- Center section positioning and border thickness fixes
+- Privacy indicator background color alignment
+- Transparency handling improvements (>95% opacity, window-rules)
+- Opacity binding and early-return fixes
+- Maximize detection, scroll handling, and widget background options
+- IPC reliability when screens change
+- Auto-hide flickering and popout interaction fixes
+
+**Display & Monitors**
+- Workspace overview truncation and scaling (Hyprland)
+- Physical vs. logical resolution display
+- Icon vertical alignment in monitor widgets
+
+**Audio & Media**
+- Audio slider binding in control center
+- Output device switching IPC and OSD
+- Media control column positioning (bar awareness)
+- Media OSD suppression on new players
+- Player button control popup display
+
+**Network & VPN**
+- VPN icon consistency and lock screen status
+- VPN password prompting fixes
+- Binding loop fixes
+
+**Keyboard & Input**
+- Alt+Shift and KDL parsing for keybinds
+- Keybind tab issues (niri)
+- Capslock detection for devices without LED
+- Window close on Esc prevention
+- Context menu keyboard navigation
+
+**Brightness & Gamma**
+- Non-automation toggling fixes
+- Night mode on startup
+- DDC device erasure and OSD behavior
+- Per-display pinned device IPCs
+- Udev monitor integration for brightness events
+
+**Settings & System**
+- Weather setting (greeter)
+- Mango config override (greeter)
+- Launcher tab sizing
+- Settings window scrollable areas
+- Custom themes and font family handling
+
+**Notifications & UI**
+- Keyboard navigation in notification popout
+- Button widget binding loops
+- ProcessList context menu visibility
+- Excessive repaints in modals
+- DnD tooltip display
+
+**Lock Screen & Power**
+- VPN icon consistency
+- Single-display lock screen option
+- Hold-style confirmation for power actions
+- Profile OSD and DBus activation
+
+**Wallpaper & Themes**
+- Per-monitor wallpaper display
+- Wallpaper cycling
+- Privacy widget background colors
+
+**Build & Distribution**
+- NixOS fprintd unlock, TUI startup crash, and systemd service PATH
+- DMS CLI versioning in all builds
+- IPC argument handling
+- OpenSUSE package directory and hash versioning
+- Hyprland configuration syntax
+- NixOS nativeBuildInputs
+
+**Plugin System**
+- Plugin reactivity and tooltip updates
+- Plugin popout binding and reload IPCs
+
+And many more targeted fixes across the entire codebase to ensure stability and reliability across all supported compositors (Hyprland, Sway, niri, MangoWC, LabWC, and DWL).
+
+</details>
+
+## Resources
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  Get Started with DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>Plugins</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>Sponsor on GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>Special thanks to <a href="https://github.com/YaLTeR">YaLTeR</a> for collaborating with the DMS team, for <a href="https://github.com/YaLTeR/niri">niri</a> - the compositor that inspired DMS, and for hosting DMS on the <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a>.</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      Thank <span className={styles.gradientText}>You</span>
+    </h2>
+    <p className={styles.thankYouText}>
+      To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.
+    </p>
+    <p className={styles.thankYouTagline}>
+      Here's to many more releases ahead!
+    </p>
+  </div>
+</div>

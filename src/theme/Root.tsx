@@ -16,35 +16,36 @@ export default function Root({ children }: { children: React.ReactNode }) {
 
     const { pathname } = location;
     const isDocsPage = pathname.startsWith('/docs');
+    const isBlogPage = pathname.startsWith('/blog');
+    const isLandingPage = pathname === '/';
 
     const applyClass = () => {
+      document.body.classList.remove('docs-page', 'landing-page', 'blog-page');
+
       if (isDocsPage) {
         document.body.classList.add('docs-page');
-        document.body.classList.remove('landing-page');
-      } else {
+      } else if (isBlogPage) {
+        document.body.classList.add('blog-page');
+      } else if (isLandingPage) {
         document.body.classList.add('landing-page');
-        document.body.classList.remove('docs-page');
       }
-      // Add pathname as data attribute for CSS targeting
+
       document.body.setAttribute('data-path', pathname);
     };
 
-    // Apply initially
     applyClass();
 
-    // Use MutationObserver to watch for class changes and re-apply
-    // This is necessary because Docusaurus's theme may try to remove our custom classes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          const hasCorrectClass = isDocsPage
-            ? document.body.classList.contains('docs-page')
-            : document.body.classList.contains('landing-page');
+        if (mutation.type !== 'attributes' || mutation.attributeName !== 'class') return;
 
-          if (!hasCorrectClass) {
-            applyClass();
-          }
-        }
+        const body = document.body.classList;
+        const needsReapply =
+          (isDocsPage && !body.contains('docs-page')) ||
+          (isBlogPage && !body.contains('blog-page')) ||
+          (isLandingPage && !body.contains('landing-page'));
+
+        if (needsReapply) applyClass();
       });
     });
 
@@ -53,7 +54,6 @@ export default function Root({ children }: { children: React.ReactNode }) {
       attributeFilter: ['class']
     });
 
-    // Cleanup: disconnect observer
     return () => {
       observer.disconnect();
     };

@@ -278,7 +278,17 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
         },
-        blog: false, // Disable blog for now
+        blog: {
+          showReadingTime: true,
+          blogTitle: 'Dank Linux Blog',
+          blogDescription: 'News, releases, and updates from the Dank Linux project.',
+          blogSidebarTitle: 'Recent Posts',
+          blogSidebarCount: 5,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            copyright: `Copyright © ${new Date().getFullYear()} Dank Linux`,
+          },
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -329,6 +339,7 @@ const config: Config = {
         imageRenderers: {
           'docusaurus-plugin-content-docs': require('./lib/ImageRenderers').docs,
           'docusaurus-plugin-content-pages': require('./lib/ImageRenderers').pages,
+          'docusaurus-plugin-content-blog': require('./lib/ImageRenderers').blog,
         },
       },
     ],
@@ -337,6 +348,13 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card (fallback for pages without images)
     image: 'img/homepage/danklinux-preview.png',
+    announcementBar: {
+      id: 'dms-v1-release',
+      content: '<span class="announcement-badge">New</span> <strong>DMS v1.0 Released!</strong> <a href="/blog/v1-release">Read the full announcement →</a>',
+      backgroundColor: 'var(--dank-purple-primary)',
+      textColor: '#fff',
+      isCloseable: true,
+    },
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
@@ -381,6 +399,11 @@ const config: Config = {
           label: 'Plugins',
           position: 'right',
           activeBasePath: '/plugins',
+        },
+        {
+          to: '/blog',
+          label: 'Blog',
+          position: 'right',
         },
         {
           type: 'search',
@@ -433,7 +456,7 @@ const config: Config = {
       darkTheme: dankPurple,
       additionalLanguages: ['bash', 'json', 'yaml', 'toml', 'rust', 'python', 'javascript', 'typescript'],
     },
-  } satisfies Preset.ThemeConfig,
+  },
 };
 
 export default config;

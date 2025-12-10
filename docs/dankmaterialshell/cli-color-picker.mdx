@@ -4,6 +4,8 @@ description: Pick colors from anywhere on your Wayland screen with multiple outp
 ---
 
 import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={` ██████╗ ██████╗ ██╗      ██████╗ ██████╗ ███████╗
@@ -14,6 +16,18 @@ import Hero from '@site/src/components/Hero';
  ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝`}
   hideTitle={true}
 />
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Color Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/colorpick_light.png'),
+      dark: useBaseUrl('/img/blog/v1/colorpick_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Pick colors from anywhere on your screen</figcaption>
+</figure>
 
 The `dms color pick` command launches an interactive color picker for Wayland. Click any pixel on your screen to capture its color, with support for multiple output formats and custom templates.
 

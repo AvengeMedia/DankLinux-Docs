@@ -49,7 +49,6 @@ export default function Home() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Set CSS custom properties for basic mouse tracking
       document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
       document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
     };
@@ -222,7 +221,7 @@ export default function Home() {
       <div className={styles.container}>
         {/* Background pattern overlay */}
         <div className={styles.backgroundPattern}></div>
-        
+
         {/* Animated gradient background orbs */}
         <div className={styles.gradientBackground}>
           <div className={styles.gradientOrb1}></div>

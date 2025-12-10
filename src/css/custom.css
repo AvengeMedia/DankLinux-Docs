@@ -10,6 +10,71 @@
 @import url('./global.css');
 
 /* ========================================
+   DOCUSAURUS ANNOUNCEMENT BAR STYLING
+   ======================================== */
+
+/* Style the built-in announcement bar - reset all borders */
+div[class*='announcementBar'] {
+  background: linear-gradient(135deg, #805AD5, #6B46C1) !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 100;
+}
+
+/* Remove any inner borders/dividers */
+div[class*='announcementBar'] > div,
+div[class*='announcementBar'] [class*='content'] {
+  border: none !important;
+}
+
+div[class*='announcementBar'] a {
+  color: #fff !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+div[class*='announcementBar'] a:hover {
+  opacity: 0.9;
+}
+
+/* Badge inside announcement bar */
+.announcement-badge {
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.5rem;
+}
+
+/* Close button styling - remove all borders */
+button[class*='closeButton'],
+div[class*='announcementBar'] button {
+  border: none !important;
+  border-left: none !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  background: transparent !important;
+}
+
+button[class*='closeButton']:hover,
+div[class*='announcementBar'] button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 768px) {
+  div[class*='announcementBar'] {
+    font-size: 0.8rem;
+  }
+}
+
+
+/* ========================================
    PAGE-SPECIFIC NAVBAR THEMES
    ======================================== */
 
@@ -611,6 +676,19 @@ body.docs-page .footer {
   }
 }
 
+body.blog-page {
+  background: var(--dank-docs-background);
+}
+
+body.blog-page #__docusaurus,
+body.blog-page .main-wrapper {
+  background: transparent;
+}
+
+body.blog-page main {
+  padding-top: var(--ifm-navbar-height);
+}
+
 /* Markdown headers with purple accent */
 .markdown h1,
 .markdown h2 {
@@ -925,6 +1003,157 @@ figcaption {
 
 .mermaid svg:active {
   cursor: grabbing;
+}
+
+/* ========================================
+   DETAILS/COLLAPSIBLE COMPONENT STYLING
+   ======================================== */
+
+/* Base details element */
+details {
+  border: 1px solid rgba(208, 188, 255, 0.25) !important;
+  border-radius: 0.5rem !important;
+  padding: 0 !important;
+  margin: 1.5rem 0 !important;
+  background: rgba(128, 90, 213, 0.06) !important;
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+details:hover {
+  border-color: rgba(208, 188, 255, 0.4) !important;
+}
+
+details[open] {
+  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.1);
+}
+
+/* Summary (clickable header) */
+details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 1rem 1.25rem !important;
+  margin: 0 !important;
+  user-select: none;
+  list-style: none !important;
+  background: rgba(128, 90, 213, 0.08);
+  color: var(--dank-purple-light);
+  transition: background 0.2s ease, color 0.2s ease;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Hide all default markers/arrows */
+details > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+details > summary::marker {
+  display: none !important;
+  content: '' !important;
+}
+
+/* Hide Docusaurus's built-in toggle arrow */
+details > summary::before {
+  display: none !important;
+}
+
+/* Arrow indicator */
+details > summary::after {
+  content: '▸';
+  display: inline-block;
+  margin-left: auto;
+  font-size: 0.875rem;
+  transition: transform 0.2s ease;
+  color: var(--dank-purple-light);
+}
+
+details[open] > summary::after {
+  transform: rotate(90deg);
+}
+
+details > summary:hover {
+  background: rgba(128, 90, 213, 0.12);
+  color: var(--dank-purple-lighter);
+}
+
+/* Content area */
+details > summary ~ * {
+  padding: 0 1.25rem;
+}
+
+details > summary + div,
+details > .collapsibleContent_i85q {
+  padding: 1rem 1.25rem !important;
+  border-top: 1px solid rgba(208, 188, 255, 0.15);
+}
+
+/* Reset alert styling that Docusaurus applies */
+details.alert {
+  --ifm-alert-background-color: transparent;
+  --ifm-alert-border-color: transparent;
+  border-left: none !important;
+}
+
+details.alert--info {
+  border-left: none !important;
+}
+
+/* Light mode adjustments */
+[data-theme='light'] details {
+  border-color: rgba(128, 90, 213, 0.2) !important;
+  background: rgba(128, 90, 213, 0.04) !important;
+}
+
+[data-theme='light'] details:hover {
+  border-color: rgba(128, 90, 213, 0.35) !important;
+}
+
+[data-theme='light'] details[open] {
+  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.08);
+}
+
+[data-theme='light'] details > summary {
+  background: rgba(128, 90, 213, 0.06);
+  color: var(--dank-purple-dark);
+}
+
+[data-theme='light'] details > summary:hover {
+  background: rgba(128, 90, 213, 0.1);
+  color: var(--dank-purple-darker);
+}
+
+[data-theme='light'] details > summary::after {
+  color: var(--dank-purple-dark);
+}
+
+[data-theme='light'] details > summary + div,
+[data-theme='light'] details > .collapsibleContent_i85q {
+  border-top-color: rgba(128, 90, 213, 0.12);
+}
+
+/* Nested list styling within details */
+details ul,
+details ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+details li {
+  margin: 0.25rem 0;
+}
+
+details p {
+  margin: 0.75rem 0;
+}
+
+details p:first-child {
+  margin-top: 0;
+}
+
+details p:last-child {
+  margin-bottom: 0;
 }
 
 /* Panzoom wrapper styling - only for Mermaid diagrams */
