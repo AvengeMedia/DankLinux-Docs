@@ -70,6 +70,11 @@ const sidebars: SidebarsConfig = {
               label: 'Color Picker',
             },
             'dankmaterialshell/cli-brightness',
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-clipboard',
+              label: 'Clipboard Manager (upcoming)',
+            },
             'dankmaterialshell/cli-screenshot',
           ],
         },
