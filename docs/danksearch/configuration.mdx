@@ -142,6 +142,15 @@ Skip hidden files and directories (starting with `.`).
 exclude_hidden = true
 ```
 
+#### `watch`
+Enable or disable inotify file watchers for this path. When disabled, the path is indexed but changes won't be detected automatically.
+
+**Default:** `true`
+
+```toml
+watch = false  # Disable watchers (useful for network mounts)
+```
+
 #### `exclude_dirs`
 List of directory names to skip during indexing.
 
@@ -212,6 +221,12 @@ path = "/home/brandon/Documents"
 max_depth = 0  # No limit
 exclude_hidden = false
 exclude_dirs = []
+
+# Index network mount without watchers
+[[index_paths]]
+path = "/mnt/nfs/documents"
+max_depth = 5
+watch = false  # Disable inotify (not supported on NFS)
 ```
 
 ## Example Configuration
