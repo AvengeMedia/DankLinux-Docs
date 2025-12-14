@@ -1,6 +1,6 @@
 ---
 title: DankLinux Repository
-description: Pre-built packages for Fedora, Debian, Ubuntu, and OpenSUSE
+description: Pre-built packages for Fedora, CentOS, Debian, Ubuntu, and OpenSUSE
 ---
 
 import Hero from '@site/src/components/Hero';
@@ -20,7 +20,7 @@ import Hero from '@site/src/components/Hero';
 The **DankLinux Repository** provides pre-built packages for **DankMaterialShell** and **niri**! \
 DankMaterialShell is now available on more distributions than ever before!
 
-- [**Fedora**](https://fedoraproject.org/) |  [**OpenSUSE**](https://www.opensuse.org/) 
+- [**Fedora**](https://fedoraproject.org/) | [**CentOS**](https://www.centos.org/) | [**OpenSUSE**](https://www.opensuse.org/) 
 - [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/)
 
 ### Desktop Environment
@@ -51,7 +51,7 @@ For complete DMS installation instructions including repository setup, see the [
 
 :::tip Quick Start
 
-- **Fedora**: See the [Fedora & Derivatives](../dankmaterialshell/installation#fedora--derivatives) section in the installation guide
+- **Fedora**: See the [Fedora & CentOS](../dankmaterialshell/installation#fedora--centos) section in the installation guide
 - **Ubuntu/Debian**: See the [Ubuntu & Debian](../dankmaterialshell/installation#debian--ubuntu) section in the installation guide
 - **OpenSUSE**: See the [OpenSUSE](../dankmaterialshell/installation#opensuse--derivatives) section in the installation guide
 
@@ -67,7 +67,9 @@ All packages in the DankLinux repository can be installed independently. First, 
 
 :::
 
-#### Debian
+### Debian
+
+**Debian 13 (Trixie)**:
 
 ```bash
 # Add DankLinux repository
@@ -77,51 +79,131 @@ echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
 
-# Install stable packages (recommended for production)
+# Install stable packages
 sudo apt install quickshell niri
 
-# Or install development packages (latest features)
+# Or install development packages
 sudo apt install quickshell-git niri-git
 ```
 
-#### Ubuntu
+**Debian Testing**:
+
+```bash
+# Add DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+
+# Install stable packages
+sudo apt install quickshell niri
+
+# Or install development packages
+sudo apt install quickshell-git niri-git
+```
+
+**Debian Sid**:
+
+```bash
+# Add DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Sid/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Sid/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+
+# Install stable packages
+sudo apt install quickshell niri
+
+# Or install development packages
+sudo apt install quickshell-git niri-git
+```
+
+### Ubuntu
 
 ```bash
 # Add DankLinux PPA
 sudo add-apt-repository ppa:avengemedia/danklinux
 sudo apt update
 
-# Install stable packages (recommended for production)
+# Install stable packages
 sudo apt install quickshell niri
 
-# Or install development packages (latest features)
+# Or install development packages
 sudo apt install quickshell-git niri-git
 ```
 
-#### OpenSUSE
+### OpenSUSE
+
+**OpenSUSE Tumbleweed**:
 
 ```bash
 # Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
 
-# Install stable packages (recommended for production)
+# Install stable packages
 sudo zypper install quickshell niri
 
-# Or install development packages (latest features)
+# Or install development packages
 sudo zypper install quickshell-git niri-git
 ```
 
-#### Fedora
+**OpenSUSE Leap 16**:
+
+```bash
+# Add DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Leap_16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+
+# Install stable packages
+sudo zypper install quickshell niri
+
+# Or install development packages
+sudo zypper install quickshell-git niri-git
+```
+
+**OpenSUSE Leap 16.1**:
+
+```bash
+# Add DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Leap_16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+
+# Install stable packages
+sudo zypper install quickshell niri
+
+# Or install development packages
+sudo zypper install quickshell-git niri-git
+```
+
+**OpenSUSE Slowroll**:
+
+```bash
+# Add DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+
+# Install stable packages
+sudo zypper install quickshell niri
+
+# Or install development packages
+sudo zypper install quickshell-git niri-git
+```
+
+### Fedora & CentOS
+
+The COPR repositories provide packages for Fedora 41/42/43 rawhide and CentOS 10:
 
 ```bash
 # Add DankLinux COPR
 sudo dnf copr enable avengemedia/danklinux
 
-# Install stable packages (recommended for production)
+# Install stable packages
 sudo dnf install quickshell niri
 
-# Or install development packages (latest features) 
+# Or install development packages
 sudo dnf install quickshell-git niri-git
 ```
 
@@ -143,7 +225,7 @@ Niri packages are available in both stable and development variants. Supported o
 
 ### Fedora COPR
 
-The COPR provides packages for Fedora and related distributions:
+The COPR provides packages for Fedora 41/42/43 rawhide and CentOS 10:
 
 - **DankLinux Core Repository**: [avengemedia/danklinux](https://copr.fedorainfracloud.org/coprs/avengemedia/danklinux/)
 - **DMS Stable**: [avengemedia/dms](https://copr.fedorainfracloud.org/coprs/avengemedia/dms/)

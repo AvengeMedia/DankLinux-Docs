@@ -58,9 +58,9 @@ paru -S dms-shell-git
 
 These packages ship the shell, widgets, and CLI. Pair them with the `niri`, `hyprland`, `sway`, `dwl` (via MangoWC), or `labwc` packages from the official repositories for a complete desktop stack.
 
-## Fedora & Derivatives
+## Fedora & CentOS
 
-Enable the COPR repositories managed by the team to install prebuilt packages:
+DankMaterialShell is available through COPR repositories for Fedora 41/42/43 rawhide and CentOS 10. Enable the COPR repositories managed by the team to install prebuilt packages:
 
 ### Stable Release
 
@@ -76,7 +76,7 @@ sudo dnf copr enable avengemedia/dms-git
 sudo dnf install dms
 ```
 
-The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `ghostty`, and other utilities used by the default configuration.
+The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `matugen`, and other utilities used by the default configuration.
 
 ## Debian & Ubuntu
 
@@ -130,6 +130,29 @@ echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download
 sudo apt update
 ```
 
+For **Debian Sid**:
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Sid/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Sid/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS stable repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Sid/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Sid/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+
+# DMS development repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Sid/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Sid/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
+sudo apt update
+```
+
 #### Install Packages
 
 Install the **stable release**:
@@ -175,9 +198,11 @@ Add **niri** or **niri-git** to your system to get the best experience.
 
 ## OpenSUSE & Derivatives
 
-DankMaterialShell is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed.
+DankMaterialShell is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed, Leap 16/16.1 & Slowroll.
 
-### Stable Release
+### OpenSUSE Tumbleweed
+
+#### Stable Release
 
 ```bash
 # DankLinux repository
@@ -191,7 +216,7 @@ sudo zypper refresh
 sudo zypper install dms
 ```
 
-### Latest Development Build
+#### Latest Development Build
 
 ```bash
 # DankLinux repository
@@ -199,6 +224,96 @@ sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:
 
 # DMS repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Tumbleweed/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+### OpenSUSE Leap 16
+
+#### Stable Release
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Leap_16.0/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Leap_16.0/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### Latest Development Build
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Leap_16.0/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Leap_16.0/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+### OpenSUSE Leap 16.1
+
+#### Stable Release
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Leap_16.1/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Leap_16.1/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### Latest Development Build
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Leap_16.1/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Leap_16.1/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+### OpenSUSE Slowroll
+
+#### Stable Release
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Slowroll/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### Latest Development Build
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Slowroll/home:AvengeMedia:dms-git.repo
 sudo zypper refresh
 
 # Install DMS
