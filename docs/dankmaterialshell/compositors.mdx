@@ -15,7 +15,7 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri, Hyprland, Sway, dwl/MangoWC, and labwc. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
+DankMaterialShell works with any Wayland compositor, but we provide optimized configurations for niri, Hyprland, Sway, MangoWC, and labwc. These configs include DMS-specific keybindings, proper layer shell rules, and recommended settings.
 
 ## niri Configuration
 
@@ -80,36 +80,26 @@ For more about layer rules see [layer rules](./layers.mdx).
 
 #### Startup
 
-:::tip DankInstall Users
-
-If you used [dankinstall](../dankinstall), DMS is managed via systemd and starts automatically. Skip the `spawn-at-startup "dms" "run"` line - you'll have two instances otherwise.
-
-niri has proper systemd session integration. To ensure DMS only runs under niri (useful if you also have Plasma/GNOME installed):
+niri has native systemd session integration. Bind DMS to niri's service so it only runs under niri (won't start in Plasma/GNOME):
 
 ```bash
 systemctl --user add-wants niri.service dms
 ```
 
-:::
-
-Launch DankMaterialShell and optional services:
+**Optional services:**
 
 ```kdl
 // Clipboard history
 spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
-// Start the shell (skip if using systemd)
+```
+
+**Alternative: Direct launch (if not using systemd)**
+
+```kdl
 spawn-at-startup "dms" "run"
-// (Optional) replace with a polkit agent for escalation prompts
-// spawn-at-startup "{{POLKIT_AGENT_PATH}}"
 ```
 
 #### Environment Variables
-
-:::tip DankInstall Users
-
-dankinstall configures these variables in `~/.config/environment.d/90-dms.conf`. You can skip this section unless you need to override specific values in your compositor config.
-
-:::
 
 ```kdl
 environment {
@@ -219,22 +209,31 @@ Hyprland uses a simple config file format at `~/.config/hypr/hyprland.conf`.
 
 #### Startup
 
-:::tip DankInstall Users
+Hyprland doesn't initialize the systemd user session by default. Export the environment and start a session target:
 
-If you used [dankinstall](../dankinstall), DMS is managed via systemd. Skip the `exec-once = dms run` line.
-
-Unlike niri, Hyprland doesn't have systemd session targets. If you use multiple desktop environments and only want DMS under Hyprland, disable the systemd unit and use compositor autostart instead:
-
-```bash
-systemctl --user disable dms
+```conf
+exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once = systemctl --user start hyprland-session.target
 ```
 
-:::
+Then bind DMS to the session target so it only runs under Hyprland (won't start in Plasma/GNOME):
+
+```bash
+systemctl --user add-wants hyprland-session.target dms
+```
+
+See the [Installation guide](./installation#hyprland) for creating the session target.
+
+**Optional services:**
 
 ```conf
 exec-once = bash -c "wl-paste --watch cliphist store &"
+```
+
+**Alternative: Direct launch (if not using systemd)**
+
+```conf
 exec-once = dms run
-exec-once = {{POLKIT_AGENT_PATH}}
 ```
 
 #### Miscellaneous
@@ -249,12 +248,6 @@ misc {
 ```
 
 #### Environment Variables
-
-:::tip DankInstall Users
-
-dankinstall configures these in `~/.config/environment.d/90-dms.conf`. You can skip this section unless you need compositor-specific overrides.
-
-:::
 
 ```conf
 env = QT_QPA_PLATFORM,wayland
@@ -359,6 +352,124 @@ windowrulev2 = float, class:^(org\.gnome\.Nautilus)$
 windowrulev2 = float, class:^(org.quickshell)$
 ```
 
+## MangoWC Configuration
+
+[MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling Wayland compositor based on dwl (wlroots). Configuration lives at `~/.config/mango/config.conf`.
+
+### Key Configuration Sections
+
+#### Startup
+
+MangoWC is wlroots-based and requires manual environment export for systemd services. Export the environment and start a session target:
+
+```conf
+exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once=systemctl --user start mango-session.target
+```
+
+Then bind DMS to the session target so it only runs under MangoWC (won't start in Plasma/GNOME):
+
+```bash
+systemctl --user add-wants mango-session.target dms
+```
+
+See the [Installation guide](./installation#mangowc) for creating the session target.
+
+**Optional services:**
+
+```conf
+exec-once=wl-paste --type text --watch cliphist store
+```
+
+**Alternative: Direct launch (if not using systemd)**
+
+```conf
+exec-once=dms run
+```
+
+#### Environment Variables
+
+```conf
+env=QT_QPA_PLATFORM,wayland
+env=ELECTRON_OZONE_PLATFORM_HINT,auto
+env=QT_QPA_PLATFORMTHEME,gtk3
+```
+
+#### Appearance
+
+Recommended appearance settings for DMS integration:
+
+```conf
+# Window appearance
+border_radius=12
+borderpx=0
+focused_opacity=1.0
+unfocused_opacity=0.9
+
+# Gaps
+gappih=5
+gappiv=5
+gappoh=5
+gappov=5
+
+# Shadows (optional)
+shadows=1
+shadow_only_floating=1
+shadows_size=10
+shadows_blur=15
+```
+
+#### Layer Rules
+
+```conf
+# Disable animation on DMS layers
+layerrule=noanim:1,layer_name:^dms
+```
+
+For more about layer rules see [layer rules](./layers.mdx).
+
+#### DMS Keybindings
+
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx).
+
+```conf
+# Application Launchers
+bind=SUPER,space,spawn,dms ipc call spotlight toggle
+bind=SUPER,v,spawn,dms ipc call clipboard toggle
+bind=SUPER,m,spawn,dms ipc call processlist focusOrToggle
+bind=SUPER,comma,spawn,dms ipc call settings focusOrToggle
+bind=SUPER,n,spawn,dms ipc call notifications toggle
+bind=SUPER,y,spawn,dms ipc call dankdash wallpaper
+
+# Security
+bind=SUPER+ALT,l,spawn,dms ipc call lock lock
+
+# Audio Controls
+bind=NONE,XF86AudioRaiseVolume,spawn,dms ipc call audio increment 3
+bind=NONE,XF86AudioLowerVolume,spawn,dms ipc call audio decrement 3
+bind=NONE,XF86AudioMute,spawn,dms ipc call audio mute
+
+# Brightness Controls
+bind=NONE,XF86MonBrightnessUp,spawn,dms ipc call brightness increment 5
+bind=NONE,XF86MonBrightnessDown,spawn,dms ipc call brightness decrement 5
+```
+
+### Window Rules
+
+```conf
+# GNOME apps
+windowrule=isnoborder:1,appid:^org\.gnome\.
+
+# Terminal apps - no borders
+windowrule=isnoborder:1,appid:^org\.wezfurlong\.wezterm$
+windowrule=isnoborder:1,appid:^Alacritty$
+windowrule=isnoborder:1,appid:^com\.mitchellh\.ghostty$
+windowrule=isnoborder:1,appid:^kitty$
+
+# Float DMS windows
+windowrule=isfloating:1,appid:^org\.quickshell$
+```
+
 ## Sway Configuration
 
 [Sway](https://swaywm.org/) is an i3-compatible Wayland compositor. DankMaterialShell integrates with Sway's tiling layout.
@@ -391,33 +502,6 @@ exec wl-paste --watch cliphist store
 
 For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). Basic Sway keybinding examples are available in the [Example for Sway](#example-for-sway) section below.
 
-## dwl/MangoWC Configuration
-
-[MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling Wayland compositor based on dwl. DankMaterialShell integrates with MangoWC's tiling layout.
-
-### Key Configuration Sections
-
-:::info Coming Soon
-
-Detailed MangoWC configuration sections are coming soon. MangoWC configuration will include:
-- Startup commands
-- Environment variables
-- DMS keybindings
-- Layer rules
-- Window rules
-
-For now, refer to the [MangoWC documentation](https://github.com/DreamMaoMao/mangowc) for basic setup.
-
-:::
-
-#### Startup
-
-Launch DankMaterialShell and optional services at compositor startup. The exact syntax will be documented once configuration format is finalized.
-
-#### DMS Keybindings
-
-For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). MangoWC keybinding configuration coming soon.
-
 ## labwc Configuration
 
 [labwc](https://labwc.github.io/) is a wlroots-based window-stacking compositor for Wayland, inspired by Openbox.
@@ -440,7 +524,7 @@ For now, refer to the [labwc documentation](https://labwc.github.io/manual.html)
 
 #### DMS Keybindings
 
-For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). MangoWC keybinding configuration coming soon.
+For the full list of available IPC commands see [IPC](./keybinds-ipc.mdx). labwc keybinding configuration coming soon.
 
 ## Other Compositors
 

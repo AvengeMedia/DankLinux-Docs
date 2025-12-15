@@ -56,7 +56,7 @@ paru -S dms-shell-bin
 paru -S dms-shell-git
 ```
 
-These packages ship the shell, widgets, and CLI. Pair them with the `niri`, `hyprland`, `sway`, `dwl` (via MangoWC), or `labwc` packages from the official repositories for a complete desktop stack.
+These packages ship the shell, widgets, and CLI. Pair them with `niri`, `hyprland`, `sway`, `mangowc`, or `labwc` packages from the official repositories for a complete desktop stack.
 
 ## Fedora & CentOS
 
@@ -456,17 +456,35 @@ systemctl --user disable dms
 
 :::warning
 
-If using systemd autostart, remove `dms run` / `spawn "dms" "run"` from your compositor's configuration to avoid running DMS twice.
+If using systemd autostart, remove `dms run` / `spawn "dms" "run"` / `exec-once=dms run` from your compositor's configuration to avoid running DMS twice.
 
 :::
 
-### Hyprland Users
+### Compositor-Specific Systemd Setup
 
-Hyprland doesn't initialize the systemd user session by default. If DMS doesn't start with systemd, you have two options:
+Different compositors have different levels of systemd session integration. Choose the section that matches your compositor.
 
-**Option 1:** Use [uwsm](https://github.com/Vladimir-csp/uwsm) to manage your session.
+:::tip Why use add-wants?
 
-**Option 2:** Create a session target manually:
+If you have multiple desktop environments installed (e.g., Plasma, GNOME, niri), using `systemctl --user enable dms` starts DMS in *all* of them. Using `add-wants` binds DMS to a specific compositor's service or session target, so it only runs where you want it. DMS won't launch when you log into Plasma or GNOME.
+
+:::
+
+#### niri
+
+niri has native systemd session integration. Bind DMS to niri's service:
+
+```bash
+systemctl --user add-wants niri.service dms
+```
+
+DMS starts when niri starts and stops when niri exits. It won't run in other sessions.
+
+#### Hyprland
+
+Hyprland doesn't initialize the systemd user session by default. You need to export the environment to systemd for user services to work.
+
+Create a session target:
 
 ```ini title="~/.config/systemd/user/hyprland-session.target"
 [Unit]
@@ -475,11 +493,55 @@ Requires=graphical-session.target
 After=graphical-session.target
 ```
 
-Then add to your Hyprland config (after any `env =` lines):
+Add to your Hyprland config (after any `env =` lines):
 
-```ini title="~/.config/hypr/hyprland.conf"
-exec-once = dbus-update-activation-environment --systemd --all
+```conf title="~/.config/hypr/hyprland.conf"
+exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec-once = systemctl --user start hyprland-session.target
 ```
 
-This exports your environment to systemd and starts services bound to `graphical-session.target`.
+Bind DMS to the session target:
+
+```bash
+systemctl --user add-wants hyprland-session.target dms
+```
+
+#### MangoWC
+
+[MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling compositor based on dwl (wlroots). Like other wlroots compositors, it requires manual environment export for systemd user services.
+
+Create a session target:
+
+```ini title="~/.config/systemd/user/mango-session.target"
+[Unit]
+Description=MangoWC Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+Add to your MangoWC config:
+
+```conf title="~/.config/mango/config.conf"
+exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once=systemctl --user start mango-session.target
+```
+
+Bind DMS to the session:
+
+```bash
+systemctl --user add-wants mango-session.target dms
+```
+
+#### Sway
+
+Sway (wlroots-based) needs the environment exported for systemd services:
+
+```conf title="~/.config/sway/config"
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+```
+
+Create a session target and bind DMS:
+
+```bash
+systemctl --user add-wants sway-session.target dms
+```
