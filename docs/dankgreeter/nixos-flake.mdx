@@ -1,7 +1,7 @@
 ---
-title: NixOS Installation
-description: Install and configure DankGreeter on NixOS using native nixpkgs
-sidebar_position: 3
+title: NixOS Installation (Flake)
+description: Install and configure DankGreeter on NixOS using flakes
+sidebar_position: 4
 ---
 
 import Hero from '@site/src/components/Hero';
@@ -17,43 +17,73 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankGreeter can be installed on NixOS using the native nixpkgs module. This is the recommended installation method for users on NixOS unstable.
+DankGreeter can be installed on NixOS using the NixOS module. This guide covers the flake-based installation method.
 
-:::info NixOS Unstable Required
-DankGreeter is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable (currently version 25.11), you'll need to use the [Flake Installation](nixos-flake) method instead.
+:::info Native NixOS module Available
+DankGreeter is now available in nixpkgs unstable! If you're on NixOS unstable (26.05), see [Installation - NixOS](nixos) for the native nixpkgs installation method which doesn't require flakes.
+It is advised to use the Flake option if you want to get quicker updates or if you want to use the home-manager modules.
+
 :::
 
 ## Installation
 
-### 1. Enable NixOS Unstable
+### 1. Add Flake Inputs
 
-Ensure you're using NixOS unstable by setting your channel or flake input:
+Add the required flake inputs to your `flake.nix` if you haven't yet:
 
-**Using channels:**
-```bash
-sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
-sudo nix-channel --update
-```
-
-**Using flakes (in `flake.nix`):**
 ```nix
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    dankMaterialShell = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 }
 ```
 
-### 2. Enable DankGreeter
+:::tip Using Unstable Version
+If you want to use the unstable (-git) version from the master branch, you can use:
+```nix
+dankMaterialShell.url = "github:AvengeMedia/DankMaterialShell";
+```
+However, be aware that the documentation may not be updated for the latest changes. You're advised to check the nix source code in the repository directly, and note that it may not work properly.
+:::
+
+### 2. Import the NixOS Module
+
+Add the DankGreeter module to your NixOS configuration imports:
+
+```nix
+imports = [
+  inputs.dankMaterialShell.nixosModules.greeter
+];
+```
+
+:::note
+
+DankGreeter is only available as a NixOS module (not as a home-manager module), since it needs to run at the system level for login management.
+
+:::
+
+### 3. Enable DankGreeter
 
 Enable and configure the greeter in your NixOS configuration:
 
 ```nix
-services.displayManager.dms-greeter = {
+programs.dankMaterialShell.greeter = {
   enable = true;
   compositor.name = "niri";  # Or "hyprland" or "sway"
 };
 ```
+
+:::info
+
+Unlike DankMaterialShell which can be installed via either the NixOS module or home-manager module, DankGreeter must be configured in your NixOS system configuration (not in home-manager).
+
+:::
 
 :::warning
 
@@ -64,7 +94,7 @@ Compositors must be installed via NixOS configuration to appear in DankGreeter, 
 ## Configuration Options
 
 ```nix
-services.displayManager.dms-greeter = {
+programs.dankMaterialShell.greeter = {
   compositor = {
     name = "niri"; # Required. Can be also "hyprland" or "sway"
     customConfig = ''
