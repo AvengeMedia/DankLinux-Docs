@@ -29,9 +29,21 @@ const sidebars: SidebarsConfig = {
         },
         'dankmaterialshell/installation',
         {
-          type: 'doc',
-          id: 'dankmaterialshell/nixos',
+          type: 'category',
           label: 'Installation - NixOS',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/nixos',
+              label: 'NixOS module',
+            },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/nixos-flake',
+              label: 'Flake (NixOS/home-manager)',
+            },
+          ],
         },
         'dankmaterialshell/calendar-integration',
         {
@@ -114,9 +126,21 @@ const sidebars: SidebarsConfig = {
         },
         'dankgreeter/installation',
         {
-          type: 'doc',
-          id: 'dankgreeter/nixos',
+          type: 'category',
           label: 'Installation - NixOS',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'dankgreeter/nixos',
+              label: 'NixOS module',
+            },
+            {
+              type: 'doc',
+              id: 'dankgreeter/nixos-flake',
+              label: 'Flake',
+            },
+          ],
         },
         'dankgreeter/configuration',
       ],
@@ -147,6 +171,23 @@ const sidebars: SidebarsConfig = {
           label: 'Overview',
         },
         'danksearch/installation',
+        {
+          type: 'category',
+          label: 'Installation - NixOS',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'danksearch/nixos-flake',
+              label: 'Flake (home-manager)',
+            },
+            {
+              type: 'doc',
+              id: 'danksearch/nixos',
+              label: 'NixOS module',
+            },
+          ],
+        },
         'danksearch/configuration',
         'danksearch/usage',
       ],
