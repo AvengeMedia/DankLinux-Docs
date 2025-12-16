@@ -36,19 +36,21 @@ First, add the required flake inputs to your `flake.nix`:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     dankMaterialShell = {
-      url = "github:AvengeMedia/DankMaterialShell";
+      url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.dgop.follows = "dgop";
     };
   };
 }
 ```
+
+:::tip Using Unstable Version
+If you want to use the unstable (-git) version from the master branch, you can use:
+```nix
+dankMaterialShell.url = "github:AvengeMedia/DankMaterialShell";
+```
+However, be aware that the documentation here may not be updated for the latest changes. You're advised to check the Nix modules source code in the repository directly, and keep in mind that it may not work properly.
+:::
 
 ### 2. Import the NixOS or home-manager Module
 
@@ -83,13 +85,14 @@ That's it! Rebuild your system (or standalone home-manager configuration) and Da
 
 If you're using the niri compositor, the home-manager module provides additional integration options including automatic keybindings and startup configuration.
 
-:::note
-niri integration requires [niri-flake](https://github.com/sodiboo/niri-flake) to be configured in your system.
+:::warning
+We do not recommend using [niri-flake](https://github.com/sodiboo/niri-flake) at this time because it currently doesn't support includes, which is fundamental for using niri theming synchronization, keybind file generation and other include-based features of DankMaterialShell. However, if you still wish to use it, the instructions below remain available.
+Also note that `niri-stable` package from niri-flake is on version `25.08`, while the recommended version for using with DankMaterialShell is the latest `25.11` (available in nixpkgs).
 :::
 
 ### Prerequisites
 
-First, ensure you have [niri-flake](https://github.com/sodiboo/niri-flake) in your inputs:
+If you choose to use [niri-flake](https://github.com/sodiboo/niri-flake) despite the limitations, ensure you have it in your inputs:
 
 ```nix
 niri = {
@@ -112,7 +115,7 @@ If you're using the niri-flake's NixOS module (`inputs.niri.nixosModules.niri`),
 
 ### Enable niri Module
 
-Now you can import and use the niri-specific DankMaterialShell module:
+You can import and use the niri-specific DankMaterialShell module:
 
 ```nix
 imports = [
@@ -127,13 +130,17 @@ Enable niri integration features:
 programs.dankMaterialShell = {
   enable = true;
   niri = {
-    enableKeybinds = true;   # Automatic keybinding configuration
-    enableSpawn = true;      # Auto-start DMS with niri
+    enableKeybinds = true;   # Sets static preset keybinds
+    enableSpawn = true;      # Auto-start DMS with niri and cliphist, if enabled
   };
 };
 ```
 
-This will automatically configure keybindings for launcher, notifications, settings, and all other DankMaterialShell features.
+This will automatically configure preset keybindings for launcher, notifications, settings, and all other DankMaterialShell features.
+
+:::note
+You should not use both `systemd.enable` and `niri.enableSpawn` at the same time, as this will make two instances of DankMaterialShell to be spawned at the same time.
+:::
 
 ### Polkit Agent
 
@@ -168,12 +175,9 @@ programs.dankMaterialShell = {
   enableSystemMonitoring = true;     # System monitoring widgets (dgop)
   enableClipboard = true;            # Clipboard history manager
   enableVPN = true;                  # VPN management widget
-  enableBrightnessControl = true;    # Backlight/brightness controls
-  enableColorPicker = true;          # Color picker tool
   enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
   enableAudioWavelength = true;      # Audio visualizer (cava)
   enableCalendarEvents = true;       # Calendar integration (khal)
-  enableSystemSound = true;          # System sound effects
 };
 ```
 
@@ -210,7 +214,7 @@ programs.dankMaterialShell = {
 
 These defaults are only applied if the settings files don't already exist, so they won't override your existing configuration.
 
-### Plugins (home-manager only)
+### Plugins
 
 Install DankMaterialShell plugins declaratively:
 
@@ -219,9 +223,17 @@ programs.dankMaterialShell = {
   enable = true;
 
   plugins = {
-    myPlugin = {
+    DockerManager = {
+      src = pkgs.fetchFromGitHub {
+        owner = "LuckShiba";
+        repo = "DmsDockerManager";
+        rev = "v1.2.0";
+        sha256 = "sha256-VoJCaygWnKpv0s0pqTOmzZnPM922qPDMHk4EPcgVnaU=";
+      };
+    };
+    AnotherPlugin = {
       enable = true;
-      src = ./path/to/plugin;
+      src = pkgs.another-plugin;
     };
   };
 };

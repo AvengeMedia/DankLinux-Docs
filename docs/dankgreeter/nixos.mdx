@@ -30,19 +30,21 @@ Add the required flake inputs to your `flake.nix` if you haven't yet:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     dankMaterialShell = {
-      url = "github:AvengeMedia/DankMaterialShell";
+      url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.dgop.follows = "dgop";
     };
   };
 }
 ```
+
+:::tip Using Unstable Version
+If you want to use the unstable (-git) version from the master branch, you can use:
+```nix
+dankMaterialShell.url = "github:AvengeMedia/DankMaterialShell";
+```
+However, be aware that the documentation may not be updated for the latest changes. You're advised to check the nix source code in the repository directly, and note that it may not work properly.
+:::
 
 ### 2. Import the NixOS Module
 
