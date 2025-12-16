@@ -89,6 +89,38 @@ programs.dms-shell = {
 };
 ```
 
+#### Using Quickshell from Source
+
+:::tip Recommended for Latest Features
+
+Many features in DankMaterialShell rely on unreleased Quickshell features. For the best experience, you may want to use Quickshell built from source.
+
+:::
+
+To use Quickshell from source, add it as a flake input:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+Then use it in your configuration:
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
+};
+```
+
 ### Using Flake Package with NixOS Module
 
 You can use the package from the DankMaterialShell flake while still using the native NixOS module. This allows you to get quicker updates while keeping the module configuration:
