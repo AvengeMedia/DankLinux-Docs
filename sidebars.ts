@@ -171,6 +171,23 @@ const sidebars: SidebarsConfig = {
           label: 'Overview',
         },
         'danksearch/installation',
+        {
+          type: 'category',
+          label: 'Installation - NixOS',
+          collapsed: true,
+          items: [
+            {
+              type: 'doc',
+              id: 'danksearch/nixos-flake',
+              label: 'Flake (home-manager)',
+            },
+            {
+              type: 'doc',
+              id: 'danksearch/nixos',
+              label: 'NixOS module',
+            },
+          ],
+        },
         'danksearch/configuration',
         'danksearch/usage',
       ],
