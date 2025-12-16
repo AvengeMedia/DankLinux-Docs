@@ -434,11 +434,25 @@ table thead tr {
 
 /* Admonitions (callouts) */
 .alert--info {
+  --ifm-alert-background-color: rgba(128, 90, 213, 0.1);
+  --ifm-alert-background-color-highlight: rgba(128, 90, 213, 0.15);
+  --ifm-alert-foreground-color: var(--dank-purple-light);
+  --ifm-alert-border-color: var(--dank-purple-primary);
   border-left-color: var(--dank-purple-primary);
 }
 
-.alert--info .admonitionHeading {
+.alert--info .admonitionHeading_Gvgb {
   color: var(--dank-purple-light);
+}
+
+[data-theme='light'] .alert--info {
+  --ifm-alert-background-color: rgba(128, 90, 213, 0.08);
+  --ifm-alert-background-color-highlight: rgba(128, 90, 213, 0.12);
+  --ifm-alert-foreground-color: var(--dank-purple-dark);
+}
+
+[data-theme='light'] .alert--info .admonitionHeading_Gvgb {
+  color: var(--dank-purple-dark);
 }
 
 /* Buttons and CTAs */
