@@ -40,7 +40,7 @@ First, add the required flake inputs to your `flake.nix`:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    dankMaterialShell = {
+    dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -51,7 +51,7 @@ First, add the required flake inputs to your `flake.nix`:
 :::tip Using Unstable Version
 If you want to use the unstable (-git) version from the master branch, you can use:
 ```nix
-dankMaterialShell.url = "github:AvengeMedia/DankMaterialShell";
+dms.url = "github:AvengeMedia/DankMaterialShell";
 ```
 However, be aware that the documentation here may not be updated for the latest changes. You're advised to check the Nix modules source code in the repository directly, and keep in mind that it may not work properly.
 :::
@@ -64,14 +64,14 @@ If you're using the NixOS module:
 
 ```nix
 imports = [
-  inputs.dankMaterialShell.nixosModules.dankMaterialShell
+  inputs.dms.nixosModules.dankMaterialShell
 ];
 ```
 
 Alternatively, if you're using the home-manager module:
 ```nix
 imports = [
-  inputs.dankMaterialShell.homeModules.dankMaterialShell.default
+  inputs.dms.homeModules.dankMaterialShell.default
 ];
 ```
 
@@ -123,8 +123,8 @@ You can import and use the niri-specific DankMaterialShell module:
 
 ```nix
 imports = [
-  inputs.dankMaterialShell.homeModules.dankMaterialShell.default
-  inputs.dankMaterialShell.homeModules.dankMaterialShell.niri
+  inputs.dms.homeModules.dankMaterialShell.default
+  inputs.dms.homeModules.dankMaterialShell.niri
 ];
 ```
 
