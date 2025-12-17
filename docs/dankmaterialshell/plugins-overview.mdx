@@ -71,6 +71,25 @@ Background services with no UI. Run automation, monitoring, or provide services 
 
 **Example use cases:** Battery alerts, wallpaper automation, notification handlers
 
+### 5. Desktop Widget (`type: "desktop"`) {#desktop-plugin}
+
+:::info Upcoming in DMS 1.2
+Desktop plugins are not yet released. This documents the upcoming API.
+:::
+
+Widgets that render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can drag them anywhere and resize via corner handles.
+
+**Capabilities:**
+- `desktop-widget` - Appears on the desktop layer
+
+**Features:**
+- Free positioning anywhere on desktop
+- Resizing with minimum size constraints
+- Multi-monitor support with independent positions per screen
+- Position/size persistence across sessions
+
+**Example use cases:** Desktop clock, system monitor, weather widget, sticky notes
+
 ## Installation
 
 ### From GitHub
