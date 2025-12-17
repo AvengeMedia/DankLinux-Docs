@@ -454,7 +454,7 @@ const config: Config = {
     prism: {
       theme: dankPurpleLight,
       darkTheme: dankPurple,
-      additionalLanguages: ['bash', 'json', 'yaml', 'toml', 'rust', 'python', 'javascript', 'typescript'],
+      additionalLanguages: ['bash', 'json', 'yaml', 'toml', 'rust', 'python', 'javascript', 'typescript', 'qml'],
     },
   },
 };
