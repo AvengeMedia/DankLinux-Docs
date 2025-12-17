@@ -572,21 +572,6 @@ Desktop widgets support:
 | Move | Right-click + drag anywhere | Repositions the widget |
 | Resize | Right-click + drag bottom-right corner | Resizes within min/max bounds |
 
-### Multi-Monitor Support
-
-Desktop widgets automatically create independent instances per monitor. Position and size are saved separately for each screen.
-
-Control which monitors show your widget via display preferences:
-
-```qml
-// In your widget
-property var displayPreferences: pluginData.displayPreferences ?? ["all"]
-
-// Preferences format:
-// ["all"] - Show on all monitors (default)
-// [{name: "DP-1"}, {name: "DP-2"}] - Show only on specific monitors
-```
-
 ### Responsive Layout
 
 Adapt to widget dimensions:
