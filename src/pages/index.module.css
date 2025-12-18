@@ -1143,6 +1143,114 @@
   animation-delay: 4.5s;
 }
 
+/* ===== PRE-CONFIGURED FLAVORS ===== */
+.preconfiguredRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  animation: fadeInUp 0.8s ease-out 1.2s backwards;
+}
+
+.preconfiguredLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+[data-theme='light'] .preconfiguredLabel {
+  color: rgba(26, 22, 37, 0.35);
+}
+
+.preconfiguredCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(208, 188, 255, 0.15);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+[data-theme='light'] .preconfiguredCard {
+  background: rgba(128, 90, 213, 0.05);
+  border-color: rgba(128, 90, 213, 0.2);
+}
+
+.preconfiguredCard:hover {
+  background: rgba(208, 188, 255, 0.08);
+  border-color: rgba(208, 188, 255, 0.3);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+[data-theme='light'] .preconfiguredCard:hover {
+  background: rgba(128, 90, 213, 0.1);
+  border-color: rgba(128, 90, 213, 0.4);
+}
+
+.preconfiguredLogo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+[data-theme='light'] .preconfiguredLogo {
+  filter: brightness(0) invert(0.2);
+}
+
+.preconfiguredInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.0625rem;
+}
+
+.preconfiguredName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+[data-theme='light'] .preconfiguredName {
+  color: #1a1625;
+}
+
+.preconfiguredDesc {
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme='light'] .preconfiguredDesc {
+  color: rgba(26, 22, 37, 0.5);
+}
+
+.preconfiguredArrow {
+  stroke: rgba(255, 255, 255, 0.4);
+  transition: all 0.25s ease;
+  margin-left: 0.125rem;
+}
+
+[data-theme='light'] .preconfiguredArrow {
+  stroke: rgba(26, 22, 37, 0.4);
+}
+
+.preconfiguredCard:hover .preconfiguredArrow {
+  stroke: rgba(208, 188, 255, 0.8);
+  transform: translateX(3px);
+}
+
+[data-theme='light'] .preconfiguredCard:hover .preconfiguredArrow {
+  stroke: rgba(128, 90, 213, 0.8);
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes fadeInUp {
   from {

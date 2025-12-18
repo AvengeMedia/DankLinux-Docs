@@ -347,6 +347,26 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              {/* Pre-configured flavors */}
+              <div className={styles.preconfiguredRow}>
+                <span className={styles.preconfiguredLabel}>Pre-configured flavors</span>
+                <a
+                  href="https://github.com/zirconium-dev/zirconium/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.preconfiguredCard}
+                >
+                  <img src="/img/z.svg" alt="Zirconium" className={styles.preconfiguredLogo} />
+                  <div className={styles.preconfiguredInfo}>
+                    <span className={styles.preconfiguredName}>Zirconium</span>
+                    <span className={styles.preconfiguredDesc}>Fedora-based immutable OS with niri + DMS</span>
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className={styles.preconfiguredArrow}>
+                    <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </section>
 
@@ -614,6 +634,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
           </section>
 
         </div>
