@@ -1,0 +1,35 @@
+/* Desktop Widgets Blog Post Styles */
+/* Add custom styles here as needed - these are scoped to this post only */
+
+/* Example: Widget preview cards */
+.widgetPreview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(208, 188, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+[data-theme='light'] .widgetPreview {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(128, 90, 213, 0.2);
+}
+
+.widgetPreview img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.widgetPreview figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme='light'] .widgetPreview figcaption {
+  color: rgba(26, 22, 37, 0.6);
+}
