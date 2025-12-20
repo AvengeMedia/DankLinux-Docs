@@ -340,7 +340,7 @@ dms ipc call spotlight toggleQuery "!"
 All these modals support `open`, `close`, and `toggle` functions:
 
 - **clipboard** - Clipboard history manager
-- **notifications** - Notification center (also supports `clearAll`)
+- **notifications** - Notification center (also supports `clearAll` and `dismissAllPopups`)
 - **processlist** - System process list and performance monitor (also supports `focusOrToggle`)
 - **powermenu** - Power menu for system actions
 - **control-center** - Quick settings (network, bluetooth, audio, etc.)
@@ -351,6 +351,7 @@ All these modals support `open`, `close`, and `toggle` functions:
 dms ipc call clipboard toggle
 dms ipc call notifications open
 dms ipc call notifications clearAll
+dms ipc call notifications dismissAllPopups
 dms ipc call processlist open
 dms ipc call powermenu toggle
 dms ipc call control-center toggle
