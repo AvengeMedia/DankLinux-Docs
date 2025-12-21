@@ -28,6 +28,7 @@ interface Theme {
   name: string;
   author: string;
   description: string;
+  version: string;
   dark: Record<string, string>;
   light: Record<string, string>;
   previewUrl: string;
@@ -569,11 +570,14 @@ export default function Plugins() {
                       </div>
                     </div>
 
-                    {theme.updated_at && (
-                      <div className={styles.pluginTags}>
+                    <div className={styles.pluginTags}>
+                      {theme.version && (
+                        <span className={styles.tag}>v{theme.version}</span>
+                      )}
+                      {theme.updated_at && (
                         <span className={styles.tag}>{formatUpdatedAt(theme.updated_at)}</span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                   <div className={styles.cardGlow}></div>
                 </div>

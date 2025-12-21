@@ -57,6 +57,7 @@ type Theme struct {
 	Name        string                 `json:"name"`
 	Author      string                 `json:"author"`
 	Description string                 `json:"description"`
+	Version     string                 `json:"version"`
 	Dark        map[string]interface{} `json:"dark"`
 	Light       map[string]interface{} `json:"light"`
 	PreviewURL  string                 `json:"previewUrl"`
