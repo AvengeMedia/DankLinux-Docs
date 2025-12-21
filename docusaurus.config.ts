@@ -396,7 +396,7 @@ const config: Config = {
         },
         {
           to: '/plugins',
-          label: 'Plugins',
+          label: 'Plugins & Themes',
           position: 'right',
           activeBasePath: '/plugins',
         },

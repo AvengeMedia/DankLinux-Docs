@@ -51,3 +51,14 @@ type Plugin struct {
 	Permissions  []string  `json:"permissions,omitempty"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
+
+type Theme struct {
+	ID          string                 `json:"id"`
+	Name        string                 `json:"name"`
+	Author      string                 `json:"author"`
+	Description string                 `json:"description"`
+	Dark        map[string]interface{} `json:"dark"`
+	Light       map[string]interface{} `json:"light"`
+	PreviewURL  string                 `json:"previewUrl"`
+	UpdatedAt   time.Time              `json:"updated_at"`
+}

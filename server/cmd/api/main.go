@@ -11,6 +11,7 @@ import (
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/config"
 	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
+	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
@@ -65,14 +66,21 @@ func startAPI(cfg *config.Config) {
 	}()
 
 	pluginCache := registry.NewCache(cfg.GithubToken)
+	themeCache := registry.NewThemeCache(cfg.GithubToken)
 
 	log.Info("Initializing plugin cache...")
 	if err := pluginCache.Initialize(ctx); err != nil {
 		log.Fatalf("Failed to initialize plugin cache: %v", err)
 	}
 
+	log.Info("Initializing theme cache...")
+	if err := themeCache.Initialize(ctx); err != nil {
+		log.Fatalf("Failed to initialize theme cache: %v", err)
+	}
+
 	srvImpl := &server.Server{
 		PluginCache: pluginCache,
+		ThemeCache:  themeCache,
 	}
 
 	r := chi.NewRouter()
@@ -144,6 +152,13 @@ func startAPI(cfg *config.Config) {
 			next(op)
 		})
 		plugins_handler.RegisterHandlers(srvImpl, pluginsGroup)
+
+		themesGroup := huma.NewGroup(api, "/themes")
+		themesGroup.UseModifier(func(op *huma.Operation, next func(*huma.Operation)) {
+			op.Tags = []string{"Themes"}
+			next(op)
+		})
+		themes_handler.RegisterHandlers(srvImpl, themesGroup)
 	})
 
 	addr := ":" + cfg.Port
@@ -163,9 +178,12 @@ func startAPI(cfg *config.Config) {
 		gocron.DurationJob(10*time.Minute),
 		gocron.NewTask(
 			func(ctx context.Context) {
-				log.Info("Running scheduled plugin cache refresh")
+				log.Info("Running scheduled cache refresh")
 				if err := pluginCache.Refresh(ctx); err != nil {
 					log.Error("Failed to refresh plugin cache", "err", err)
+				}
+				if err := themeCache.Refresh(ctx); err != nil {
+					log.Error("Failed to refresh theme cache", "err", err)
 				}
 			},
 			ctx,

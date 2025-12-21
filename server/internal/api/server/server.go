@@ -8,4 +8,5 @@ type EmptyInput struct{}
 
 type Server struct {
 	PluginCache *registry.Cache
+	ThemeCache  *registry.ThemeCache
 }

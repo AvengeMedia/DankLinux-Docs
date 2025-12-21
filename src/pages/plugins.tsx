@@ -23,10 +23,28 @@ interface Plugin {
   updated_at: string;
 }
 
+interface Theme {
+  id: string;
+  name: string;
+  author: string;
+  description: string;
+  dark: Record<string, string>;
+  light: Record<string, string>;
+  previewUrl: string;
+  updated_at: string;
+}
+
 interface PluginsResponse {
   plugins: Plugin[];
   count: number;
 }
+
+interface ThemesResponse {
+  themes: Theme[];
+  count: number;
+}
+
+type ActiveTab = 'plugins' | 'themes';
 
 const categories = [
   { id: 'all', label: 'All Plugins' },
@@ -59,8 +77,11 @@ const sortOptions = [
 ];
 
 export default function Plugins() {
+  const [activeTab, setActiveTab] = useState<ActiveTab>('plugins');
   const [plugins, setPlugins] = useState<Plugin[]>([]);
   const [filteredPlugins, setFilteredPlugins] = useState<Plugin[]>([]);
+  const [themes, setThemes] = useState<Theme[]>([]);
+  const [filteredThemes, setFilteredThemes] = useState<Theme[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -71,12 +92,22 @@ export default function Plugins() {
   const [sortBy, setSortBy] = useState('updated_at');
 
   useEffect(() => {
-    fetchPlugins();
-  }, [sortBy]);
+    switch (activeTab) {
+      case 'themes':
+        fetchThemes();
+        break;
+      default:
+        fetchPlugins();
+    }
+  }, [sortBy, activeTab]);
 
   useEffect(() => {
     filterPlugins();
   }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly]);
+
+  useEffect(() => {
+    filterThemes();
+  }, [themes, searchQuery]);
 
   const fetchPlugins = async () => {
     try {
@@ -130,6 +161,42 @@ export default function Plugins() {
     }
 
     setFilteredPlugins(filtered);
+  };
+
+  const fetchThemes = async () => {
+    try {
+      setLoading(true);
+      const isDev = process.env.NODE_ENV === 'development';
+      const baseUrl = isDev ? 'http://localhost:8337/themes' : 'https://api.danklinux.com/themes';
+      const apiUrl = `${baseUrl}?sortBy=${sortBy}`;
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch themes');
+      }
+      const data: ThemesResponse = await response.json();
+      setThemes(data.themes);
+      setFilteredThemes(data.themes);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterThemes = () => {
+    if (!searchQuery) {
+      setFilteredThemes(themes);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const filtered = themes.filter(t =>
+      t.name.toLowerCase().includes(query) ||
+      t.description.toLowerCase().includes(query) ||
+      t.author.toLowerCase().includes(query) ||
+      t.id.toLowerCase().includes(query)
+    );
+    setFilteredThemes(filtered);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -187,8 +254,8 @@ export default function Plugins() {
 
   return (
     <Layout
-      title="Plugin Registry"
-      description="Discover and install plugins for DankMaterialShell - extend your desktop with widgets, launchers, and more.">
+      title="Plugins & Themes"
+      description="Discover and install plugins and themes for DankMaterialShell - extend your desktop with widgets, launchers, and more.">
       <Head>
         <link
           rel="stylesheet"
@@ -209,32 +276,50 @@ export default function Plugins() {
         <div className={styles.content}>
           <section className={styles.header}>
             <h1 className={styles.title}>
-              Explore <span className={styles.gradientText}>Plugins</span>
+              Explore <span className={styles.gradientText}>{activeTab === 'plugins' ? 'Plugins' : 'Themes'}</span>
             </h1>
             <p className={styles.subtitle}>
-              Extend DankMaterialShell with powerful plugins for widgets, launchers, and more
+              {activeTab === 'plugins'
+                ? 'Extend DankMaterialShell with powerful plugins for widgets, launchers, and more'
+                : 'Customize your desktop with beautiful color schemes'}
             </p>
+            <div className={styles.tabContainer}>
+              <button
+                className={`${styles.tabButton} ${activeTab === 'plugins' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('plugins')}
+              >
+                Plugins
+              </button>
+              <button
+                className={`${styles.tabButton} ${activeTab === 'themes' ? styles.activeTab : ''}`}
+                onClick={() => setActiveTab('themes')}
+              >
+                Themes
+              </button>
+            </div>
           </section>
 
           <section className={styles.filters}>
             <div className={styles.topControls}>
               <input
                 type="text"
-                placeholder="Search plugins..."
+                placeholder={activeTab === 'plugins' ? 'Search plugins...' : 'Search themes...'}
                 className={styles.searchInput}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               <div className={styles.controlsRight}>
-                <label className={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={showFirstPartyOnly}
-                    onChange={(e) => setShowFirstPartyOnly(e.target.checked)}
-                    className={styles.checkbox}
-                  />
-                  <span>Official only</span>
-                </label>
+                {activeTab === 'plugins' && (
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={showFirstPartyOnly}
+                      onChange={(e) => setShowFirstPartyOnly(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span>Official only</span>
+                  </label>
+                )}
                 <div className={styles.sortGroup}>
                   <label className={styles.filterLabel} htmlFor="sort-select">Sort by</label>
                   <select
@@ -253,75 +338,82 @@ export default function Plugins() {
               </div>
             </div>
 
-            <div className={styles.filterRow}>
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>Category</label>
-                <div className={styles.filterButtons}>
-                  {categories.map(cat => (
-                    <button
-                      key={cat.id}
-                      className={`${styles.filterButton} ${selectedCategory === cat.id ? styles.active : ''}`}
-                      onClick={() => setSelectedCategory(cat.id)}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
+            {activeTab === 'plugins' && (
+              <div className={styles.filterRow}>
+                <div className={styles.filterGroup}>
+                  <label className={styles.filterLabel}>Category</label>
+                  <div className={styles.filterButtons}>
+                    {categories.map(cat => (
+                      <button
+                        key={cat.id}
+                        className={`${styles.filterButton} ${selectedCategory === cat.id ? styles.active : ''}`}
+                        onClick={() => setSelectedCategory(cat.id)}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>Type</label>
-                <div className={styles.filterButtons}>
-                  {capabilities.map(cap => (
-                    <button
-                      key={cap.id}
-                      className={`${styles.filterButton} ${selectedCapability === cap.id ? styles.active : ''}`}
-                      onClick={() => setSelectedCapability(cap.id)}
-                    >
-                      {cap.label}
-                    </button>
-                  ))}
+                <div className={styles.filterGroup}>
+                  <label className={styles.filterLabel}>Type</label>
+                  <div className={styles.filterButtons}>
+                    {capabilities.map(cap => (
+                      <button
+                        key={cap.id}
+                        className={`${styles.filterButton} ${selectedCapability === cap.id ? styles.active : ''}`}
+                        onClick={() => setSelectedCapability(cap.id)}
+                      >
+                        {cap.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>Compositor</label>
-                <div className={styles.filterButtons}>
-                  {compositors.map(comp => (
-                    <button
-                      key={comp.id}
-                      className={`${styles.filterButton} ${selectedCompositor === comp.id ? styles.active : ''}`}
-                      onClick={() => setSelectedCompositor(comp.id)}
-                    >
-                      {comp.label}
-                    </button>
-                  ))}
+                <div className={styles.filterGroup}>
+                  <label className={styles.filterLabel}>Compositor</label>
+                  <div className={styles.filterButtons}>
+                    {compositors.map(comp => (
+                      <button
+                        key={comp.id}
+                        className={`${styles.filterButton} ${selectedCompositor === comp.id ? styles.active : ''}`}
+                        onClick={() => setSelectedCompositor(comp.id)}
+                      >
+                        {comp.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className={styles.resultsCount}>
-              {filteredPlugins.length} {filteredPlugins.length === 1 ? 'plugin' : 'plugins'} found
+              {activeTab === 'plugins'
+                ? `${filteredPlugins.length} ${filteredPlugins.length === 1 ? 'plugin' : 'plugins'} found`
+                : `${filteredThemes.length} ${filteredThemes.length === 1 ? 'theme' : 'themes'} found`}
             </div>
           </section>
 
           {loading && (
             <div className={styles.loadingContainer}>
               <div className={styles.spinner}></div>
-              <p>Loading plugins...</p>
+              <p>Loading {activeTab}...</p>
             </div>
           )}
 
           {error && (
             <div className={styles.errorContainer}>
               <p>Error: {error}</p>
-              <button onClick={fetchPlugins} className={styles.retryButton}>
+              <button
+                onClick={activeTab === 'plugins' ? fetchPlugins : fetchThemes}
+                className={styles.retryButton}
+              >
                 Retry
               </button>
             </div>
           )}
 
-          {!loading && !error && (
+          {!loading && !error && activeTab === 'plugins' && (
             <section className={styles.pluginsGrid}>
               {filteredPlugins.map(plugin => (
                 <div key={plugin.id} className={styles.pluginCard}>
@@ -407,7 +499,89 @@ export default function Plugins() {
             </section>
           )}
 
-          {!loading && !error && filteredPlugins.length === 0 && (
+          {!loading && !error && activeTab === 'themes' && (
+            <section className={styles.pluginsGrid}>
+              {filteredThemes.map(theme => (
+                <div key={theme.id} className={styles.pluginCard}>
+                  <div className={styles.themePreview}>
+                    <img src={theme.previewUrl} alt={theme.name} loading="lazy" />
+                  </div>
+                  <div className={styles.pluginContent}>
+                    <div className={styles.pluginHeader}>
+                      <div className={styles.pluginTitleGroup}>
+                        <h3 className={styles.pluginName}>{theme.name}</h3>
+                        <p className={styles.pluginAuthor}>by {theme.author}</p>
+                      </div>
+                    </div>
+
+                    <p className={styles.pluginDescription}>{theme.description}</p>
+
+                    <div className={styles.themeColors}>
+                      <div className={styles.colorScheme}>
+                        <span className={styles.schemeLabel}>Dark</span>
+                        <div className={styles.colorSwatches}>
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.dark.primary as string }}
+                            title="Primary"
+                          />
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.dark.secondary as string }}
+                            title="Secondary"
+                          />
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.dark.surface as string }}
+                            title="Surface"
+                          />
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.dark.background as string }}
+                            title="Background"
+                          />
+                        </div>
+                      </div>
+                      <div className={styles.colorScheme}>
+                        <span className={styles.schemeLabel}>Light</span>
+                        <div className={styles.colorSwatches}>
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.light.primary as string }}
+                            title="Primary"
+                          />
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.light.secondary as string }}
+                            title="Secondary"
+                          />
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.light.surface as string }}
+                            title="Surface"
+                          />
+                          <div
+                            className={styles.colorSwatch}
+                            style={{ backgroundColor: theme.light.background as string }}
+                            title="Background"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {theme.updated_at && (
+                      <div className={styles.pluginTags}>
+                        <span className={styles.tag}>{formatUpdatedAt(theme.updated_at)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.cardGlow}></div>
+                </div>
+              ))}
+            </section>
+          )}
+
+          {!loading && !error && activeTab === 'plugins' && filteredPlugins.length === 0 && (
             <div className={styles.emptyState}>
               <p>No plugins found matching your criteria.</p>
               <button
@@ -417,6 +591,21 @@ export default function Plugins() {
                   setSelectedCompositor('all');
                   setSearchQuery('');
                   setShowFirstPartyOnly(false);
+                  setSortBy('updated_at');
+                }}
+                className={styles.resetButton}
+              >
+                Reset Filters
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && activeTab === 'themes' && filteredThemes.length === 0 && (
+            <div className={styles.emptyState}>
+              <p>No themes found matching your criteria.</p>
+              <button
+                onClick={() => {
+                  setSearchQuery('');
                   setSortBy('updated_at');
                 }}
                 className={styles.resetButton}
