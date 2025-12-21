@@ -193,6 +193,11 @@ const sidebars: SidebarsConfig = {
       ],
     },
     'contributing',
+    {
+      type: 'doc',
+      id: 'contributing-registry',
+      label: 'Contributing Plugins & Themes',
+    },
     'support'
   ],
 };
