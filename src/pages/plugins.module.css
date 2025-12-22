@@ -720,6 +720,40 @@
 .pluginActions {
   margin-top: auto;
   padding-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.installButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  transition: all 0.3s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.installButton .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+
+[data-theme='light'] .installButton {
+  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+}
+
+.installButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(128, 90, 213, 0.4);
+  text-decoration: none;
+  color: #ffffff;
 }
 
 .repoButton {
@@ -735,7 +769,7 @@
   font-weight: 600;
   font-size: 0.9375rem;
   transition: all 0.3s ease;
-  width: 100%;
+  flex: 1;
   justify-content: center;
 }
 
