@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
+import { useLocation, useHistory } from '@docusaurus/router';
 import styles from './plugins.module.css';
 
 interface Plugin {
@@ -78,7 +79,16 @@ const sortOptions = [
 ];
 
 export default function Plugins() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('plugins');
+  const location = useLocation();
+  const history = useHistory();
+
+  const getTabFromUrl = (): ActiveTab => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    return tab === 'themes' ? 'themes' : 'plugins';
+  };
+
+  const [activeTab, setActiveTab] = useState<ActiveTab>(getTabFromUrl);
   const [plugins, setPlugins] = useState<Plugin[]>([]);
   const [filteredPlugins, setFilteredPlugins] = useState<Plugin[]>([]);
   const [themes, setThemes] = useState<Theme[]>([]);
@@ -91,6 +101,25 @@ export default function Plugins() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
   const [sortBy, setSortBy] = useState('updated_at');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const currentTab = params.get('tab');
+    const expectedTab = activeTab === 'themes' ? 'themes' : null;
+
+    if (currentTab !== expectedTab) {
+      if (expectedTab) {
+        params.set('tab', expectedTab);
+      } else {
+        params.delete('tab');
+      }
+      history.replace({ search: params.toString() });
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    setActiveTab(getTabFromUrl());
+  }, [location.search]);
 
   useEffect(() => {
     switch (activeTab) {
