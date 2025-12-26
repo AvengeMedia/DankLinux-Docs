@@ -24,6 +24,18 @@ interface Plugin {
   updated_at: string;
 }
 
+interface ThemeVariantOption {
+  id: string;
+  name: string;
+  dark: Record<string, string>;
+  light: Record<string, string>;
+}
+
+interface ThemeVariants {
+  default: string;
+  options: ThemeVariantOption[];
+}
+
 interface Theme {
   id: string;
   name: string;
@@ -32,6 +44,7 @@ interface Theme {
   version: string;
   dark: Record<string, string>;
   light: Record<string, string>;
+  variants?: ThemeVariants;
   previewUrl: string;
   updated_at: string;
 }
@@ -101,6 +114,7 @@ export default function Plugins() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
   const [sortBy, setSortBy] = useState('updated_at');
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -280,6 +294,28 @@ export default function Plugins() {
     }
     const years = Math.floor(diffInDays / 365);
     return `Updated ${years} ${years === 1 ? 'year' : 'years'} ago`;
+  };
+
+  const getSelectedVariant = (theme: Theme): string => {
+    if (!theme.variants) return '';
+    return selectedVariants[theme.id] || theme.variants.default;
+  };
+
+  const getResolvedColors = (theme: Theme, mode: 'dark' | 'light'): Record<string, string> => {
+    const baseColors = theme[mode];
+    if (!theme.variants) return baseColors;
+
+    const variantId = getSelectedVariant(theme);
+    const variant = theme.variants.options.find(v => v.id === variantId);
+    if (!variant) return baseColors;
+
+    return { ...baseColors, ...variant[mode] };
+  };
+
+  const getPreviewUrl = (theme: Theme): string => {
+    if (!theme.variants) return theme.previewUrl;
+    const variantId = getSelectedVariant(theme);
+    return theme.previewUrl.replace('preview.svg', `preview-${variantId}.svg`);
   };
 
   return (
@@ -541,7 +577,7 @@ export default function Plugins() {
               {filteredThemes.map(theme => (
                 <div key={theme.id} className={styles.pluginCard}>
                   <div className={styles.themePreview}>
-                    <img src={theme.previewUrl} alt={theme.name} loading="lazy" />
+                    <img src={getPreviewUrl(theme)} alt={theme.name} loading="lazy" />
                   </div>
                   <div className={styles.pluginContent}>
                     <div className={styles.pluginHeader}>
@@ -553,28 +589,45 @@ export default function Plugins() {
 
                     <p className={styles.pluginDescription}>{theme.description}</p>
 
+                    {theme.variants && (
+                      <div className={styles.variantSelector}>
+                        <label className={styles.variantLabel}>Variant</label>
+                        <div className={styles.variantButtons}>
+                          {theme.variants.options.map(variant => (
+                            <button
+                              key={variant.id}
+                              className={`${styles.variantButton} ${getSelectedVariant(theme) === variant.id ? styles.active : ''}`}
+                              onClick={() => setSelectedVariants(prev => ({ ...prev, [theme.id]: variant.id }))}
+                            >
+                              {variant.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className={styles.themeColors}>
                       <div className={styles.colorScheme}>
                         <span className={styles.schemeLabel}>Dark</span>
                         <div className={styles.colorSwatches}>
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.dark.primary as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'dark').primary }}
                             title="Primary"
                           />
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.dark.secondary as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'dark').secondary }}
                             title="Secondary"
                           />
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.dark.surface as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'dark').surface }}
                             title="Surface"
                           />
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.dark.background as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'dark').background }}
                             title="Background"
                           />
                         </div>
@@ -584,22 +637,22 @@ export default function Plugins() {
                         <div className={styles.colorSwatches}>
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.light.primary as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'light').primary }}
                             title="Primary"
                           />
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.light.secondary as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'light').secondary }}
                             title="Secondary"
                           />
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.light.surface as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'light').surface }}
                             title="Surface"
                           />
                           <div
                             className={styles.colorSwatch}
-                            style={{ backgroundColor: theme.light.background as string }}
+                            style={{ backgroundColor: getResolvedColors(theme, 'light').background }}
                             title="Background"
                           />
                         </div>
@@ -617,7 +670,7 @@ export default function Plugins() {
 
                     <div className={styles.pluginActions}>
                       <a
-                        href={`dms://theme/install/${theme.id}`}
+                        href={`dms://theme/install/${theme.id}${theme.variants ? `?variant=${getSelectedVariant(theme)}` : ''}`}
                         className={styles.installButton}
                       >
                         <span className="material-symbols-outlined">download</span>

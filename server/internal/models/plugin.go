@@ -52,6 +52,18 @@ type Plugin struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
+type ThemeVariantOption struct {
+	ID    string                 `json:"id"`
+	Name  string                 `json:"name"`
+	Dark  map[string]interface{} `json:"dark"`
+	Light map[string]interface{} `json:"light"`
+}
+
+type ThemeVariants struct {
+	Default string               `json:"default"`
+	Options []ThemeVariantOption `json:"options"`
+}
+
 type Theme struct {
 	ID          string                 `json:"id"`
 	Name        string                 `json:"name"`
@@ -60,6 +72,7 @@ type Theme struct {
 	Version     string                 `json:"version"`
 	Dark        map[string]interface{} `json:"dark"`
 	Light       map[string]interface{} `json:"light"`
+	Variants    *ThemeVariants         `json:"variants,omitempty"`
 	PreviewURL  string                 `json:"previewUrl"`
 	UpdatedAt   time.Time              `json:"updated_at"`
 }
