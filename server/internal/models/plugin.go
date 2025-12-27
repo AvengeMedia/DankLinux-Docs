@@ -55,13 +55,35 @@ type Plugin struct {
 type ThemeVariantOption struct {
 	ID    string                 `json:"id"`
 	Name  string                 `json:"name"`
-	Dark  map[string]interface{} `json:"dark"`
-	Light map[string]interface{} `json:"light"`
+	Dark  map[string]interface{} `json:"dark,omitempty"`
+	Light map[string]interface{} `json:"light,omitempty"`
+}
+
+type ThemeFlavor struct {
+	ID    string                 `json:"id"`
+	Name  string                 `json:"name"`
+	Dark  map[string]interface{} `json:"dark,omitempty"`
+	Light map[string]interface{} `json:"light,omitempty"`
+}
+
+type ThemeAccent struct {
+	ID     string                            `json:"id"`
+	Name   string                            `json:"name"`
+	Colors map[string]map[string]interface{} `json:"-"`
+}
+
+type ThemeModeDefaults struct {
+	Flavor string `json:"flavor"`
+	Accent string `json:"accent"`
 }
 
 type ThemeVariants struct {
-	Default string               `json:"default"`
-	Options []ThemeVariantOption `json:"options"`
+	Type     string                        `json:"type,omitempty"`
+	Default  string                        `json:"default,omitempty"`
+	Options  []ThemeVariantOption          `json:"options,omitempty"`
+	Defaults map[string]*ThemeModeDefaults `json:"defaults,omitempty"`
+	Flavors  []ThemeFlavor                 `json:"flavors,omitempty"`
+	Accents  []map[string]interface{}      `json:"accents,omitempty"`
 }
 
 type Theme struct {

@@ -27,13 +27,35 @@ interface Plugin {
 interface ThemeVariantOption {
   id: string;
   name: string;
-  dark: Record<string, string>;
-  light: Record<string, string>;
+  dark?: Record<string, string>;
+  light?: Record<string, string>;
+}
+
+interface ThemeFlavor {
+  id: string;
+  name: string;
+  dark?: Record<string, string>;
+  light?: Record<string, string>;
+}
+
+interface ThemeAccent {
+  id: string;
+  name: string;
+  [flavorId: string]: string | Record<string, string>;
+}
+
+interface ThemeModeDefaults {
+  flavor: string;
+  accent: string;
 }
 
 interface ThemeVariants {
-  default: string;
-  options: ThemeVariantOption[];
+  type?: 'multi';
+  default?: string;
+  options?: ThemeVariantOption[];
+  defaults?: { dark?: ThemeModeDefaults; light?: ThemeModeDefaults };
+  flavors?: ThemeFlavor[];
+  accents?: ThemeAccent[];
 }
 
 interface Theme {
@@ -115,6 +137,8 @@ export default function Plugins() {
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
   const [sortBy, setSortBy] = useState('updated_at');
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
+  const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
+  const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -297,16 +321,47 @@ export default function Plugins() {
   };
 
   const getSelectedVariant = (theme: Theme): string => {
-    if (!theme.variants) return '';
-    return selectedVariants[theme.id] || theme.variants.default;
+    if (!theme.variants || theme.variants.type === 'multi') return '';
+    return selectedVariants[theme.id] || theme.variants.default || '';
+  };
+
+  const getSelectedFlavor = (theme: Theme): string => {
+    if (!theme.variants?.type || theme.variants.type !== 'multi') return '';
+    return selectedFlavors[theme.id] || theme.variants.defaults?.dark?.flavor || '';
+  };
+
+  const getFlavorMode = (theme: Theme): 'dark' | 'light' => {
+    const flavorId = getSelectedFlavor(theme);
+    const flavor = theme.variants?.flavors?.find(f => f.id === flavorId);
+    return flavor?.light ? 'light' : 'dark';
+  };
+
+  const getSelectedAccent = (theme: Theme): string => {
+    if (!theme.variants?.type || theme.variants.type !== 'multi') return '';
+    return selectedAccents[theme.id] || theme.variants.defaults?.dark?.accent || '';
   };
 
   const getResolvedColors = (theme: Theme, mode: 'dark' | 'light'): Record<string, string> => {
-    const baseColors = theme[mode];
+    const baseColors = theme[mode] || {};
     if (!theme.variants) return baseColors;
 
+    if (theme.variants.type === 'multi') {
+      const flavorId = getSelectedFlavor(theme);
+      const accentId = getSelectedAccent(theme);
+      const flavor = theme.variants.flavors?.find(f => f.id === flavorId);
+      const accent = theme.variants.accents?.find(a => a.id === accentId);
+
+      const flavorMode = flavor?.light ? 'light' : 'dark';
+      if (flavorMode !== mode) return baseColors;
+
+      const flavorColors = flavor?.[mode] || {};
+      const accentColors = (accent?.[flavorId] as Record<string, string>) || {};
+
+      return { ...baseColors, ...flavorColors, ...accentColors };
+    }
+
     const variantId = getSelectedVariant(theme);
-    const variant = theme.variants.options.find(v => v.id === variantId);
+    const variant = theme.variants.options?.find(v => v.id === variantId);
     if (!variant) return baseColors;
 
     return { ...baseColors, ...variant[mode] };
@@ -314,8 +369,28 @@ export default function Plugins() {
 
   const getPreviewUrl = (theme: Theme): string => {
     if (!theme.variants) return theme.previewUrl;
+
+    if (theme.variants.type === 'multi') {
+      const flavorId = getSelectedFlavor(theme);
+      const accentId = getSelectedAccent(theme);
+      return theme.previewUrl.replace('preview.svg', `preview-${flavorId}-${accentId}.svg`);
+    }
+
     const variantId = getSelectedVariant(theme);
     return theme.previewUrl.replace('preview.svg', `preview-${variantId}.svg`);
+  };
+
+  const getInstallUrl = (theme: Theme): string => {
+    const base = `dms://theme/install/${theme.id}`;
+    if (!theme.variants) return base;
+
+    if (theme.variants.type === 'multi') {
+      const flavor = getSelectedFlavor(theme);
+      const accent = getSelectedAccent(theme);
+      return `${base}?flavor=${flavor}&accent=${accent}`;
+    }
+
+    return `${base}?variant=${getSelectedVariant(theme)}`;
   };
 
   return (
@@ -589,7 +664,7 @@ export default function Plugins() {
 
                     <p className={styles.pluginDescription}>{theme.description}</p>
 
-                    {theme.variants && (
+                    {theme.variants && theme.variants.type !== 'multi' && theme.variants.options && (
                       <div className={styles.variantSelector}>
                         <label className={styles.variantLabel}>Variant</label>
                         <div className={styles.variantButtons}>
@@ -606,57 +681,94 @@ export default function Plugins() {
                       </div>
                     )}
 
+                    {theme.variants?.type === 'multi' && (
+                      <>
+                        <div className={styles.variantSelector}>
+                          <label className={styles.variantLabel}>Flavor</label>
+                          <div className={styles.variantButtons}>
+                            {theme.variants.flavors?.map(flavor => (
+                              <button
+                                key={flavor.id}
+                                className={`${styles.variantButton} ${getSelectedFlavor(theme) === flavor.id ? styles.active : ''}`}
+                                onClick={() => setSelectedFlavors(prev => ({ ...prev, [theme.id]: flavor.id }))}
+                              >
+                                {flavor.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className={styles.variantSelector}>
+                          <label className={styles.variantLabel}>Accent</label>
+                          <div className={styles.variantButtons}>
+                            {theme.variants.accents?.map(accent => (
+                              <button
+                                key={accent.id}
+                                className={`${styles.variantButton} ${getSelectedAccent(theme) === accent.id ? styles.active : ''}`}
+                                onClick={() => setSelectedAccents(prev => ({ ...prev, [theme.id]: accent.id }))}
+                              >
+                                {accent.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
+
                     <div className={styles.themeColors}>
-                      <div className={styles.colorScheme}>
-                        <span className={styles.schemeLabel}>Dark</span>
-                        <div className={styles.colorSwatches}>
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'dark').primary }}
-                            title="Primary"
-                          />
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'dark').secondary }}
-                            title="Secondary"
-                          />
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'dark').surface }}
-                            title="Surface"
-                          />
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'dark').background }}
-                            title="Background"
-                          />
+                      {(theme.variants?.type !== 'multi' || getFlavorMode(theme) === 'dark') && (
+                        <div className={styles.colorScheme}>
+                          <span className={styles.schemeLabel}>{theme.variants?.type === 'multi' ? getSelectedFlavor(theme) : 'Dark'}</span>
+                          <div className={styles.colorSwatches}>
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'dark').primary }}
+                              title="Primary"
+                            />
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'dark').secondary }}
+                              title="Secondary"
+                            />
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'dark').surface }}
+                              title="Surface"
+                            />
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'dark').background }}
+                              title="Background"
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className={styles.colorScheme}>
-                        <span className={styles.schemeLabel}>Light</span>
-                        <div className={styles.colorSwatches}>
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'light').primary }}
-                            title="Primary"
-                          />
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'light').secondary }}
-                            title="Secondary"
-                          />
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'light').surface }}
-                            title="Surface"
-                          />
-                          <div
-                            className={styles.colorSwatch}
-                            style={{ backgroundColor: getResolvedColors(theme, 'light').background }}
-                            title="Background"
-                          />
+                      )}
+                      {(theme.variants?.type !== 'multi' || getFlavorMode(theme) === 'light') && (
+                        <div className={styles.colorScheme}>
+                          <span className={styles.schemeLabel}>{theme.variants?.type === 'multi' ? getSelectedFlavor(theme) : 'Light'}</span>
+                          <div className={styles.colorSwatches}>
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'light').primary }}
+                              title="Primary"
+                            />
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'light').secondary }}
+                              title="Secondary"
+                            />
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'light').surface }}
+                              title="Surface"
+                            />
+                            <div
+                              className={styles.colorSwatch}
+                              style={{ backgroundColor: getResolvedColors(theme, 'light').background }}
+                              title="Background"
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     <div className={styles.pluginTags}>
@@ -670,7 +782,7 @@ export default function Plugins() {
 
                     <div className={styles.pluginActions}>
                       <a
-                        href={`dms://theme/install/${theme.id}${theme.variants ? `?variant=${getSelectedVariant(theme)}` : ''}`}
+                        href={getInstallUrl(theme)}
                         className={styles.installButton}
                       >
                         <span className="material-symbols-outlined">download</span>
