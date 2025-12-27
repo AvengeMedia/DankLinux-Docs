@@ -30,6 +30,16 @@ Qt6 applications, including DankMaterialShell, look for icon themes based on you
 
 DMS respects these platform-specific configurations and doesn't override your icon theme choices.
 
+### Environment Variable Override
+
+You can also set the icon theme directly using the `QS_ICON_THEME` environment variable:
+
+```bash
+export QS_ICON_THEME=Papirus-Dark
+```
+
+This takes precedence over platform theme settings and is useful for testing or when you want DMS to use a different icon theme than your other Qt applications.
+
 ## GTK Platform Theme (gtk3)
 
 If you're using the GTK passthrough method for Qt theming, icon themes are controlled via GTK settings.
