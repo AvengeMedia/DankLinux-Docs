@@ -306,7 +306,7 @@ Restart DMS to generate the palette, then enable Pywalfox in the browser.
 
 ### Zen Browser
 
-Zen Browser handles theming differently from Firefox—Pywalfox and Firefox theme extensions no longer work. Theming is controlled via `userChrome.css` in the profile directory.
+Zen Browser handles theming differently from Firefox—Pywalfox and Firefox theme extensions no longer work. Theming is controlled via `userChrome.css` in the profile directory. Zen requires a browser restart for theme changes to take effect—live reloading is not supported.
 
 DMS generates `~/.config/DankMaterialShell/zen.css` automatically. Link it to your Zen profile:
 
@@ -318,7 +318,7 @@ ln -sf ~/.config/DankMaterialShell/zen.css "$PROFILE_DIR/chrome/userChrome.css"
 ```
 
 :::note
-Zen requires a browser restart for theme changes to take effect—live reloading is not supported.
+Theming must be enabled in Zen browser for changes to userChrome.css to take effect! Open `about:config` and enable `toolkit.legacyUserProfileCustomizations.stylesheets`. Restart your browser.
 :::
 
 ### Browser Tips
