@@ -886,78 +886,138 @@ PluginSettings {
 
 ## Launcher Plugins
 
-Launcher plugins add items to the Spotlight search. They're a bit different - they use a plain `Item` instead of `PluginComponent`.
+Launcher plugins add items to Spotlight search. They use `QtObject` as their root (not `Item` or `PluginComponent`) since they don't render any UI directly.
+
+### Required Interface
+
+Your launcher plugin must provide:
+
+| Property/Function | Description |
+|-------------------|-------------|
+| `pluginService` | Auto-injected service for data persistence |
+| `trigger` | Prefix that activates your plugin (e.g., `"="` or `"#"`) |
+| `itemsChanged` | Signal to emit when your items list updates |
+| `getItems(query)` | Returns filtered items matching the query |
+| `executeItem(item)` | Handles item selection |
+
+### Example: Calculator Plugin
+
+A complete launcher plugin that evaluates math expressions:
 
 ```qml
 import QtQuick
 import Quickshell
 import qs.Services
+import "calculator.js" as Calculator
 
-Item {
+QtObject {
     id: root
 
     property var pluginService: null
-    property string trigger: "#"
+    property string trigger: ""
 
-    signal itemsChanged()
+    signal itemsChanged
 
     Component.onCompleted: {
-        if (pluginService) {
-            trigger = pluginService.loadPluginData("emojiLauncher", "trigger", "#")
-        }
+        if (!pluginService)
+            return;
+        trigger = pluginService.loadPluginData("calculator", "trigger", "=");
     }
 
     function getItems(query) {
-        const emojis = [
-            {
-                name: "Smile",
-                icon: "unicode:😊",
-                comment: "Smiling face",
-                action: "copy:😊",
-                categories: ["Emoji"]
-            },
-            {
-                name: "Heart",
-                icon: "unicode:❤️",
-                comment: "Red heart",
-                action: "copy:❤️",
-                categories: ["Emoji"]
-            }
-        ]
+        if (!query || query.trim().length === 0)
+            return [];
 
-        if (!query || query.length === 0) {
-            return emojis
-        }
+        const trimmedQuery = query.trim();
+        if (!Calculator.isMathExpression(trimmedQuery))
+            return [];
 
-        const lowerQuery = query.toLowerCase()
-        return emojis.filter(item =>
-            item.name.toLowerCase().includes(lowerQuery) ||
-            item.comment.toLowerCase().includes(lowerQuery)
-        )
+        const result = Calculator.evaluate(trimmedQuery);
+        if (!result.success)
+            return [];
+
+        return [{
+            name: result.result.toString(),
+            icon: "material:equal",
+            comment: trimmedQuery + " = " + result.result,
+            action: "copy:" + result.result,
+            categories: ["Calculator"]
+        }];
     }
 
     function executeItem(item) {
-        if (!item || !item.action) return
+        if (!item?.action)
+            return;
 
-        const [actionType, ...rest] = item.action.split(":")
-        const actionData = rest.join(":")
+        const actionParts = item.action.split(":");
+        const actionType = actionParts[0];
+        const actionData = actionParts.slice(1).join(":");
 
-        switch (actionType) {
-            case "copy":
-                Quickshell.execDetached(["sh", "-c",
-                    "echo -n '" + actionData + "' | wl-copy"])
-                ToastService.showInfo("Copied to clipboard")
-                break
-            case "toast":
-                ToastService.showInfo(item.name, actionData)
-                break
+        if (actionType === "copy") {
+            Quickshell.execDetached(["sh", "-c", "echo -n '" + actionData + "' | wl-copy"]);
+            ToastService.showInfo("Calculator", "Copied to clipboard: " + actionData);
         }
     }
 
     onTriggerChanged: {
-        if (pluginService) {
-            pluginService.savePluginData("emojiLauncher", "trigger", trigger)
+        if (pluginService)
+            pluginService.savePluginData("calculator", "trigger", trigger);
+    }
+}
+```
+
+### Launcher Settings
+
+Launcher plugins use `PluginSettings` just like widget plugins:
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+
+PluginSettings {
+    id: root
+    pluginId: "calculator"
+
+    StyledText {
+        width: parent.width
+        text: "Calculator Plugin"
+        font.pixelSize: Theme.fontSizeLarge
+        font.weight: Font.Bold
+        color: Theme.surfaceText
+    }
+
+    StyledText {
+        width: parent.width
+        text: "Evaluates math expressions and copies results to clipboard."
+        font.pixelSize: Theme.fontSizeSmall
+        color: Theme.surfaceVariantText
+        wrapMode: Text.WordWrap
+    }
+
+    ToggleSetting {
+        id: noTriggerToggle
+        settingKey: "noTrigger"
+        label: "Always Active"
+        description: value ? "Type expressions directly" : "Use trigger prefix"
+        defaultValue: false
+        onValueChanged: {
+            if (value)
+                root.saveValue("trigger", "");
+            else
+                root.saveValue("trigger", triggerSetting.value || "=");
         }
+    }
+
+    StringSetting {
+        id: triggerSetting
+        visible: !noTriggerToggle.value
+        settingKey: "trigger"
+        label: "Trigger"
+        description: "Prefix to activate calculator (e.g., =, calc)"
+        placeholder: "="
+        defaultValue: "="
     }
 }
 ```
