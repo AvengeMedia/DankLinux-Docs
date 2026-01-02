@@ -93,6 +93,7 @@ const categories = [
 const capabilities = [
   { id: 'all', label: 'All Types' },
   { id: 'dankbar-widget', label: 'DankBar Widget' },
+  { id: 'desktop-widget', label: 'Desktop Widget' },
   { id: 'launcher', label: 'Launcher' },
   { id: 'control-center', label: 'Control Center' },
   { id: 'watch-events', label: 'Event Watcher' },
