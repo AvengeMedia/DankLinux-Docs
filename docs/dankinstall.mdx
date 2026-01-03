@@ -71,27 +71,17 @@ dankinstall is tested on Workstation Edition but should work fine on any Fedora 
 
 **Supported:** Ubuntu 25.04+
 
-:::warning
-
-Installation is slow. Most packages compile from source since Ubuntu repos lack recent versions. Expect 15-30 minutes depending on hardware.
-
-:::
-
-Hyprland comes from a PPA (`ppa:cppiber/hyprland`), but quickshell, matugen, dgop, and niri all get built during installation. Go compiler comes from `ppa:longsleep/golang-backports`.
+Packages come from the [DankLinux PPA](../danklinux#ubuntu) (`ppa:avengemedia/danklinux`). Hyprland comes from `ppa:cppiber/hyprland`.
 
 ### Debian
 
-**Supported:** Debian 13+ (Trixie), Debian Testing, Debian sid
+**Supported:** Debian 13+ (Trixie), Debian Testing, Debian Sid
 
-:::note
-
-**niri only** - Debian doesn't support Hyprland yet. Expect longer install times due to source compilation.
-
-:::
+Packages come from the [DankLinux OBS repository](../danklinux#debian). **niri only** - Debian doesn't have Hyprland packages yet.
 
 ### openSUSE Tumbleweed
 
-Good package availability out of the box. niri, hyprland, ghostty, and most tools are in standard repos via `zypper`. Only quickshell and matugen need to be built from source.
+Good package availability out of the box. niri, hyprland, ghostty, and most tools are in standard repos. Additional packages come from the [DankLinux OBS repository](../danklinux#opensuse).
 
 ### Gentoo
 
@@ -143,12 +133,10 @@ Gentoo requires a **systemd** installation. OpenRC is not supported.
 
 ## What About Manual Building?
 
-The installer handles all build dependencies and manual building for you when packages aren't in repos:
+Most distros now have pre-built packages via the [DankLinux Repository](../danklinux). The installer handles any remaining builds automatically:
 
-- **quickshell** (Ubuntu, Debian, openSUSE) - Built with cmake, needs Qt6 dev libraries. openSUSE uses special CFLAGS.
-- **matugen** (Ubuntu, Debian, Fedora, openSUSE) - Built from Rust source, needs cargo. Installs to `/usr/local/bin`.
-- **dgop** (All distros) - Built from Go source, no dependencies. Installs to `/usr/local/bin`.
-- **niri** (Ubuntu, Debian) - Built from Rust source with cargo. More complex build with multiple dependencies.
+- **dgop** - Built from Go source on distros without packages. Installs to `/usr/local/bin`.
+- **Gentoo** - Still builds most packages from source via Portage (see above).
 
 ## Managing Your Setup
 
