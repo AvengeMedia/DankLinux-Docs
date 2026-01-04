@@ -336,15 +336,31 @@ Editors use a mix of `dank16` and matugen to produce a colorful, theme-honoring 
 
 ### VSCode / Codium / Cursor / Windsurf
 
-**Install the theme:**
+:::info Next Release (1.2)
+
+Install from the VS Code Marketplace by searching for "DMS - Dank Material Shell Theme":
+
+![VS Code Marketplace](/img/vscode-marketplace.png)
+
+Or install manually:
 
 ```bash
-wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/matugen/dynamic-base16-dankshell.vsix
+wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/matugen/dms-theme.vsix
+code --install-extension dms-theme.vsix
+# or: codium / cursor / windsurf --install-extension ...
+```
+
+:::
+
+**Install the theme (1.0.x):**
+
+```bash
+wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/tags/1.0.3/quickshell/matugen/dynamic-base16-dankshell.vsix
 code --install-extension dynamic-base16-dankshell.vsix
 # or: codium / cursor / windsurf --install-extension ...
 ```
 
-**Activate:** Open command palette (`Ctrl+Shift+P`), select `Preferences: Color Theme`, choose `Dynamic Base16 DankShell`.
+**Activate:** Open command palette (`Ctrl+Shift+P`), select `Preferences: Color Theme`, choose `Dynamic Base16 DankShell` (or `DMS - Dank Material Shell` in 1.2).
 
 **Trigger colors:** Restart DMS or change wallpaper/theme to generate dynamic colors.
 
