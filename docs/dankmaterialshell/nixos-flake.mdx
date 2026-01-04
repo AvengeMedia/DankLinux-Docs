@@ -64,14 +64,14 @@ If you're using the NixOS module:
 
 ```nix
 imports = [
-  inputs.dms.nixosModules.dankMaterialShell
+  inputs.dms.nixosModules.dank-material-shell
 ];
 ```
 
 Alternatively, if you're using the home-manager module:
 ```nix
 imports = [
-  inputs.dms.homeModules.dankMaterialShell.default
+  inputs.dms.homeModules.dank-material-shell
 ];
 ```
 
@@ -80,7 +80,7 @@ imports = [
 In your configuration, enable DankMaterialShell:
 
 ```nix
-programs.dankMaterialShell.enable = true;
+programs.dank-material-shell.enable = true;
 ```
 
 That's it! Rebuild your system (or standalone home-manager configuration) and DankMaterialShell will be installed  with sensible defaults.
@@ -123,15 +123,15 @@ You can import and use the niri-specific DankMaterialShell module:
 
 ```nix
 imports = [
-  inputs.dms.homeModules.dankMaterialShell.default
-  inputs.dms.homeModules.dankMaterialShell.niri
+  inputs.dms.homeModules.dank-material-shell.default
+  inputs.dms.homeModules.dank-material-shell.niri
 ];
 ```
 
 Enable niri integration features:
 
 ```nix
-programs.dankMaterialShell = {
+programs.dank-material-shell = {
   enable = true;
   niri = {
     enableKeybinds = true;   # Sets static preset keybinds
@@ -168,12 +168,12 @@ DankMaterialShell provides numerous configuration options to customize your inst
 ### Feature Toggles
 
 ```nix
-programs.dankMaterialShell = {
+programs.dank-material-shell = {
   enable = true;
 
   systemd = {
     enable = true;             # Systemd service for auto-start
-    restartIfChanged = true;   # Auto-restart dms.service when dankMaterialShell changes
+    restartIfChanged = true;   # Auto-restart dms.service when dank-material-shell changes
   };
 
   # Core features
@@ -197,42 +197,57 @@ The DankMaterialShell flake already uses Quickshell built from source by default
 If you need to override the Quickshell package:
 
 ```nix
-programs.dankMaterialShell = {
+programs.dank-material-shell = {
   enable = true;
   quickshell.package = pkgs.quickshell; # or your custom package
 };
 ```
 
-### Default Settings (home-manager only)
+### Settings (home-manager only)
 
-You can pre-configure default settings that will be used on first launch:
+You can configure settings using the home-manager module:
 
 ```nix
-programs.dankMaterialShell = {
+programs.dank-material-shell = {
   enable = true;
 
-  default.settings = {
+  settings = {
     theme = "dark";
     dynamicTheming = true;
     # Add any other settings here
   };
 
-  default.session = {
-    # Session state defaults
+  session = {
+    isLightMode = false;
+    # Add any other session state settings here
+  };
+
+  clipboardSettings = {
+    maxHistory = 25;
+    maxEntrySize = 5242880;
+    autoClearDays = 1;
+    clearAtStartup = true;
+    disabled = false;
+    disableHistory = false;
+    disablePersist = true;
   };
 };
 ```
 
-These defaults are only applied if the settings files don't already exist, so they won't override your existing configuration.
+If you change settings in the GUI while managing settings with home-manager, you will get a popup saying that settings are read-only, with an option to copy the new settings. You can then use json2nix on the copied settings to update your home-manager configuration. 
+
+A complete up-to-date list of available settings can be found [here](https://raw.githubusercontent.com/AvengeMedia/DankMaterialShell/refs/heads/master/quickshell/Common/settings/SettingsSpec.js) and similarly for session settings an up-to-date list can be found [here](https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/Common/settings/SessionSpec.js).
+
 
 ### Plugins
 
 Install DankMaterialShell plugins declaratively:
 
 ```nix
-programs.dankMaterialShell = {
+programs.dank-material-shell = {
   enable = true;
 
+  managePluginSettings = true;
   plugins = {
     DockerManager = {
       src = pkgs.fetchFromGitHub {
@@ -245,10 +260,16 @@ programs.dankMaterialShell = {
     AnotherPlugin = {
       enable = true;
       src = pkgs.another-plugin;
+      settings = {
+        some-setting = true;
+      };
     };
   };
 };
 ```
+
+You can choose whether or not to manage plugin settings with home-manager through the managePluginSettings option. If there are no plugins with settings defined but managePluginSettings = true, a minimal plugin_settings.json is created that enables the plugins. If there are plugin settings defined, managePluginSettings defaults to true and those settings are placed in plugin_settings.json. If there are plugin settings defined and managePluginSettings is set to false, there will be a warning, but plugin_settings.json won't be created.
+
 
 ### Config includes with niri-flake (unstable)
 
