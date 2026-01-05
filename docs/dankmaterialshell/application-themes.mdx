@@ -217,6 +217,39 @@ If you manage DMS with systemd (including dankinstall users), edit `~/.config/en
 QT_QPA_PLATFORMTHEME=qt6ct
 ```
 
+:::warning KDE/Plasma Users
+
+Setting `QT_QPA_PLATFORMTHEME` in `environment.d` will break KDE/Plasma sessions. Instead, add the environment variable to the DMS systemd service directly:
+
+```bash
+# Copy the service file to user config
+sudo cp /usr/lib/systemd/user/dms.service ~/.config/systemd/user/dms.service
+sudo chown $USER:$USER ~/.config/systemd/user/dms.service
+
+# Edit the service file
+nano ~/.config/systemd/user/dms.service
+```
+
+Add the `Environment=` line under `[Service]`:
+
+```ini
+[Service]
+Environment=QT_QPA_PLATFORMTHEME=qt6ct
+Type=dbus
+BusName=org.freedesktop.Notifications
+ExecStart=/usr/bin/dms run --session
+...
+```
+
+Then reload and restart:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user restart dms.service
+```
+
+:::
+
 Otherwise, add to your compositor config:
 
 **niri:**
