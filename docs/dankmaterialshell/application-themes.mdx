@@ -241,6 +241,23 @@ env = QT_QPA_PLATFORMTHEME_QT6,qt6ct
 
 This links the generated matugen color files to qt5ct/qt6ct configurations.
 
+### Dolphin File Manager
+
+Dolphin requires `qt6ct-kde` (not standard `qt6ct`) for proper color theming. With standard `qt6ct`, Dolphin's colors will render poorly.
+
+**With qt6ct-kde installed:**
+
+Set the color scheme to **Dank Shell (matugen)** in qt6ct's Appearance tab under KColorScheme.
+
+**Alternative (if qt6ct-kde is unavailable):**
+
+Create `~/.config/dolphinrc`:
+
+```ini
+[UiSettings]
+ColorScheme=DankMatugen
+```
+
 ## Firefox
 
 Firefox has two theme integration options: Material Fox or Pywalfox.
