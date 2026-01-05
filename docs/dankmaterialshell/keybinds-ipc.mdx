@@ -444,6 +444,33 @@ DankDash wallpaper browser control.
 dms ipc call dankdash wallpaper
 ```
 
+### welcome
+
+:::note Upcoming in 1.2
+:::
+
+First-launch welcome wizard with feature overview, system diagnostics, and configuration quick links.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show wizard at Welcome page | - |
+| `doctor` | Show wizard at System Check page | - |
+| `page <num>` | Show wizard at specific page | 0=Welcome, 1=Doctor, 2=Complete |
+
+**Pages:**
+- **0 - Welcome**: Feature overview with DMS highlights
+- **1 - System Check**: Runs `dms doctor` with filterable results (Errors, Warnings, Info, OK)
+- **2 - Complete**: Configuration quick links, keybind shortcuts, and external resources
+
+**Examples:**
+```bash
+dms ipc call welcome open
+dms ipc call welcome doctor
+dms ipc call welcome page 2
+```
+
+**Settings Integration:** Available in Settings → About → Tools as "Show Welcome" and "System Check" buttons.
+
 ## System Utilities
 
 ### niri
