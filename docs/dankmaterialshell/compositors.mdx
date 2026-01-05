@@ -24,7 +24,7 @@ niri uses the KDL configuration format. DankMaterialShell integrates seamlessly 
 
 ### Key Configuration Sections
 
-DMS will automatically apply key binds, gaps, window radius, and colors if you include the following files in your niri config.
+DMS will automatically apply key binds, gaps, window radius, and colors if you include the following files in your niri config. You can customize gaps, border radius, and window radius in **Settings → Compositor**.
 
 
 ```kdl
@@ -207,6 +207,25 @@ Hyprland uses a simple config file format at `~/.config/hypr/hyprland.conf`.
 
 ### Key Configuration Sections
 
+DMS will automatically apply gaps, window radius, and colors if you include the following files in your Hyprland config. You can customize gaps, border radius, and window radius in **Settings → Compositor**.
+
+```conf
+# Add to the end of ~/.config/hypr/hyprland.conf
+source = ~/.config/hypr/dms/colors.conf
+source = ~/.config/hypr/dms/layout.conf
+source = ~/.config/hypr/dms/outputs.conf
+```
+
+:::tip
+Be sure that all files exist before including them in the Hyprland configuration.
+```bash
+mkdir -p ~/.config/hypr/dms
+touch ~/.config/hypr/dms/{colors,layout,outputs}.conf
+```
+:::
+
+For manual configuration recommendations, continue below.
+
 #### Startup
 
 Hyprland doesn't initialize the systemd user session by default. Export the environment and start a session target:
@@ -357,6 +376,25 @@ windowrulev2 = float, class:^(org.quickshell)$
 [MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling Wayland compositor based on dwl (wlroots). Configuration lives at `~/.config/mango/config.conf`.
 
 ### Key Configuration Sections
+
+DMS will automatically apply gaps, window radius, and colors if you include the following files in your MangoWC config. You can customize gaps, border radius, and window radius in **Settings → Compositor**.
+
+```conf
+# Add to the end of ~/.config/mango/config.conf
+source=~/.config/mango/dms/colors.conf
+source=~/.config/mango/dms/layout.conf
+source=~/.config/mango/dms/outputs.conf
+```
+
+:::tip
+Be sure that all files exist before including them in the MangoWC configuration.
+```bash
+mkdir -p ~/.config/mango/dms
+touch ~/.config/mango/dms/{colors,layout,outputs}.conf
+```
+:::
+
+For manual configuration recommendations, continue below.
 
 #### Startup
 
