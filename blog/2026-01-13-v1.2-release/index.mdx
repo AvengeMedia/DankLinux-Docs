@@ -10,50 +10,34 @@ import styles from './styles.module.css';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import ThemedImage from '@theme/ThemedImage';
 
-{/* Reusable SVG Peppers - Simple Unidirectional Curves */}
-export const PepperA = ({ color, className, opacity = 0.3 }) => (
+export const PepperA = ({ color, className, opacity = 0.3, mirror = false }) => (
   <svg viewBox="0 0 32 64" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
-    {/* PepperA: Straight/Chunky (Jalapeño style) - No recurve */}
-    <g transform="rotate(-5, 16, 10)">
-      {/* Stem */}
+    <g transform={mirror ? 'translate(32,0) scale(-1,1) rotate(-5, 16, 10)' : 'rotate(-5, 16, 10)'}>
       <path fill="#2d4a22" d="M14.5 2C14 0 15 -2 17 -2.5C18 -2.7 18.5 -2 18 -1C17.5 0 17 2 16.5 4" />
-      {/* Calyx */}
       <path fill="#3a5a2a" d="M11 6C12 5 13 4.5 16 4.5C19 4.5 20 5 21 6C22 7 20 8 18.5 8.5C16.5 9 14.5 9 13 8.5C11.5 8 10 7 11 6Z" />
-      {/* Fruit - Straight taper */}
-      <path fill={color} d="M11 6.5C13 5.5 19 5.5 21 6.5C23 8 24 14 23.5 22C23 32 19 45 16 55C15.5 57 16.5 57 16 55C13 45 9 32 8.5 22C8 14 9 8 11 6.5Z" />
-      {/* Highlight */}
-      <path fill="rgba(255,255,255,0.15)" d="M11 10C10.5 15 11 25 13 35C14 40 15 42 15 42C14 32 13 20 16 10C14 10 12 10 11 10Z" />
+      <path fill={color} d="M10 6.5C12 5.5 20 5.5 22 6.5C24 9 25 15 24 22C23 28 20 34 15 42C13 45 11 46 10 45C9 44 10 42 12 40C15 35 11 28 9 22C7 16 8 9 10 6.5Z" />
+      <path fill="rgba(255,255,255,0.15)" d="M11 10C10.5 14 10 22 12 30C12.5 33 13 36 13 36C12 29 13 18 16 10C14.5 10 12 10 11 10Z" />
     </g>
   </svg>
 );
 
-export const PepperB = ({ color, className, opacity = 0.3 }) => (
+export const PepperB = ({ color, className, opacity = 0.3, mirror = false }) => (
   <svg viewBox="0 0 32 64" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
-    {/* PepperB: Gentle Curve (Serrano style) - Single arc right */}
-    <g transform="translate(2,0)">
-      {/* Stem */}
+    <g transform={mirror ? 'translate(32,0) scale(-1,1) translate(2,0)' : 'translate(2,0)'}>
       <path fill="#2d4a22" d="M13 2C12.5 0 13.5 -2 16 -2.5C17 -2.7 17.5 -2 17 -1C16.5 0 16 2 16 4" />
-      {/* Calyx */}
       <path fill="#3a5a2a" d="M10 6C11 5 12 4.5 15 4.5C18 4.5 19 5 20 6C21 7 19 8 17.5 8.5C15.5 9 13.5 9 12 8.5C10.5 8 9 7 10 6Z" />
-      {/* Fruit - Gentle C Curve */}
       <path fill={color} d="M10 6.5C12 5.5 18 5.5 20 6.5C22 8 23 13 22 20C21 28 17 38 10 50C9 52 8 52 7 50C10 40 12 30 11 20C10.5 13 9 8 10 6.5Z" />
-      {/* Highlight */}
       <path fill="rgba(255,255,255,0.15)" d="M12 10C11.5 16 12 24 11 32C10.5 36 9 40 9 40C12 30 14 20 16 10C14.5 10 13 10 12 10Z" />
     </g>
   </svg>
 );
 
-export const PepperC = ({ color, className, opacity = 0.3 }) => (
+export const PepperC = ({ color, className, opacity = 0.3, mirror = false }) => (
   <svg viewBox="0 0 32 64" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
-    {/* PepperC: Strong Curve (Cayenne style) - Sharp arc right */}
-    <g transform="translate(4,0)">
-      {/* Stem */}
+    <g transform={mirror ? 'translate(32,0) scale(-1,1) translate(4,0)' : 'translate(4,0)'}>
       <path fill="#2d4a22" d="M11 3C10.5 1 11.5 -1 14 -1.5C15 -1.7 15.5 -1 15 0C14.5 1 14 3 14 5" />
-      {/* Calyx */}
       <path fill="#3a5a2a" d="M8 7C9 6 10 5.5 13 5.5C16 5.5 17 6 18 7C19 8 17 9 15.5 9.5C13.5 10 11.5 10 10 9.5C8.5 9 7 8 8 7Z" />
-      {/* Fruit - Strong C Curve */}
       <path fill={color} d="M8 7.5C10 6.5 16 6.5 18 7.5C20 9 21 14 19 22C17 32 11 42 1 52C0 53 -1 52 0 50C8 40 11 30 10 20C9.5 14 7 9 8 7.5Z" />
-      {/* Highlight */}
       <path fill="rgba(255,255,255,0.15)" d="M10 11C9.5 17 10 25 8 33C7 37 5 41 5 41C9 30 12 20 14 11C12.5 11 11 11 10 11Z" />
     </g>
   </svg>
@@ -61,73 +45,62 @@ export const PepperC = ({ color, className, opacity = 0.3 }) => (
 
 <div className={styles.blogHero}>
   <div className={styles.confetti} aria-hidden="true">
-    {/* TOP EDGE - across the top, avoiding center */}
     <div style={{ position: 'absolute', top: '2%', left: '4%', width: '34px', height: '68px', transform: 'rotate(-22deg) scale(0.9)' }}>
       <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.35} />
     </div>
     <div style={{ position: 'absolute', top: '5%', left: '16%', width: '28px', height: '56px', transform: 'rotate(38deg) scale(0.75)' }}>
-      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} />
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} mirror />
     </div>
     <div style={{ position: 'absolute', top: '3%', left: '76%', width: '30px', height: '60px', transform: 'rotate(-31deg) scale(0.8)' }}>
-      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.3} />
+      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.3} mirror />
     </div>
     <div style={{ position: 'absolute', top: '6%', left: '88%', width: '32px', height: '64px', transform: 'rotate(25deg) scale(0.85)' }}>
-      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.32} />
+      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.32} mirror />
     </div>
-
-    {/* LEFT SIDE */}
     <div style={{ position: 'absolute', top: '18%', left: '2%', width: '32px', height: '64px', transform: 'rotate(29deg) scale(0.85)' }}>
       <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.3} />
     </div>
     <div style={{ position: 'absolute', top: '38%', left: '4%', width: '30px', height: '60px', transform: 'rotate(-41deg) scale(0.8)' }}>
-      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} />
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} mirror />
     </div>
     <div style={{ position: 'absolute', top: '58%', left: '2%', width: '34px', height: '68px', transform: 'rotate(17deg) scale(0.9)' }}>
       <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.32} />
     </div>
     <div style={{ position: 'absolute', top: '75%', left: '5%', width: '28px', height: '56px', transform: 'rotate(-33deg) scale(0.75)' }}>
-      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.25} />
+      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.25} mirror />
     </div>
-
-    {/* LEFT INNER */}
     <div style={{ position: 'absolute', top: '28%', left: '12%', width: '26px', height: '52px', transform: 'rotate(47deg) scale(0.7)' }}>
       <PepperB className={styles.chiliAnim1} color="#dc2626" opacity={0.18} />
     </div>
     <div style={{ position: 'absolute', top: '65%', left: '10%', width: '24px', height: '48px', transform: 'rotate(-28deg) scale(0.65)' }}>
-      <PepperA className={styles.chiliAnim2} color="#f97316" opacity={0.15} />
+      <PepperA className={styles.chiliAnim2} color="#f97316" opacity={0.15} mirror />
     </div>
-
-    {/* BOTTOM EDGE */}
     <div style={{ position: 'absolute', top: '74%', left: '22%', width: '30px', height: '60px', transform: 'rotate(-45deg) scale(0.8)' }}>
       <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} />
     </div>
     <div style={{ position: 'absolute', top: '78%', left: '42%', width: '26px', height: '52px', transform: 'rotate(35deg) scale(0.7)' }}>
-      <PepperC className={styles.chiliAnim1} color="#ef4444" opacity={0.22} />
+      <PepperC className={styles.chiliAnim1} color="#ef4444" opacity={0.22} mirror />
     </div>
     <div style={{ position: 'absolute', top: '75%', left: '58%', width: '28px', height: '56px', transform: 'rotate(-19deg) scale(0.75)' }}>
       <PepperA className={styles.chiliAnim3} color="#f97316" opacity={0.25} />
     </div>
     <div style={{ position: 'absolute', top: '72%', left: '75%', width: '30px', height: '60px', transform: 'rotate(42deg) scale(0.8)' }}>
-      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} />
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} mirror />
     </div>
-
-    {/* RIGHT INNER */}
     <div style={{ position: 'absolute', top: '32%', left: '82%', width: '24px', height: '48px', transform: 'rotate(-38deg) scale(0.65)' }}>
       <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.15} />
     </div>
     <div style={{ position: 'absolute', top: '62%', left: '84%', width: '26px', height: '52px', transform: 'rotate(31deg) scale(0.7)' }}>
-      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.18} />
+      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.18} mirror />
     </div>
-
-    {/* RIGHT SIDE */}
     <div style={{ position: 'absolute', top: '20%', left: '92%', width: '32px', height: '64px', transform: 'rotate(-26deg) scale(0.85)' }}>
       <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.3} />
     </div>
     <div style={{ position: 'absolute', top: '42%', left: '90%', width: '30px', height: '60px', transform: 'rotate(37deg) scale(0.8)' }}>
-      <PepperA className={styles.chiliAnim1} color="#f97316" opacity={0.28} />
+      <PepperA className={styles.chiliAnim1} color="#f97316" opacity={0.28} mirror />
     </div>
     <div style={{ position: 'absolute', top: '55%', left: '93%', width: '34px', height: '68px', transform: 'rotate(-21deg) scale(0.9)' }}>
-      <PepperC className={styles.chiliAnim3} color="#ef4444" opacity={0.32} />
+      <PepperC className={styles.chiliAnim3} color="#ef4444" opacity={0.32} mirror />
     </div>
     <div style={{ position: 'absolute', top: '73%', left: '91%', width: '28px', height: '56px', transform: 'rotate(44deg) scale(0.75)' }}>
       <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.25} />
