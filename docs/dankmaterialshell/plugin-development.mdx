@@ -18,6 +18,62 @@ import Hero from '@site/src/components/Hero';
 
 Build and ship plugins for DankMaterialShell. This guide covers the actual patterns and components you'll use, with real working examples from the plugin library.
 
+## Development Environment
+
+For IDE support (autocomplete, type checking, etc.), clone the DMS repo and develop plugins there:
+
+```bash
+mkdir -p ~/repos && cd ~/repos
+git clone https://github.com/AvengeMedia/DankMaterialShell.git
+cd DankMaterialShell/quickshell
+
+# Generate QML language server config
+touch .qmlls.ini
+qs -p .  # Press Ctrl+C after it starts
+
+# Create your plugins here
+mkdir -p dms-plugins/MyPlugin
+```
+
+### VSCode Setup
+
+1. Install the [QML Extension](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.qt-qml)
+2. Configure qmlls path via `Ctrl+Shift+P` → "Preferences: Open User Settings (JSON)":
+
+```json
+{
+  "qt-qml.doNotAskForQmllsDownload": true,
+  "qt-qml.qmlls.customExePath": "/usr/lib/qt6/bin/qmlls"
+}
+```
+
+3. Open VSCode in the `~/repos/DankMaterialShell/quickshell` directory
+
+### Live Development
+
+Symlink your plugin to the DMS plugins directory for live testing:
+
+```bash
+ln -sf ~/repos/DankMaterialShell/quickshell/dms-plugins/MyPlugin \
+       ~/.config/DankMaterialShell/plugins/MyPlugin
+```
+
+Reload your plugin at runtime without restarting DMS:
+
+```bash
+dms ipc call plugins reload myPlugin
+```
+
+List all plugins and their status:
+
+```bash
+dms ipc call plugins list
+```
+
+:::tip
+Use [Run on Save](https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave) to auto-reload your plugin during development. The reload command uses the plugin `id` from your `plugin.json`.
+:::
+
 ## Quick Start
 
 ### 1. Create Plugin Directory
