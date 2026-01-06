@@ -528,6 +528,109 @@
   filter: brightness(0) invert(1);
 }
 
+/* ===== WIDGET GRID ===== */
+.widgetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.widgetCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 107, 53, 0.15);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+[data-theme='light'] .widgetCard {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(214, 40, 40, 0.15);
+}
+
+.widgetCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 107, 53, 0.35);
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.12);
+}
+
+[data-theme='light'] .widgetCard:hover {
+  border-color: rgba(214, 40, 40, 0.35);
+  box-shadow: 0 8px 24px rgba(214, 40, 40, 0.1);
+}
+
+.widgetCard img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-bottom: 1px solid rgba(255, 107, 53, 0.1);
+}
+
+[data-theme='light'] .widgetCard img {
+  border-bottom-color: rgba(214, 40, 40, 0.1);
+}
+
+.widgetInfo {
+  padding: 0.9rem 1rem;
+}
+
+.widgetName {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme='light'] .widgetName {
+  color: rgba(26, 22, 37, 0.9);
+}
+
+.widgetAuthor {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+[data-theme='light'] .widgetAuthor {
+  color: rgba(26, 22, 37, 0.5);
+}
+
+.widgetBadge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.widgetBadgeBuiltin {
+  background: rgba(255, 107, 53, 0.2);
+  color: #FF8C42;
+}
+
+[data-theme='light'] .widgetBadgeBuiltin {
+  background: rgba(214, 40, 40, 0.15);
+  color: #D62828;
+}
+
+.widgetBadgeCommunity {
+  background: rgba(99, 179, 237, 0.2);
+  color: #63B3ED;
+}
+
+[data-theme='light'] .widgetBadgeCommunity {
+  background: rgba(49, 130, 206, 0.15);
+  color: #3182CE;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .blogHero {

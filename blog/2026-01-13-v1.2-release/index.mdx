@@ -7,6 +7,8 @@ tags: [release, announcement]
 ---
 
 import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
 
 {/* Reusable SVG Peppers - Simple Unidirectional Curves */}
 export const PepperA = ({ color, className, opacity = 0.3 }) => (
@@ -166,15 +168,69 @@ We're excited to announce DankMaterialShell (DMS) 1.2 "Spicy Miso"! This release
 
 ### Desktop Widgets & Plugins
 
-<!-- TODO: Screenshot -->
+DMS 1.2 introduces Desktop Widgets - small applets that live on your desktop, below windows and above your wallpaper. Position, resize, and configure them per-display.
 
-DMS 1.2 introduces an extremely powerful Desktop Widget system, there are some built-in widgets (dgop, clock) and already several community-developed desktop widgets available in the [DMS Widget Registry](https://danklinux.com/plugins).
+<div className={styles.widgetGrid}>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/clock.png')} alt="Clock Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>Clock <span className={`${styles.widgetBadge} ${styles.widgetBadgeBuiltin}`}>Built-in</span></p>
+      <p className={styles.widgetAuthor}>Analog & digital modes</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/dgop.png')} alt="System Monitor Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>System Monitor <span className={`${styles.widgetBadge} ${styles.widgetBadgeBuiltin}`}>Built-in</span></p>
+      <p className={styles.widgetAuthor}>CPU, memory, GPU, temps & more</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/weather.png')} alt="Weather Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>Weather <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>Plugin</span></p>
+      <p className={styles.widgetAuthor}>by Avenge Media</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/mediaplayer.png')} alt="Media Player Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>Media Player <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>Plugin</span></p>
+      <p className={styles.widgetAuthor}>by Abdur Rahman Rifat</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/appshortcut.png')} alt="App Shortcut Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>App Shortcuts <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>Plugin</span></p>
+      <p className={styles.widgetAuthor}>by Omar (@oabragh)</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/desktopcommand.jpg')} alt="Desktop Command Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>Desktop Command <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>Plugin</span></p>
+      <p className={styles.widgetAuthor}>by yayuuu</p>
+    </div>
+  </div>
+</div>
+
+The plugin system makes building your own widgets straightforward - see the [plugin development guide](/docs/dankmaterialshell/plugin-development#desktop-plugins) to get started.
 
 ### Theme Registry
 
-<!-- TODO: Screenshot -->
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Theme Registry"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/themeregistrylight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/themeregistry.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+</figure>
 
-DMS 1.2 introduces an extremely powerful theme system where a single theme can have numerous variants and acccent colors. The plugin registry now includes a [Theme Registry](https://danklinux.com/plugins?tab=themes) with numerous community-developed themes available for easy installation. Learn how to [contribute your own themes](https://github.com/AvengeMedia/dms-plugin-registry/blob/master/CONTRIBUTING.md#contributing-a-theme).
+DMS 1.2 introduces a theme system where a single theme can have multiple variants and accent colors. The plugin registry now includes a [Theme Registry](https://danklinux.com/plugins?tab=themes) with community-developed themes available for easy installation. Learn how to [contribute your own themes](https://github.com/AvengeMedia/dms-plugin-registry/blob/master/CONTRIBUTING.md#contributing-a-theme).
 
 ### Native Clipboard and History
 
