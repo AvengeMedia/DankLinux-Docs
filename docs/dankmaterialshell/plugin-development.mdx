@@ -899,6 +899,62 @@ Your launcher plugin must provide:
 | `itemsChanged` | Signal to emit when your items list updates |
 | `getItems(query)` | Returns filtered items matching the query |
 | `executeItem(item)` | Handles item selection |
+| `getContextMenuActions(item)` | *(Optional)* Returns context menu actions for an item |
+
+### Context Menu Actions
+
+Add right-click context menus to your launcher items by implementing `getContextMenuActions(item)`:
+
+```qml
+function getContextMenuActions(item) {
+    if (!item)
+        return [];
+
+    return [
+        {
+            icon: "content_copy",
+            text: I18n.tr("Copy"),
+            action: () => {
+                Quickshell.execDetached(["sh", "-c", "echo -n '" + item.name + "' | wl-copy"]);
+                ToastService.showInfo("Copied", item.name);
+            }
+        },
+        {
+            icon: "open_in_new",
+            text: I18n.tr("Open"),
+            action: () => executeItem(item)
+        }
+    ];
+}
+```
+
+Each action object has:
+- `icon` - Material icon name
+- `text` - Menu item label
+- `action` - Callback function to execute
+
+Here's a more complete example with dynamic actions based on item state:
+
+```qml
+function getContextMenuActions(item) {
+    if (!item || !item._id)
+        return [];
+
+    const pinned = isPinned(item._id);
+    return [
+        {
+            icon: pinned ? "keep_off" : "push_pin",
+            text: pinned ? I18n.tr("Unpin") : I18n.tr("Pin"),
+            action: () => togglePin(item._id)
+        },
+        {
+            icon: "content_copy",
+            text: I18n.tr("Copy"),
+            action: () => executeItem(item)
+        }
+    ];
+}
+```
 
 ### Example: Calculator Plugin
 
