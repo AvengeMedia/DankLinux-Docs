@@ -717,6 +717,24 @@
   color: rgba(26, 22, 37, 0.8);
 }
 
+.pluginRequires {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.6);
+  padding-top: 0.25rem;
+}
+
+[data-theme='light'] .pluginRequires {
+  color: rgba(26, 22, 37, 0.6);
+}
+
+.pluginRequires strong {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='light'] .pluginRequires strong {
+  color: rgba(26, 22, 37, 0.8);
+}
+
 .pluginActions {
   margin-top: auto;
   padding-top: 0.5rem;
