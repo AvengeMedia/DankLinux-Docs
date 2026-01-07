@@ -201,18 +201,30 @@ The plugin system makes building your own widgets straightforward - see the [plu
     }}
     style={{ maxWidth: '500px', width: '100%' }}
   />
+  <figcaption>Theme browser integrated into DMS settings.</figcaption>
 </figure>
 
 DMS 1.2 introduces a theme system where a single theme can have multiple variants and accent colors. The plugin registry now includes a [Theme Registry](https://danklinux.com/plugins?tab=themes) with community-developed themes available for easy installation. Learn how to [contribute your own themes](https://github.com/AvengeMedia/dms-plugin-registry/blob/master/CONTRIBUTING.md#contributing-a-theme).
 
 ### Native Clipboard and History
 
-<!-- TODO: Screenshot -->
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Clipboard Settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/clipboardlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/clipboard.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Configure clipboard history size, entry limits, and auto-cleanup behavior.</figcaption>
+</figure>
 
 Full, zero-dependency clipboard and clipboard history integration.
-- No dependency on tools such as `wl-clipboard` or `cliphist`, they can be uninstalled.
-- Configurable size, retention durations, and automatic cleanup.
-- Automatically ignores data from  password managers (such as KeepassXC and 1Password) for security.
+- No dependency on external tools, such as cliphist or wl-clipboard.
+- Configurable max entry size, retention duration, and automatic cleanup.
+- Search API and CLI with pagination, filtering by text, images, or any mime type.
+- Automatically ignores data from password managers (such as KeepassXC and 1Password). Preventing sensitive data from being stored in the clipboard history.
 
 ### Monitor Configurator
 
@@ -250,14 +262,40 @@ Groundwork for right-to-left language support and internationalization.
 This release contains changes that may require manual intervention.
 :::
 
-### Ghostty Theme Location Changed
+### (Breaking) Ghostty Theme Location Changed
 
 The Ghostty theme path has changed to `~/.config/ghostty/themes/danktheme`. Update your Ghostty configuration accordingly.
 
 <!-- TODO: Link to updated docs -->
 
-### VS Code Theme Reinstall Required
+### (Breaking) VS Code Theme Reinstall Required
 
-The VS Code/Codium theme needs to be reinstalled due to internal changes.
+The VS Code/Codium theme needs to be reinstalled due to internal changes. Uninstall the extension, then reinstall from the extensions marketplace "Dank material shell theme" by "DankLinux"
+
+### (Informational) Clipboard History
+
+Clipboard history will not be automatically migrated from previous versions. You can still access it with the `cliphist` CLI. New clipboard history history located in `~/.cache/DankMaterialShell/clipboard/db` - this is a [bbolt](https://github.com/etcd-io/bbolt) database.
+
+To migrate old history you can follow these steps:
+
+```bash
+# First stop DMS
+systemctl --user stop dms # Or dms kill , if not using systemd
+# Run migration (optionally can override the default path with cliphist-migrate /path/to/db)
+dms cl cliphist-migrate
+# Start DMS again
+systemctl --user start dms # or dms run -d, if not using systemd
+```
+You can then uninstall cliphist and remove the old database file if desired at `~/.cache/cliphist/db`
+
+`wl-clipboard` can also be removed, although it is useful to keep it for plugins or scripts that may still depend on it.
+
+```bash
+# DMS clipboard CLI has feature-parity with wl-clipboard
+# To copy text:
+echo "Hello, World!" | dms cl copy
+# To paste text:
+dms cl paste
+```
 
 <!-- TODO: Add reinstall instructions or link -->
