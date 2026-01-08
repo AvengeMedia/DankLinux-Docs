@@ -333,9 +333,19 @@ The world famous DMS keyboard shortcuts tool is now available for niri, Hyprland
 
 ### Settings Search
 
-{/* TODO: Screenshot */}
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Settings Search"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/searchlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/searchdark.png'),
+    }}
+    style={{ maxWidth: '280px', width: '100%' }}
+  />
+  <figcaption>Search across all settings to quickly find what you need.</figcaption>
+</figure>
 
-Quickly find settings with the new search functionality.
+New settings search makes it easier to find what you want to change. Includes integrated launcher search with `?` by default.
 
 ### i18n: RTL Support
 
@@ -354,6 +364,24 @@ Quickly find settings with the new search functionality.
 DMS 1.2 introduces proper support for right-to-left languages with proper layout mirroring across components. DMS currently has translations for Hebrew and Farsi.
 
 To contribute to translations see the [pinned github issue](https://github.com/AvengeMedia/DankMaterialShell/issues/324)
+
+### Launcher Improvements
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Launcher File Search"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/launcherlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/launcherdark.png'),
+    }}
+    style={{ maxWidth: '400px', width: '100%' }}
+  />
+  <figcaption>Indexed filesystem search with the /path prefix.</figcaption>
+</figure>
+
+The DMS launcher has undergone several improvements. Performance improvements, support for plugins to define context menus (with full keyboard navigation), built-in settings search, and a new first-party plugin for searching keybinds (niri, Hyprland, MangoWC, Sway, and custom providers via `dms keybinds`).
+
+DMS' launcher with plugins supports calculator, niri window management, CLI commands with history, emoji and gitmoji search, web search, extremely fast indexed filesystem search, and more. It also work on the niri overview without any triggers needed.
 
 ## Debian SID, OpenSUSE Slowroll, Leap 16.0, and CentOS Stream 10 Packages
 
@@ -657,6 +685,9 @@ source = ./dms/binds.conf
     </h2>
     <p className={styles.thankYouText}>
       To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.
+    </p>
+    <p className={styles.thankYouTagline}>
+      Zan, Zendegi, Azadi
     </p>
   </div>
 </div>
