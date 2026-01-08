@@ -315,11 +315,21 @@ New `dms doctor` command for diagnosing configuration issues and conflicts that 
 
 Shout out to [@LuckShiba](https://github.com/LuckShiba) for the contribution!
 
-### Keybinds on Hyprland and MangoWC
+### Keyboard Shortcuts Editor for niri, Hyprland & MangoWC
 
-{/* TODO: Screenshot */}
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Keyboard Shortcuts"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/bindslight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/bindsdark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Configure keyboard shortcuts with search, filtering, and conflict detection.</figcaption>
+</figure>
 
-Configure global keyboard shortcuts directly from DMS Settings - now available for Hyprland and MangoWC users in addition to niri. Features include conflict detection, modifier key support, and easy rebinding of common actions.
+The world famous DMS keyboard shortcuts tool is now available for niri, Hyprland, and MangoWC. Search, edit, and add new keybinds directly from DMS Settings.
 
 ### Settings Search
 
@@ -327,9 +337,23 @@ Configure global keyboard shortcuts directly from DMS Settings - now available f
 
 Quickly find settings with the new search functionality.
 
-### Initial RTL & i18n Support
+### i18n: RTL Support
 
-Groundwork for right-to-left language support and internationalization.
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="RTL Language Support"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/rtllight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/rtldark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>DMS Settings displayed in Farsi with full RTL layout support.</figcaption>
+</figure>
+
+DMS 1.2 introduces proper support for right-to-left languages with proper layout mirroring across components. DMS currently has translations for Hebrew and Farsi.
+
+To contribute to translations see the [pinned github issue](https://github.com/AvengeMedia/DankMaterialShell/issues/324)
 
 ## Debian SID, OpenSUSE Slowroll, Leap 16.0, and CentOS Stream 10 Packages
 
@@ -600,3 +624,39 @@ source = ./dms/binds.conf
 ```
 
 </details>
+
+## Resources
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  Get Started with DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>Plugins</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>Sponsor on GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>Special thanks to <a href="https://github.com/YaLTeR">YaLTeR</a> for collaborating with the DMS team, for <a href="https://github.com/YaLTeR/niri">niri</a> - the compositor that inspired DMS, and for hosting DMS on the <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a>.</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      Thank <span className={styles.gradientText}>You</span>
+    </h2>
+    <p className={styles.thankYouText}>
+      To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.
+    </p>
+  </div>
+</div>
