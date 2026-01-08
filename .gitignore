@@ -21,3 +21,4 @@ preview-images
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+k8s/dlx-docs-kubeconfig.yaml

@@ -619,6 +619,12 @@ export default function Plugins() {
                           <strong>Dependencies:</strong> {plugin.dependencies.join(', ')}
                         </div>
                       )}
+
+                      {plugin.requires_dms && (
+                        <div className={styles.pluginRequires}>
+                          <strong>Requires DMS:</strong> {plugin.requires_dms}+
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.pluginActions}>

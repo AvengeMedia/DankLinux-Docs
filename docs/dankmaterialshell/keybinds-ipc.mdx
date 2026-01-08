@@ -292,25 +292,37 @@ dms ipc call dock toggleAutoHide
 
 ### widget
 
-Control bar widget popouts and menus, including plugins.
+Control bar widget popouts, menus, and visibility (including plugins).
 
 | Function | Description | Parameters |
 | --- | --- | --- |
 | `toggle <widgetId>` | Toggle widget popout visibility | widget ID |
-| `list` | List all registered widget IDs | - |
+| `list` | List all registered widget IDs with visibility state | - |
 | `status <widgetId>` | Get widget popout visibility status | widget ID |
+| `visibility <widgetId>` | Get widget visibility state | widget ID |
+| `reveal <widgetId>` | Force widget to be visible | widget ID |
+| `hide <widgetId>` | Force widget to be hidden | widget ID |
+| `reset <widgetId>` | Clear visibility override, return to normal behavior | widget ID |
 
 **Examples:**
 ```bash
 dms ipc call widget list
 dms ipc call widget toggle clock
 dms ipc call widget status weather
+
+# Control widget visibility on the bar
+dms ipc call widget visibility weather
+dms ipc call widget hide weather
+dms ipc call widget reveal weather
+dms ipc call widget reset weather
 ```
 
 **Notes:**
-- Use `list` to discover available widget IDs on your current bar configuration
+- Use `list` to discover available widget IDs with their current visibility state (`[visible]` or `[hidden]`)
 - Widget IDs depend on which widgets are enabled in your bar settings
-- The `status` function returns "visible" or "hidden" for the widget popout state
+- The `status` function returns "visible" or "hidden" for the widget **popout** state
+- The `visibility`, `reveal`, `hide`, and `reset` functions control the widget's **bar presence** (whether it appears on the bar at all)
+- Plugins can define conditional visibility via `visibilityCommand` — use `reset` to return to that behavior after overriding
 
 ## Modal Controls
 
