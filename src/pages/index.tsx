@@ -388,7 +388,7 @@ export default function Home() {
                   <iframe
                     ref={videoRef}
                     className={styles.screenshotVideo}
-                    src="https://player.mediadelivery.net/embed/526968/60f61b01-2825-4c48-935c-fbcc2f95edfd?muted=true&loop=true"
+                    src="https://player.mediadelivery.net/embed/526968/71d12652-a792-4a3a-b0c2-5c5db461cc86?muted=true&loop=true"
                     loading="lazy"
                     style={{ border: 0, width: '100%', height: '100%' }}
                     allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
