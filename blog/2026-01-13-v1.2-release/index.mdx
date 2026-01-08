@@ -244,6 +244,30 @@ Full, zero-dependency clipboard and clipboard history integration.
 
 Configure display settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC. Includes positioning, resolution, refresh rate, VRR, full layout customization (niri), HDR (Hyprland), scaling, mirroring (Hyprland), and more.
 
+### Cursor Control
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/v1.2/cursor-control.png')}
+    alt="Cursor Control Settings"
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Customize cursor theme, size, and behavior directly from DMS Settings.</figcaption>
+</figure>
+
+Cursor control is available for niri, Hyprland, and MangoWC. This feature provides unified cursor management directly from DMS Settings.
+
+**Features:**
+- **Cursor Theme Selection** - Choose from available cursor themes to match your desktop aesthetics
+- **Cursor Size Adjustment** - Easily adjust cursor size
+- **Compositor-Specific Behavior** - Configure cursor hiding behavior tailored to each compositor:
+  - **Niri**: Hide cursor when typing and auto-hide timeout
+  - **Hyprland**: Hide on key press, hide on touch, and inactive timeout
+  - **MangoWC**: Cursor hide timeout configuration
+- **XWayland Compatibility** - Cursor settings are automatically applied to XWayland applications via XResources, ensuring consistent cursor appearance across both native Wayland and xWayland applications
+
+Cursor Control is fully integrated into DMS and supported via dankinstaller, making it easy to set up during initial installation or configuration.
+
 ### Notification Improvements
 
 <figure style={{ textAlign: 'center' }}>
@@ -284,19 +308,19 @@ Shout out to [@LuckShiba](https://github.com/LuckShiba) for the contribution!
 
 ### Keybinds on Hyprland and MangoWC
 
-<!-- TODO: Screenshot -->
+{/* TODO: Screenshot */}
 
 Configure global keyboard shortcuts directly from DMS Settings - now available for Hyprland and MangoWC users in addition to niri. Features include conflict detection, modifier key support, and easy rebinding of common actions.
 
 ### Settings Search
 
-<!-- TODO: Screenshot -->
+{/* TODO: Screenshot */}
 
 Quickly find settings with the new search functionality.
 
 ### Compositor Options
 
-<!-- TODO: Screenshot -->
+{/* TODO: Screenshot */}
 
 Customize your compositor settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC:
 
@@ -343,7 +367,7 @@ This release contains changes that may require manual intervention.
 
 The Ghostty theme path has changed to `~/.config/ghostty/themes/danktheme`. Update your Ghostty configuration accordingly.
 
-<!-- TODO: Link to updated docs -->
+{/* TODO: Link to updated docs */}
 
 ### (Breaking) VS Code Theme Reinstall Required
 
@@ -391,4 +415,4 @@ echo "Hello, World!" | dms cl copy
 dms cl paste
 ```
 
-<!-- TODO: Add reinstall instructions or link -->
+{/* TODO: Add reinstall instructions or link */}
