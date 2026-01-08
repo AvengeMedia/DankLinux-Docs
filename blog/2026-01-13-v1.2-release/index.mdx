@@ -244,29 +244,6 @@ Full, zero-dependency clipboard and clipboard history integration.
 
 Configure display settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC. Includes positioning, resolution, refresh rate, VRR, full layout customization (niri), HDR (Hyprland), scaling, mirroring (Hyprland), and more.
 
-### Cursor Control
-
-<figure style={{ textAlign: 'center' }}>
-  <img
-    src={useBaseUrl('/img/blog/v1.2/cursor-control.png')}
-    alt="Cursor Control Settings"
-    style={{ maxWidth: '500px', width: '100%' }}
-  />
-  <figcaption>Customize cursor theme, size, and behavior directly from DMS Settings.</figcaption>
-</figure>
-
-Cursor control is available for niri, Hyprland, and MangoWC. This feature provides unified cursor management directly from DMS Settings.
-
-**Features:**
-- **Cursor Theme Selection** - Choose from available cursor themes to match your desktop aesthetics
-- **Cursor Size Adjustment** - Easily adjust cursor size
-- **Compositor-Specific Behavior** - Configure cursor hiding behavior tailored to each compositor:
-  - **Niri**: Hide cursor when typing and auto-hide timeout
-  - **Hyprland**: Hide on key press, hide on touch, and inactive timeout
-  - **MangoWC**: Cursor hide timeout configuration
-- **XWayland Compatibility** - Cursor settings are automatically applied to XWayland applications via XResources, ensuring consistent cursor appearance across both native Wayland and xWayland applications
-
-Cursor Control is fully integrated into DMS and supported via dankinstaller, making it easy to set up during initial installation or configuration.
 
 ### Notification Improvements
 
@@ -287,6 +264,38 @@ Notifications get several new features and improvements:
 - Configurable history with variable size, expirations, and auto-cleanup
 - Gestures to dismiss notifications
 - Ability to display on lock screen (count only, name only, or full content - based on privacy preference)
+
+### Cursor & Layout Configuration
+
+<div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'flex-end' }}>
+  <figure style={{ textAlign: 'center', margin: 0, flex: '1 1 300px', maxWidth: '400px' }}>
+    <img
+      src={useBaseUrl('/img/blog/v1.2/cursor-control.png')}
+      alt="Cursor Control Settings"
+      style={{ width: '100%', borderRadius: '8px' }}
+    />
+    <figcaption>Cursor theme, size, and behavior settings.</figcaption>
+  </figure>
+  <figure style={{ textAlign: 'center', margin: 0, flex: '1 1 300px', maxWidth: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+    <div style={{ padding: '2rem 1rem', background: 'var(--ifm-card-background-color)', borderRadius: '8px' }}>
+      <img
+        src={useBaseUrl('/img/blog/v1.2/layout.png')}
+        alt="Layout Override Settings"
+        style={{ width: '100%', borderRadius: '4px' }}
+      />
+    </div>
+    <figcaption>Override gaps, corner radius, and border size.</figcaption>
+  </figure>
+</div>
+
+Customize your compositor settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC:
+
+- **Cursor** - Choose from available cursor themes, adjust size, and configure compositor-specific hiding behavior (hide on typing, hide on touch, inactive timeout)
+- **Gaps** - Adjust gaps around windows
+- **Borders & Corner Radius** - Override theme defaults for window border width and corner radius
+- **Focus Ring** - Customize focus ring color, width, and style
+
+Cursor settings are automatically applied to XWayland applications via XResources, ensuring consistent appearance across native Wayland and XWayland apps.
 
 ### DMS Doctor
 
@@ -317,16 +326,6 @@ Configure global keyboard shortcuts directly from DMS Settings - now available f
 {/* TODO: Screenshot */}
 
 Quickly find settings with the new search functionality.
-
-### Compositor Options
-
-{/* TODO: Screenshot */}
-
-Customize your compositor settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC:
-
-- **Cursor** - Configure cursor theme, size, and behavior
-- **Gaps** - Adjust inner and outer window gaps
-- **Focus Ring** - Customize focus ring color, width, and style
 
 ### Initial RTL & i18n Support
 
@@ -363,49 +362,77 @@ Packages include DMS, niri, quickshell, dgop, dsearch, and other core dependenci
 This release contains changes that may require manual intervention.
 :::
 
-### (Breaking) Ghostty Theme Location Changed
+### (Breaking) Theme Updates
 
-The Ghostty theme path has changed to `~/.config/ghostty/themes/danktheme`. Update your Ghostty configuration accordingly.
+Ghostty and VSCode theming have changed and will stop working without manual intervention.
 
-{/* TODO: Link to updated docs */}
+<details>
+<summary>Ghostty & VS Code Theme Changes</summary>
 
-### (Breaking) VS Code Theme Reinstall Required
+**Ghostty**
 
-The VS Code/Codium theme needs to be reinstalled due to internal changes. Uninstall the extension, then reinstall from the extensions marketplace "Dank material shell theme" by "DankLinux"
+The theme path has changed to `~/.config/ghostty/themes/danktheme`. Update your Ghostty configuration:
+
+```toml
+# ~/.config/ghostty/config
+# Add this
+theme = dankcolors
+
+# ! Remove this
+# config-file = ./config-dankcolors
+```
+
+**VS Code / Codium**
+
+The theme extension needs to be reinstalled due to internal changes:
+
+1. Uninstall the current "Dank material shell theme" extension
+2. Reinstall from the extensions marketplace: search for "Dank material shell theme" by "DankLinux"
+3. Ctrl+Shift+P -> "Preferences: Color Theme" -> Select "Dynamic Base16 DankShell"
+4. Trigger theme re-generation - change theme in DMS Settings or restart DMS
+5. Fully exit and restart VSCode
+
+</details>
 
 ### Clipboard History Migration
 
-1. Cleanup old clipboard history integration:
+Steps are recommended to remove existing clipboard history daemon and migrate existing history to the new DMS clipboard system.
 
-You can remove the `wl-paste --watch cliphist store` daemon/startup from your compositor configuration.
+<details>
+<summary>Cleanup & Migration Steps</summary>
 
-```kdl
+**1. Cleanup old clipboard history integration:**
+
+Remove the `wl-paste --watch cliphist store` daemon/startup from your compositor configuration.
+
+```js
 // ~/.config/niri/config.kdl
 spawn-at-startup "wl-paste --watch cliphist store" // REMOVE THIS LINE
 ```
 
-```ini
+```toml
 # ~/.config/hypr/hyprland.conf
 exec-once = wl-paste --watch cliphist store # REMOVE THIS LINE
 ```
 
-2. Migrate clipboard history from `cliphist` to DMS:
+**2. Migrate clipboard history from `cliphist` to DMS:**
 
-Clipboard history will not be automatically migrated from previous versions. You can still access it with the `cliphist` CLI. New clipboard history history located in `~/.cache/DankMaterialShell/clipboard/db` - this is a [bbolt](https://github.com/etcd-io/bbolt) database.
+Clipboard history will not be automatically migrated from previous versions. You can still access it with the `cliphist` CLI. New clipboard history located in `~/.cache/DankMaterialShell/clipboard/db` - this is a [bbolt](https://github.com/etcd-io/bbolt) database.
 
-To migrate old history you can follow these steps:
+To migrate old history:
 
 ```bash
 # First stop DMS
-systemctl --user stop dms # Or dms kill , if not using systemd
-# Run migration (optionally can override the default path with cliphist-migrate /path/to/db)
+systemctl --user stop dms # Or dms kill, if not using systemd
+# Run migration (optionally override path with cliphist-migrate /path/to/db)
 dms cl cliphist-migrate
 # Start DMS again
 systemctl --user start dms # or dms run -d, if not using systemd
 ```
-You can then uninstall cliphist and remove the old database file if desired at `~/.cache/cliphist/db`
 
-`wl-clipboard` can also be removed, although it is useful to keep it for plugins or scripts that may still depend on it.
+You can then uninstall cliphist and remove the old database at `~/.cache/cliphist/db`
+
+`wl-clipboard` can also be removed, although it's useful to keep for plugins or scripts that depend on it.
 
 ```bash
 # DMS clipboard CLI has feature-parity with wl-clipboard
@@ -415,4 +442,161 @@ echo "Hello, World!" | dms cl copy
 dms cl paste
 ```
 
-{/* TODO: Add reinstall instructions or link */}
+</details>
+
+### Compositor Configuration Updates
+
+For niri or Hyprland you can run `dms setup` to generate a new compositor configuration - monitor configuration will be preserved and original configuration will be backed up. The main change is migrating to a more modular configuration.
+
+Changes are required only if you wish to use the new cursor, output, layout, and keybind controls from DMS Settings.
+
+<details>
+<summary>niri</summary>
+
+Required to use GUI cursor and output settings.
+
+1. Create new files
+
+```bash
+mkdir -p ~/.config/niri/dms
+touch ~/.config/niri/dms/cursor.kdl
+touch ~/.config/niri/dms/outputs.kdl
+```
+
+2. Move existing configuration to new files
+
+```js
+// ~/.config/niri/dms/cursor.kdl
+// Move cursor {} block from config.kdl
+cursor {
+    xcursor-theme "Bibata-Original-Ice"
+    xcursor-size 24
+}
+
+// ~/.config/niri/dms/outputs.kdl
+// Move output {} blocks from config.kdl
+output "DP-1" {
+    position 0 0
+    scale 1.0
+    transform normal
+}
+```
+
+3. Include new files in your config
+
+```js
+// ~/.config/niri/config.kdl
+// Recommended to place at the end of the file
+include "dms/cursor.kdl"
+include "dms/outputs.kdl"
+include "dms/layout.kdl"
+```
+
+</details>
+
+<details>
+<summary>Hyprland</summary>
+
+Required to use GUI cursor, output, layout, and keybind settings.
+
+1. Create new files
+
+```bash
+mkdir -p ~/.config/hypr/dms
+touch ~/.config/hypr/dms/cursor.conf
+touch ~/.config/hypr/dms/outputs.conf
+touch ~/.config/hypr/dms/layout.conf
+touch ~/.config/hypr/dms/binds.conf
+```
+
+2. Move existing configuration to new files
+
+```bash
+# ~/.config/hypr/dms/cursor.conf
+# Move cursor settings from hyprland.conf
+env = HYPRCURSOR_THEME,Bibata-Original-Ice
+env = HYPRCURSOR_SIZE,24
+env = XCURSOR_THEME,Bibata-Original-Ice
+env = XCURSOR_SIZE,24
+
+# ~/.config/hypr/dms/outputs.conf
+# Move monitor lines from hyprland.conf
+monitor = DP-1,2560x1440@144,0x0,1
+
+# ~/.config/hypr/dms/layout.conf
+# Move general layout settings from hyprland.conf
+general {
+    gaps_in = 5
+    gaps_out = 10
+    border_size = 2
+}
+
+# ! Binds do not need to be moved, only edited/new binds via GUI will be stored here
+```
+
+3. Source new files in your config
+
+```bash
+# ~/.config/hypr/hyprland.conf
+# Recommended to place at the end of the file
+source = ./dms/cursor.conf
+source = ./dms/outputs.conf
+source = ./dms/layout.conf
+source = ./dms/binds.conf
+```
+
+</details>
+
+<details>
+<summary>MangoWC</summary>
+
+Required to use GUI cursor, output, layout, and keybind settings.
+
+1. Create new files
+
+```bash
+mkdir -p ~/.config/mangowc/dms
+touch ~/.config/mangowc/dms/cursor.conf
+touch ~/.config/mangowc/dms/outputs.conf
+touch ~/.config/mangowc/dms/layout.conf
+touch ~/.config/mangowc/dms/binds.conf
+```
+
+2. Move existing configuration to new files
+
+```bash
+# ~/.config/mangowc/dms/cursor.conf
+# Move cursor settings from mangowc.conf
+cursor_size=24
+cursor_theme=Bibata-Original-Ice
+
+# ~/.config/mangowc/dms/outputs.conf
+# Move output blocks from mangowc.conf
+monitorrule=DP-2,0.55,1,tile,0,1,0,0,2560,1440,144
+monitorrule=eDP-1,0.55,1,tile,0,1,2560,0,2560,1600,240
+
+# ~/.config/mangowc/dms/layout.conf
+# Move layout settings from mangowc.conf
+border_radius=13
+gappih=4
+gappiv=4
+gappoh=4
+gappov=4
+borderpx=2
+
+# ~/.config/mangowc/dms/binds.conf
+# Moving binds is not required, only edited/new binds via GUI will be stored here
+```
+
+3. Source new files in your config
+
+```bash
+# ~/.config/mangowc/mangowc.conf
+# Recommended to place at the end of the file
+source = ./dms/cursor.conf
+source = ./dms/outputs.conf
+source = ./dms/layout.conf
+source = ./dms/binds.conf
+```
+
+</details>

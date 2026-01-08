@@ -632,6 +632,61 @@
   color: #3182CE;
 }
 
+/* ===== DETAILS/COLLAPSIBLE ===== */
+details {
+  margin: 1rem 0;
+  padding: 0;
+  border: 1px solid rgba(255, 107, 53, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='light'] details {
+  border-color: rgba(214, 40, 40, 0.2);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+details summary {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary::before {
+  content: '▶';
+  font-size: 0.7em;
+  transition: transform 0.2s ease;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details[open] summary {
+  border-bottom: 1px solid rgba(255, 107, 53, 0.15);
+}
+
+[data-theme='light'] details[open] summary {
+  border-bottom-color: rgba(214, 40, 40, 0.15);
+}
+
+details > *:not(summary) {
+  padding: 0 1rem;
+}
+
+details > *:last-child {
+  padding-bottom: 1rem;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .blogHero {
