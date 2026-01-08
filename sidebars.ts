@@ -86,7 +86,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'doc',
               id: 'dankmaterialshell/cli-clipboard',
-              label: 'Clipboard Manager (upcoming)',
+              label: 'Clipboard Manager',
             },
             'dankmaterialshell/cli-screenshot',
           ],
