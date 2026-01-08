@@ -225,18 +225,68 @@ Full, zero-dependency clipboard and clipboard history integration.
 - Configurable max entry size, retention duration, and automatic cleanup.
 - Search API and CLI with pagination, filtering by text, images, or any mime type.
 - Automatically ignores data from password managers (such as KeepassXC and 1Password). Preventing sensitive data from being stored in the clipboard history.
+- Export & import functionality
+- Migration tool for transferring history from cliphist.
 
 ### Monitor Configurator
 
-<!-- TODO: Screenshot -->
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Monitor Configuration"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/monitorlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/monitordark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Configure display settings directly from DMS Settings.</figcaption>
+</figure>
 
-Configure display settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC. Includes positioning, resolution, refresh rate, VRR, HDR (Hyprland), scaling, mirroring, and more.
+Configure display settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC. Includes positioning, resolution, refresh rate, VRR, full layout customization (niri), HDR (Hyprland), scaling, mirroring (Hyprland), and more.
 
 ### Notification Improvements
 
-- Swipe to dismiss notification popups and from notification center
-- Notification persistence & history
-- Configurable notification display on lock screen
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Notification Center"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/notiflight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/notifdark.png'),
+    }}
+    style={{ maxWidth: '400px', width: '100%' }}
+  />
+  <figcaption>Notification center with history and swipe-to-dismiss.</figcaption>
+</figure>
+
+Notifications get several new features and improvements:
+
+- Configurable history with variable size, expirations, and auto-cleanup
+- Gestures to dismiss notifications
+- Ability to display on lock screen (count only, name only, or full content - based on privacy preference)
+
+### DMS Doctor
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DMS Doctor"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/doctorlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/doctordark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>System check dialog showing service status and optional features.</figcaption>
+</figure>
+
+New `dms doctor` command for diagnosing configuration issues and conflicts that may negatively affect DMS feature availability or performance. Also available via DMS GUI.
+
+Shout out to [@LuckShiba](https://github.com/LuckShiba) for the contribution!
+
+### Keybinds on Hyprland and MangoWC
+
+<!-- TODO: Screenshot -->
+
+Configure global keyboard shortcuts directly from DMS Settings - now available for Hyprland and MangoWC users in addition to niri. Features include conflict detection, modifier key support, and easy rebinding of common actions.
 
 ### Settings Search
 
@@ -244,17 +294,44 @@ Configure display settings directly from DMS Settings. Available for niri, Hyprl
 
 Quickly find settings with the new search functionality.
 
-### DMS Doctor
+### Compositor Options
 
-New `dms doctor` command for diagnosing configuration issues and system compatibility.
+<!-- TODO: Screenshot -->
 
-### Compositor Overrides
+Customize your compositor settings directly from DMS Settings. Available for niri, Hyprland, and MangoWC:
 
-Configure gaps, window rules, and border settings for niri, Hyprland, and MangoWC directly from DMS.
+- **Cursor** - Configure cursor theme, size, and behavior
+- **Gaps** - Adjust inner and outer window gaps
+- **Focus Ring** - Customize focus ring color, width, and style
 
 ### Initial RTL & i18n Support
 
 Groundwork for right-to-left language support and internationalization.
+
+## Debian SID, OpenSUSE Slowroll, Leap 16.0, and CentOS Stream 10 Packages
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+  </div>
+</div>
+
+DMS 1.2 expands distribution support with official packages now available for:
+
+- **Debian SID** - Rolling release packages via OBS
+- **OpenSUSE Slowroll** - Packages via OBS
+- **OpenSUSE Leap 16.0** - Packages via OBS
+- **CentOS Stream 10** - Packages via COPR
+
+These are in addition to existing packages for Debian, Ubuntu, Fedora, Arch Linux, and NixOS.
+
+Packages include DMS, niri, quickshell, dgop, dsearch, and other core dependencies. See the [installation guide](/docs/getting-started) for setup instructions.
 
 ## Upgrade Notes
 
@@ -272,7 +349,23 @@ The Ghostty theme path has changed to `~/.config/ghostty/themes/danktheme`. Upda
 
 The VS Code/Codium theme needs to be reinstalled due to internal changes. Uninstall the extension, then reinstall from the extensions marketplace "Dank material shell theme" by "DankLinux"
 
-### (Informational) Clipboard History
+### Clipboard History Migration
+
+1. Cleanup old clipboard history integration:
+
+You can remove the `wl-paste --watch cliphist store` daemon/startup from your compositor configuration.
+
+```kdl
+// ~/.config/niri/config.kdl
+spawn-at-startup "wl-paste --watch cliphist store" // REMOVE THIS LINE
+```
+
+```ini
+# ~/.config/hypr/hyprland.conf
+exec-once = wl-paste --watch cliphist store # REMOVE THIS LINE
+```
+
+2. Migrate clipboard history from `cliphist` to DMS:
 
 Clipboard history will not be automatically migrated from previous versions. You can still access it with the `cliphist` CLI. New clipboard history history located in `~/.cache/DankMaterialShell/clipboard/db` - this is a [bbolt](https://github.com/etcd-io/bbolt) database.
 
