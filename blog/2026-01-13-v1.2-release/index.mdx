@@ -120,7 +120,7 @@ We're excited to announce DankMaterialShell (DMS) 1.2 "Spicy Miso"! This release
 
 <div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>2,700+</span>
+    <span className={styles.statNumber}>2,800+</span>
     <span className={styles.statLabel}>Commits</span>
   </div>
   <div className={styles.statCard}>
@@ -132,7 +132,7 @@ We're excited to announce DankMaterialShell (DMS) 1.2 "Spicy Miso"! This release
     <span className={styles.statLabel}>Contributors</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>39</span>
+    <span className={styles.statNumber}>40</span>
     <span className={styles.statLabel}>Plugins</span>
   </div>
 </div>
@@ -650,6 +650,244 @@ source = ./dms/outputs.conf
 source = ./dms/layout.conf
 source = ./dms/binds.conf
 ```
+
+</details>
+
+
+## Bug Fixes and Improvements
+
+<details style={{
+  border: '1px solid rgba(239, 68, 68, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- View Details (300+ commits) -|</summary>
+
+Since the v1.0 release, DMS has received extensive bug fixes and stability improvements across all components:
+
+**Clipboard**
+- Native clipboard and history implementation with zero external dependencies
+- Add cliphist-migrate CLI for importing existing history
+- Add shift+enter to paste from clipboard history modal
+- Configurable persistence, mime-type handling, and auto-cleanup
+- Automatically ignore sensitive mime types from password managers
+- Fix mime type selection and nil offer handling
+
+**Bar & Dock**
+- Add shadow option for bars
+- Add scroll wheel behavior configuration
+- Add bar get/setPosition IPC
+- Improve high-DPI scrolling logic
+- Fix exclusive zone popup positioning
+- Fix reveal on overview/niri when auto-hide enabled
+- Fix tooltip positioning with adjacent bars
+- Improve pinned app re-ordering feedback
+- Make control center widget per-instance
+- Add option to show bar when hidden and no windows
+- Respect compact mode on vertical bar
+- Mouse wheel options for media player widget
+- Fix widget base hover blend logic
+- Add isolate running apps by display option
+
+**Desktop Widgets & Plugins**
+- New desktop widget plugin type with draggable per-monitor widgets
+- Built-in clock and system monitor desktop widgets
+- Add grid/grid size hints for widget positioning
+- Add overlay IPC and overview option
+- Enable desktop plugins by default
+- Fix widget display toggle and key event handling
+- Centralize config in desktop widgets tab
+- Add niri overview only option
+- Persistent plugins with async updates
+- Fix first plugin install reactivity
+- Hide uninstall/update buttons for system plugins
+- IPC visibility conditions for plugins
+
+**Display & Monitor Configuration**
+- Add configurator for niri, Hyprland, and MangoWC
+- Configure position, VRR, orientation, resolution, refresh rate
+- Add Hyprland HDR options
+- Add niri-specific layout options
+- Add mirroring option for Hyprland
+- Add disable output option for Hyprland
+- Fix reverted state for position
+- Fix text-alignment in model mode
+- Explicitly write scale 1 for niri
+- Add adaptiveSyncSupported to wlroutput API
+
+**Notifications**
+- Add configurable persistent history with variable size and expiration
+- Add swipe to dismiss functionality
+- Add support for lock screen display (count, app name, or full detail)
+- Add compact mode with expansion in history and popup
+- Add image persistence
+- Right-click to toggle Do Not Disturb
+- Add Do Not Disturb to IPC
+- Add modal function for clearing all notifications
+- Fix notifications being transient when history disabled
+- Fix redundant height animation and spacing improvements
+- Minimize rapid window creation/destruction
+
+**Themes & Matugen**
+- Theme registry with community themes and variants
+- Support for accent colors and theme variants
+- Add color reload capability to VSCode theme
+- Add GTK theme method and fix light mode
+- Move Ghostty theming to new path
+- Add Zen Browser template
+- Add gruvbox material custom theme varieties
+- Add neovim to matugen pipeline with soothing theme
+- Fix adw-gtk3 setting in light mode
+- Set cursor color for themes
+- Fix terminals always dark with custom themes
+- Update VSCode template with improved highlighting
+
+**Cursor & Layout**
+- DMS Cursor Control for size and theme in niri
+- Create/update XResources for XWayland apps
+- Add Hyprland and MangoWC cursor config support
+- Add GUI gaps, window radius, and border overrides
+- Support for niri, Hyprland, and MangoWC layouts
+
+**Launcher**
+- Built-in settings search plugin with ? trigger
+- Support for plugins to define context menus
+- Add ID search fallback for non-English apps
+- Allow terminal apps
+- F10 as alt for menu key
+- Optimize bindings and filters
+- Fix invalid icon rendering
+
+**Settings**
+- Add search across all settings
+- Add doctor command with GUI integration
+- Add battery charge limit setting
+- Add lock screen layout settings
+- Add volume and brightness percentages
+- Fix desktop widget accordion row height
+- Fix generic color selector clipping
+- Fix theme application of default-settings
+- Guard saving before load completed
+- Make default height screen-aware
+- Read-only handling refactor
+
+**Network & VPN**
+- Support hidden SSIDs
+- Listen to NetworkManager wired interface
+- Use nmcli for route metrics
+- Right-click VPN widget to quick connect
+- Aggregate VPN import errors with toast details
+- Support pkcs11 prompts
+- Cache pkcs11 pin input
+
+**Keyboard & Input**
+- Initial support for writable Hyprland and MangoWC keybinds
+- Add media control bindings for audio playback
+- Fix keybind handling of cooldown-ms parameter
+- Fix empty string args and screenshot-window options
+- Add log if ShortcutInhibitor is missing
+- Accept numpad enter key for screenshot selection
+
+**Lock Screen & Power**
+- Add fade to monitor off option
+- Clear lock screen textbox on Escape
+- Handle case where session lock is rejected
+- Fix font alignment
+- Add PAM login fallback
+- Fade to lock and monitor off by default
+
+**Audio & Media**
+- Recreate media players on pipewire device change
+- Add option to disable visualizer in bar widget
+- Add scroll wheel behavior configuration
+- Allow adjusting notification volume
+- Larger option for media player widget
+
+**i18n & RTL**
+- Initial RTL support for notifications, settings, control center, launcher
+- Fix RTL alignment of settings sidebar and plugin settings
+- Add Farsi and Hungarian translations
+- General term cleanup and sync
+
+**niri**
+- Add gaps and radius override
+- Add warnings on auto-generated files
+- Fix effectiveScreenAssignment in modal
+- Fix gap reactivity
+- Handle window urgency event
+- Preserve remaining settings when turning off output
+- Release focus for popouts on overview
+- Track open modals for focus transfers
+- Hack for config includes with niri flake
+
+**Hyprland**
+- Always use single window mode
+- Fix cursor setting
+- Change DPMS off to DPMS toggle
+- Update reference config for 0.53
+- Smart compositor entry point detection
+
+**Core & Backend**
+- Add resolve-include recursive functionality
+- Add test coverage for wayland stack with race detection
+- Mock wayland context for tests
+- Detect quickshell crash on SIGTERM
+- Exit non-zero on SIGUSR1 for systemd restart
+- Preserve quickshell exit code
+- Fix socket reported CLI version
+- Use stdlib for XDG dirs
+- Implement screensaver interface for idle inhibitor
+- Poll with wake pipe instead of read deadlines
+
+**Greeter**
+- Change Hyprland startup to exec-once
+- Use FolderListModel for session iteration
+- Add launch timeout
+- Simplify start-hyprland check
+- Fix per-monitor and per-mode wallpapers (NixOS)
+
+**Wallpaper**
+- Add seconds to wallpaper cycling
+- Pause cycling when locked
+- Encode image URIs
+- Clamp max texture size
+- Scale texture to physical pixels
+
+**Build & Distribution**
+- Debian SID, OpenSUSE Slowroll, Leap 16.0, CentOS Stream 10 packages
+- Ubuntu ARM64 support
+- Artix Linux and Void Linux widget mappings
+- Remove cliphist dependency on dms-git
+- OBS and PPA automation improvements
+- NixOS module refactoring and fixes
+
+**Miscellaneous**
+- Add welcome page with doctor integration for first launch
+- Configurable app ID substitutions
+- Map steam_app_ID to steam_icon_ID for game icons
+- Flatpak introspection utilities
+- Detect flatpak installations of Zen Browser and Vesktop
+- Fix touchpad scrolling behavior
+- Add group workspace apps toggle
+- Reverse workspace scrolling option
+- Add hide option for updater widget
+- Use volume_mute icon for volume==0
 
 </details>
 
