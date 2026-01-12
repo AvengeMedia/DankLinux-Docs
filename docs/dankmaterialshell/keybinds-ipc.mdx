@@ -237,6 +237,8 @@ Control individual bars using flexible selectors.
 | `autoHide <selector> <value>` | Enable auto-hide mode | selector + value |
 | `manualHide <selector> <value>` | Disable auto-hide mode | selector + value |
 | `toggleAutoHide <selector> <value>` | Toggle auto-hide mode | selector + value |
+| `getPosition <selector> <value>` | Get bar position | selector + value |
+| `setPosition <selector> <value> <position>` | Set bar position | selector + value + position (top, bottom, left, right) |
 
 **Selectors:**
 - `index` - Select by position (0-based)
@@ -261,6 +263,12 @@ dms ipc call bar reveal id abc123
 dms ipc call bar autoHide index 0
 dms ipc call bar manualHide name "Main Bar"
 dms ipc call bar toggleAutoHide index 1
+
+# Position controls
+dms ipc call bar getPosition index 0
+dms ipc call bar getPosition id default
+dms ipc call bar setPosition index 0 top
+dms ipc call bar setPosition id default left
 ```
 
 ### dock
@@ -404,7 +412,6 @@ dms ipc call settings toggle
 dms ipc call settings openWith theme
 dms ipc call settings toggleWith dock
 dms ipc call settings tabs
-dms ipc call settings get barPosition
 dms ipc call settings set showSeconds true
 dms ipc call settings set opacity 0.9
 ```
