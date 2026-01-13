@@ -468,13 +468,14 @@
   object-fit: contain;
 }
 
-/* Position distros evenly in a circle (60deg apart for 6 logos, radius ~32%) */
+/* Position distros evenly in a circle (~51deg apart for 7 logos, radius ~32%) */
 .distroLogo:nth-child(2) { top: 18%; left: 50%; transform: translate(-50%, -50%); }
-.distroLogo:nth-child(3) { top: 34%; left: 78%; transform: translate(-50%, -50%); }
-.distroLogo:nth-child(4) { top: 66%; left: 78%; transform: translate(-50%, -50%); }
-.distroLogo:nth-child(5) { top: 82%; left: 50%; transform: translate(-50%, -50%); }
-.distroLogo:nth-child(6) { top: 66%; left: 22%; transform: translate(-50%, -50%); }
-.distroLogo:nth-child(7) { top: 34%; left: 22%; transform: translate(-50%, -50%); }
+.distroLogo:nth-child(3) { top: 30%; left: 75%; transform: translate(-50%, -50%); }
+.distroLogo:nth-child(4) { top: 57%; left: 81%; transform: translate(-50%, -50%); }
+.distroLogo:nth-child(5) { top: 79%; left: 64%; transform: translate(-50%, -50%); }
+.distroLogo:nth-child(6) { top: 79%; left: 36%; transform: translate(-50%, -50%); }
+.distroLogo:nth-child(7) { top: 57%; left: 19%; transform: translate(-50%, -50%); }
+.distroLogo:nth-child(8) { top: 30%; left: 25%; transform: translate(-50%, -50%); }
 
 .distroLogo:hover {
   transform: translate(-50%, -50%) scale(1.1);
