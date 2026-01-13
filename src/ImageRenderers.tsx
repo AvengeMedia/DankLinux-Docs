@@ -484,6 +484,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
   // Handle different blog page types
   let title = 'Blog'
   let isV1Release = false
+  let isV12Release = false
 
   if (data.pageType === 'post' && data.data) {
     const postData = data.data as Record<string, unknown>
@@ -493,6 +494,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     const id = String(postData.id || '')
     const permalink = String(metadata?.permalink || '')
     isV1Release = id === 'v1-release' || permalink.includes('v1-release') || title.includes('1.0')
+    isV12Release = id === 'v1.2-release' || permalink.includes('v1.2-release') || title.includes('1.2')
   } else if (data.pageType === 'tag' && 'label' in data.data) {
     title = `Tag: ${String(data.data.label)}`
   } else if (data.pageType === 'archive') {
@@ -659,6 +661,141 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
             }}
           >
             The Dark Knight
+          </div>
+        </div>
+      </div>,
+      {
+        width: BASE_WIDTH,
+        height: BASE_HEIGHT,
+        fonts,
+      },
+    ]
+  }
+
+  // Special OG image for v1.2 release - Spicy Miso
+  if (isV12Release) {
+    return [
+      <div
+        style={{
+          display: 'flex',
+          width: BASE_WIDTH,
+          height: BASE_HEIGHT,
+          background: '#000000',
+          position: 'relative',
+          overflow: 'hidden',
+          fontSmooth: 'always',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        }}
+      >
+        {/* Radial gradient overlays - warm red/orange tones */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: 'radial-gradient(circle at 10% 20%, rgba(239, 68, 68, 0.3) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(251, 146, 60, 0.08) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.2) 0%, transparent 35%)',
+          }}
+        />
+
+        {/* Grid pattern */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: 'linear-gradient(to bottom, rgba(251, 146, 60, 0.03) 1px, transparent 1px), linear-gradient(to right, rgba(251, 146, 60, 0.03) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+          }}
+        />
+
+        {/* Confetti sparkles - red/orange tones */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: `
+              radial-gradient(circle at 8% 15%, #ef4444 2.5px, transparent 2.5px),
+              radial-gradient(circle at 15% 75%, #dc2626 2px, transparent 2px),
+              radial-gradient(circle at 25% 35%, #f97316 2px, transparent 2px),
+              radial-gradient(circle at 35% 85%, #fb923c 2.5px, transparent 2.5px),
+              radial-gradient(circle at 45% 20%, #ef4444 2px, transparent 2px),
+              radial-gradient(circle at 55% 70%, #dc2626 2.5px, transparent 2.5px),
+              radial-gradient(circle at 65% 25%, #f97316 2px, transparent 2px),
+              radial-gradient(circle at 75% 80%, #fb923c 2px, transparent 2px),
+              radial-gradient(circle at 85% 40%, #ef4444 2.5px, transparent 2.5px),
+              radial-gradient(circle at 92% 65%, #dc2626 2px, transparent 2px),
+              radial-gradient(circle at 12% 45%, #f97316 2px, transparent 2px),
+              radial-gradient(circle at 88% 18%, #fb923c 2px, transparent 2px),
+              radial-gradient(circle at 42% 90%, #ef4444 2px, transparent 2px),
+              radial-gradient(circle at 72% 12%, #dc2626 2.5px, transparent 2.5px),
+              radial-gradient(circle at 5% 55%, #f97316 2.5px, transparent 2.5px),
+              radial-gradient(circle at 95% 85%, #fb923c 2.5px, transparent 2.5px)
+            `,
+            opacity: 0.6,
+          }}
+        />
+
+        {/* Main content */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            zIndex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '24px',
+              fontFamily: 'Adwaita Sans',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '180px',
+                fontWeight: 800,
+                color: '#ffffff',
+                letterSpacing: '-4px',
+              }}
+            >
+              DMS
+            </div>
+            <div
+              style={{
+                fontSize: '180px',
+                fontWeight: 800,
+                letterSpacing: '-4px',
+                background: 'linear-gradient(135deg, #fca5a5 0%, #ef4444 50%, #dc2626 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+              }}
+            >
+              1.2
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: '32px',
+              fontWeight: 600,
+              color: 'rgba(252, 165, 165, 0.4)',
+              fontFamily: 'Adwaita Sans',
+              marginTop: '16px',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Spicy Miso
           </div>
         </div>
       </div>,
