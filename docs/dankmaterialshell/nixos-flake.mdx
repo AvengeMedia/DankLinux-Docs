@@ -239,13 +239,73 @@ A complete up-to-date list of available settings can be found [here](https://raw
 
 ### Plugins
 
-Install DankMaterialShell plugins declaratively:
+Install DankMaterialShell plugins declaratively. There are two methods:
+
+#### Method 1: Using the Plugin Registry (Recommended)
+
+The [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) flake provides all community plugins as packages with daily updates. This is the simplest way to install plugins using Nix.
+
+First, add the plugin registry as a flake input:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+Then import the module and enable plugins:
+
+```nix
+{
+  imports = [
+    inputs.dms.homeModules.dank-material-shell
+    inputs.dms-plugin-registry.modules.default
+  ];
+
+  programs.dank-material-shell = {
+    enable = true;
+
+    plugins = {
+      # Simply enable plugins by their ID (from the registry)
+      dankBatteryAlerts.enable = true;
+      dockerManager.enable = true;
+      
+      # Add plugin-specific settings
+      mediaPlayer = {
+        enable = true;
+
+        # You can only define settings here if using the home-manager module
+        settings = {
+          preferredSource = "spotify";
+        };
+      };
+    };
+  };
+}
+```
+
+The plugin IDs can be found in the [plugin store](https://danklinux.com/plugins) - it's the last part of the install URL. For example, `dms://plugin/install/dankBatteryAlerts` has the ID `dankBatteryAlerts`.
+
+#### Method 2: Manual Installation from Source
+
+If you don't want to use the registry flake, you can install plugins manually by providing the source:
 
 ```nix
 programs.dank-material-shell = {
   enable = true;
 
-  managePluginSettings = true;
   plugins = {
     DockerManager = {
       src = pkgs.fetchFromGitHub {
@@ -254,19 +314,43 @@ programs.dank-material-shell = {
         rev = "v1.2.0";
         sha256 = "sha256-VoJCaygWnKpv0s0pqTOmzZnPM922qPDMHk4EPcgVnaU=";
       };
+      settings = {
+        someOption = "value";
+      };
     };
     AnotherPlugin = {
       enable = true;
       src = pkgs.another-plugin;
+    };
+  };
+};
+```
+
+#### Plugin Settings Management (home-manager only)
+
+You can choose whether or not to manage plugin settings with home-manager through the `managePluginSettings` option. 
+
+```nix
+programs.dank-material-shell = {
+  enable = true;
+  
+  # Auto-enabled when plugins have settings configured
+  managePluginSettings = true;
+  
+  plugins = {
+    somePlugin = {
+      enable = true;
       settings = {
-        some-setting = true;
+        # Your plugin settings here
       };
     };
   };
 };
 ```
 
-You can choose whether or not to manage plugin settings with home-manager through the managePluginSettings option. If there are no plugins with settings defined but managePluginSettings = true, a minimal plugin_settings.json is created that enables the plugins. If there are plugin settings defined, managePluginSettings defaults to true and those settings are placed in plugin_settings.json. If there are plugin settings defined and managePluginSettings is set to false, there will be a warning, but plugin_settings.json won't be created.
+- If there are no plugins with settings defined but `managePluginSettings = true`, a minimal `plugin_settings.json` is created that enables the plugins.
+- If there are plugin settings defined, `managePluginSettings` defaults to `true` and those settings are placed in `plugin_settings.json`.
+- If there are plugin settings defined and `managePluginSettings` is set to `false`, there will be a warning, but `plugin_settings.json` won't be created.
 
 
 ### Config includes with niri-flake
