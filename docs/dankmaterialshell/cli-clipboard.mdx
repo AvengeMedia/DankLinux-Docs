@@ -16,7 +16,7 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-The `dms cl` command provides a Wayland clipboard manager with history, search, and persistence. It uses the `ext_data_control_v1` protocol for clipboard access.
+The `dms cl` command provides a Wayland clipboard manager with history, search, and other configurable knobs. It uses the `ext_data_control_v1` protocol for clipboard access.
 
 ## Overview
 
@@ -269,7 +269,6 @@ dms cl config set [flags]
 - `--clear-at-startup` / `--no-clear-at-startup`: Clear history on server start
 - `--disable` / `--enable`: Disable/enable clipboard manager entirely
 - `--disable-history` / `--enable-history`: Disable/enable history persistence
-- `--disable-persist` / `--enable-persist`: Disable/enable clipboard ownership persistence
 
 **Examples**:
 
@@ -297,7 +296,6 @@ Settings are stored at `$XDG_CONFIG_HOME/DankMaterialShell/clsettings.json` (def
 |------------------|------|------------|---------------------------------------------------------|
 | `disabled`       | bool | `false`    | Disable clipboard manager entirely                      |
 | `disableHistory` | bool | `false`    | Don't persist clipboard to database                     |
-| `disablePersist` | bool | `false`    | Don't re-take clipboard ownership when selection clears |
 | `maxHistory`     | int  | `100`      | Max entries to keep in history                          |
 | `maxEntrySize`   | int  | `10485760` | Max single entry size in bytes (10MB)                   |
 | `autoClearDays`  | int  | `0`        | Auto-delete entries older than N days (0 = disabled)    |
@@ -308,7 +306,6 @@ Settings are stored at `$XDG_CONFIG_HOME/DankMaterialShell/clsettings.json` (def
 {
   "disabled": false,
   "disableHistory": false,
-  "disablePersist": false,
   "maxHistory": 100,
   "maxEntrySize": 10485760,
   "autoClearDays": 0,

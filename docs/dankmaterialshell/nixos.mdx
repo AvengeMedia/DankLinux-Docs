@@ -18,6 +18,10 @@ import Hero from '@site/src/components/Hero';
 
 DankMaterialShell can be installed on NixOS using the NixOS module. This guide covers the native nixpkgs installation method.
 
+:::note
+DMS version available in `nixos-unstable` currently is DMS 1.0.3. This page will be updated as soon as [1.2](/blog/v1.2-release) gets updated in `nixpkgs`.
+:::
+
 :::info NixOS Unstable Required
 DankMaterialShell is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable (currently 25.11), you'll need to use the [Flake Installation](nixos-flake) method instead.
 :::
@@ -165,14 +169,57 @@ When using the flake package with the native nixpkgs module, some dependencies m
 
 ### Plugins
 
-Install DankMaterialShell plugins declaratively:
+Install DankMaterialShell plugins declaratively. There are two methods:
+
+#### Method 1: Using the Plugin Registry (Recommended)
+
+The [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) flake provides all community plugins as packages with daily updates. This is the simplest way to install plugins.
+
+First, add the plugin registry as a flake input:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+Then import the module and enable plugins:
+
+```nix
+{
+  imports = [ inputs.dms-plugin-registry.modules.default ];
+
+  programs.dms-shell = {
+    enable = true;
+
+    plugins = {
+      # Simply enable plugins by their ID (from the registry)
+      dankBatteryAlerts.enable = true;
+      dockerManager.enable = true;
+    };
+  };
+}
+```
+
+The plugin IDs can be found in the [plugin store](https://danklinux.com/plugins) - it's the last part of the install URL. For example, `dms://plugin/install/dankBatteryAlerts` has the ID `dankBatteryAlerts`.
+
+#### Method 2: Manual Installation from Source
+
+If you don't want to use the registry flake, you can install plugins manually by providing the source:
 
 ```nix
 programs.dms-shell = {
   enable = true;
 
   plugins = {
-    DockerManager = {
+    dockerManager = {
       src = pkgs.fetchFromGitHub {
         owner = "LuckShiba";
         repo = "DmsDockerManager";
@@ -180,7 +227,7 @@ programs.dms-shell = {
         sha256 = "sha256-VoJCaygWnKpv0s0pqTOmzZnPM922qPDMHk4EPcgVnaU=";
       };
     };
-    AnotherPlugin = {
+    anotherPlugin = {
       enable = true;
       src = pkgs.another-plugin;
     };
@@ -190,8 +237,7 @@ programs.dms-shell = {
 
 ## Advanced Configuration
 
-For a complete list of available options, check the module file in nixpkgs:
-- **NixOS module**: `nixos/modules/programs/dms-shell.nix` in nixpkgs
+For a complete list of available options, check [the module file](https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/programs/wayland/dms-shell.nix) in nixpkgs.
 
 ## Rebuilding
 

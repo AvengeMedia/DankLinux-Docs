@@ -465,9 +465,6 @@ dms ipc call dankdash wallpaper
 
 ### welcome
 
-:::note Upcoming in 1.2
-:::
-
 First-launch welcome wizard with feature overview, system diagnostics, and configuration quick links.
 
 | Function | Description | Parameters |
@@ -627,6 +624,47 @@ System updater external check request.
 ```bash
 dms ipc call systemupdater updatestatus
 ```
+
+### desktopWidget
+
+Control desktop widget instances (clocks, system monitors, etc.).
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `list` | List all widget instances with ID, type, name, and status | - |
+| `status <instanceId>` | Get widget status (enabled, overlay, clickThrough, etc.) | instance ID |
+| `enable <instanceId>` | Enable the widget | instance ID |
+| `disable <instanceId>` | Disable the widget | instance ID |
+| `toggleEnabled <instanceId>` | Toggle widget enabled/disabled | instance ID |
+| `toggleOverlay <instanceId>` | Toggle show on overlay layer | instance ID |
+| `setOverlay <instanceId> <bool>` | Set overlay visibility | instance ID, true/false |
+| `toggleClickThrough <instanceId>` | Toggle click-through mode | instance ID |
+| `setClickThrough <instanceId> <bool>` | Set click-through mode | instance ID, true/false |
+| `toggleSyncPosition <instanceId>` | Toggle position sync across screens | instance ID |
+| `setSyncPosition <instanceId> <bool>` | Set position sync across screens | instance ID, true/false |
+
+**Examples:**
+```bash
+# List all desktop widgets
+dms ipc call desktopWidget list
+
+# Get widget status
+dms ipc call desktopWidget status dw_1234567890_abc123
+
+# Toggle overlay visibility (useful for keybinds)
+dms ipc call desktopWidget toggleOverlay dw_1234567890_abc123
+
+# Enable click-through mode
+dms ipc call desktopWidget setClickThrough dw_1234567890_abc123 true
+
+# Toggle position sync
+dms ipc call desktopWidget toggleSyncPosition dw_1234567890_abc123
+```
+
+**Notes:**
+- Use `list` to discover widget instance IDs
+- Click-through mode allows mouse clicks to pass through the widget to windows below
+- Position sync keeps the widget at the same relative position across multiple monitors
 
 ## Scripting and Automation
 

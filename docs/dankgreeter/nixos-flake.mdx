@@ -73,7 +73,7 @@ DankGreeter is only available as a NixOS module (not as a home-manager module), 
 Enable and configure the greeter in your NixOS configuration:
 
 ```nix
-programs.dankMaterialShell.greeter = {
+programs.dank-material-shell.greeter = {
   enable = true;
   compositor.name = "niri";  # Or "hyprland" or "sway"
 };
@@ -94,7 +94,7 @@ Compositors must be installed via NixOS configuration to appear in DankGreeter, 
 ## Configuration Options
 
 ```nix
-programs.dankMaterialShell.greeter = {
+programs.dank-material-shell.greeter = {
   compositor = {
     name = "niri"; # Required. Can be also "hyprland" or "sway"
     customConfig = ''

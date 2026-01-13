@@ -356,10 +356,6 @@ Restart DMS to generate the palette, then enable Pywalfox in the browser.
 
 ### Zen Browser
 
-:::info Next Release (1.2)
-Zen Browser theming support is coming in DMS 1.2.
-:::
-
 Zen Browser handles theming differently from Firefox—Pywalfox and Firefox theme extensions no longer work. Theming is controlled via `userChrome.css` in the profile directory.
 
 DMS generates `~/.config/DankMaterialShell/zen.css` automatically. Link it to your Zen profile:
@@ -386,8 +382,6 @@ Editors use a mix of `dank16` and matugen to produce a colorful, theme-honoring 
 
 ### VSCode / Codium / Cursor / Windsurf
 
-:::info Next Release (1.2)
-
 Install from the VS Code Marketplace by searching for "DMS - Dank Material Shell Theme":
 
 ![VS Code Marketplace](/img/vscode-marketplace.png)
@@ -397,16 +391,6 @@ Or install manually:
 ```bash
 wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/matugen/dms-theme.vsix
 code --install-extension dms-theme.vsix
-# or: codium / cursor / windsurf --install-extension ...
-```
-
-:::
-
-**Install the theme (1.0.x):**
-
-```bash
-wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/tags/1.0.3/quickshell/matugen/dynamic-base16-dankshell.vsix
-code --install-extension dynamic-base16-dankshell.vsix
 # or: codium / cursor / windsurf --install-extension ...
 ```
 
@@ -432,18 +416,8 @@ Terminal editors use a custom `dank16` algorithm alongside matugen to generate a
 ### Ghostty
 
 ```bash
-echo "config-file = ./config-dankcolors" >> ~/.config/ghostty/config
-```
-
-:::info Next Release (1.2)
-
-In DMS 1.2, the Ghostty configuration changes to:
-
-```bash
 echo "theme = dankcolors" >> ~/.config/ghostty/config
 ```
-
-:::
 
 Optional - disable excessive notifications:
 

@@ -528,10 +528,6 @@ Daemon manifest uses `"type": "daemon"`:
 
 ## Desktop Plugins {#desktop-plugins}
 
-:::info Upcoming in DMS 1.2
-Desktop plugins are not yet released. This documents the upcoming API.
-:::
-
 Desktop plugins render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can freely position and resize them.
 
 ### Basic Desktop Widget
@@ -1345,7 +1341,7 @@ PluginComponent {
 - `"widget"` - DankBar or Control Center widget
 - `"daemon"` - Background service
 - `"launcher"` - Spotlight extension
-- `"desktop"` - Desktop layer widget *(DMS 1.2+)*
+- `"desktop"` - Desktop layer widget
 
 ### Permissions
 
@@ -1396,7 +1392,7 @@ Check the `PLUGINS/` directory in the DMS repo for real examples:
 - **LauncherExample** - Spotlight extension
 - **WallpaperWatcherDaemon** - Background event watcher
 
-**Built-in desktop widgets** (DMS 1.2+):
+**Built-in desktop widgets**
 
 - **DesktopClockWidget** - Digital/analog clock with date display and style options
 - **SystemMonitorWidget** - CPU, memory, network, disk, GPU tiles with real-time graphs
