@@ -494,7 +494,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     const id = String(postData.id || '')
     const permalink = String(metadata?.permalink || '')
     isV1Release = id === 'v1-release' || permalink.includes('v1-release') || title.includes('1.0')
-    isV12Release = id === 'v1.2-release' || permalink.includes('v1.2-release') || title.includes('1.2')
+    isV12Release = id === 'v1-2-release' || permalink.includes('v1-2-release') || title.includes('1.2')
   } else if (data.pageType === 'tag' && 'label' in data.data) {
     title = `Tag: ${String(data.data.label)}`
   } else if (data.pageType === 'archive') {
