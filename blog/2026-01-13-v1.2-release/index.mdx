@@ -467,7 +467,12 @@ spawn-at-startup "wl-paste --watch cliphist store" // REMOVE THIS LINE
 exec-once = wl-paste --watch cliphist store # REMOVE THIS LINE
 ```
 
-**2. Migrate clipboard history from `cliphist` to DMS:**
+**2. Configure DMS clipboard settings (optional):**
+
+Before migrating, you may want to configure your retention settings in DMS Settings -> System -> Clipboard. You can configure maximum entry size, total entries, and retention durations. Only required if you want to override the defaults.
+
+
+**3. Migrate clipboard history from `cliphist` to DMS:**
 
 Clipboard history will not be automatically migrated from previous versions. You can still access it with the `cliphist` CLI. New clipboard history located in `~/.cache/DankMaterialShell/clipboard/db` - this is a [bbolt](https://github.com/etcd-io/bbolt) database.
 
