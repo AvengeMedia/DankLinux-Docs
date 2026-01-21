@@ -166,11 +166,12 @@ DMS_IPP_PASSWORD=secret dms run
 If you manage DMS with systemd (including dankinstall users), set environment variables in `~/.config/environment.d/90-dms.conf`:
 
 ```ini
+TERMINAL=ghostty
 DMS_DISABLE_MATUGEN=1
 DMS_DANKBAR_LAYER=overlay
 DMS_HIDE_TRAYIDS=discord,spotify
 ```
-
+At least the TERMINAL variable should be present, if you want to use the `System Updates` widget.
 Log out and back in for changes to take effect.
 
 :::
