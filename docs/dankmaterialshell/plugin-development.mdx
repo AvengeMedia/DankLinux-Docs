@@ -1049,7 +1049,8 @@ QtObject {
             icon: "material:equal",
             comment: trimmedQuery + " = " + result.result,
             action: "copy:" + result.result,
-            categories: ["Calculator"]
+            categories: ["Calculator"],
+            keywords: ["math", "calculate", "equals"]
         }];
     }
 
@@ -1140,6 +1141,14 @@ Launcher manifest needs `"type": "launcher"` and a `"trigger"`:
   "component": "./EmojiLauncher.qml"
 }
 ```
+
+**Item properties**:
+- `name` - Display name (required)
+- `icon` - Icon to show (see formats below)
+- `comment` - Secondary text/description
+- `action` - What happens on selection (see formats below)
+- `categories` - Array of category strings
+- `keywords` - Array of strings for search matching (e.g., `["math", "calculate"]`)
 
 **Icon formats**:
 - Material Design: `"material:icon_name"` or just `"icon_name"`
