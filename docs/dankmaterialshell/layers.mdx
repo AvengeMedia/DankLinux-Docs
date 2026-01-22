@@ -26,7 +26,7 @@ Full-screen modal dialogs including settings, power menu, and clipboard history.
 | Clipboard history    | `dms:clipboard`                 |
 | File browser         | `dms:file-browser`              |
 | Settings             | `dms:settings`                  |
-| Spotlight            | `dms:spotlight`                 |
+| Launcher             | `dms:spotlight`                 |
 | Bluetooth pairing    | `dms:bluetooth-pairing`         |
 | Color picker         | `dms:color-picker`              |
 | Hyprkeybinds         | `dms:hyprkeybinds`              |
@@ -70,25 +70,30 @@ Namespaces for other component that aren't modals or popouts.
 | Toast              | `dms:toast`              | Toast appearing on top middle of the screen.                                                                                         |
 | Tray menu window   | `dms:tray-menu-window`   | Menu appearing when right clicking an applet in the system tray.                                                                     |
  
-> If you are unsure about a component's namespace and are on Hyprland, you can run `hyprctl layers` with the layer opened.
+> **Tip:** If you are unsure about a component's namespace, you can check it using your compositor's tools:
+> - **Hyprland**: Run `hyprctl layers` with the layer opened
+> - **Niri**: Run `niri msg layers` to list active layer surfaces
 
 ### Plugins
 By default, plugins without namespaces will fallback to `dms-plugin:plugin`, if the plugin has a specific namespaces you will have to run the command above or look at the plugin's code to know it if you do by looking at the code note the it will be `dms-plugin:` + the namespace, for example `dms-plugin:emoji-launcher`).
 
 If you're a plugin dev, see the [plugin development](./plugin-development.mdx#widget-with-popout) page to add your layer namespace.
-## Hyprland Example
+## Compositor Examples
+
+Each compositor has its own syntax for layer rules.
+
+### Hyprland
 
 :::info
 
-In order to for some layer rules (such as `animation`, `blur` and `dimaround`), you will have to disable the shell's animations and dim effect.
+In order for some layer rules (such as `animation`, `blur` and `dimaround`), you will have to disable the shell's animations and dim effect.
 
-- You can disable animations in **Settings**>**Personalization**>Animation Speed** and set to **None**.
+- You can disable animations in **Settings**>**Personalization**>**Animation Speed** and set to **None**.
 - You can disable the dim in **Theme & Colors**>**Widget Styling** and untoggle **Darken Modal Background**.
 
 :::
 
-### Blur Settings
-
+#### Blur Settings
 
 ```conf
 decoration {
@@ -114,7 +119,7 @@ decoration {
 }
 ```
 
-### Layer Rules
+#### Layer Rules
 
 Add these layer rules to enable blur for DMS components:
 
@@ -133,11 +138,11 @@ layerrule = blur, $blur_layer
 # Dim (if you prefer a dim instead of a blur effect)
 layerrule = dimaround, $blur_layer
 ```
-### Examples
+#### Examples
 
 <details>
 <summary>Examples</summary>
-#### Add a blur effect on the shell's Components
+##### Add a blur effect on the shell's Components
 
 Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
 ```conf
@@ -148,7 +153,7 @@ layerrule = blur, $blur_shell
 layerrule = ignorezero, $blur_shell 
 ```
 </details>
-### Performance Tuning
+#### Performance Tuning
 
 If blur is impacting system performance, try these optimizations in order:
 
@@ -165,12 +170,54 @@ hyprctl keyword decoration:blur:enabled true
 
 You can find more about Hyprland's layer rules [here](https://wiki.hypr.land/Configuring/Window-Rules/#layer-rules).
 
+### Niri
+
+Niri uses a different configuration format with `layer-rule` blocks. Each rule can match namespaces using regex patterns.
+
+#### Layer Rules
+
+```kdl
+// Block out sensitive components from screencasts
+layer-rule {
+    match namespace="^dms:clipboard$"
+
+    block-out-from "screencast"
+}
+
+// Match all DMS layers with a regex
+layer-rule {
+    match namespace=r#"^dms:.*"#
+
+    // Apply rules to all DMS components
+}
+```
+
+#### Shadow Settings
+
+```kdl
+layer-rule {
+    match namespace="^dms:bar$"
+    match namespace="^dms:dock$"
+
+    shadow {
+        on
+        // off
+        softness 40
+        spread 5
+        offset x=0 y=5
+        draw-behind-window true
+        color "#00000064"
+        // inactive-color "#00000064"
+    }
+}
+```
+
+You can find more about Niri's layer rules [here](https://github.com/YaLTeR/niri/wiki/Configuration:-Layer-Rules).
+
 ## Other Compositors
 
-Not all compositors support blur, check the relevant compositors documentation for how to add layer-rules.
+Not all compositors support blur or layer rules. Check your compositor's documentation for available options.
 
 DMS is compositor-agnostic—it only sets namespaces and lets the compositor handle the effects. Once you determine the appropriate layer rule syntax for your compositor, you can target the same namespaces listed above.
 
-[Niri's layer rules wiki page.](https://yalter.github.io/niri/Configuration%3A-Layer-Rules.html)
-
-[MangoWC's layer rules wiki page.](https://github.com/DreamMaoMao/mangowc/wiki#layer-rules)
+- [MangoWC's layer rules wiki page](https://github.com/DreamMaoMao/mangowc/wiki#layer-rules)
