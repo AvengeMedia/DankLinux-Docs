@@ -16,8 +16,12 @@ type Client struct {
 }
 
 func NewClient(token string) *Client {
+	return NewClientWithBaseURL("https://api.github.com", token)
+}
+
+func NewClientWithBaseURL(baseURL, token string) *Client {
 	return &Client{
-		baseURL: "https://api.github.com",
+		baseURL: baseURL,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,
 		},

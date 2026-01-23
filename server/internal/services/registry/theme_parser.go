@@ -10,7 +10,12 @@ import (
 )
 
 func (p *Parser) FetchThemes(ctx context.Context) ([]models.Theme, error) {
-	contents, err := p.client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", "themes")
+	client, err := p.getClient("github.com")
+	if err != nil {
+		return nil, err
+	}
+
+	contents, err := client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", "themes")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get themes directory: %w", err)
 	}
@@ -34,9 +39,14 @@ func (p *Parser) FetchThemes(ctx context.Context) ([]models.Theme, error) {
 }
 
 func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme, error) {
+	client, err := p.getClient("github.com")
+	if err != nil {
+		return models.Theme{}, err
+	}
+
 	themeJSONPath := fmt.Sprintf("themes/%s/theme.json", themeName)
 
-	contents, err := p.client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", themeJSONPath)
+	contents, err := client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", themeJSONPath)
 	if err != nil {
 		return models.Theme{}, fmt.Errorf("theme.json not found: %w", err)
 	}
@@ -45,7 +55,7 @@ func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme
 		return models.Theme{}, fmt.Errorf("theme.json not found")
 	}
 
-	fileData, err := p.client.GetFileContents(ctx, contents[0].DownloadURL)
+	fileData, err := client.GetFileContents(ctx, contents[0].DownloadURL)
 	if err != nil {
 		return models.Theme{}, fmt.Errorf("failed to fetch theme.json: %w", err)
 	}
@@ -59,7 +69,7 @@ func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme
 		return models.Theme{}, fmt.Errorf("theme.json missing id")
 	}
 
-	lastCommit, err := p.client.GetLastCommit(ctx, "AvengeMedia", "dms-plugin-registry", fmt.Sprintf("themes/%s", themeName))
+	lastCommit, err := client.GetLastCommit(ctx, "AvengeMedia", "dms-plugin-registry", fmt.Sprintf("themes/%s", themeName))
 	if err != nil {
 		return models.Theme{}, fmt.Errorf("failed to fetch last commit: %w", err)
 	}

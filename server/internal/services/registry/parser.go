@@ -13,13 +13,35 @@ import (
 )
 
 type Parser struct {
-	client *github.Client
+	token   string
+	clients map[string]*github.Client
 }
 
-func NewParser(githubToken string) *Parser {
+func NewParser(token string) *Parser {
 	return &Parser{
-		client: github.NewClient(githubToken),
+		token:   token,
+		clients: make(map[string]*github.Client),
 	}
+}
+
+func (p *Parser) getClient(host string) (*github.Client, error) {
+	if client, ok := p.clients[host]; ok {
+		return client, nil
+	}
+
+	baseURL, err := getAPIBaseURL(host)
+	if err != nil {
+		return nil, err
+	}
+
+	token := ""
+	if host == "github.com" {
+		token = p.token
+	}
+
+	client := github.NewClientWithBaseURL(baseURL, token)
+	p.clients[host] = client
+	return client, nil
 }
 
 func (p *Parser) FetchPlugins(ctx context.Context) ([]models.Plugin, error) {
@@ -43,7 +65,12 @@ func (p *Parser) FetchPlugins(ctx context.Context) ([]models.Plugin, error) {
 }
 
 func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlugin, error) {
-	contents, err := p.client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", "plugins")
+	client, err := p.getClient("github.com")
+	if err != nil {
+		return nil, err
+	}
+
+	contents, err := client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", "plugins")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get plugins directory: %w", err)
 	}
@@ -58,7 +85,7 @@ func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlu
 			continue
 		}
 
-		fileData, err := p.client.GetFileContents(ctx, content.DownloadURL)
+		fileData, err := client.GetFileContents(ctx, content.DownloadURL)
 		if err != nil {
 			log.Warnf("Failed to fetch %s: %v", content.Name, err)
 			continue
@@ -77,24 +104,22 @@ func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlu
 }
 
 func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlugin) (models.Plugin, error) {
-	owner, repo, err := parseRepoURL(regPlugin.Repo)
+	host, owner, repo, err := parseRepoURL(regPlugin.Repo)
 	if err != nil {
 		return models.Plugin{}, fmt.Errorf("invalid repo URL: %w", err)
 	}
 
-	pluginPath := regPlugin.Path
-	if pluginPath == "" {
-		pluginPath = ""
+	client, err := p.getClient(host)
+	if err != nil {
+		return models.Plugin{}, err
 	}
 
-	metadataPath := pluginPath
-	if metadataPath != "" {
-		metadataPath += "/plugin.json"
-	} else {
-		metadataPath = "plugin.json"
+	metadataPath := "plugin.json"
+	if regPlugin.Path != "" {
+		metadataPath = regPlugin.Path + "/plugin.json"
 	}
 
-	contents, err := p.client.GetRepoContents(ctx, owner, repo, metadataPath)
+	contents, err := client.GetRepoContents(ctx, owner, repo, metadataPath)
 	if err != nil {
 		return models.Plugin{}, fmt.Errorf("plugin.json not found or inaccessible: %w", err)
 	}
@@ -103,7 +128,7 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("plugin.json not found")
 	}
 
-	fileData, err := p.client.GetFileContents(ctx, contents[0].DownloadURL)
+	fileData, err := client.GetFileContents(ctx, contents[0].DownloadURL)
 	if err != nil {
 		return models.Plugin{}, fmt.Errorf("failed to fetch plugin.json: %w", err)
 	}
@@ -117,7 +142,7 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("plugin.json missing version")
 	}
 
-	lastCommit, err := p.client.GetLastCommit(ctx, owner, repo, pluginPath)
+	lastCommit, err := client.GetLastCommit(ctx, owner, repo, regPlugin.Path)
 	if err != nil {
 		return models.Plugin{}, fmt.Errorf("failed to fetch last commit: %w", err)
 	}
@@ -149,16 +174,27 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 	return plugin, nil
 }
 
-func parseRepoURL(repoURL string) (owner, repo string, err error) {
+func parseRepoURL(repoURL string) (host, owner, repo string, err error) {
 	parsedURL, err := url.Parse(repoURL)
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
 	parts := strings.Split(strings.Trim(parsedURL.Path, "/"), "/")
 	if len(parts) < 2 {
-		return "", "", fmt.Errorf("invalid GitHub URL format")
+		return "", "", "", fmt.Errorf("invalid repo URL format")
 	}
 
-	return parts[0], parts[1], nil
+	return parsedURL.Host, parts[0], parts[1], nil
+}
+
+func getAPIBaseURL(host string) (string, error) {
+	switch host {
+	case "github.com":
+		return "https://api.github.com", nil
+	case "codeberg.org":
+		return "https://codeberg.org/api/v1", nil
+	default:
+		return "", fmt.Errorf("unsupported git host: %s", host)
+	}
 }
