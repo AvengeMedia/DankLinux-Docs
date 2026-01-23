@@ -10,10 +10,12 @@ import (
 	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/config"
+	gifs_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/gifs"
 	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
 	"github.com/danielgtaylor/huma/v2"
@@ -82,6 +84,14 @@ func startAPI(cfg *config.Config) {
 		PluginCache: pluginCache,
 		ThemeCache:  themeCache,
 	}
+
+	var klipyClient *klipy.Client
+	if cfg.KlipyAPIKey != "" {
+		klipyClient = klipy.NewClient(cfg.KlipyAPIKey)
+		log.Info("Klipy client initialized")
+	}
+
+	gifRateLimiter := middleware.NewRateLimiter(100.0/60.0, 100)
 
 	r := chi.NewRouter()
 
@@ -159,6 +169,13 @@ func startAPI(cfg *config.Config) {
 			next(op)
 		})
 		themes_handler.RegisterHandlers(srvImpl, themesGroup)
+
+		gifsGroup := huma.NewGroup(api, "/gifs")
+		gifsGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"GIFs"}
+		})
+		gifsGroup.UseMiddleware(gifRateLimiter.HumaMiddleware)
+		gifs_handler.RegisterHandlers(srvImpl, klipyClient, gifsGroup)
 	})
 
 	addr := ":" + cfg.Port

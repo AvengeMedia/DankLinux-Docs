@@ -8,6 +8,7 @@ type Config struct {
 	Port        string
 	Environment string
 	GithubToken string
+	KlipyAPIKey string
 }
 
 func NewConfig() *Config {
@@ -22,10 +23,12 @@ func NewConfig() *Config {
 	}
 
 	githubToken := os.Getenv("GITHUB_TOKEN")
+	klipyAPIKey := os.Getenv("KLIPY_API_KEY")
 
 	return &Config{
 		Port:        port,
 		Environment: env,
 		GithubToken: githubToken,
+		KlipyAPIKey: klipyAPIKey,
 	}
 }

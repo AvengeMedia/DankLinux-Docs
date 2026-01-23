@@ -43,3 +43,8 @@ spec:
                 secretKeyRef:
                   name: github-token
                   key: token
+            - name: KLIPY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: klipy-api-key
+                  key: key
