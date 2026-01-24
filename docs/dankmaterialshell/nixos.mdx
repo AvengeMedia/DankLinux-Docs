@@ -18,10 +18,6 @@ import Hero from '@site/src/components/Hero';
 
 DankMaterialShell can be installed on NixOS using the NixOS module. This guide covers the native nixpkgs installation method.
 
-:::note
-DMS version available in `nixos-unstable` currently is DMS 1.0.3. This page will be updated as soon as [1.2](/blog/v1-2-release) gets updated in `nixpkgs`.
-:::
-
 :::info NixOS Unstable Required
 DankMaterialShell is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable (currently 25.11), you'll need to use the [Flake Installation](nixos-flake) method instead.
 :::
@@ -74,11 +70,11 @@ programs.dms-shell = {
   
   # Core features
   enableSystemMonitoring = true;     # System monitoring widgets (dgop)
-  enableClipboard = true;            # Clipboard history manager
   enableVPN = true;                  # VPN management widget
   enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
   enableAudioWavelength = true;      # Audio visualizer (cava)
   enableCalendarEvents = true;       # Calendar integration (khal)
+  enableClipboardPaste = true;       # Pasting from the clipboard history (wtype)
 };
 ```
 
@@ -262,7 +258,7 @@ programs.dms-shell = {
 
 ### Missing dependencies
 
-Each feature has its own dependency set. If a feature isn't working, ensure the corresponding `enable` option is set to `true`. For example, clipboard history requires `enableClipboard = true` which installs `cliphist` and `wl-clipboard`.
+Each feature has its own dependency set. If a feature isn't working, ensure the corresponding `enable` option is set to `true`. For example, clipboard history pasting requires `enableClipboardPaste = true` which installs `wtype`.
 
 ## Next Steps
 
