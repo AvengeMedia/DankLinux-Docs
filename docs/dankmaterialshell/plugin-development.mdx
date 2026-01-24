@@ -938,79 +938,194 @@ PluginSettings {
 
 ## Launcher Plugins
 
-Launcher plugins add items to Spotlight search. They use `QtObject` as their root (not `Item` or `PluginComponent`) since they don't render any UI directly.
+Launcher plugins integrate with DankLauncher to provide searchable results. They use `QtObject` as their root (not `Item` or `PluginComponent`) since they don't render any UI directly.
 
-### Required Interface
+### Basic Structure
 
-Your launcher plugin must provide:
+```qml
+import QtQuick
+import Quickshell
+import qs.Common
+import qs.Services
 
-| Property/Function | Description |
-|-------------------|-------------|
-| `pluginService` | Auto-injected service for data persistence |
-| `trigger` | Prefix that activates your plugin (e.g., `"="` or `"#"`) |
-| `itemsChanged` | Signal to emit when your items list updates |
-| `getItems(query)` | Returns filtered items matching the query |
-| `executeItem(item)` | Handles item selection |
-| `getContextMenuActions(item)` | *(Optional)* Returns context menu actions for an item |
+QtObject {
+    id: root
 
-### Context Menu Actions
+    property var pluginService: null
+    property string pluginId: "myPlugin"
+    property string trigger: ""
 
-Add right-click context menus to your launcher items by implementing `getContextMenuActions(item)`:
+    signal itemsChanged
+
+    // Required: Return search results
+    function getItems(query) {
+        return [{
+            name: "Item Name",
+            icon: "material:icon_name",
+            comment: "Description shown below name",
+            action: "custom:data",
+            categories: ["My Plugin"],
+            imageUrl: "https://...",  // Optional: tile image
+            animated: false,          // Optional: for GIFs
+            attribution: "/path/to/attribution.svg"  // Optional
+        }];
+    }
+
+    // Required: Handle item selection
+    function executeItem(item) {
+        if (!item?.action) return;
+        const data = item.action.substring(7); // Remove "custom:" prefix
+        // Do something with data
+    }
+}
+```
+
+### Plugin Manifest
+
+```json
+{
+  "id": "myPlugin",
+  "name": "My Plugin",
+  "description": "Plugin description",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "icon": "extension",
+  "type": "launcher",
+  "trigger": "!mp",
+  "viewMode": "list",
+  "viewModeEnforced": false,
+  "component": "./MyPlugin.qml",
+  "settings": "./MyPluginSettings.qml",
+  "permissions": ["settings_read", "settings_write"]
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `trigger` | Prefix that activates the plugin (e.g., `gif`, `:s`, `!calc`) |
+| `viewMode` | Default view: `"list"`, `"grid"`, or `"tile"` |
+| `viewModeEnforced` | If `true`, user cannot change the view mode |
+
+### Item Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | string | Display name (required) |
+| `icon` | string | `"material:icon_name"` or `"unicode:🚀"` |
+| `comment` | string | Secondary text/description |
+| `action` | string | Action identifier (e.g., `"copy:text"`, `"custom:data"`) |
+| `categories` | array | Category strings for filtering |
+| `keywords` | array | Additional search terms |
+| `imageUrl` | string | URL for tile/grid image |
+| `animated` | bool | Set `true` for GIFs to enable animation |
+| `attribution` | string | Path to attribution image (e.g., for API branding) |
+
+### Context Menus
+
+Add right-click/Tab actions by implementing `getContextMenuActions(item)`:
 
 ```qml
 function getContextMenuActions(item) {
-    if (!item)
-        return [];
+    if (!item) return [];
 
     return [
         {
             icon: "content_copy",
-            text: I18n.tr("Copy"),
+            text: I18n.tr("Copy URL"),
             action: () => {
-                Quickshell.execDetached(["sh", "-c", "echo -n '" + item.name + "' | wl-copy"]);
-                ToastService.showInfo("Copied", item.name);
+                Quickshell.execDetached(["dms", "cl", "copy", item.url]);
+                ToastService.showInfo(I18n.tr("Copied to clipboard"));
             }
         },
         {
             icon: "open_in_new",
-            text: I18n.tr("Open"),
-            action: () => executeItem(item)
+            text: I18n.tr("Open in Browser"),
+            action: () => Qt.openUrlExternally(item.url)
         }
     ];
 }
 ```
 
-Each action object has:
-- `icon` - Material icon name
-- `text` - Menu item label
-- `action` - Callback function to execute
+Each action object:
 
-Here's a more complete example with dynamic actions based on item state:
+| Field | Type | Description |
+|-------|------|-------------|
+| `icon` | string | Material icon name |
+| `text` | string | Display label |
+| `action` | function | Callback executed when selected |
+
+### Categories
+
+Allow users to filter results by category. Categories appear as a dropdown when the plugin is active.
 
 ```qml
-function getContextMenuActions(item) {
-    if (!item || !item._id)
-        return [];
+property string currentCategory: ""
 
-    const pinned = isPinned(item._id);
+function getCategories() {
     return [
-        {
-            icon: pinned ? "keep_off" : "push_pin",
-            text: pinned ? I18n.tr("Unpin") : I18n.tr("Pin"),
-            action: () => togglePin(item._id)
-        },
-        {
-            icon: "content_copy",
-            text: I18n.tr("Copy"),
-            action: () => executeItem(item)
-        }
+        { id: "", name: I18n.tr("All"), searchTerm: "" },
+        { id: "happy", name: "Happy", searchTerm: "happy" },
+        { id: "sad", name: "Sad", searchTerm: "sad" }
     ];
+}
+
+function setCategory(categoryId) {
+    if (currentCategory === categoryId) return;
+    currentCategory = categoryId;
+    searchDebounce.restart();
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique identifier (empty string for "All") |
+| `name` | string | Display name in dropdown |
+| `searchTerm` | string | Optional: search term to use for this category |
+
+For dynamic categories fetched from an API, emit `itemsChanged` or call `pluginService.requestLauncherUpdate(pluginId)` when categories are ready.
+
+### Paste Support
+
+Allow Shift+Enter to paste content (e.g., URLs, text):
+
+```qml
+function getPasteText(item) {
+    if (!item?.action) return null;
+    if (!item.action.startsWith("copy:")) return null;
+    return item.action.substring(5);
+}
+```
+
+### Requesting Updates
+
+Notify the launcher to refresh results after async data loads:
+
+```qml
+property Connections serviceConn: Connections {
+    target: MyService
+
+    function onResultsReady() {
+        if (pluginService)
+            pluginService.requestLauncherUpdate(pluginId);
+    }
+}
+```
+
+### Persisting Settings
+
+```qml
+Component.onCompleted: {
+    if (!pluginService) return;
+    trigger = pluginService.loadPluginData(pluginId, "trigger", "!default");
+}
+
+function saveSetting(key, value) {
+    if (pluginService)
+        pluginService.savePluginData(pluginId, key, value);
 }
 ```
 
 ### Example: Calculator Plugin
-
-A complete launcher plugin that evaluates math expressions:
 
 ```qml
 import QtQuick
@@ -1027,9 +1142,8 @@ QtObject {
     signal itemsChanged
 
     Component.onCompleted: {
-        if (!pluginService)
-            return;
-        trigger = pluginService.loadPluginData("calculator", "trigger", "=");
+        if (pluginService)
+            trigger = pluginService.loadPluginData("calculator", "trigger", "=");
     }
 
     function getItems(query) {
@@ -1049,14 +1163,12 @@ QtObject {
             icon: "material:equal",
             comment: trimmedQuery + " = " + result.result,
             action: "copy:" + result.result,
-            categories: ["Calculator"],
-            keywords: ["math", "calculate", "equals"]
+            categories: ["Calculator"]
         }];
     }
 
     function executeItem(item) {
-        if (!item?.action)
-            return;
+        if (!item?.action) return;
 
         const actionParts = item.action.split(":");
         const actionType = actionParts[0];
@@ -1066,11 +1178,6 @@ QtObject {
             Quickshell.execDetached(["sh", "-c", "echo -n '" + actionData + "' | wl-copy"]);
             ToastService.showInfo("Calculator", "Copied to clipboard: " + actionData);
         }
-    }
-
-    onTriggerChanged: {
-        if (pluginService)
-            pluginService.savePluginData("calculator", "trigger", trigger);
     }
 }
 ```
@@ -1095,14 +1202,6 @@ PluginSettings {
         font.pixelSize: Theme.fontSizeLarge
         font.weight: Font.Bold
         color: Theme.surfaceText
-    }
-
-    StyledText {
-        width: parent.width
-        text: "Evaluates math expressions and copies results to clipboard."
-        font.pixelSize: Theme.fontSizeSmall
-        color: Theme.surfaceVariantText
-        wrapMode: Text.WordWrap
     }
 
     ToggleSetting {
@@ -1130,34 +1229,6 @@ PluginSettings {
     }
 }
 ```
-
-Launcher manifest needs `"type": "launcher"` and a `"trigger"`:
-
-```json
-{
-  "id": "emojiLauncher",
-  "type": "launcher",
-  "trigger": "#",
-  "component": "./EmojiLauncher.qml"
-}
-```
-
-**Item properties**:
-- `name` - Display name (required)
-- `icon` - Icon to show (see formats below)
-- `comment` - Secondary text/description
-- `action` - What happens on selection (see formats below)
-- `categories` - Array of category strings
-- `keywords` - Array of strings for search matching (e.g., `["math", "calculate"]`)
-
-**Icon formats**:
-- Material Design: `"material:icon_name"` or just `"icon_name"`
-- Unicode/Emoji: `"unicode:🚀"`
-
-**Action formats**:
-- Copy to clipboard: `"copy:text"`
-- Show toast: `"toast:message"`
-- Run script: `"script:command args"`
 
 ## Plugin Settings
 
@@ -1393,7 +1464,7 @@ This is way faster than `dms restart` when you're iterating on your code.
 
 ## Examples
 
-Check the `PLUGINS/` directory in the DMS repo for real examples:
+Check the `PLUGINS/` directory in the DMS repo for example plugins:
 
 - **ColorDemoPlugin** - Color picker integration
 - **ExampleEmojiPlugin** - Popout with grid view
@@ -1401,7 +1472,12 @@ Check the `PLUGINS/` directory in the DMS repo for real examples:
 - **LauncherExample** - Spotlight extension
 - **WallpaperWatcherDaemon** - Background event watcher
 
-**Built-in desktop widgets**
+**First-party plugins** (good references for real-world patterns):
+
+- [DankGifSearch](https://github.com/AvengeMedia/dms-plugins/tree/main/DankGifSearch) - Launcher with tile view and API integration
+- [DankStickerSearch](https://github.com/AvengeMedia/dms-plugins/tree/main/DankStickerSearch) - Launcher with dynamic categories
+
+**Desktop widgets:**
 
 - **DesktopClockWidget** - Digital/analog clock with date display and style options
 - **SystemMonitorWidget** - CPU, memory, network, disk, GPU tiles with real-time graphs
