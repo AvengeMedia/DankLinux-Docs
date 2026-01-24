@@ -666,49 +666,6 @@ dms ipc call desktopWidget toggleSyncPosition dw_1234567890_abc123
 - Click-through mode allows mouse clicks to pass through the widget to windows below
 - Position sync keeps the widget at the same relative position across multiple monitors
 
-### toast
-
-Display toast notifications for user feedback and scripted alerts.
-
-| Function | Description | Parameters |
-| --- | --- | --- |
-| `info <message>` | Show info toast (1.5s) | message text |
-| `infoWith <message> <details> <command> <category>` | Info toast with extras | message, details, command, category |
-| `warn <message>` | Show warning toast (3s) | message text |
-| `warnWith <message> <details> <command> <category>` | Warning toast with extras | message, details, command, category |
-| `error <message>` | Show error toast (5s) | message text |
-| `errorWith <message> <details> <command> <category>` | Error toast with extras (8s, expandable) | message, details, command, category |
-| `hide` | Hide current toast | - |
-| `dismiss <category>` | Dismiss toasts by category | category name |
-| `status` | Get current toast state | - |
-
-**Examples:**
-```bash
-# Simple messages
-dms ipc call toast info "Build complete"
-dms ipc call toast warn "Disk space low"
-dms ipc call toast error "Connection failed"
-
-# With details (expandable in UI)
-dms ipc call toast errorWith "Git push failed" "Permission denied (publickey)" "git push origin main" "git"
-
-# With category for later dismissal
-dms ipc call toast warnWith "Downloading update..." "" "" "updater"
-dms ipc call toast dismiss "updater"
-
-# Check current state
-dms ipc call toast status
-
-# Force hide
-dms ipc call toast hide
-```
-
-**Notes:**
-- The `*With` variants accept optional details (expandable in UI), a command string, and a category
-- Use empty strings (`""`) for optional parameters you want to skip
-- Categories allow grouping related toasts for batch dismissal
-- The `status` function returns `hidden` or `visible:level:message`
-
 ## Scripting and Automation
 
 IPC commands are designed for integration with keybindings, scripts, and automation tools.

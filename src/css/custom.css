@@ -1213,3 +1213,38 @@ details p:last-child {
   border: 1px solid rgba(128, 90, 213, 0.2);
 }
 
+/* ========================================
+   DOCS-ONLY NAVBAR ITEMS
+   ======================================== */
+
+/* Hide Install link on docs pages */
+body.docs-page .navbar-install-link {
+  display: none !important;
+}
+
+/* Hide version dropdown by default, show only on docs pages */
+.navbar-version-dropdown {
+  display: none !important;
+}
+
+body.docs-page .navbar-version-dropdown {
+  display: flex !important;
+}
+
+/* Version dropdown trigger styling */
+a.navbar-version-dropdown.navbar__link {
+  border-bottom: none !important;
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+  color: var(--ifm-color-primary) !important;
+}
+
+a.navbar-version-dropdown.navbar__link::after {
+  display: none !important;
+}
+
+/* Search results hover fix - use dark text on highlighted results */
+[data-theme='dark'] {
+  --search-local-hit-active-color: #1a1a1a;
+}
+

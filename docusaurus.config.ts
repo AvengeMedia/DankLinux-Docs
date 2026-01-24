@@ -277,6 +277,18 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
+          lastVersion: '1.2',
+          versions: {
+            current: {
+              label: '1.4',
+              path: '1.4',
+              banner: 'unreleased',
+            },
+            '1.2': {
+              label: '1.2',
+              path: '',
+            },
+          },
         },
         blog: {
           showReadingTime: true,
@@ -387,6 +399,7 @@ const config: Config = {
           label: 'Install',
           position: 'right',
           activeBasePath: '/docs/getting-started',
+          className: 'navbar-install-link',
         },
         {
           to: '/docs/',
@@ -408,6 +421,11 @@ const config: Config = {
         {
           type: 'search',
           position: 'right',
+        },
+        {
+          type: 'docsVersionDropdown',
+          position: 'right',
+          className: 'navbar-version-dropdown',
         },
         {
           href: 'https://github.com/AvengeMedia/DankMaterialShell',
