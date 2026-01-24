@@ -49,8 +49,8 @@ type ListPluginsResponse struct {
 }
 
 func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInput) (*ListPluginsResponse, error) {
-	if self.srv.PluginCache == nil {
-		return nil, ErrCacheNotInitialized
+	if self.srv.PluginCache == nil || !self.srv.PluginCache.IsReady() {
+		return nil, ErrCacheNotReady
 	}
 
 	filterOpts := registry.FilterOptions{

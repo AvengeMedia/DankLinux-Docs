@@ -12,6 +12,7 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/config"
 	gifs_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/gifs"
 	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
+	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
@@ -70,20 +71,24 @@ func startAPI(cfg *config.Config) {
 	pluginCache := registry.NewCache(cfg.GithubToken)
 	themeCache := registry.NewThemeCache(cfg.GithubToken)
 
-	log.Info("Initializing plugin cache...")
-	if err := pluginCache.Initialize(ctx); err != nil {
-		log.Fatalf("Failed to initialize plugin cache: %v", err)
-	}
-
-	log.Info("Initializing theme cache...")
-	if err := themeCache.Initialize(ctx); err != nil {
-		log.Fatalf("Failed to initialize theme cache: %v", err)
-	}
-
 	srvImpl := &server.Server{
 		PluginCache: pluginCache,
 		ThemeCache:  themeCache,
 	}
+
+	go func() {
+		log.Info("Initializing plugin cache...")
+		if err := pluginCache.Initialize(ctx); err != nil {
+			log.Error("Failed to initialize plugin cache", "err", err)
+		}
+	}()
+
+	go func() {
+		log.Info("Initializing theme cache...")
+		if err := themeCache.Initialize(ctx); err != nil {
+			log.Error("Failed to initialize theme cache", "err", err)
+		}
+	}()
 
 	var klipyClient *klipy.Client
 	if cfg.KlipyAPIKey != "" {
@@ -125,6 +130,20 @@ func startAPI(cfg *config.Config) {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
+	})
+
+	r.Get("/ready", func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case !pluginCache.IsReady():
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Write([]byte("plugin cache warming up"))
+		case !themeCache.IsReady():
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Write([]byte("theme cache warming up"))
+		default:
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("OK"))
+		}
 	})
 
 	r.Group(func(r chi.Router) {
@@ -176,6 +195,13 @@ func startAPI(cfg *config.Config) {
 		})
 		gifsGroup.UseMiddleware(gifRateLimiter.HumaMiddleware)
 		gifs_handler.RegisterHandlers(srvImpl, klipyClient, gifsGroup)
+
+		stickersGroup := huma.NewGroup(api, "/stickers")
+		stickersGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"Stickers"}
+		})
+		stickersGroup.UseMiddleware(gifRateLimiter.HumaMiddleware)
+		stickers_handler.RegisterHandlers(srvImpl, klipyClient, stickersGroup)
 	})
 
 	addr := ":" + cfg.Port

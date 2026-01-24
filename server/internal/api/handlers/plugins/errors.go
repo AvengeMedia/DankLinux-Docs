@@ -1,5 +1,5 @@
 package plugins_handler
 
-import "errors"
+import "github.com/danielgtaylor/huma/v2"
 
-var ErrCacheNotInitialized = errors.New("plugin cache not initialized")
+var ErrCacheNotReady = huma.Error503ServiceUnavailable("plugin cache is warming up")

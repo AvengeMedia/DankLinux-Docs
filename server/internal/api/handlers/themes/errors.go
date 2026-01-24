@@ -1,5 +1,5 @@
 package themes_handler
 
-import "errors"
+import "github.com/danielgtaylor/huma/v2"
 
-var ErrCacheNotInitialized = errors.New("theme cache not initialized")
+var ErrCacheNotReady = huma.Error503ServiceUnavailable("theme cache is warming up")

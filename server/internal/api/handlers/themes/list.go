@@ -46,8 +46,8 @@ type ListThemesResponse struct {
 }
 
 func (h *HandlerGroup) GetThemes(ctx context.Context, input *ListThemesInput) (*ListThemesResponse, error) {
-	if h.srv.ThemeCache == nil {
-		return nil, ErrCacheNotInitialized
+	if h.srv.ThemeCache == nil || !h.srv.ThemeCache.IsReady() {
+		return nil, ErrCacheNotReady
 	}
 
 	themes := h.srv.ThemeCache.GetThemes()

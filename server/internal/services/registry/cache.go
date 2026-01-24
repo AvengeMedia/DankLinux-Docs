@@ -14,6 +14,7 @@ type Cache struct {
 	plugins    []models.Plugin
 	parser     *Parser
 	lastUpdate time.Time
+	ready      bool
 }
 
 func NewCache(githubToken string) *Cache {
@@ -38,10 +39,17 @@ func (c *Cache) Refresh(ctx context.Context) error {
 	c.mu.Lock()
 	c.plugins = plugins
 	c.lastUpdate = time.Now()
+	c.ready = true
 	c.mu.Unlock()
 
 	log.Infof("Plugin cache refreshed with %d plugins", len(plugins))
 	return nil
+}
+
+func (c *Cache) IsReady() bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.ready
 }
 
 func (c *Cache) GetPlugins() []models.Plugin {

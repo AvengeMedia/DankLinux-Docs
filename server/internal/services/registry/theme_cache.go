@@ -14,6 +14,7 @@ type ThemeCache struct {
 	themes     []models.Theme
 	parser     *Parser
 	lastUpdate time.Time
+	ready      bool
 }
 
 func NewThemeCache(githubToken string) *ThemeCache {
@@ -38,10 +39,17 @@ func (c *ThemeCache) Refresh(ctx context.Context) error {
 	c.mu.Lock()
 	c.themes = themes
 	c.lastUpdate = time.Now()
+	c.ready = true
 	c.mu.Unlock()
 
 	log.Infof("Theme cache refreshed with %d themes", len(themes))
 	return nil
+}
+
+func (c *ThemeCache) IsReady() bool {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.ready
 }
 
 func (c *ThemeCache) GetThemes() []models.Theme {

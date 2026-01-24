@@ -185,3 +185,101 @@ type ReportParams struct {
 	CustomerID string
 	Reason     string
 }
+
+func (c *Client) GetStickersTrending(ctx context.Context, params TrendingParams) (json.RawMessage, error) {
+	query := url.Values{}
+	if params.Page > 0 {
+		query.Set("page", fmt.Sprintf("%d", params.Page))
+	}
+	if params.PerPage > 0 {
+		query.Set("per_page", fmt.Sprintf("%d", params.PerPage))
+	}
+	query.Set("customer_id", params.CustomerID)
+	if params.Locale != "" {
+		query.Set("locale", params.Locale)
+	}
+	if params.FormatFilter != "" {
+		query.Set("format_filter", params.FormatFilter)
+	}
+
+	return c.doRequest(ctx, http.MethodGet, "/stickers/trending", query, nil)
+}
+
+func (c *Client) SearchStickers(ctx context.Context, params SearchParams) (json.RawMessage, error) {
+	query := url.Values{}
+	if params.Page > 0 {
+		query.Set("page", fmt.Sprintf("%d", params.Page))
+	}
+	if params.PerPage > 0 {
+		query.Set("per_page", fmt.Sprintf("%d", params.PerPage))
+	}
+	query.Set("q", params.Query)
+	query.Set("customer_id", params.CustomerID)
+	if params.Locale != "" {
+		query.Set("locale", params.Locale)
+	}
+	if params.ContentFilter != "" {
+		query.Set("content_filter", params.ContentFilter)
+	}
+	if params.FormatFilter != "" {
+		query.Set("format_filter", params.FormatFilter)
+	}
+
+	return c.doRequest(ctx, http.MethodGet, "/stickers/search", query, nil)
+}
+
+func (c *Client) GetStickersCategories(ctx context.Context, locale string) (json.RawMessage, error) {
+	query := url.Values{}
+	if locale != "" {
+		query.Set("locale", locale)
+	}
+
+	return c.doRequest(ctx, http.MethodGet, "/stickers/categories", query, nil)
+}
+
+func (c *Client) GetStickersRecent(ctx context.Context, customerID string, page, perPage int) (json.RawMessage, error) {
+	query := url.Values{}
+	if page > 0 {
+		query.Set("page", fmt.Sprintf("%d", page))
+	}
+	if perPage > 0 {
+		query.Set("per_page", fmt.Sprintf("%d", perPage))
+	}
+
+	path := fmt.Sprintf("/stickers/recent/%s", url.PathEscape(customerID))
+	return c.doRequest(ctx, http.MethodGet, path, query, nil)
+}
+
+func (c *Client) GetStickersItems(ctx context.Context, ids, slugs string) (json.RawMessage, error) {
+	query := url.Values{}
+	if ids != "" {
+		query.Set("ids", ids)
+	}
+	if slugs != "" {
+		query.Set("slugs", slugs)
+	}
+
+	return c.doRequest(ctx, http.MethodGet, "/stickers/items", query, nil)
+}
+
+func (c *Client) DeleteStickersRecent(ctx context.Context, customerID, slug string) (json.RawMessage, error) {
+	query := url.Values{}
+	query.Set("slug", slug)
+
+	path := fmt.Sprintf("/stickers/recent/%s", url.PathEscape(customerID))
+	return c.doRequest(ctx, http.MethodDelete, path, query, nil)
+}
+
+func (c *Client) ShareSticker(ctx context.Context, slug string, params ShareParams) (json.RawMessage, error) {
+	body := fmt.Sprintf(`{"customer_id":%q,"q":%q}`, params.CustomerID, params.Query)
+
+	path := fmt.Sprintf("/stickers/share/%s", url.PathEscape(slug))
+	return c.doRequest(ctx, http.MethodPost, path, nil, strings.NewReader(body))
+}
+
+func (c *Client) ReportSticker(ctx context.Context, slug string, params ReportParams) (json.RawMessage, error) {
+	body := fmt.Sprintf(`{"customer_id":%q,"reason":%q}`, params.CustomerID, params.Reason)
+
+	path := fmt.Sprintf("/stickers/report/%s", url.PathEscape(slug))
+	return c.doRequest(ctx, http.MethodPost, path, nil, strings.NewReader(body))
+}
