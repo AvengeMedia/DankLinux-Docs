@@ -85,6 +85,42 @@ programs.dank-material-shell.enable = true;
 
 That's it! Rebuild your system (or standalone home-manager configuration) and DankMaterialShell will be installed  with sensible defaults.
 
+:::warning dgop on NixOS Stable
+`dgop` is not available in nixpkgs stable (25.11). If you're using NixOS stable, you'll need to either:
+- Import dgop from the dgop flake and manually set the package, or
+- Use nixpkgs unstable for dgop
+
+To import dgop from the flake, first add it to your flake inputs:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";xd
+    
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+Then configure DankMaterialShell to use the dgop package from the flake:
+
+```nix
+programs.dank-material-shell = {
+  enable = true;
+  enableSystemMonitoring = true;
+  dgop.package = inputs.dgop.packages.${pkgs.system}.default;
+};
+```
+:::
+
 ## niri Integration
 
 If you're using the niri compositor, the home-manager module provides additional integration options including automatic keybindings and startup configuration.
@@ -219,42 +255,6 @@ programs.dank-material-shell = {
   enableClipboardPaste = true;       # Pasting items from the clipboard (wtype)
 };
 ```
-
-:::warning dgop on NixOS Stable
-`dgop` is not available in nixpkgs stable (25.11). If you're using NixOS stable, you'll need to either:
-- Import dgop from the dgop flake and manually set the package, or
-- Use nixpkgs unstable for dgop
-
-To import dgop from the flake, first add it to your flake inputs:
-
-```nix
-{
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";xd
-    
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell/stable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-}
-```
-
-Then configure DankMaterialShell to use the dgop package from the flake:
-
-```nix
-programs.dank-material-shell = {
-  enable = true;
-  enableSystemMonitoring = true;
-  dgop.package = inputs.dgop.packages.${pkgs.system}.default;
-};
-```
-:::
 
 ### Custom Quickshell Package
 
