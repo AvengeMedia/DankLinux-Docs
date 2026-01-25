@@ -19,7 +19,7 @@ import Hero from '@site/src/components/Hero';
 DankMaterialShell can be installed on NixOS either system-wide using the NixOS module or per-user using home-manager. This guide covers both flake-based installation methods.
 
 :::info Native nixpkgs Available
-DankMaterialShell is now available in nixpkgs unstable! If you're on NixOS unstable (25.11), see [Installation - NixOS](nixos) for the native nixpkgs installation method which doesn't require flakes.
+DankMaterialShell is now available in nixpkgs unstable! If you're on NixOS unstable (26.05), see [Installation - NixOS](nixos) for the native nixpkgs installation method which doesn't require flakes.
 :::
 
 ## Installation Methods
@@ -84,6 +84,42 @@ programs.dank-material-shell.enable = true;
 ```
 
 That's it! Rebuild your system (or standalone home-manager configuration) and DankMaterialShell will be installed  with sensible defaults.
+
+:::warning dgop on NixOS Stable
+`dgop` is not available in nixpkgs stable (25.11). If you're using NixOS stable, you'll need to either:
+- Import dgop from the dgop flake and manually set the package, or
+- Use nixpkgs unstable for dgop
+
+To import dgop from the flake, first add it to your flake inputs:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";xd
+    
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+Then configure DankMaterialShell to use the dgop package from the flake:
+
+```nix
+programs.dank-material-shell = {
+  enable = true;
+  enableSystemMonitoring = true;
+  dgop.package = inputs.dgop.packages.${pkgs.system}.default;
+};
+```
+:::
 
 ## niri Integration
 
@@ -219,42 +255,6 @@ programs.dank-material-shell = {
   enableClipboardPaste = true;       # Pasting items from the clipboard (wtype)
 };
 ```
-
-:::warning dgop on NixOS Stable
-`dgop` is not available in nixpkgs stable (25.11). If you're using NixOS stable, you'll need to either:
-- Import dgop from the dgop flake and manually set the package, or
-- Use nixpkgs unstable for dgop
-
-To import dgop from the flake, first add it to your flake inputs:
-
-```nix
-{
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";xd
-    
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell/stable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-}
-```
-
-Then configure DankMaterialShell to use the dgop package from the flake:
-
-```nix
-programs.dank-material-shell = {
-  enable = true;
-  enableSystemMonitoring = true;
-  dgop.package = inputs.dgop.packages.${pkgs.system}.default;
-};
-```
-:::
 
 ### Custom Quickshell Package
 
