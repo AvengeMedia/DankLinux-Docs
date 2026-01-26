@@ -1084,15 +1084,47 @@ function setCategory(categoryId) {
 
 For dynamic categories fetched from an API, emit `itemsChanged` or call `pluginService.requestLauncherUpdate(pluginId)` when categories are ready.
 
-### Paste Support
+### Paste Support (Shift+Enter)
 
-Allow Shift+Enter to paste content (e.g., URLs, text):
+Launcher plugins can support Shift+Enter to paste content directly. Two optional functions control this:
 
+**`getPasteText(item)`** - Returns text to paste:
 ```qml
 function getPasteText(item) {
-    if (!item?.action) return null;
-    if (!item.action.startsWith("copy:")) return null;
-    return item.action.substring(5);
+    if (!item?.action?.startsWith("copy:")) return null;
+    return item.action.substring(5);  // "copy:hello" -> "hello"
+}
+```
+
+**`getPasteArgs(item)`** - Returns a command array for custom clipboard operations:
+```qml
+function getPasteArgs(item) {
+    const text = getPasteText(item);
+    if (!text) return null;
+    // Download content to clipboard before pasting
+    return ["dms", "cl", "copy", "--download", text];
+}
+```
+
+**Resolution order:**
+1. If `getPasteArgs` exists, use the returned command array
+2. Else if `getPasteText` exists, use `["dms", "cl", "copy", text]`
+3. Else paste is not supported for the item
+
+**Example - Image paste with URL fallback:**
+```qml
+property bool pasteUrlOnly: pluginData.pasteUrlOnly ?? false
+
+function getPasteText(item) {
+    return item.imageUrl || null;
+}
+
+function getPasteArgs(item) {
+    const url = getPasteText(item);
+    if (!url) return null;
+    if (pasteUrlOnly)
+        return ["dms", "cl", "copy", url];
+    return ["dms", "cl", "copy", "--download", url];
 }
 ```
 

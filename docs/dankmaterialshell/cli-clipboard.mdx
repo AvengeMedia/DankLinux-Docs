@@ -64,6 +64,7 @@ dms cl copy [text] [flags]
 - `text` (optional): Text to copy. If omitted, reads from stdin.
 
 **Flags**:
+- `-d, --download`: Download URL to clipboard (see below)
 - `-f, --foreground`: Stay in foreground instead of forking
 - `-o, --paste-once`: Exit after first paste (one-shot copy)
 - `-t, --type <mime>`: MIME type (default: `text/plain;charset=utf-8`)
@@ -85,7 +86,27 @@ dms cl copy -t image/png < screenshot.png
 
 # One-shot copy (clipboard cleared after first paste)
 dms cl copy -o "temporary secret"
+
+# Download image from URL to clipboard
+dms cl copy --download "https://example.com/image.png"
 ```
+
+#### Download Mode
+
+The `--download` flag fetches a file from a URL and copies it to the clipboard as `text/uri-list`. This works with both native apps and sandboxed Flatpaks.
+
+```bash
+dms cl copy --download "https://example.com/photo.jpg"
+```
+
+**How it works**:
+1. Downloads the URL to `~/.cache/dms/clipboard/`
+2. Validates the content is an image or video
+3. Offers two MIME types to the clipboard:
+   - `text/uri-list` — Native apps read the file directly
+   - `application/vnd.portal.filetransfer` — Flatpaks retrieve via XDG portal
+
+**Portal support**: When available, the XDG Desktop Portal's FileTransfer interface lets sandboxed Flatpak apps access the downloaded file securely. If the portal isn't running, only native apps will work.
 
 ### `dms cl paste`
 

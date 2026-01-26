@@ -554,6 +554,23 @@ The keybinds modal supports all providers available through the `dms keybinds` C
 
 The modal automatically parses configuration files and displays keybinds organized by category with optional subcategories. See the [Keybinds & Cheatsheets](/docs/dankmaterialshell/cli-keybinds-cheatsheets) documentation for more details on providers and creating custom cheatsheets.
 
+### workspace-rename
+
+**Niri and Hyprland only**
+
+Rename the currently active workspace via a dialog.
+
+| Function | Description |
+| --- | --- |
+| `open` | Open the workspace rename dialog |
+
+**Examples:**
+```bash
+dms ipc call workspace-rename open
+```
+
+**Note:** Returns an error if running on an unsupported compositor.
+
 ### hypr
 
 **Hyprland-only features**
