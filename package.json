@@ -29,7 +29,7 @@
     "clsx": "^2.0.0",
     "plugin-image-zoom": "^1.2.0",
     "prism-react-renderer": "^2.3.0",
-    "react": "^19.0.0",
+    "react": "^19.2.4",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
