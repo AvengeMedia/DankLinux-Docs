@@ -1053,6 +1053,20 @@ Each action object:
 | `icon` | string | Material icon name |
 | `text` | string | Display label |
 | `action` | function | Callback executed when selected |
+| `closeLauncher` | bool | If `true`, closes the launcher after action executes (default: `false`) |
+
+Use `closeLauncher: true` for actions that need focus to return to the previous application, such as paste operations:
+
+```qml
+{
+    icon: "content_paste",
+    text: I18n.tr("Paste"),
+    closeLauncher: true,
+    action: () => {
+        Quickshell.execDetached(["dms", "cl", "paste"]);
+    }
+}
+```
 
 ### Categories
 
