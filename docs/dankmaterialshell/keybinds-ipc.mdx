@@ -554,6 +554,29 @@ The keybinds modal supports all providers available through the `dms keybinds` C
 
 The modal automatically parses configuration files and displays keybinds organized by category with optional subcategories. See the [Keybinds & Cheatsheets](/docs/dankmaterialshell/cli-keybinds-cheatsheets) documentation for more details on providers and creating custom cheatsheets.
 
+### window-rules
+
+**niri only**
+
+Window rules editor modal for managing compositor window rules.
+
+| Function | Description |
+| --- | --- |
+| `open` | Open the window rules editor |
+| `close` | Close the window rules editor |
+| `toggle` | Toggle window rules editor visibility |
+
+**Examples:**
+```bash
+dms ipc call window-rules open
+dms ipc call window-rules close
+dms ipc call window-rules toggle
+```
+
+:::note
+This feature is only available on the niri compositor.
+:::
+
 ### workspace-rename
 
 **Niri and Hyprland only**
