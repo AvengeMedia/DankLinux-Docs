@@ -537,13 +537,25 @@ systemctl --user add-wants mango-session.target dms
 
 #### Sway
 
-Sway (wlroots-based) needs the environment exported for systemd services:
+Sway (wlroots-based) needs the environment exported for systemd services.
+
+Create a session target:
+
+```ini title="~/.config/systemd/user/sway-session.target"
+[Unit]
+Description=Sway Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+Add to your Sway config:
 
 ```conf title="~/.config/sway/config"
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec systemctl --user start sway-session.target
 ```
 
-Create a session target and bind DMS:
+Bind DMS to the session:
 
 ```bash
 systemctl --user add-wants sway-session.target dms

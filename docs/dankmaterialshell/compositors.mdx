@@ -80,23 +80,13 @@ For more about layer rules see [layer rules](./layers.mdx).
 
 #### Startup
 
-niri has native systemd session integration. Bind DMS to niri's service so it only runs under niri (won't start in Plasma/GNOME):
-
-```bash
-systemctl --user add-wants niri.service dms
-```
-
-**Optional services:**
-
-```kdl
-// Clipboard history
-spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
-```
-
-**Alternative: Direct launch (if not using systemd)**
+For systemd autostart setup, see the [Installation guide](./installation#niri). If you prefer not to use systemd, add DMS directly to your niri config:
 
 ```kdl
 spawn-at-startup "dms" "run"
+
+// Optional: Clipboard history
+spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
 ```
 
 #### Environment Variables
@@ -228,31 +218,13 @@ For manual configuration recommendations, continue below.
 
 #### Startup
 
-Hyprland doesn't initialize the systemd user session by default. Export the environment and start a session target:
-
-```conf
-exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec-once = systemctl --user start hyprland-session.target
-```
-
-Then bind DMS to the session target so it only runs under Hyprland (won't start in Plasma/GNOME):
-
-```bash
-systemctl --user add-wants hyprland-session.target dms
-```
-
-See the [Installation guide](./installation#hyprland) for creating the session target.
-
-**Optional services:**
-
-```conf
-exec-once = bash -c "wl-paste --watch cliphist store &"
-```
-
-**Alternative: Direct launch (if not using systemd)**
+For systemd autostart setup (recommended if you have multiple desktop environments), see the [Installation guide](./installation#hyprland). If you prefer not to use systemd, add DMS directly to your Hyprland config:
 
 ```conf
 exec-once = dms run
+
+# Optional: Clipboard history
+exec-once = bash -c "wl-paste --watch cliphist store &"
 ```
 
 #### Miscellaneous
@@ -398,31 +370,13 @@ For manual configuration recommendations, continue below.
 
 #### Startup
 
-MangoWC is wlroots-based and requires manual environment export for systemd services. Export the environment and start a session target:
-
-```conf
-exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec-once=systemctl --user start mango-session.target
-```
-
-Then bind DMS to the session target so it only runs under MangoWC (won't start in Plasma/GNOME):
-
-```bash
-systemctl --user add-wants mango-session.target dms
-```
-
-See the [Installation guide](./installation#mangowc) for creating the session target.
-
-**Optional services:**
-
-```conf
-exec-once=wl-paste --type text --watch cliphist store
-```
-
-**Alternative: Direct launch (if not using systemd)**
+For systemd autostart setup (recommended if you have multiple desktop environments), see the [Installation guide](./installation#mangowc). If you prefer not to use systemd, add DMS directly to your MangoWC config:
 
 ```conf
 exec-once=dms run
+
+# Optional: Clipboard history
+exec-once=wl-paste --type text --watch cliphist store
 ```
 
 #### Environment Variables
@@ -529,10 +483,12 @@ For now, refer to the [Example for Sway](#example-for-sway) in the "Other Compos
 
 #### Startup
 
-Launch DankMaterialShell and optional services at compositor startup:
+For systemd autostart setup (recommended if you have multiple desktop environments), see the [Installation guide](./installation#sway). Otherwise, add DMS directly to your Sway config:
 
 ```conf
 exec dms run
+
+# Optional: Clipboard history
 exec wl-paste --watch cliphist store
 ```
 
@@ -595,10 +551,6 @@ For other compositors, you need to:
 Add to `~/.config/sway/config`:
 
 ```conf
-# Startup
-exec dms run
-exec wl-paste --watch cliphist store
-
 # DMS Keybindings
 bindsym $mod+space exec dms ipc call spotlight toggle
 bindsym $mod+v exec dms ipc call clipboard toggle
