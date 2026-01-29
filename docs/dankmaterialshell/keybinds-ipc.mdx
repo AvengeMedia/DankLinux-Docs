@@ -594,6 +594,41 @@ dms ipc call workspace-rename open
 
 **Note:** Returns an error if running on an unsupported compositor.
 
+### outputs
+
+Monitor output profile management for switching between display configurations.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `listProfiles` | List all available output profiles | - |
+| `current` | Get the currently active profile | - |
+| `setProfile <name>` | Switch to a specific output profile | profile name |
+| `status` | Get current output configuration status | - |
+| `refresh` | Refresh output configuration | - |
+
+**Examples:**
+```bash
+# List available profiles
+dms ipc call outputs listProfiles
+
+# Check current profile
+dms ipc call outputs current
+
+# Switch to a specific profile
+dms ipc call outputs setProfile "docked"
+dms ipc call outputs setProfile "laptop-only"
+
+# Get output status
+dms ipc call outputs status
+
+# Refresh configuration
+dms ipc call outputs refresh
+```
+
+:::note
+This feature is only available on niri, Hyprland, and MangoWC compositors.
+:::
+
 ### hypr
 
 **Hyprland-only features**
