@@ -11,6 +11,7 @@ type RegistryPlugin struct {
 	Path         string   `json:"path,omitempty"`
 	Author       string   `json:"author"`
 	FirstParty   bool     `json:"firstParty,omitempty"`
+	Featured     bool     `json:"featured,omitempty"`
 	Description  string   `json:"description"`
 	Dependencies []string `json:"dependencies"`
 	Compositors  []string `json:"compositors"`
@@ -40,6 +41,7 @@ type Plugin struct {
 	Repo         string    `json:"repo"`
 	Author       string    `json:"author"`
 	FirstParty   bool      `json:"firstParty"`
+	Featured     bool      `json:"featured"`
 	Description  string    `json:"description"`
 	Dependencies []string  `json:"dependencies"`
 	Compositors  []string  `json:"compositors"`

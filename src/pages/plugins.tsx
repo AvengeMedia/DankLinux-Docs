@@ -12,6 +12,7 @@ interface Plugin {
   repo: string;
   author: string;
   firstParty: boolean;
+  featured: boolean;
   description: string;
   dependencies: string[];
   compositors: string[];
@@ -114,6 +115,8 @@ const sortOptions = [
   { id: 'random', label: 'Random' },
 ];
 
+type ViewMode = 'grid' | 'list';
+
 export default function Plugins() {
   const location = useLocation();
   const history = useHistory();
@@ -140,6 +143,7 @@ export default function Plugins() {
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
   const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -228,6 +232,12 @@ export default function Plugins() {
         p.id.toLowerCase().includes(query)
       );
     }
+
+    filtered.sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return 0;
+    });
 
     setFilteredPlugins(filtered);
   };
@@ -477,6 +487,22 @@ export default function Plugins() {
                     ))}
                   </select>
                 </div>
+                <div className={styles.viewToggle}>
+                  <button
+                    className={`${styles.viewButton} ${viewMode === 'grid' ? styles.active : ''}`}
+                    onClick={() => setViewMode('grid')}
+                    title="Grid view"
+                  >
+                    <span className="material-symbols-outlined">grid_view</span>
+                  </button>
+                  <button
+                    className={`${styles.viewButton} ${viewMode === 'list' ? styles.active : ''}`}
+                    onClick={() => setViewMode('list')}
+                    title="List view"
+                  >
+                    <span className="material-symbols-outlined">view_list</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -556,10 +582,16 @@ export default function Plugins() {
           )}
 
           {!loading && !error && activeTab === 'plugins' && (
-            <section className={styles.pluginsGrid}>
+            <section className={viewMode === 'grid' ? styles.pluginsGrid : styles.pluginsList}>
               {filteredPlugins.map(plugin => (
-                <div key={plugin.id} className={styles.pluginCard}>
-                  {plugin.screenshot && (
+                <div key={plugin.id} className={`${styles.pluginCard} ${viewMode === 'list' ? styles.listCard : ''} ${plugin.featured ? styles.featuredCard : ''}`}>
+                  {plugin.featured && viewMode === 'grid' && (
+                    <div className={styles.featuredRibbon}>
+                      <span className="material-symbols-outlined">star</span>
+                      Featured
+                    </div>
+                  )}
+                  {plugin.screenshot && viewMode === 'grid' && (
                     <div className={styles.pluginImage}>
                       <img src={plugin.screenshot} alt={plugin.name} loading="lazy" />
                     </div>
@@ -576,6 +608,11 @@ export default function Plugins() {
                         </h3>
                         <p className={styles.pluginAuthor}>by {plugin.author}</p>
                       </div>
+                      {plugin.featured && viewMode === 'list' && (
+                        <div className={styles.featuredRibbon}>
+                          <span className="material-symbols-outlined">star</span>
+                        </div>
+                      )}
                     </div>
 
                     <p className={styles.pluginDescription}>{plugin.description}</p>
@@ -583,10 +620,10 @@ export default function Plugins() {
                     <div className={styles.pluginMeta}>
                       <div className={styles.pluginTags}>
                         <span className={styles.tag}>{plugin.category}</span>
-                        {plugin.version && (
+                        {viewMode === 'grid' && plugin.version && (
                           <span className={styles.tag}>v{plugin.version}</span>
                         )}
-                        {plugin.updated_at && (
+                        {viewMode === 'grid' && plugin.updated_at && (
                           <span className={styles.tag}>{formatUpdatedAt(plugin.updated_at)}</span>
                         )}
                       </div>
@@ -604,7 +641,7 @@ export default function Plugins() {
                         )}
                       </div>
 
-                      {plugin.compositors.length > 0 && (
+                      {viewMode === 'grid' && plugin.compositors.length > 0 && (
                         <div className={styles.pluginCompositors}>
                           {plugin.compositors.map(comp => (
                             <span key={comp} className={styles.compositor}>
@@ -614,13 +651,13 @@ export default function Plugins() {
                         </div>
                       )}
 
-                      {plugin.dependencies.length > 0 && (
+                      {viewMode === 'grid' && plugin.dependencies.length > 0 && (
                         <div className={styles.pluginDeps}>
                           <strong>Dependencies:</strong> {plugin.dependencies.join(', ')}
                         </div>
                       )}
 
-                      {plugin.requires_dms && (
+                      {viewMode === 'grid' && plugin.requires_dms && (
                         <div className={styles.pluginRequires}>
                           <strong>Requires DMS:</strong> {plugin.requires_dms}+
                         </div>
@@ -633,22 +670,23 @@ export default function Plugins() {
                         className={styles.installButton}
                       >
                         <span className="material-symbols-outlined">download</span>
-                        Install
+                        {viewMode === 'grid' && 'Install'}
                       </a>
                       <a
                         href={plugin.repo}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={styles.repoButton}
+                        title="View Repository"
                       >
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
                           <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                         </svg>
-                        Repository
+                        {viewMode === 'grid' && <span>Repository</span>}
                       </a>
                     </div>
                   </div>
-                  <div className={styles.cardGlow}></div>
+                  {viewMode === 'grid' && <div className={styles.cardGlow}></div>}
                 </div>
               ))}
             </section>

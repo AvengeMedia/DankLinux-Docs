@@ -468,28 +468,92 @@
 
 .pluginsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
   margin-bottom: 4rem;
 }
 
 @media (min-width: 768px) {
   .pluginsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
 }
 
 @media (min-width: 1200px) {
   .pluginsGrid {
-    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
   }
+}
+
+.pluginsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 4rem;
+}
+
+.viewToggle {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(208, 188, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.25rem;
+}
+
+[data-theme='light'] .viewToggle {
+  background: rgba(128, 90, 213, 0.05);
+  border-color: rgba(128, 90, 213, 0.2);
+}
+
+.viewButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme='light'] .viewButton {
+  color: rgba(26, 22, 37, 0.5);
+}
+
+.viewButton:hover {
+  background: rgba(208, 188, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='light'] .viewButton:hover {
+  background: rgba(128, 90, 213, 0.1);
+  color: rgba(26, 22, 37, 0.8);
+}
+
+.viewButton.active {
+  background: rgba(208, 188, 255, 0.2);
+  color: #D0BCFF;
+}
+
+[data-theme='light'] .viewButton.active {
+  background: rgba(128, 90, 213, 0.2);
+  color: #805AD5;
+}
+
+.viewButton .material-symbols-outlined {
+  font-size: 1.125rem;
 }
 
 .pluginCard {
   position: relative;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(208, 188, 255, 0.1);
-  border-radius: 20px;
+  border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s ease;
   display: flex;
@@ -502,18 +566,168 @@
 }
 
 .pluginCard:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   border-color: rgba(208, 188, 255, 0.3);
-  box-shadow: 0 20px 60px rgba(208, 188, 255, 0.2);
+  box-shadow: 0 12px 40px rgba(208, 188, 255, 0.15);
 }
 
 [data-theme='light'] .pluginCard:hover {
   border-color: rgba(128, 90, 213, 0.4);
-  box-shadow: 0 20px 60px rgba(128, 90, 213, 0.2);
+  box-shadow: 0 12px 40px rgba(128, 90, 213, 0.15);
 }
 
 .pluginCard:hover .cardGlow {
   opacity: 1;
+}
+
+.pluginCard.featuredCard {
+  border-color: rgba(255, 193, 7, 0.3);
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.03) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+[data-theme='light'] .pluginCard.featuredCard {
+  border-color: rgba(255, 152, 0, 0.4);
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.08) 0%, rgba(255, 255, 255, 0.6) 100%);
+}
+
+.pluginCard.featuredCard:hover {
+  border-color: rgba(255, 193, 7, 0.5);
+  box-shadow: 0 12px 40px rgba(255, 193, 7, 0.15);
+}
+
+[data-theme='light'] .pluginCard.featuredCard:hover {
+  border-color: rgba(255, 152, 0, 0.6);
+  box-shadow: 0 12px 40px rgba(255, 152, 0, 0.2);
+}
+
+.pluginCard.listCard {
+  border-radius: 10px;
+}
+
+.pluginCard.listCard:hover {
+  transform: translateY(-2px);
+}
+
+.pluginCard.listCard .pluginContent {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) 1fr auto auto;
+  grid-template-rows: auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+}
+
+.pluginCard.listCard .pluginHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.pluginCard.listCard .pluginTitleGroup {
+  min-width: 0;
+}
+
+.pluginCard.listCard .pluginName {
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.pluginCard.listCard .pluginAuthor {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pluginCard.listCard .pluginIconMaterial {
+  font-size: 1.5rem;
+}
+
+.pluginCard.listCard .pluginDescription {
+  min-height: unset;
+  -webkit-line-clamp: 1;
+  font-size: 0.8125rem;
+  min-width: 0;
+}
+
+.pluginCard.listCard .pluginMeta {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pluginCard.listCard .pluginTags {
+  flex-wrap: nowrap;
+  gap: 0.375rem;
+}
+
+.pluginCard.listCard .pluginCapabilities {
+  display: none;
+}
+
+.pluginCard.listCard .tag {
+  padding: 0.1875rem 0.375rem;
+  font-size: 0.6875rem;
+}
+
+.pluginCard.listCard .pluginActions {
+  margin-top: 0;
+  padding-top: 0;
+  gap: 0.375rem;
+}
+
+.pluginCard.listCard .installButton,
+.pluginCard.listCard .repoButton {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  flex: none;
+}
+
+.pluginCard.listCard .repoButton span,
+.pluginCard.listCard .repoButton svg + span {
+  display: none;
+}
+
+.pluginCard.listCard .officialBadge {
+  display: none;
+}
+
+.featuredRibbon {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  background: linear-gradient(135deg, #FFC107, #FF9800);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 6px;
+  z-index: 10;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4);
+}
+
+.featuredRibbon .material-symbols-outlined {
+  font-size: 0.875rem;
+}
+
+.pluginCard.listCard .featuredRibbon {
+  position: static;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.625rem;
+  gap: 0.25rem;
+}
+
+.pluginCard.listCard .featuredRibbon .material-symbols-outlined {
+  font-size: 0.75rem;
 }
 
 .cardGlow {
@@ -527,7 +741,7 @@
 
 .pluginImage {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(208, 188, 255, 0.05), rgba(128, 90, 213, 0.05));
 }
@@ -544,10 +758,10 @@
 }
 
 .pluginContent {
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
   flex: 1;
 }
 
@@ -558,7 +772,7 @@
 }
 
 .pluginIconMaterial {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #D0BCFF;
   flex-shrink: 0;
 }
@@ -572,9 +786,9 @@
 }
 
 .pluginName {
-  font-size: 1.375rem;
+  font-size: 1.125rem;
   font-weight: 700;
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.125rem 0;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -615,14 +829,14 @@
 
 .pluginDescription {
   color: rgba(255, 255, 255, 0.8);
-  line-height: 1.6;
-  font-size: 0.9375rem;
+  line-height: 1.5;
+  font-size: 0.875rem;
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 3.2em;
+  min-height: 2.625em;
 }
 
 [data-theme='light'] .pluginDescription {
@@ -632,7 +846,7 @@
 .pluginMeta {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .pluginTags {
@@ -642,11 +856,11 @@
 }
 
 .tag {
-  padding: 0.375rem 0.75rem;
+  padding: 0.25rem 0.5rem;
   background: rgba(208, 188, 255, 0.1);
   border: 1px solid rgba(208, 188, 255, 0.2);
-  border-radius: 6px;
-  font-size: 0.8125rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
   color: #D0BCFF;
   font-weight: 500;
   text-transform: capitalize;
@@ -745,15 +959,15 @@
 .installButton {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
   background: linear-gradient(135deg, #6B46C1, #805AD5);
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   transition: all 0.3s ease;
   flex: 1;
   justify-content: center;
@@ -777,15 +991,15 @@
 .repoButton {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.25rem;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(208, 188, 255, 0.2);
-  border-radius: 10px;
+  border-radius: 8px;
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   transition: all 0.3s ease;
   flex: 1;
   justify-content: center;
@@ -912,7 +1126,33 @@
 
   .pluginsGrid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
+  }
+
+  .pluginCard.listCard .pluginContent {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .pluginCard.listCard .pluginHeader {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .pluginCard.listCard .pluginDescription {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    -webkit-line-clamp: 2;
+  }
+
+  .pluginCard.listCard .pluginMeta {
+    display: none;
+  }
+
+  .pluginCard.listCard .pluginActions {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .gridOverlay::before {

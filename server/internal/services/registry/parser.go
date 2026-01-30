@@ -155,6 +155,7 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		Repo:         regPlugin.Repo,
 		Author:       regPlugin.Author,
 		FirstParty:   regPlugin.FirstParty,
+		Featured:     regPlugin.Featured,
 		Description:  regPlugin.Description,
 		Dependencies: regPlugin.Dependencies,
 		Compositors:  regPlugin.Compositors,
