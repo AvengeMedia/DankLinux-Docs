@@ -29,6 +29,19 @@ export DMS_DISABLE_MATUGEN=1
 dms run
 ```
 
+If DMS is managed by systemd, set the variable using a systemd drop-in override:
+
+```bash
+systemctl --user edit dms
+```
+
+Add the following:
+
+```toml
+[Service]
+Environment=DMS_DISABLE_MATUGEN=1
+```
+
 ## Custom Matugen Templates
 
 You can add your own matugen templates to theme additional applications. Templates must use absolute paths and be defined under the `[config]` section. DMS will execute these templates alongside its built-in templates.
