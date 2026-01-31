@@ -23,7 +23,7 @@
     "@docusaurus/core": "3.9.2",
     "@docusaurus/plugin-client-redirects": "^3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
-    "@docusaurus/theme-mermaid": "^3.7.0",
+    "@docusaurus/theme-mermaid": "3.9.2",
     "@easyops-cn/docusaurus-search-local": "^0.52.2",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.0.0",
@@ -52,5 +52,9 @@
   },
   "engines": {
     "node": ">=20.0"
+  },
+  "overrides": {
+    "lodash-es": "^4.17.21",
+    "webpack-dev-server": "^5.2.1"
   }
 }
