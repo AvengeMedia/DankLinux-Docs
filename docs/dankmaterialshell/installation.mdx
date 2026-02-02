@@ -320,6 +320,52 @@ sudo zypper refresh
 sudo zypper install dms-git
 ```
 
+## Gentoo (Community)
+
+:::warning Community Maintained
+
+This overlay is maintained by the community, not the DMS team. For issues with the ebuild itself, report to the [quilat-overlay repository](https://github.com/Graght/quilat-overlay).
+
+:::
+
+The [quilat-overlay](https://github.com/Graght/quilat-overlay) provides a live ebuild for DMS with OpenRC and systemd support.
+
+### Add the Overlay
+
+Using eselect-repository:
+
+```bash
+sudo eselect repository add quilat-overlay git https://github.com/Graght/quilat-overlay.git
+sudo emaint sync -r quilat-overlay
+```
+
+Or manually in `/etc/portage/repos.conf/quilat-overlay.conf`:
+
+```ini
+[quilat-overlay]
+location = /var/db/repos/quilat-overlay
+sync-type = git
+sync-uri = https://github.com/Graght/quilat-overlay.git
+```
+
+Then sync:
+
+```bash
+sudo emaint sync -r quilat-overlay
+```
+
+### Install DMS
+
+```bash
+# With systemd
+sudo emerge --ask gui-shell/dms
+
+# With OpenRC (elogind)
+sudo USE="-systemd" emerge --ask gui-shell/dms
+```
+
+The ebuild pulls from git master (`dms-9999`), so updates come via `emerge --sync && emerge -uDN @world`.
+
 ## NixOS
 
 :::tip
