@@ -1,0 +1,354 @@
+---
+title: DMS 1.4 "Saffron Bloom" Released
+description: The fourth major release of DMS
+slug: v1-4-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+{/* Saffron stigmas - botanically accurate with flared trumpet tips and color gradient */}
+export const SaffronStigma = ({ className, opacity = 0.5, mirror = false, variant = 0 }) => {
+  const id = `saffron-grad-${variant}-${Math.random().toString(36).slice(2,7)}`;
+  // Curves for natural variation
+  const paths = [
+    "M10 52 Q9 42 8 32 Q7 22 8 14 Q9 8 10 4",      // gentle S
+    "M10 52 Q11 44 9 34 Q7 24 8 14 Q10 6 11 3",    // slight lean
+    "M10 52 Q8 40 9 30 Q10 20 9 12 Q8 6 10 2",     // subtle wave
+  ];
+  const path = paths[variant % paths.length];
+  return (
+    <svg viewBox="0 0 20 56" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={id} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="35%" stopColor="#C65D3B" />
+          <stop offset="70%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(20,0) scale(-1,1)' : ''}>
+        {/* Main stigma thread */}
+        <path fill="none" stroke={`url(#${id})`} strokeWidth="2.2" strokeLinecap="round" d={path} />
+        {/* Flared trumpet tip - the characteristic stigma head */}
+        <ellipse cx="10" cy="2" rx="4" ry="2" fill="#6B1515" opacity="0.9" />
+        <path fill="none" stroke="#5A1212" strokeWidth="0.8" strokeLinecap="round" opacity="0.6"
+          d="M6 2 Q8 0 10 1 Q12 0 14 2" />
+      </g>
+    </svg>
+  );
+};
+
+export const SaffronBundle = ({ className, opacity = 0.5, mirror = false }) => {
+  const id = `bundle-grad-${Math.random().toString(36).slice(2,7)}`;
+  return (
+    <svg viewBox="0 0 32 60" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={`${id}-1`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="40%" stopColor="#C65D3B" />
+          <stop offset="75%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+        <linearGradient id={`${id}-2`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#D4912A" />
+          <stop offset="35%" stopColor="#B54E32" />
+          <stop offset="70%" stopColor="#7A1A1A" />
+          <stop offset="100%" stopColor="#5A1010" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(32,0) scale(-1,1)' : ''}>
+        {/* Three stigmas bundled at base, splaying at top */}
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M16 58 Q14 48 12 38 Q9 26 6 16 Q4 8 5 4" />
+        <path fill="none" stroke={`url(#${id}-2)`} strokeWidth="2.2" strokeLinecap="round"
+          d="M16 58 Q16 46 16 34 Q16 22 16 12 Q16 6 16 2" />
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M16 58 Q18 48 20 38 Q23 26 26 16 Q28 8 27 4" />
+        {/* Flared tips */}
+        <ellipse cx="5" cy="3" rx="3.5" ry="1.8" fill="#6B1515" opacity="0.85" />
+        <ellipse cx="16" cy="1.5" rx="4" ry="2" fill="#5A1010" opacity="0.9" />
+        <ellipse cx="27" cy="3" rx="3.5" ry="1.8" fill="#6B1515" opacity="0.85" />
+      </g>
+    </svg>
+  );
+};
+
+export const SaffronPair = ({ className, opacity = 0.5, mirror = false }) => {
+  const id = `pair-grad-${Math.random().toString(36).slice(2,7)}`;
+  return (
+    <svg viewBox="0 0 24 52" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={`${id}-1`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="38%" stopColor="#C65D3B" />
+          <stop offset="72%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(24,0) scale(-1,1)' : ''}>
+        {/* Two stigmas curving apart */}
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2.2" strokeLinecap="round"
+          d="M12 50 Q10 40 8 30 Q5 20 4 12 Q3 6 4 3" />
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M12 50 Q14 40 16 30 Q19 20 20 12 Q21 6 20 3" />
+        {/* Flared tips */}
+        <ellipse cx="4" cy="2.5" rx="3.2" ry="1.6" fill="#6B1515" opacity="0.88" />
+        <ellipse cx="20" cy="2.5" rx="3.2" ry="1.6" fill="#6B1515" opacity="0.88" />
+      </g>
+    </svg>
+  );
+};
+
+<div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true">
+    {/* Left edge - saffron stigmas scattered like harvested threads */}
+    <div style={{ position: 'absolute', top: '4%', left: '2%', width: '24px', height: '48px', transform: 'rotate(-20deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.55} />
+    </div>
+    <div style={{ position: 'absolute', top: '18%', left: '5%', width: '18px', height: '40px', transform: 'rotate(15deg)' }}>
+      <SaffronPair className={styles.stigmaAnim2} opacity={0.45} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '38%', left: '3%', width: '22px', height: '46px', transform: 'rotate(-35deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim3} opacity={0.5} />
+    </div>
+    <div style={{ position: 'absolute', top: '55%', left: '4%', width: '15px', height: '42px', transform: 'rotate(25deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.42} mirror variant={0} />
+    </div>
+    <div style={{ position: 'absolute', top: '72%', left: '2%', width: '18px', height: '40px', transform: 'rotate(-10deg)' }}>
+      <SaffronPair className={styles.stigmaAnim2} opacity={0.48} />
+    </div>
+    {/* Inner left */}
+    <div style={{ position: 'absolute', top: '8%', left: '12%', width: '14px', height: '38px', transform: 'rotate(30deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim3} opacity={0.35} variant={1} />
+    </div>
+    <div style={{ position: 'absolute', top: '65%', left: '10%', width: '15px', height: '40px', transform: 'rotate(-40deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.32} mirror variant={2} />
+    </div>
+    {/* Bottom */}
+    <div style={{ position: 'absolute', top: '80%', left: '22%', width: '22px', height: '46px', transform: 'rotate(-25deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim2} opacity={0.45} />
+    </div>
+    <div style={{ position: 'absolute', top: '78%', left: '42%', width: '17px', height: '40px', transform: 'rotate(20deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.38} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '82%', left: '58%', width: '14px', height: '38px', transform: 'rotate(-15deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.35} variant={0} />
+    </div>
+    <div style={{ position: 'absolute', top: '76%', left: '74%', width: '20px', height: '44px', transform: 'rotate(35deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim2} opacity={0.48} mirror />
+    </div>
+    {/* Right edge */}
+    <div style={{ position: 'absolute', top: '5%', left: '86%', width: '17px', height: '40px', transform: 'rotate(10deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.5} />
+    </div>
+    <div style={{ position: 'absolute', top: '22%', left: '92%', width: '23px', height: '48px', transform: 'rotate(-30deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.52} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '42%', left: '88%', width: '14px', height: '40px', transform: 'rotate(40deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim2} opacity={0.4} variant={1} />
+    </div>
+    <div style={{ position: 'absolute', top: '58%', left: '91%', width: '17px', height: '42px', transform: 'rotate(-18deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.45} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '74%', left: '90%', width: '22px', height: '46px', transform: 'rotate(22deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.5} />
+    </div>
+    {/* Inner right */}
+    <div style={{ position: 'absolute', top: '12%', left: '78%', width: '13px', height: '36px', transform: 'rotate(-45deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim2} opacity={0.32} mirror variant={2} />
+    </div>
+    <div style={{ position: 'absolute', top: '35%', left: '82%', width: '15px', height: '40px', transform: 'rotate(8deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim3} opacity={0.3} variant={0} />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.4</span>
+    </h1>
+    <p className={styles.heroSubtitle}>Saffron Bloom</p>
+  </div>
+</div>
+
+We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This release introduces a brand new launcher, numerous improvements to the plugin system which enables GIFs, KDE Connect, Clight, and more new capabilities.
+
+{/* truncate */}
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>X,XXX+</span>
+    <span className={styles.statLabel}>Commits</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>X.Xk+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>XXX+</span>
+    <span className={styles.statLabel}>Contributors</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>XX</span>
+    <span className={styles.statLabel}>Plugins</span>
+  </div>
+</div>
+
+## What's New
+
+### [Feature 1 Title]
+
+[TODO: Description of major feature 1]
+
+{/*
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Feature 1"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/feature1_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/feature1_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Caption for feature 1.</figcaption>
+</figure>
+*/}
+
+### [Feature 2 Title]
+
+[TODO: Description of major feature 2]
+
+### [Feature 3 Title]
+
+[TODO: Description of major feature 3]
+
+### [Feature 4 Title]
+
+[TODO: Description of major feature 4]
+
+### [Feature 5 Title]
+
+[TODO: Description of major feature 5]
+
+## Distribution Updates
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/NixOS.svg')} alt="NixOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/gentoo-logo.svg')} alt="Gentoo" /></div>
+  </div>
+</div>
+
+[TODO: Update distribution support information]
+
+See the [installation guide](/docs/getting-started) for setup instructions.
+
+## Upgrade Notes
+
+:::warning
+This release contains changes that may require manual intervention.
+:::
+
+### [Breaking Change 1]
+
+[TODO: Description of breaking change and migration steps]
+
+<details>
+<summary>Migration Steps</summary>
+
+[TODO: Detailed migration instructions]
+
+</details>
+
+### [Breaking Change 2]
+
+[TODO: Description of breaking change and migration steps]
+
+## Bug Fixes and Improvements
+
+<details style={{
+  border: '1px solid rgba(139, 30, 30, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(139, 30, 30, 0.08) 0%, rgba(232, 168, 50, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- View Details (XXX+ commits) -|</summary>
+
+Since the v1.2 release, DMS has received extensive bug fixes and stability improvements across all components:
+
+**[Category 1]**
+- [TODO: Bug fix / improvement]
+- [TODO: Bug fix / improvement]
+
+**[Category 2]**
+- [TODO: Bug fix / improvement]
+- [TODO: Bug fix / improvement]
+
+**[Category 3]**
+- [TODO: Bug fix / improvement]
+- [TODO: Bug fix / improvement]
+
+</details>
+
+## Resources
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  Get Started with DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>Plugins</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>Sponsor on GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>Special thanks to <a href="https://github.com/YaLTeR">YaLTeR</a> for collaborating with the DMS team, for <a href="https://github.com/YaLTeR/niri">niri</a> - the compositor that inspired DMS, and for hosting DMS on the <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a>.</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      Thank <span className={styles.gradientText}>You</span>
+    </h2>
+    <p className={styles.thankYouText}>
+      To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.
+    </p>
+    <p className={styles.thankYouTagline}>
+      Zan, Zendegi, Azadi
+    </p>
+  </div>
+</div>
