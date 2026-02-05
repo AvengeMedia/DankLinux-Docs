@@ -43,16 +43,29 @@ Full-screen modal dialogs including settings, power menu, and clipboard history.
 ### Popouts
 Popup panels triggered by bar widgets, such as the control center, app drawer, and notification center. These are anchored to the bar and slide out accordingly.
 
-| Component           | Namespace                        |
-| ------------------- | -------------------------------- |
-| App drawer          | `dms:app-launcher`               |
-| Control center      | `dms:control-center`             |
-| Battery             | `dms:battery`                    |
-| Vpn                 | `dms:vpn`                        |
-| DankDash            | `dms:dash`                       |
-| Notification center | `dms:notification-center-popout` |
-| Process list        | `dms:process-list-popout`        |
-| Fallback namespace  | `dms:popout`                     |
+| Component                 | Namespace                        |
+| ------------------------- | -------------------------------- |
+| App drawer                | `dms:app-launcher`               |
+| Control center            | `dms:control-center`             |
+| Battery                   | `dms:battery`                    |
+| Vpn                       | `dms:vpn`                        |
+| DankDash                  | `dms:dash`                       |
+| Notification center       | `dms:notification-center-popout` |
+| Process list              | `dms:process-list-popout`        |
+| Fallback namespace        | `dms:popout`                     |
+| Plugin                    | `dms:plugins:<namespace>`        |
+| Fallback plugin namespace | `dms:plugins:plugin`             |
+
+
+### Desktop widgets
+Desktop widget (both builtins and plugins) and other layers related to desktop widgets.
+
+| Component      | Namespace                        |
+| -------------- | -------------------------------- |
+| Desktop widget | `dms:desktop-widget:<plugin id>` |
+| Preview        | `dms:desktop-widget-preview`     |
+| Grid           | `dms:desktop-widget-grid`        |
+| Helper         | `dms:desktop-widget-helper`      |
 
 ### Misc Components
 Namespaces for other component that aren't modals or popouts.
@@ -73,9 +86,6 @@ Namespaces for other component that aren't modals or popouts.
 > **Tip:** If you are unsure about a component's namespace, you can check it using your compositor's tools:
 > - **Hyprland**: Run `hyprctl layers` with the layer opened
 > - **Niri**: Run `niri msg layers` to list active layer surfaces
-
-### Plugins
-By default, plugins without namespaces will fallback to `dms-plugin:plugin`, if the plugin has a specific namespaces you will have to run the command above or look at the plugin's code to know it if you do by looking at the code note the it will be `dms-plugin:` + the namespace, for example `dms-plugin:emoji-launcher`).
 
 If you're a plugin dev, see the [plugin development](./plugin-development.mdx#widget-with-popout) page to add your layer namespace.
 ## Compositor Examples
