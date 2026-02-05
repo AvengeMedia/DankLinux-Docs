@@ -285,10 +285,10 @@ The widget pulls `customColor` from `pluginData`, which automatically syncs with
 Add a popout menu that opens when you click the widget.
 
 To add a layer namespace to your plugin, just add `layerNamespacePlugin: "<namespace for your plugin>"` like below.
-Make sure to only type what you want the namespace to be and to not add a prefix (like `dms:` or `dms-plugin:` for example) since the shell will add `dms-plugin:` as a prefix automatically.
-For example, the namespace of the plugin below will be `dms-plugin:emoji-launcher`.
+Make sure to only type what you want the namespace to be and to not add a prefix (like `dms:` or `dms:plugins:` for example) since the shell will add `dms:plugins:` as a prefix automatically.
+For example, the namespace of the plugin below will be `dms:plugins:emoji-launcher`.
 
-While you don't have to add a layer namespace to you widget (it will fallback to `dms-plugin:plugin`), it's prefered to do so.
+While you don't have to add a layer namespace to you widget (it will fallback to `dms:plugins:plugin`), it's prefered to do so.
 :::warning
 
 As of right now, layer namespace only work with popout widget plugins.
