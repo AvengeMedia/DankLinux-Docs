@@ -135,18 +135,30 @@ Add these layer rules to enable blur for DMS components:
 
 ```conf
 # Animations
-layerrule = animation slide right, dms:control-center
-layerrule = animation slide top, dms:workspace-overview
+layerrule {
+    animation = slide right
+    match:namespace = dms:control-center
+}
+
+layerrule {
+    animation = slide top
+    match:namespace = dms:workspace-overview
+}
 # You can find all available animations here: https://wiki.hypr.land/Configuring/Animations/#animation-tree
 
 # Blur
-# You can use regex like so to apply a rule to multiple layer
-# You can also use variables
-$blur_layer = dms:(color-picker|clipboard|spotlight|settings)
-layerrule = blur, $blur_layer 
+# You can use match:namespace with regex to target multiple layers
+layerrule {
+    blur = on
+    ignore_alpha = 0
+    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
+}
 
 # Dim (if you prefer a dim instead of a blur effect)
-layerrule = dimaround, $blur_layer
+layerrule {
+    dimaround = on
+    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
+}
 ```
 #### Examples
 
@@ -156,11 +168,19 @@ layerrule = dimaround, $blur_layer
 
 Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
 ```conf
-$blur_layer = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
-layerrule = blur, $blur_layer
-$blur_shell = dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
-layerrule = blur, $blur_shell
-layerrule = ignorezero, $blur_shell 
+# Modals
+layerrule {
+    blur = on
+    ignore_alpha = 0
+    match:namespace = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
+}
+
+# Shell components (bar, popouts, etc.)
+layerrule {
+    blur = on
+    ignore_alpha = 0
+    match:namespace = dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
+}
 ```
 </details>
 #### Performance Tuning
