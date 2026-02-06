@@ -231,6 +231,22 @@ programs.dms-shell = {
 };
 ```
 
+## Compositor Config Files
+
+The NixOS module installs DMS but doesn't generate compositor-specific config files (keybinds, colors, layout, etc.). Use [`dms setup`](cli-setup) to deploy the defaults for your compositor, or generate individual configs:
+
+```bash
+# Deploy all defaults
+dms setup
+
+# Or pick and choose
+dms setup binds
+dms setup colors
+dms setup layout
+```
+
+See the [Setup CLI reference](cli-setup) for the full list of subcommands.
+
 ## Advanced Configuration
 
 For a complete list of available options, check [the module file](https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/programs/wayland/dms-shell.nix) in nixpkgs.

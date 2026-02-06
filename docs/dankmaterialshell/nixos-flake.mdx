@@ -195,6 +195,10 @@ Also note that this will overwrite your `~/.config/niri/config.kdl`, so your nir
 
 In most cases, it should work out of the box, but configuration options are available.
 
+:::tip Generating Include Files
+The files referenced by `filesToInclude` must exist or niri will error on startup. If you're not generating them through home-manager, use [`dms setup`](cli-setup) to deploy the defaults — or generate individual files like `dms setup binds`, `dms setup colors`, etc.
+:::
+
 #### Defaults
 
 ```nix

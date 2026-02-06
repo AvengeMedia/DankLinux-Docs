@@ -69,6 +69,7 @@ const sidebars: SidebarsConfig = {
           label: 'CLI',
           collapsed: false,
           items: [
+            'dankmaterialshell/cli-setup',
             'dankmaterialshell/cli-doctor',
             'dankmaterialshell/cli-process-management',
             'dankmaterialshell/cli-keybinds-cheatsheets',
