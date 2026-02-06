@@ -173,64 +173,89 @@ export const SaffronPair = ({ className, opacity = 0.5, mirror = false }) => {
   </div>
 </div>
 
-We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This release introduces a brand new launcher, numerous improvements to the plugin system which enables GIFs, KDE Connect, Clight, and more new capabilities.
+We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This release introduces a brand new launcher, numerous improvements to the plugin system which enables GIFs, KDE Connect, Clight, and a lot of new possibilities for extending DMS features and capabilities.
 
 {/* truncate */}
 
 <div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>X,XXX+</span>
+    <span className={styles.statNumber}>3,000+</span>
     <span className={styles.statLabel}>Commits</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>X.Xk+</span>
+    <span className={styles.statNumber}>4.1k+</span>
     <span className={styles.statLabel}>GitHub Stars</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>XXX+</span>
+    <span className={styles.statNumber}>120+</span>
     <span className={styles.statLabel}>Contributors</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>XX</span>
+    <span className={styles.statNumber}>62</span>
     <span className={styles.statLabel}>Plugins</span>
   </div>
 </div>
 
-## What's New
+## Dank Launcher V2
 
-### [Feature 1 Title]
-
-[TODO: Description of major feature 1]
-
-{/*
 <figure style={{ textAlign: 'center' }}>
   <ThemedImage
-    alt="Feature 1"
+    alt="Dank Launcher V2"
     sources={{
-      light: useBaseUrl('/img/blog/v1.4/feature1_light.png'),
-      dark: useBaseUrl('/img/blog/v1.4/feature1_dark.png'),
+      light: useBaseUrl('/img/blog/v1.4/launcher_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/launcher_dark.png'),
     }}
     style={{ maxWidth: '500px', width: '100%' }}
   />
-  <figcaption>Caption for feature 1.</figcaption>
+  <figcaption>The new Dank Launcher V2 with tiled layout and plugin integrations.</figcaption>
 </figure>
-*/}
 
-### [Feature 2 Title]
+DMS 1.4 introduces a new vicinae-inspired launcher, with many more options, tighter extension integrations, better performance, configurable tab-actions, new tiled layout option, and numerous new first-party plugins including GIF and Sticker searchs.
 
-[TODO: Description of major feature 2]
+- Plugins can define context menu and custom tab actions, shift+enter action (such as paste-and-close), and new types of results such as animated images.
+- New tiled layout option for the launcher.
+- New first-party plugins including GIF and Sticker search.
+- Hide or show any extension from "all" tab, change priority-order, keep custom triggers, and configure more launcher options in DMS settings.
 
-### [Feature 3 Title]
+## KDE Connect+Valent (Phone Connect), and Clight Integration
+
+DMS v1.4 exposes a dbus client that enables plugins to interact with dbus services natively, which has enabled the development of KDE Connect+Valent and Clight plugins.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="KDE Connect and Valent integration"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/kdeconnect_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/kdeconnect_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Phone Connect via KDE Connect / Valent.</figcaption>
+</figure>
+
+[Phone Connect](https://github.com/AvengeMedia/dms-plugins/tree/master/DankKDEConnect) plugin allows you to connect to your phone via KDE Connect or Valent (gnome-based equivalent) directly from DMS. Receive notifications, send and receive files, synchronize clipboard, view phone battery percentage in the bar, and more.
+
+[Clight](https://github.com/AvengeMedia/dms-plugins/tree/master/DankClight) plugin gives integration with [Clight](https://github.com/FedeDP/Clight) which is an auto-brightness daemon.
+
+The new dbus client allows creating an entirely new category of plugins that can interact with any dbus service, which opens up a huge range of possibilities for extensions that need to integrate with other applications and system services - in an efficient, event-driven way.
+
+## New Process List/System Monitor
+
+## Window Rule Manager (niri-only)
+
+Create window rules blah blah, keybind to create window-rule for currently focused window blah blah.  niri only
 
 [TODO: Description of major feature 3]
 
-### [Feature 4 Title]
+## Dock Enhancements & Dank Bar Dock Widget
 
 [TODO: Description of major feature 4]
 
-### [Feature 5 Title]
+## Audio Device Aliases
 
 [TODO: Description of major feature 5]
+
+## Automatic Light and Dark Mode
 
 ## Distribution Updates
 
