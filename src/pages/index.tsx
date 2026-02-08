@@ -22,7 +22,7 @@ const compositors = [
 ];
 
 const compositorLinks: Record<string, string> = {
-  'niri': 'https://github.com/YaLTeR/niri',
+  'niri': 'https://github.com/niri-wm/niri',
   'Hyprland': 'https://hyprland.org/',
   'MangoWC': 'https://github.com/DreamMaoMao/mangowc',
   'Sway': 'https://swaywm.org/',
