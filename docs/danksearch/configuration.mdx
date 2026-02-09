@@ -152,7 +152,17 @@ watch = false  # Disable watchers (useful for network mounts)
 ```
 
 #### `exclude_dirs`
-List of directory names to skip during indexing.
+List of directory names to skip during indexing. Supports both exact names and regex patterns.
+
+Regex patterns are wrapped in `/` delimiters (e.g., `/^build-/`). Each pattern is matched against individual directory name components, not the full path. Invalid regex patterns are skipped with a warning.
+
+```toml
+exclude_dirs = [
+    "node_modules",     # Exact match
+    "/^build-/",        # Regex: excludes build-release, build-debug, etc.
+    "/^out-\\d+$/",     # Regex: excludes out-123, out-0, but not "output"
+]
+```
 
 **Default excludes:**
 ```toml
