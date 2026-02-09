@@ -72,9 +72,24 @@ This command will automatically:
 
 Then proceed to [Completing Setup](#completing-setup) below.
 
-### Manual installation
+### Manual installation (DMS already installed)
 
-For non-dankinstall users, install `greetd`, `quickshell`, and then the greeter:
+If you already have DMS installed but need to set up the greeter manually, install `greetd` and then the greeter wrapper:
+
+```bash
+sudo wget https://raw.githubusercontent.com/AvengeMedia/DankMaterialShell/refs/heads/master/quickshell/Modules/Greetd/assets/dms-greeter -O /usr/local/bin/dms-greeter
+sudo chmod +x /usr/local/bin/dms-greeter
+```
+
+Then proceed to [Completing Setup](#completing-setup) below, using the following command in `/etc/greetd/config.toml`:
+
+```toml
+command = "dms-greeter --command niri -p /usr/share/quickshell/dms"
+```
+
+### Manual installation (without DMS)
+
+For non-dankinstall users without DMS, install `greetd`, `quickshell`, and then the greeter:
 
 ```bash
 sudo mkdir -p /etc/xdg/quickshell
