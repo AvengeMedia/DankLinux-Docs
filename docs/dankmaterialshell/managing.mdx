@@ -138,6 +138,8 @@ DMS and its themed applications need certain environment variables set. Where th
 
 dankinstall creates `~/.config/environment.d/90-dms.conf` with the necessary variables. This file is loaded by systemd for all user sessions. If you need to change Qt theming (e.g., switching to qt6ct), edit this file.
 
+You can also run `systemctl --user edit dms` and add `Environment=VAR=Value` lines under `[Service]`. This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
+
 :::
 
 ### Checking Your Environment
@@ -178,6 +180,16 @@ ELECTRON_OZONE_PLATFORM_HINT=auto
 ```
 
 Changes to `environment.d` require logging out and back in (or rebooting) to take effect.
+
+You can also run `systemctl --user edit dms` and add `Environment=` lines under `[Service]`:
+```ini
+[Service]
+Environment=QT_QPA_PLATFORM=wayland
+Environment=QT_QPA_PLATFORMTHEME=gtk3
+Environment=ELECTRON_OZONE_PLATFORM_HINT=auto
+```
+
+This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
 
 ## Updating
 

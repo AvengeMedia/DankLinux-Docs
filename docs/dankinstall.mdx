@@ -168,3 +168,5 @@ See [Managing Your Installation](./dankmaterialshell/managing) for details on sw
 ### Environment Variables
 
 dankinstall creates `~/.config/environment.d/90-dms.conf` with environment variables for Qt/GTK theming and Wayland compatibility. If you need to change Qt platform theming (e.g., switching from `gtk3` to `qt6ct`), edit this file and log out/in for changes to take effect.
+
+You can also run `systemctl --user edit dms` and add `Environment=VAR=Value` lines under `[Service]`. This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.

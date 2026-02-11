@@ -182,6 +182,16 @@ DMS_HIDE_TRAYIDS=discord,spotify
 At least the TERMINAL variable should be present, if you want to use the `System Updates` widget.
 Log out and back in for changes to take effect.
 
+You can also run `systemctl --user edit dms` and add `Environment=` lines under `[Service]`:
+
+```ini
+[Service]
+Environment=TERMINAL=ghostty
+Environment=DMS_DISABLE_MATUGEN=1
+```
+
+This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
+
 :::
 
 ### niri

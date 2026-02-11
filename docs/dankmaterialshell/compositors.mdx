@@ -545,6 +545,7 @@ For other compositors, you need to:
    ```ini
    QT_QPA_PLATFORM=wayland
    ```
+   You can also use `systemctl --user edit dms` and add `Environment=QT_QPA_PLATFORM=wayland` under `[Service]`. This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
 
 ### Example for Sway
 

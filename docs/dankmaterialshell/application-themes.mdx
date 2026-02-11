@@ -186,6 +186,8 @@ QT_QPA_PLATFORMTHEME=qt6ct
 
 Log out and back in for changes to take effect.
 
+You can also run `systemctl --user edit dms` and add `Environment=QT_QPA_PLATFORMTHEME=qt6ct` under `[Service]`. This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
+
 :::
 
 ### Option 1: GTK Passthrough (Simple)
@@ -230,34 +232,26 @@ If you manage DMS with systemd (including dankinstall users), edit `~/.config/en
 QT_QPA_PLATFORMTHEME=qt6ct
 ```
 
+You can also run `systemctl --user edit dms` and add `Environment=QT_QPA_PLATFORMTHEME=qt6ct` under `[Service]`. This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
+
 :::warning KDE/Plasma Users
 
-Setting `QT_QPA_PLATFORMTHEME` in `environment.d` will break KDE/Plasma sessions. Instead, add the environment variable to the DMS systemd service directly:
+Setting `QT_QPA_PLATFORMTHEME` in `environment.d` will break KDE/Plasma sessions. Instead, use `systemctl --user edit dms` and add the environment variable there:
 
 ```bash
-# Copy the service file to user config
-sudo cp /usr/lib/systemd/user/dms.service ~/.config/systemd/user/dms.service
-sudo chown $USER:$USER ~/.config/systemd/user/dms.service
-
-# Edit the service file
-nano ~/.config/systemd/user/dms.service
+systemctl --user edit dms
 ```
 
-Add the `Environment=` line under `[Service]`:
+Add the following:
 
 ```ini
 [Service]
 Environment=QT_QPA_PLATFORMTHEME=qt6ct
-Type=dbus
-BusName=org.freedesktop.Notifications
-ExecStart=/usr/bin/dms run --session
-...
 ```
 
-Then reload and restart:
+Then restart:
 
 ```bash
-systemctl --user daemon-reload
 systemctl --user restart dms.service
 ```
 

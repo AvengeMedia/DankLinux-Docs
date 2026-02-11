@@ -157,13 +157,13 @@ echo $QT_QPA_PLATFORMTHEME
 
 :::tip DankInstall Users
 
-dankinstall sets `QT_QPA_PLATFORMTHEME=gtk3` in `~/.config/environment.d/90-dms.conf`. Check this file to see your current setting.
+dankinstall sets `QT_QPA_PLATFORMTHEME=gtk3` in `~/.config/environment.d/90-dms.conf`. Check this file to see your current setting. You can also override this per-service with `systemctl --user edit dms` (only affects DMS and apps it launches).
 
 :::
 
 :::note
 
-This variable must be exposed to the `dms` process. dankinstall users have this in `~/.config/environment.d/90-dms.conf`. Manual setups typically set it in the compositor config or a custom environment.d file.
+This variable must be exposed to the `dms` process. dankinstall users have this in `~/.config/environment.d/90-dms.conf`. Manual setups typically set it in the compositor config, a custom environment.d file, or via `systemctl --user edit dms` (only affects DMS and apps it launches).
 
 :::
 
