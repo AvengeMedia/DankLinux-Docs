@@ -1369,6 +1369,93 @@ property string apiKey: pluginData.apiKey || ""
 property string theme: pluginData.theme || "dark"
 ```
 
+## Plugin State
+
+Settings are great for user preferences, but sometimes you need to persist runtime data — command history, recent items, counters, cached results. That's what the state API is for.
+
+State is stored per-plugin at `~/.local/state/DankMaterialShell/plugins/{pluginId}_state.json`, completely separate from the shared `plugin_settings.json`. No permissions required.
+
+### State vs Settings
+
+| Use Settings (`savePluginData`) | Use State (`savePluginState`) |
+|---|---|
+| User-configured preferences | Runtime/transient data |
+| Trigger character, themes, toggles | Command history, recent items |
+| Stored in shared `plugin_settings.json` | Stored in `{pluginId}_state.json` |
+| Shown/edited in settings UI | Accumulated during usage |
+
+### API
+
+```qml
+// Save a value
+pluginService.savePluginState(pluginId, key, value)
+
+// Load a value (synchronous, returns defaultValue if key doesn't exist)
+pluginService.loadPluginState(pluginId, key, defaultValue)
+
+// Remove a key
+pluginService.removePluginStateKey(pluginId, key)
+
+// Wipe all state for a plugin
+pluginService.clearPluginState(pluginId)
+
+// Get the filesystem path to the state file
+pluginService.getPluginStatePath(pluginId)
+```
+
+A `pluginStateChanged(pluginId)` signal fires whenever any state key changes.
+
+### Usage
+
+Load state alongside settings on startup, then save as things change:
+
+```qml
+Component.onCompleted: {
+    // Settings: user preferences (plugin_settings.json)
+    trigger = pluginService.loadPluginData("myPlugin", "trigger", "!");
+
+    // State: runtime data (myPlugin_state.json)
+    history = pluginService.loadPluginState("myPlugin", "history", []);
+}
+
+function addToHistory(entry) {
+    history.unshift(entry);
+    if (history.length > 50)
+        history = history.slice(0, 50);
+    pluginService.savePluginState("myPlugin", "history", history);
+}
+```
+
+### State in Settings Components
+
+`PluginSettings` provides convenience wrappers so you don't have to touch `pluginService` directly:
+
+```qml
+PluginSettings {
+    id: settings
+    pluginId: "myPlugin"
+
+    // Settings helpers (plugin_settings.json)
+    // settings.saveValue(key, value)
+    // settings.loadValue(key, defaultValue)
+
+    // State helpers (myPlugin_state.json)
+    // settings.saveState(key, value)
+    // settings.loadState(key, defaultValue)
+    // settings.clearState()
+}
+```
+
+### How It Works Under the Hood
+
+- **Reads are synchronous** — `loadPluginState()` returns the value immediately (backed by `FileView` with `blockLoading`)
+- **Writes are debounced** — rapid `savePluginState()` calls batch into a single disk write (150ms)
+- **Writes are atomic** — uses `FileView` with `atomicWrites` to prevent corruption
+- **Cleanup** — `FileView` instances are destroyed when a plugin is unloaded
+- **No permissions needed** — state operates on its own file, independent of `settings_write`
+
+See `PLUGINS/QuickNotesExample/` in the DMS repo for a complete launcher plugin using the state API.
+
 ## Common Patterns
 
 ### Auto-injected Properties
