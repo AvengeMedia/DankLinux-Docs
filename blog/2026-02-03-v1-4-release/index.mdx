@@ -216,6 +216,7 @@ DMS 1.4 introduces a new vicinae-inspired launcher, with many more options, tigh
 - New tiled layout option for the launcher.
 - New first-party plugins including GIF and Sticker search.
 - Hide or show any extension from "all" tab, change priority-order, keep custom triggers, and configure more launcher options in DMS settings.
+- Edit launch options, environment, or hide entries inline from the launcher.
 
 ## KDE Connect+Valent (Phone Connect), and Clight Integration
 
@@ -241,11 +242,49 @@ The new dbus client allows creating an entirely new category of plugins that can
 
 ## New Process List/System Monitor
 
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="New System Monitor"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/sysmon_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/sysmon_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>The new built-in System Monitor with process list.</figcaption>
+</figure>
+
+The [dgop](https://danklinux.com/docs/dgop/) frontend/process monitor has gotten an overhaul with a new, more functional design. Integrated search, full command view, and more relevant information in a single view.
+
 ## Window Rule Manager (niri-only)
 
-Create window rules blah blah, keybind to create window-rule for currently focused window blah blah.  niri only
+niri users can now manage window rules directly from DMS. An optional keybind can be used `dms ipc call window-rules toggle` to create a rule for the currently focused window. All rules can be re-ordered, edited, and managed from DMS settings.
 
-[TODO: Description of major feature 3]
+<figure style={{ textAlign: 'center' }}>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'start' }}>
+    <div style={{ flex: '1.4', minWidth: 0 }}>
+      <ThemedImage
+        alt="Window Rules settings"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/windowrulesettings_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/windowrulesettings_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="New Window Rule modal"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/windowrulemodal_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/windowrulemodal_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+  </div>
+  <figcaption>Window Rules settings and the rule creation modal.</figcaption>
+</figure>
 
 ## Dock Enhancements & Dank Bar Dock Widget
 
