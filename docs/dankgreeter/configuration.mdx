@@ -102,23 +102,23 @@ Custom compositor configurations allow you to configure displays (resolution, re
 
 3. Edit `/etc/greetd/sway` however you see fit, the greeter will run under this compositor configuration
 
-### MangoWC
+### Mango
 
-1. Create a baseline configuration file at `/etc/greetd/mangowc.conf`:
+1. Create a baseline configuration file at `/etc/greetd/mango.conf`:
   ```bash
-  sudo tee /etc/greetd/mangowc.conf > /dev/null << 'EOF'
-  # MangoWC greeter configuration
+  sudo tee /etc/greetd/mango.conf > /dev/null << 'EOF'
+  # Mango greeter configuration
   EOF
   ```
 
 2. Update the command in `/etc/greetd/config.toml to use this configuration
   ```toml
   #...existing configuration
-  command = "dms-greeter --command mangowc -C /etc/greetd/mangowc.conf"
+  command = "dms-greeter --command mango -C /etc/greetd/mango.conf"
   #...existing configuration
   ```
 
-3. Edit `/etc/greetd/mangowc.conf` however you see fit, the greeter will run under this compositor configuration
+3. Edit `/etc/greetd/mango.conf` however you see fit, the greeter will run under this compositor configuration
 
 ## Syncing with DMS
 
