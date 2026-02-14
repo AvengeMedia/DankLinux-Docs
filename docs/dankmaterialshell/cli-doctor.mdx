@@ -103,7 +103,7 @@ All wayland compositors that implement the [layer shell protocol](https://waylan
 | River | `river` | `river -version` |
 | Wayfire | `wayfire` | `wayfire --version` |
 
-### Active Compositor
+### Active Compositor {#compositor}
 
 Currently running compositor.
 
@@ -143,6 +143,10 @@ Required to persist user profile changes, such as profile picture.
 ### power-profiles-daemon
 
 Required to manage power profiles. (e.g. performance, balanced, power-saver)
+
+### cups-pk-helper
+
+Required for printer management (adding, deleting, and configuring printers). Provides the `org.opensuse.CupsPkHelper.Mechanism` D-Bus interface.
 
 ### I2C/DDC
 
@@ -193,7 +197,7 @@ Adds fingerprint authentication support to the lock screen.
 
 ---
 
-## Configuration Files
+## Configuration Files {#config-files}
 
 | File | Location | Purpose |
 |------|----------|---------|
