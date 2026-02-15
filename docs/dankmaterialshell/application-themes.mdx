@@ -22,25 +22,13 @@ DankMaterialShell automatically generates theme files for native applications wh
 
 ## Disabling Matugen
 
-Set the environment variable before launching to disable theme generation entirely:
+Set the environment variable `DMS_DISABLE_MATUGEN` to `1` or `true` before launching to disable theme generation entirely.
 
-```bash
-export DMS_DISABLE_MATUGEN=1
-dms run
-```
+:::tip
 
-If DMS is managed by systemd, set the variable using a systemd drop-in override:
+For detailed instructions on setting environment variables, see [Advanced Configuration - Setting Environment Variables](/docs/dankmaterialshell/advanced-configuration#setting-environment-variables).
 
-```bash
-systemctl --user edit dms
-```
-
-Add the following:
-
-```toml
-[Service]
-Environment=DMS_DISABLE_MATUGEN=1
-```
+:::
 
 ## Custom Matugen Templates
 
