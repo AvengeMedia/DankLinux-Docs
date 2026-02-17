@@ -183,7 +183,7 @@ We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This rele
     <span className={styles.statLabel}>Commits</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>4.1k+</span>
+    <span className={styles.statNumber}>4.3k+</span>
     <span className={styles.statLabel}>GitHub Stars</span>
   </div>
   <div className={styles.statCard}>
@@ -288,7 +288,43 @@ niri users can now manage window rules directly from DMS. An optional keybind ca
 
 ## Dock Enhancements & Dank Bar Dock Widget
 
-[TODO: Description of major feature 4]
+The dock experience has been significantly refined in v1.4 with intelligent auto-hide behavior, a dedicated Apps Dock widget for Dank Bar, and powerful new overflow management options.
+
+### Intelligent Auto-Hide
+
+The dock now features smart auto-hide functionality that intelligently reveals itself when floating windows aren't overlapping its area. This provides the best of both worlds: maximized screen real estate when you need it, with instant dock access when windows are out of the way.
+
+### Dank Bar Apps Dock Widget
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dank Bar Apps Dock Widget settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/dms_apps_dock_widget_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/dms_apps_dock_widget_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Configure the standalone Apps Dock widget with overflow options and visual effects.</figcaption>
+</figure>
+
+A brand new widget joins Dank Bar: the Apps Dock Widget. This standalone dock can be embedded directly in Dank Bar, giving you a sleek, compact way to access your applications without the full dock. Perfect for users who prefer a minimalist panel-based workflow while still having quick access to their favorite apps.
+
+### Max Pinned & Running Apps with Overflow
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dock overflow and behavior settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/dms_dock_pinned_running_apps_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/dms_dock_pinned_running_apps_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>New dock behavior controls including max apps and overflow settings.</figcaption>
+</figure>
+
+Take control of dock density with granular limits for both pinned and running applications. Set maximum counts for each section, and any overflow automatically collapses into an expandable area keeping your dock clean and organized without sacrificing access to your apps. The overflow badge count keeps you informed at a glance, and the feature works seamlessly on both the main DMS Dock and the new Apps Dock widget.
 
 ## Audio Device Aliases
 
