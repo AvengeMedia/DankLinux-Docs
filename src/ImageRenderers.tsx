@@ -485,6 +485,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
   let title = 'Blog'
   let isV1Release = false
   let isV12Release = false
+  let isV14Release = false
 
   if (data.pageType === 'post' && data.data) {
     const postData = data.data as Record<string, unknown>
@@ -495,6 +496,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     const permalink = String(metadata?.permalink || '')
     isV1Release = id === 'v1-release' || permalink.includes('v1-release') || title.includes('1.0')
     isV12Release = id === 'v1-2-release' || permalink.includes('v1-2-release') || title.includes('1.2')
+    isV14Release = id === 'v1-4-release' || permalink.includes('v1-4-release') || title.includes('1.4')
   } else if (data.pageType === 'tag' && 'label' in data.data) {
     title = `Tag: ${String(data.data.label)}`
   } else if (data.pageType === 'archive') {
@@ -661,6 +663,141 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
             }}
           >
             The Dark Knight
+          </div>
+        </div>
+      </div>,
+      {
+        width: BASE_WIDTH,
+        height: BASE_HEIGHT,
+        fonts,
+      },
+    ]
+  }
+
+  // Special OG image for v1.4 release - Saffron Bloom
+  if (isV14Release) {
+    return [
+      <div
+        style={{
+          display: 'flex',
+          width: BASE_WIDTH,
+          height: BASE_HEIGHT,
+          background: '#000000',
+          position: 'relative',
+          overflow: 'hidden',
+          fontSmooth: 'always',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        }}
+      >
+        {/* Radial gradient overlays - saffron/crimson tones */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: 'radial-gradient(circle at 10% 20%, rgba(139, 30, 30, 0.3) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(232, 168, 50, 0.08) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(107, 21, 21, 0.2) 0%, transparent 35%)',
+          }}
+        />
+
+        {/* Grid pattern */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: 'linear-gradient(to bottom, rgba(232, 168, 50, 0.03) 1px, transparent 1px), linear-gradient(to right, rgba(232, 168, 50, 0.03) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+          }}
+        />
+
+        {/* Confetti sparkles - saffron color palette */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            backgroundImage: `
+              radial-gradient(circle at 8% 15%, #E8A832 2.5px, transparent 2.5px),
+              radial-gradient(circle at 15% 75%, #8B1E1E 2px, transparent 2px),
+              radial-gradient(circle at 25% 35%, #C65D3B 2px, transparent 2px),
+              radial-gradient(circle at 35% 85%, #D4912A 2.5px, transparent 2.5px),
+              radial-gradient(circle at 45% 20%, #6B1515 2px, transparent 2px),
+              radial-gradient(circle at 55% 70%, #8B1E1E 2.5px, transparent 2.5px),
+              radial-gradient(circle at 65% 25%, #C65D3B 2px, transparent 2px),
+              radial-gradient(circle at 75% 80%, #E8A832 2px, transparent 2px),
+              radial-gradient(circle at 85% 40%, #6B1515 2.5px, transparent 2.5px),
+              radial-gradient(circle at 92% 65%, #8B1E1E 2px, transparent 2px),
+              radial-gradient(circle at 12% 45%, #D4912A 2px, transparent 2px),
+              radial-gradient(circle at 88% 18%, #C65D3B 2px, transparent 2px),
+              radial-gradient(circle at 42% 90%, #E8A832 2px, transparent 2px),
+              radial-gradient(circle at 72% 12%, #8B1E1E 2.5px, transparent 2.5px),
+              radial-gradient(circle at 5% 55%, #6B1515 2.5px, transparent 2.5px),
+              radial-gradient(circle at 95% 85%, #D4912A 2.5px, transparent 2.5px)
+            `,
+            opacity: 0.6,
+          }}
+        />
+
+        {/* Main content */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            zIndex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '24px',
+              fontFamily: 'Adwaita Sans',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '180px',
+                fontWeight: 800,
+                color: '#ffffff',
+                letterSpacing: '-4px',
+              }}
+            >
+              DMS
+            </div>
+            <div
+              style={{
+                fontSize: '180px',
+                fontWeight: 800,
+                letterSpacing: '-4px',
+                background: 'linear-gradient(135deg, #E8A832 0%, #C65D3B 50%, #8B1E1E 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+              }}
+            >
+              1.4
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: '32px',
+              fontWeight: 600,
+              color: 'rgba(198, 93, 59, 0.4)',
+              fontFamily: 'Adwaita Sans',
+              marginTop: '16px',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+            }}
+          >
+            Saffron Bloom
           </div>
         </div>
       </div>,
