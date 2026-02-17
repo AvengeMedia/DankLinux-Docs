@@ -260,7 +260,6 @@ const config: Config = {
   organizationName: 'AvengeMedia', // Usually your GitHub org/user name.
   projectName: 'dms-docs', // Usually your repo name.
 
-  trailingSlash: true,
   onBrokenLinks: 'throw',
 
   // Even if you don't use internationalization, you can use this field to set
