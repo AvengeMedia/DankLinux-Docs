@@ -367,7 +367,44 @@ DMS v1.4 introduces Automatic Light & Dark Mode so your desktop theme matches th
 - **Gamma Control sync:** Optionally sync these rules with DMS Gamma Control Night Mode so brightness, color temperature, and theme transitions stay coordinated across the system.
 - **Quick override:** Use the Appearance menu to temporarily force Light or Dark mode; automatic rules will resume afterward.
 
-## Distribution Updates
+## Notification Enhancements
+
+<figure style={{ textAlign: 'center', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+  <div style={{ maxWidth: '360px', width: '100%' }}>
+    <ThemedImage
+      alt="Notification Toasts"
+      sources={{
+        light: useBaseUrl('/img/blog/v1.4/notification_toast_light.png'),
+        dark: useBaseUrl('/img/blog/v1.4/notification_toast_dark.png'),
+      }}
+      style={{ width: '100%' }}
+    />
+    <figcaption style={{ textAlign: 'center', marginTop: '0.5rem' }}>Smoother notification toasts with expressive motion.</figcaption>
+  </div>
+  <div style={{ maxWidth: '360px', width: '100%' }}>
+    <ThemedImage
+      alt="Notification Center"
+      sources={{
+        light: useBaseUrl('/img/blog/v1.4/notification_center_light.png'),
+        dark: useBaseUrl('/img/blog/v1.4/notification_center_dark.png'),
+      }}
+      style={{ width: '100%' }}
+    />
+    <figcaption style={{ textAlign: 'center', marginTop: '0.5rem' }}>Redesigned Notification Center with updated Material 3 Expressive visuals.</figcaption>
+  </div>
+</figure>
+
+Notifications in DMS v1.4 received a visual and functional refresh built around Material 3 Expressive design principles. Expect subtler lifts, refined shadows, and fluid motion that make toasts and the notification center feel more alive while staying unobtrusive.
+
+Key improvements:
+
+- **Independent animation speed:** Adjust notification animation speed separately from global UI motion settings to get snappier or more relaxed transitions for toasts and the notification center.
+- **Privacy mode:** Enable a privacy toggle to hide message content by default (showing only the sender and app), with quick click to reveal content when needed.
+- **Right-click actions:** Right-click any notification to quickly Mute the source, Create a rule, or Dismiss — contextual controls are available both on toasts and inside the Notification Center.
+
+More updates to come!
+
+## Available Distributions
 
 <div className={styles.distroMashup}>
   <div className={styles.distroOrbit}>
@@ -383,8 +420,7 @@ DMS v1.4 introduces Automatic Light & Dark Mode so your desktop theme matches th
   </div>
 </div>
 
-[TODO: Update distribution support information]
-
+DMS is available for Arch Linux, Fedora, openSUSE, Debian, Ubuntu, CentOS, NixOS, Gentoo, and more.
 See the [installation guide](/docs/getting-started) for setup instructions.
 
 ## Upgrade Notes
