@@ -328,9 +328,44 @@ Take control of dock density with granular limits for both pinned and running ap
 
 ## Audio Device Aliases
 
-[TODO: Description of major feature 5]
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Audio Device Aliases"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/audio_device_aliases_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/audio_device_aliases_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Rename, hide and (optionally) amplify audio devices directly from DMS.</figcaption>
+</figure>
+
+DMS v1.4 adds built-in Audio Device Aliases powered by WirePlumber. You can now rename any input or output device from the Audio Settings, hide devices you don't use, and if you need it — temporarily amplify a device above the usual 100% limit. Renamed devices are shown throughout the DMS UI for easier identification, while the original device names are preserved in memory so you can revert at any time.
+
+- **Rename devices:** Give inputs and outputs friendly, descriptive names; the original hardware name is preserved and reversible.
+- **Hide devices:** Remove unused or duplicate devices from lists to declutter the UI and keep your workflow focused.
+- **Amplify beyond 100%:** Increase the maximum volume from Audio Settings when needed (use with caution — excessive amplification may cause distortion or hardware issues).
 
 ## Automatic Light and Dark Mode
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Automatic Light and Dark Mode"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/automatic_light_dark_mode_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/automatic_light_dark_mode_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>Automatic theming with time and location-based transitions, plus Gamma Control sync.</figcaption>
+</figure>
+
+DMS v1.4 introduces Automatic Light & Dark Mode so your desktop theme matches the time of day automatically. Choose a simple time-based schedule, or use location-based transitions driven by either manual coordinates or IP-level precision for your area. When using location-based options you’ll get a preview showing the next expected transition time so you can fine-tune behavior for your timezone and daylight preferences.
+
+- **Time-based mode:** Pick sunrise/sunset or custom times to switch themes automatically.
+- **Location-based mode:** Enter manual coordinates or allow IP-based location (low-precision) to calculate local sunrise/sunset and show a next-transition preview.
+- **Gamma Control sync:** Optionally sync these rules with DMS Gamma Control Night Mode so brightness, color temperature, and theme transitions stay coordinated across the system.
+- **Quick override:** Use the Appearance menu to temporarily force Light or Dark mode; automatic rules will resume afterward.
 
 ## Distribution Updates
 
