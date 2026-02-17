@@ -277,16 +277,20 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
-          lastVersion: '1.2',
+          lastVersion: '1.4',
           versions: {
             current: {
-              label: '1.4',
-              path: '1.4',
+              label: '1.5',
+              path: '1.5',
               banner: 'unreleased',
+            },
+            '1.4': {
+              label: '1.4',
+              path: '',
             },
             '1.2': {
               label: '1.2',
-              path: '',
+              path: '1.2',
             },
           },
         },
@@ -361,8 +365,8 @@ const config: Config = {
     // Replace with your project's social card (fallback for pages without images)
     image: 'img/homepage/danklinux-preview.png',
     announcementBar: {
-      id: 'dms-v1-release',
-      content: '<span class="announcement-badge">New</span> <strong>DMS 1.2 Released!</strong> <a href="/blog/v1-2-release">Learn what\'s new in "Spicy Miso" →</a>',
+      id: 'dms-v1-4-release',
+      content: '<span class="announcement-badge">New</span> <strong>DMS 1.4 Released!</strong> <a href="/blog/v1-4-release">Learn what\'s new in "Saffron Bloom" →</a>',
       backgroundColor: 'var(--dank-purple-primary)',
       textColor: '#fff',
       isCloseable: true,

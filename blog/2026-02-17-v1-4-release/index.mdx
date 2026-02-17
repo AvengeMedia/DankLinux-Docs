@@ -1,0 +1,731 @@
+---
+title: DMS 1.4 "Saffron Bloom" Released
+description: The fourth major release of DMS
+slug: v1-4-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+{/* Saffron stigmas - botanically accurate with flared trumpet tips and color gradient */}
+export const SaffronStigma = ({ className, opacity = 0.5, mirror = false, variant = 0 }) => {
+  const id = `saffron-grad-${variant}-${Math.random().toString(36).slice(2,7)}`;
+  // Curves for natural variation
+  const paths = [
+    "M10 52 Q9 42 8 32 Q7 22 8 14 Q9 8 10 4",      // gentle S
+    "M10 52 Q11 44 9 34 Q7 24 8 14 Q10 6 11 3",    // slight lean
+    "M10 52 Q8 40 9 30 Q10 20 9 12 Q8 6 10 2",     // subtle wave
+  ];
+  const path = paths[variant % paths.length];
+  return (
+    <svg viewBox="0 0 20 56" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={id} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="35%" stopColor="#C65D3B" />
+          <stop offset="70%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(20,0) scale(-1,1)' : ''}>
+        {/* Main stigma thread */}
+        <path fill="none" stroke={`url(#${id})`} strokeWidth="2.2" strokeLinecap="round" d={path} />
+        {/* Flared trumpet tip - the characteristic stigma head */}
+        <ellipse cx="10" cy="2" rx="4" ry="2" fill="#6B1515" opacity="0.9" />
+        <path fill="none" stroke="#5A1212" strokeWidth="0.8" strokeLinecap="round" opacity="0.6"
+          d="M6 2 Q8 0 10 1 Q12 0 14 2" />
+      </g>
+    </svg>
+  );
+};
+
+export const SaffronBundle = ({ className, opacity = 0.5, mirror = false }) => {
+  const id = `bundle-grad-${Math.random().toString(36).slice(2,7)}`;
+  return (
+    <svg viewBox="0 0 32 60" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={`${id}-1`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="40%" stopColor="#C65D3B" />
+          <stop offset="75%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+        <linearGradient id={`${id}-2`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#D4912A" />
+          <stop offset="35%" stopColor="#B54E32" />
+          <stop offset="70%" stopColor="#7A1A1A" />
+          <stop offset="100%" stopColor="#5A1010" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(32,0) scale(-1,1)' : ''}>
+        {/* Three stigmas bundled at base, splaying at top */}
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M16 58 Q14 48 12 38 Q9 26 6 16 Q4 8 5 4" />
+        <path fill="none" stroke={`url(#${id}-2)`} strokeWidth="2.2" strokeLinecap="round"
+          d="M16 58 Q16 46 16 34 Q16 22 16 12 Q16 6 16 2" />
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M16 58 Q18 48 20 38 Q23 26 26 16 Q28 8 27 4" />
+        {/* Flared tips */}
+        <ellipse cx="5" cy="3" rx="3.5" ry="1.8" fill="#6B1515" opacity="0.85" />
+        <ellipse cx="16" cy="1.5" rx="4" ry="2" fill="#5A1010" opacity="0.9" />
+        <ellipse cx="27" cy="3" rx="3.5" ry="1.8" fill="#6B1515" opacity="0.85" />
+      </g>
+    </svg>
+  );
+};
+
+export const SaffronPair = ({ className, opacity = 0.5, mirror = false }) => {
+  const id = `pair-grad-${Math.random().toString(36).slice(2,7)}`;
+  return (
+    <svg viewBox="0 0 24 52" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={`${id}-1`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="38%" stopColor="#C65D3B" />
+          <stop offset="72%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(24,0) scale(-1,1)' : ''}>
+        {/* Two stigmas curving apart */}
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2.2" strokeLinecap="round"
+          d="M12 50 Q10 40 8 30 Q5 20 4 12 Q3 6 4 3" />
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M12 50 Q14 40 16 30 Q19 20 20 12 Q21 6 20 3" />
+        {/* Flared tips */}
+        <ellipse cx="4" cy="2.5" rx="3.2" ry="1.6" fill="#6B1515" opacity="0.88" />
+        <ellipse cx="20" cy="2.5" rx="3.2" ry="1.6" fill="#6B1515" opacity="0.88" />
+      </g>
+    </svg>
+  );
+};
+
+<div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true">
+    {/* Left edge - saffron stigmas scattered like harvested threads */}
+    <div style={{ position: 'absolute', top: '4%', left: '2%', width: '24px', height: '48px', transform: 'rotate(-20deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.55} />
+    </div>
+    <div style={{ position: 'absolute', top: '18%', left: '5%', width: '18px', height: '40px', transform: 'rotate(15deg)' }}>
+      <SaffronPair className={styles.stigmaAnim2} opacity={0.45} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '38%', left: '3%', width: '22px', height: '46px', transform: 'rotate(-35deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim3} opacity={0.5} />
+    </div>
+    <div style={{ position: 'absolute', top: '55%', left: '4%', width: '15px', height: '42px', transform: 'rotate(25deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.42} mirror variant={0} />
+    </div>
+    <div style={{ position: 'absolute', top: '72%', left: '2%', width: '18px', height: '40px', transform: 'rotate(-10deg)' }}>
+      <SaffronPair className={styles.stigmaAnim2} opacity={0.48} />
+    </div>
+    {/* Inner left */}
+    <div style={{ position: 'absolute', top: '8%', left: '12%', width: '14px', height: '38px', transform: 'rotate(30deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim3} opacity={0.35} variant={1} />
+    </div>
+    <div style={{ position: 'absolute', top: '65%', left: '10%', width: '15px', height: '40px', transform: 'rotate(-40deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.32} mirror variant={2} />
+    </div>
+    {/* Bottom */}
+    <div style={{ position: 'absolute', top: '80%', left: '22%', width: '22px', height: '46px', transform: 'rotate(-25deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim2} opacity={0.45} />
+    </div>
+    <div style={{ position: 'absolute', top: '78%', left: '42%', width: '17px', height: '40px', transform: 'rotate(20deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.38} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '82%', left: '58%', width: '14px', height: '38px', transform: 'rotate(-15deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.35} variant={0} />
+    </div>
+    <div style={{ position: 'absolute', top: '76%', left: '74%', width: '20px', height: '44px', transform: 'rotate(35deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim2} opacity={0.48} mirror />
+    </div>
+    {/* Right edge */}
+    <div style={{ position: 'absolute', top: '5%', left: '86%', width: '17px', height: '40px', transform: 'rotate(10deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.5} />
+    </div>
+    <div style={{ position: 'absolute', top: '22%', left: '92%', width: '23px', height: '48px', transform: 'rotate(-30deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.52} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '42%', left: '88%', width: '14px', height: '40px', transform: 'rotate(40deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim2} opacity={0.4} variant={1} />
+    </div>
+    <div style={{ position: 'absolute', top: '58%', left: '91%', width: '17px', height: '42px', transform: 'rotate(-18deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.45} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '74%', left: '90%', width: '22px', height: '46px', transform: 'rotate(22deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.5} />
+    </div>
+    {/* Inner right */}
+    <div style={{ position: 'absolute', top: '12%', left: '78%', width: '13px', height: '36px', transform: 'rotate(-45deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim2} opacity={0.32} mirror variant={2} />
+    </div>
+    <div style={{ position: 'absolute', top: '35%', left: '82%', width: '15px', height: '40px', transform: 'rotate(8deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim3} opacity={0.3} variant={0} />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.4</span>
+    </h1>
+    <p className={styles.heroSubtitle}>Saffron Bloom</p>
+  </div>
+</div>
+
+We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This release introduces a brand new launcher, numerous improvements to the plugin system which enables GIFs, KDE Connect, Clight, and a lot of new possibilities for extending DMS features and capabilities.
+
+{/* truncate */}
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>3,100+</span>
+    <span className={styles.statLabel}>Commits</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>4.3k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>130+</span>
+    <span className={styles.statLabel}>Contributors</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>70</span>
+    <span className={styles.statLabel}>Plugins</span>
+  </div>
+</div>
+
+## Dank Launcher V2
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dank Launcher V2"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/launcher_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/launcher_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>The new Dank Launcher V2 with tiled layout and plugin integrations.</figcaption>
+</figure>
+
+DMS 1.4 introduces a new vicinae-inspired launcher, with many more options, tighter extension integrations, better performance, configurable tab-actions, new tiled layout option, and numerous new first-party plugins including GIF and Sticker searchs.
+
+- Plugins can define context menu and custom tab actions, shift+enter action (such as paste-and-close), and new types of results such as animated images.
+- New tiled layout option for the launcher.
+- New first-party plugins including GIF and Sticker search.
+- Hide or show any extension from "all" tab, change priority-order, keep custom triggers, and configure more launcher options in DMS settings.
+- Edit launch options, environment, or hide entries inline from the launcher.
+
+## KDE Connect+Valent (Phone Connect), and Clight Integration
+
+DMS v1.4 exposes a dbus client that enables plugins to interact with dbus services natively, which has enabled the development of KDE Connect+Valent and Clight plugins.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="KDE Connect and Valent integration"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/kdeconnect_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/kdeconnect_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Phone Connect via KDE Connect / Valent.</figcaption>
+</figure>
+
+[Phone Connect](https://github.com/AvengeMedia/dms-plugins/tree/master/DankKDEConnect) plugin allows you to connect to your phone via KDE Connect or Valent (gnome-based equivalent) directly from DMS. Receive notifications, send and receive files, synchronize clipboard, view phone battery percentage in the bar, and more.
+
+[Clight](https://github.com/AvengeMedia/dms-plugins/tree/master/DankClight) plugin gives integration with [Clight](https://github.com/FedeDP/Clight) which is an auto-brightness daemon.
+
+The new dbus client allows creating an entirely new category of plugins that can interact with any dbus service, which opens up a huge range of possibilities for extensions that need to integrate with other applications and system services - in an efficient, event-driven way.
+
+## New Process List/System Monitor
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="New System Monitor"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/sysmon_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/sysmon_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>The new built-in System Monitor with process list.</figcaption>
+</figure>
+
+The [dgop](https://danklinux.com/docs/dgop/) frontend/process monitor has gotten an overhaul with a new, more functional design. Integrated search, full command view, and more relevant information in a single view.
+
+## Window Rule Manager (niri-only)
+
+niri users can now manage window rules directly from DMS. An optional keybind can be used `dms ipc call window-rules toggle` to create a rule for the currently focused window. All rules can be re-ordered, edited, and managed from DMS settings.
+
+<figure style={{ textAlign: 'center' }}>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'start' }}>
+    <div style={{ flex: '1.4', minWidth: 0 }}>
+      <ThemedImage
+        alt="Window Rules settings"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/windowrulesettings_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/windowrulesettings_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="New Window Rule modal"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/windowrulemodal_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/windowrulemodal_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+  </div>
+  <figcaption>Window Rules settings and the rule creation modal.</figcaption>
+</figure>
+
+## Dock Enhancements & Dank Bar Dock Widget
+
+### Intelligent Auto-Hide
+
+The dock can now auto-hide itself only when floating windows overlap its area, and reveal when they don't. You get the screen space back when you need it without losing quick access.
+
+### Dank Bar Apps Dock Widget
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dank Bar Apps Dock Widget settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/dms_apps_dock_widget_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/dms_apps_dock_widget_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Configure the standalone Apps Dock widget with overflow options and visual effects.</figcaption>
+</figure>
+
+New Apps Dock widget for Dank Bar — a standalone dock embedded directly in the bar. If you prefer a panel-only workflow without the full dock, this gives you pinned and running apps right in your bar.
+
+### Max Pinned & Running Apps with Overflow
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dock overflow and behavior settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/dms_dock_pinned_running_apps_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/dms_dock_pinned_running_apps_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>New dock behavior controls including max apps and overflow settings.</figcaption>
+</figure>
+
+You can now set max counts for pinned and running apps separately. Anything beyond the limit collapses into an expandable overflow area with a badge count. Works on both the main dock and the new Apps Dock widget.
+
+## Audio Device Aliases
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Audio Device Aliases"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/audio_device_aliases_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/audio_device_aliases_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Rename, hide and (optionally) amplify audio devices directly from DMS.</figcaption>
+</figure>
+
+Built-in Audio Device Aliases powered by WirePlumber. Rename any input or output from Audio Settings, hide devices you never use, and if needed — push a device above 100% temporarily. Original names are kept so you can always revert.
+
+- **Rename devices:** Give your devices actual useful names. Original hardware names are preserved.
+- **Hide devices:** Get rid of unused or duplicate entries cluttering your lists.
+- **Amplify beyond 100%:** Bump max volume when you need it. **Note:** excessive amplification may cause distortion or hardware issues, use with caution.
+
+## Automatic Light and Dark Mode
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Automatic Light and Dark Mode"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/automatic_light_dark_mode_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/automatic_light_dark_mode_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>Automatic theming with time and location-based transitions, plus Gamma Control sync.</figcaption>
+</figure>
+
+Your desktop theme can now switch between light and dark automatically. Set a simple time schedule, or let DMS figure it out from your location (manual coordinates or IP-based). Location mode shows a preview of when the next transition will happen.
+
+- **Time-based mode:** Set sunrise/sunset or custom times.
+- **Location-based mode:** Manual coordinates or IP geolocation to calculate local sunrise/sunset.
+- **Gamma Control sync:** Tie it into DMS Gamma Control Night Mode so color temperature, brightness, and theme all switch together.
+- **Quick override:** Force light or dark from the Appearance menu anytime; automatic rules kick back in after.
+
+## Notification Enhancements
+
+<figure style={{ textAlign: 'center' }}>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'start' }}>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="Notification Toasts"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/notification_toast_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/notification_toast_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="Notification Center"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/notification_center_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/notification_center_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+  </div>
+  <figcaption>Notification toasts (left) and the redesigned Notification Center (right).</figcaption>
+</figure>
+
+Notifications got a visual overhaul based on Material 3 Expressive — new shadows, motion, and overall feel. The notification center and toasts both look and behave better.
+
+What's new:
+
+- **Independent animation speed:** Notification animations are now separate from global UI motion, so you can make them snappier or slower without touching everything else.
+- **Privacy mode:** Hide message content by default (shows sender and app only), click to reveal. Useful if you share your screen or just want less distraction.
+- **Right-click actions:** Right-click any notification to Mute the source, Create a rule, or Dismiss. Works on both toasts and in the Notification Center.
+
+More updates to come!
+
+## Miracle WM Support
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+  <img src={useBaseUrl('/img/miraclewm.svg')} alt="Miracle WM" style={{ width: '64px', height: '64px' }} />
+  <span style={{ fontSize: '1.1em' }}>
+    <a href="https://miracle-wm.org/">Miracle WM</a> is now a supported compositor.
+  </span>
+</div>
+
+DMS 1.4 brings full support for [Miracle WM](https://miracle-wm.org/), including keybind cheatsheets, idle monitor integration, workspace switcher, and the rest of the core DMS feature.
+
+This is ahead of the upcoming Fedora 44 release which will include a [Dank Miracle spin](https://www.phoronix.com/news/Fedora-44-Dank-MiracleWM), so Miracle WM users on Fedora will have DMS available out of the box.
+
+## Available Distributions
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/NixOS.svg')} alt="NixOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/gentoo-logo.svg')} alt="Gentoo" /></div>
+  </div>
+</div>
+
+DMS is available for Arch Linux, Fedora, openSUSE, Debian, Ubuntu, CentOS, NixOS, Gentoo, and more. Gentoo users have three community overlays to choose from: [quilat-overlay](https://github.com/Graght/quilat-overlay) (live ebuild tracking git master, OpenRC + systemd), [tdgentoo](https://github.com/timdodge/tdgentoo) (versioned ebuild pinned to stable releases), and [dacyberduck](https://codeberg.org/dacyberduck/gentoo-overlay) (`dank-base/dankmaterialshell`).
+
+See the [installation guide](/docs/getting-started) for setup instructions.
+
+## Bug Fixes and Improvements
+
+<details style={{
+  border: '1px solid rgba(139, 30, 30, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(139, 30, 30, 0.08) 0%, rgba(232, 168, 50, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- View Details (200+ commits) -|</summary>
+
+Since the v1.2 release, DMS has received extensive bug fixes and stability improvements across all components:
+
+**Launcher V2**
+- New aggregated "all" tab with plugin/extension results, quick tab actions, and tile mode
+- Improve search result responsiveness with highlighted matches
+- General performance optimizations including ListView in all tab, filesystem cache for faster first launch
+- De-duplicate cached entries by ID
+- Support async launcher plugins, cached GIFs, and paste-on-action
+- Allow categories in plugins, plugin sort order preference
+- Allow disabling each plugin from "all" mode, add IPCs for toggling specific modes
+- Add visibility guards, micro size option, and view mode persistence
+- Context menu and keyboard navigation improvements
+- Fix hover effect, state reset on section changes, dGPU race condition, and plugin icon handling
+- Support ScreenCopy in tiles and CachingImage in icon renderer
+- Add name, icon, description overrides and hide/unhide options for entries
+- Retire spotlight launcher in favor of Dank Launcher V2
+
+**Notifications**
+- Refactor notification animations with Material 3 Expressive design
+- Add configurable notification rules
+- Add left/right keyboard navigation to Current/History tabs
+- Cap max animation speed in popout
+- Fix crash in modal and keyboard navigation on history tab close
+- Update dimensions, text expansion logic, and group expansion card animations
+- Handle material icons
+- Tweak toast button padding
+
+**Dock & Bar**
+- Intelligent dock auto-hide behavior
+- Apps Dock widget for Dank Bar with overflow and configuration options
+- Implement Dank Launcher button on the Dock with custom icons/logos
+- Pinnable DMS core apps with color options
+- Max pinned and running apps with overflow badge count
+- Fix intelligent auto-hide on Hyprland
+- Resolve icons for pre-substituted app IDs
+- Fix option to use custom logos and launcher button persistence
+- Fix spacing at scale of running apps, dock, and system tray
+- Add click-through option for Dank Bar
+- Fix centering of numerous bar widgets
+- Fix property preservation in widgets
+- Enlarge bar icons if widget background is off
+- Account for outlineThickness in margin settings
+- Fix widget context focus with autohide enabled
+
+**Clipboard**
+- Save pinned clipboard entries with keyboard navigation
+- Add popout variant for clipboard widget
+- Add option to paste on Enter
+- Add `cl copy --download` option for images/videos with portal file transfer
+- Add `watch -m` for mime-types
+- Fix row layout overflow, pinned entry logic, hash duplication check
+- Fix file transfer and export functionality with Flatpak read grants
+- Skip `application/vnd.portal.filetransfer` mime in history
+- React to changes, fix duplicate clear dialog
+- Touch copied history entry to move it to the top
+- Add raw image mime-type to offers in CopyFile
+- Fix watch command
+- Quick context menu for clipboard widget
+
+**Themes & Appearance**
+- Automatic light and dark mode based on region/time of day with transition time
+- Improve handling of custom themes with variants and accents in light/dark mode
+- Support matugen v4
+- Sync adwaita accent color by visual similarity
+- Add Cosmic light/dark and icon theming support
+- Allow overriding color center theme
+- Fix popup transparency setting and overflow of option button groups
+- Fix emacs template for both light and dark themes
+- Add dank emacs template
+- Fix Zen Browser theme background color in template
+- Fix terminals always dark with custom themes
+- Post-hook reload GTK4 and qt6ct after matugen changes
+- Don't signal terminals when disabled
+- Update dank16 algorithm for smoother gradients
+- Fix Vesktop theme name
+
+**Audio & Media**
+- Audio device aliases: rename, hide, and amplify devices via WirePlumber
+- Media playback OSD with updated design
+- Add per-device max volume limit setting
+- Configurable volume amount on scroll for media widget
+- Add player-specific MPRIS volume control via IPC
+- Reverse media playback icons and handle screen changes
+- Fix volume OSD sliding UI update for vertical layout
+- Track art: use URLs directly
+- Cava: use input source pipewire and auto, remove input config
+
+**Display & Monitor Configuration**
+- Support for multiple output profiles with delete/hide disconnected displays
+- Add full screen only option for Hyprland, convert VRR to dropdown
+- Add disable snap option in display settings
+- Fix VRR=0 setting on Hyprland
+- Fix dropped disconnected displays on save
+- Fix preview centering with scaling
+- Update MangoWC display config syntax
+
+**Window Rules (niri)**
+- Settings UI for creating, editing, deleting, and reordering window rules
+- IPC to create a window rule for the currently focused toplevel
+- Fix checkbox alignment
+- Update default Steam window rules
+
+**Animations**
+- Material Animation Refactor based on Material 3 Expressive
+- Fine-grained animation settings for modals and popouts
+- Revise ListView animations and tweak list view transitions
+- Switch to frame animation for kinetic scroll
+- Clean up ripple effect and apply more universally
+- Optimize VRAM usage in DankRipple
+
+**Process List & System Monitor**
+- Overhaul system monitor popout and app with new design
+- Add full keyboard navigation to process list
+- Fix clipped graphs
+- Fix default popout focus and default sort direction
+- Update gauge sizes
+- Disable animations until list is stable
+- Fix Process List popout crash from AppSearch
+
+**Workspace**
+- Add workspace rename dialog
+- Drag-and-drop workspace reordering for niri
+- Display niri workspace names
+- Fix occupied color override
+- Fix overflow with grouped apps and icons
+- Fix index numbers with show apps on vertical bar with animation
+- Add icon size offset
+
+**Settings**
+- DankCollapsible component
+- Optimize sidebar bindings and sidebar scaling improvements
+- Settings search index updates
+- Fix wallpaper cycle buttons, theme flavor buttons, power and sleep tab button groups
+- Make dock position match Dank Bar settings
+- Drop beta from configuration label
+- Don't clear caches or apply on startup
+- Fix modal not opening on latest quickshell
+
+**Lock Screen & Greeter**
+- DMS Greeter sync with niri include settings (cursor, debug, input, options)
+- Fix keyboard layout on Hyprland
+- Add lock at startup action
+- Add disable media player option on lock screen
+- Remove random facts from greeter and lock
+- Add option to hide profile image
+- Fix 12-hour format single digit hours
+- Power off monitors when lock screen activates
+- Add support for Debian greetd user/group name
+- MangoWC and Scroll Greeter support for NixOS
+- Restore baseline configs and fix Cosmic support
+- Add niri override kdl includes
+- Fix greeter directory permissions
+
+**Plugins**
+- Add plugin state helpers and toggle support with lazy daemon instantiation
+- Give popout customizable header actions
+- Fix reload IPC on failure
+- Ensure daemon plugins not instantiated twice
+- Represent featured plugins in built-in browsers
+- Fix first plugin install reactivity and confirm third-party repo window
+
+**niri**
+- Expose when-locked, inhibited, repeat options through GUI keybind editor
+- Support any screenshot editor tool
+- Add ensure colors.kdl existence
+- Restore lazy overview spotlight lifecycle to reduce idle VRAM
+- Replace github ref
+- Add screencast indicator
+
+**Network & VPN**
+- Add support for GlobalProtect VPN using SAML auth flow
+- Simplify connection handling
+- Fix VPN popout and widget tooltip positions
+- Uncheck "save password" by default
+
+**Wallpaper**
+- Support more image formats with case insensitivity
+- Only pause cycling when screen is locked or active window is fullscreen
+- Fix per-monitor view modes
+
+**Keybinds**
+- Don't pass dirs in keybinds
+- Fix MangoWC config traversal in provider
+
+**Widgets**
+- Add button color setting and theme text field selection color
+- Cleanup rectangles across popouts, modals, OSDs
+- Remove double rectangle artifact in popouts
+- Fix cross-monitor handling of widgets
+- Notepad widget with quick context menu, cursor color, and QOL updates
+- Refresh layout on plugin load
+- Add fallback for Steam app widgets
+
+**i18n**
+- General RTL fixes across settings, about tab, and Dank Bar
+- Capture missing strings and wrap in I18n.tr()
+- Multiple term updates and sync
+
+**Core & Backend**
+- Add generic DBus service with QML client (subscribe/introspect/getprop/setprop/call)
+- DMS Chroma syntax highlighter for Notepad
+- Set Qt platform to wayland;xcb by default
+- Add DL helper and gsettingsOrDconf helpers
+- Add screensaver introspect XML methods
+- Replace go-localereader directive
+- Add IPC handlers for color picker modal and tray icon control
+- Add toast IPCs
+- Fix DMS chroma hang on print
+- More intelligent Xresources editing for cursor
+- Doctor: add cups-pk-helper, MangoWC, labwc; use DBus for service checks; add --copy option
+- Polkit: allow empty passwords
+- System tray: allow re-ordering items, use id+title as identifier
+
+**Compositor Support**
+- Add Miracle WM support
+- labwc patch improvements
+- MangoWC and Scroll Greeter support
+
+**Build & Distribution**
+- Deprecate cliphist dependencies
+- Update NixOS packaging, vendorHash, and home module
+- Support specifying systemd target for NixOS
+- Add qt-imageformats to DMS QML dependencies for NixOS
+- Fix Fedora version format and dynamic versioning
+- Update OBS workflows and Makefile
+- Support XeroLinux via dankinstall
+- Update Go version and golangci-lint in CI
+
+</details>
+
+## Resources
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  Get Started with DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>Plugins</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>Sponsor on GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>Special thanks to <a href="https://github.com/YaLTeR">YaLTeR</a> for collaborating with the DMS team, for <a href="https://github.com/niri-wm/niri">niri</a> - the compositor that inspired DMS, and for hosting DMS on the <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a>.</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      Thank <span className={styles.gradientText}>You</span>
+    </h2>
+    <p className={styles.thankYouText}>
+      To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.
+    </p>
+    <p className={styles.thankYouTagline}>
+      Zan, Zendegi, Azadi
+    </p>
+  </div>
+</div>
