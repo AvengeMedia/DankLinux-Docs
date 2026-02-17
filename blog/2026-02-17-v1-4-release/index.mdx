@@ -179,7 +179,7 @@ We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This rele
 
 <div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>3,000+</span>
+    <span className={styles.statNumber}>3,100+</span>
     <span className={styles.statLabel}>Commits</span>
   </div>
   <div className={styles.statCard}>
@@ -187,11 +187,11 @@ We're excited to announce DankMaterialShell (DMS) 1.4 "Saffron Bloom"! This rele
     <span className={styles.statLabel}>GitHub Stars</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>120+</span>
+    <span className={styles.statNumber}>130+</span>
     <span className={styles.statLabel}>Contributors</span>
   </div>
   <div className={styles.statCard}>
-    <span className={styles.statNumber}>62</span>
+    <span className={styles.statNumber}>70</span>
     <span className={styles.statLabel}>Plugins</span>
   </div>
 </div>
@@ -288,11 +288,9 @@ niri users can now manage window rules directly from DMS. An optional keybind ca
 
 ## Dock Enhancements & Dank Bar Dock Widget
 
-The dock experience has been significantly refined in v1.4 with intelligent auto-hide behavior, a dedicated Apps Dock widget for Dank Bar, and powerful new overflow management options.
-
 ### Intelligent Auto-Hide
 
-The dock now features smart auto-hide functionality that intelligently reveals itself when floating windows aren't overlapping its area. This provides the best of both worlds: maximized screen real estate when you need it, with instant dock access when windows are out of the way.
+The dock can now auto-hide itself only when floating windows overlap its area, and reveal when they don't. You get the screen space back when you need it without losing quick access.
 
 ### Dank Bar Apps Dock Widget
 
@@ -308,7 +306,7 @@ The dock now features smart auto-hide functionality that intelligently reveals i
   <figcaption>Configure the standalone Apps Dock widget with overflow options and visual effects.</figcaption>
 </figure>
 
-A brand new widget joins Dank Bar: the Apps Dock Widget. This standalone dock can be embedded directly in Dank Bar, giving you a sleek, compact way to access your applications without the full dock. Perfect for users who prefer a minimalist panel-based workflow while still having quick access to their favorite apps.
+New Apps Dock widget for Dank Bar — a standalone dock embedded directly in the bar. If you prefer a panel-only workflow without the full dock, this gives you pinned and running apps right in your bar.
 
 ### Max Pinned & Running Apps with Overflow
 
@@ -324,7 +322,7 @@ A brand new widget joins Dank Bar: the Apps Dock Widget. This standalone dock ca
   <figcaption>New dock behavior controls including max apps and overflow settings.</figcaption>
 </figure>
 
-Take control of dock density with granular limits for both pinned and running applications. Set maximum counts for each section, and any overflow automatically collapses into an expandable area keeping your dock clean and organized without sacrificing access to your apps. The overflow badge count keeps you informed at a glance, and the feature works seamlessly on both the main DMS Dock and the new Apps Dock widget.
+You can now set max counts for pinned and running apps separately. Anything beyond the limit collapses into an expandable overflow area with a badge count. Works on both the main dock and the new Apps Dock widget.
 
 ## Audio Device Aliases
 
@@ -340,11 +338,11 @@ Take control of dock density with granular limits for both pinned and running ap
   <figcaption>Rename, hide and (optionally) amplify audio devices directly from DMS.</figcaption>
 </figure>
 
-DMS v1.4 adds built-in Audio Device Aliases powered by WirePlumber. You can now rename any input or output device from the Audio Settings, hide devices you don't use, and if you need it — temporarily amplify a device above the usual 100% limit. Renamed devices are shown throughout the DMS UI for easier identification, while the original device names are preserved in memory so you can revert at any time.
+Built-in Audio Device Aliases powered by WirePlumber. Rename any input or output from Audio Settings, hide devices you never use, and if needed — push a device above 100% temporarily. Original names are kept so you can always revert.
 
-- **Rename devices:** Give inputs and outputs friendly, descriptive names; the original hardware name is preserved and reversible.
-- **Hide devices:** Remove unused or duplicate devices from lists to declutter the UI and keep your workflow focused.
-- **Amplify beyond 100%:** Increase the maximum volume from Audio Settings when needed (use with caution — excessive amplification may cause distortion or hardware issues).
+- **Rename devices:** Give your devices actual useful names. Original hardware names are preserved.
+- **Hide devices:** Get rid of unused or duplicate entries cluttering your lists.
+- **Amplify beyond 100%:** Bump max volume when you need it. **Note:** excessive amplification may cause distortion or hardware issues, use with caution.
 
 ## Automatic Light and Dark Mode
 
@@ -360,12 +358,12 @@ DMS v1.4 adds built-in Audio Device Aliases powered by WirePlumber. You can now 
   <figcaption>Automatic theming with time and location-based transitions, plus Gamma Control sync.</figcaption>
 </figure>
 
-DMS v1.4 introduces Automatic Light & Dark Mode so your desktop theme matches the time of day automatically. Choose a simple time-based schedule, or use location-based transitions driven by either manual coordinates or IP-level precision for your area. When using location-based options you’ll get a preview showing the next expected transition time so you can fine-tune behavior for your timezone and daylight preferences.
+Your desktop theme can now switch between light and dark automatically. Set a simple time schedule, or let DMS figure it out from your location (manual coordinates or IP-based). Location mode shows a preview of when the next transition will happen.
 
-- **Time-based mode:** Pick sunrise/sunset or custom times to switch themes automatically.
-- **Location-based mode:** Enter manual coordinates or allow IP-based location (low-precision) to calculate local sunrise/sunset and show a next-transition preview.
-- **Gamma Control sync:** Optionally sync these rules with DMS Gamma Control Night Mode so brightness, color temperature, and theme transitions stay coordinated across the system.
-- **Quick override:** Use the Appearance menu to temporarily force Light or Dark mode; automatic rules will resume afterward.
+- **Time-based mode:** Set sunrise/sunset or custom times.
+- **Location-based mode:** Manual coordinates or IP geolocation to calculate local sunrise/sunset.
+- **Gamma Control sync:** Tie it into DMS Gamma Control Night Mode so color temperature, brightness, and theme all switch together.
+- **Quick override:** Force light or dark from the Appearance menu anytime; automatic rules kick back in after.
 
 ## Notification Enhancements
 
@@ -394,13 +392,13 @@ DMS v1.4 introduces Automatic Light & Dark Mode so your desktop theme matches th
   </div>
 </figure>
 
-Notifications in DMS v1.4 received a visual and functional refresh built around Material 3 Expressive design principles. Expect subtler lifts, refined shadows, and fluid motion that make toasts and the notification center feel more alive while staying unobtrusive.
+Notifications got a visual overhaul based on Material 3 Expressive — new shadows, motion, and overall feel. The notification center and toasts both look and behave better.
 
-Key improvements:
+What's new:
 
-- **Independent animation speed:** Adjust notification animation speed separately from global UI motion settings to get snappier or more relaxed transitions for toasts and the notification center.
-- **Privacy mode:** Enable a privacy toggle to hide message content by default (showing only the sender and app), with quick click to reveal content when needed.
-- **Right-click actions:** Right-click any notification to quickly Mute the source, Create a rule, or Dismiss — contextual controls are available both on toasts and inside the Notification Center.
+- **Independent animation speed:** Notification animations are now separate from global UI motion, so you can make them snappier or slower without touching everything else.
+- **Privacy mode:** Hide message content by default (shows sender and app only), click to reveal. Useful if you share your screen or just want less distraction.
+- **Right-click actions:** Right-click any notification to Mute the source, Create a rule, or Dismiss. Works on both toasts and in the Notification Center.
 
 More updates to come!
 
@@ -420,29 +418,13 @@ More updates to come!
   </div>
 </div>
 
-DMS is available for Arch Linux, Fedora, openSUSE, Debian, Ubuntu, CentOS, NixOS, Gentoo, and more.
+DMS is available for Arch Linux, Fedora, openSUSE, Debian, Ubuntu, CentOS, NixOS, Gentoo, and more. Gentoo users have two community overlays to choose from: [quilat-overlay](https://github.com/Graght/quilat-overlay) (live ebuild tracking git master, with OpenRC + systemd support) and [tdgentoo](https://github.com/timdodge/tdgentoo) (versioned ebuild pinned to stable releases).
+
 See the [installation guide](/docs/getting-started) for setup instructions.
 
 ## Upgrade Notes
 
-:::warning
-This release contains changes that may require manual intervention.
-:::
-
-### [Breaking Change 1]
-
-[TODO: Description of breaking change and migration steps]
-
-<details>
-<summary>Migration Steps</summary>
-
-[TODO: Detailed migration instructions]
-
-</details>
-
-### [Breaking Change 2]
-
-[TODO: Description of breaking change and migration steps]
+There are no notable upgrade notes for this release or breaking changes.
 
 ## Bug Fixes and Improvements
 
@@ -467,21 +449,235 @@ This release contains changes that may require manual intervention.
   alignItems: 'center',
   gap: '0.5rem',
   listStyle: 'none'
-}} id="bug-fixes-summary">|- View Details (XXX+ commits) -|</summary>
+}} id="bug-fixes-summary">|- View Details (200+ commits) -|</summary>
 
 Since the v1.2 release, DMS has received extensive bug fixes and stability improvements across all components:
 
-**[Category 1]**
-- [TODO: Bug fix / improvement]
-- [TODO: Bug fix / improvement]
+**Launcher V2**
+- New aggregated "all" tab with plugin/extension results, quick tab actions, and tile mode
+- Improve search result responsiveness with highlighted matches
+- General performance optimizations including ListView in all tab, filesystem cache for faster first launch
+- De-duplicate cached entries by ID
+- Support async launcher plugins, cached GIFs, and paste-on-action
+- Allow categories in plugins, plugin sort order preference
+- Allow disabling each plugin from "all" mode, add IPCs for toggling specific modes
+- Add visibility guards, micro size option, and view mode persistence
+- Context menu and keyboard navigation improvements
+- Fix hover effect, state reset on section changes, dGPU race condition, and plugin icon handling
+- Support ScreenCopy in tiles and CachingImage in icon renderer
+- Add name, icon, description overrides and hide/unhide options for entries
+- Retire spotlight launcher in favor of Dank Launcher V2
 
-**[Category 2]**
-- [TODO: Bug fix / improvement]
-- [TODO: Bug fix / improvement]
+**Notifications**
+- Refactor notification animations with Material 3 Expressive design
+- Add configurable notification rules
+- Add left/right keyboard navigation to Current/History tabs
+- Cap max animation speed in popout
+- Fix crash in modal and keyboard navigation on history tab close
+- Update dimensions, text expansion logic, and group expansion card animations
+- Handle material icons
+- Tweak toast button padding
 
-**[Category 3]**
-- [TODO: Bug fix / improvement]
-- [TODO: Bug fix / improvement]
+**Dock & Bar**
+- Intelligent dock auto-hide behavior
+- Apps Dock widget for Dank Bar with overflow and configuration options
+- Implement Dank Launcher button on the Dock with custom icons/logos
+- Pinnable DMS core apps with color options
+- Max pinned and running apps with overflow badge count
+- Fix intelligent auto-hide on Hyprland
+- Resolve icons for pre-substituted app IDs
+- Fix option to use custom logos and launcher button persistence
+- Fix spacing at scale of running apps, dock, and system tray
+- Add click-through option for Dank Bar
+- Fix centering of numerous bar widgets
+- Fix property preservation in widgets
+- Enlarge bar icons if widget background is off
+- Account for outlineThickness in margin settings
+- Fix widget context focus with autohide enabled
+
+**Clipboard**
+- Save pinned clipboard entries with keyboard navigation
+- Add popout variant for clipboard widget
+- Add option to paste on Enter
+- Add `cl copy --download` option for images/videos with portal file transfer
+- Add `watch -m` for mime-types
+- Fix row layout overflow, pinned entry logic, hash duplication check
+- Fix file transfer and export functionality with Flatpak read grants
+- Skip `application/vnd.portal.filetransfer` mime in history
+- React to changes, fix duplicate clear dialog
+- Touch copied history entry to move it to the top
+- Add raw image mime-type to offers in CopyFile
+- Fix watch command
+- Quick context menu for clipboard widget
+
+**Themes & Appearance**
+- Automatic light and dark mode based on region/time of day with transition time
+- Improve handling of custom themes with variants and accents in light/dark mode
+- Support matugen v4
+- Sync adwaita accent color by visual similarity
+- Add Cosmic light/dark and icon theming support
+- Allow overriding color center theme
+- Fix popup transparency setting and overflow of option button groups
+- Fix emacs template for both light and dark themes
+- Add dank emacs template
+- Fix Zen Browser theme background color in template
+- Fix terminals always dark with custom themes
+- Post-hook reload GTK4 and qt6ct after matugen changes
+- Don't signal terminals when disabled
+- Update dank16 algorithm for smoother gradients
+- Fix Vesktop theme name
+
+**Audio & Media**
+- Audio device aliases: rename, hide, and amplify devices via WirePlumber
+- Media playback OSD with updated design
+- Add per-device max volume limit setting
+- Configurable volume amount on scroll for media widget
+- Add player-specific MPRIS volume control via IPC
+- Reverse media playback icons and handle screen changes
+- Fix volume OSD sliding UI update for vertical layout
+- Track art: use URLs directly
+- Cava: use input source pipewire and auto, remove input config
+
+**Display & Monitor Configuration**
+- Support for multiple output profiles with delete/hide disconnected displays
+- Add full screen only option for Hyprland, convert VRR to dropdown
+- Add disable snap option in display settings
+- Fix VRR=0 setting on Hyprland
+- Fix dropped disconnected displays on save
+- Fix preview centering with scaling
+- Update MangoWC display config syntax
+
+**Window Rules (niri)**
+- Settings UI for creating, editing, deleting, and reordering window rules
+- IPC to create a window rule for the currently focused toplevel
+- Fix checkbox alignment
+- Update default Steam window rules
+
+**Animations**
+- Material Animation Refactor based on Material 3 Expressive
+- Fine-grained animation settings for modals and popouts
+- Revise ListView animations and tweak list view transitions
+- Switch to frame animation for kinetic scroll
+- Clean up ripple effect and apply more universally
+- Optimize VRAM usage in DankRipple
+
+**Process List & System Monitor**
+- Overhaul system monitor popout and app with new design
+- Add full keyboard navigation to process list
+- Fix clipped graphs
+- Fix default popout focus and default sort direction
+- Update gauge sizes
+- Disable animations until list is stable
+- Fix Process List popout crash from AppSearch
+
+**Workspace**
+- Add workspace rename dialog
+- Drag-and-drop workspace reordering for niri
+- Display niri workspace names
+- Fix occupied color override
+- Fix overflow with grouped apps and icons
+- Fix index numbers with show apps on vertical bar with animation
+- Add icon size offset
+
+**Settings**
+- DankCollapsible component
+- Optimize sidebar bindings and sidebar scaling improvements
+- Settings search index updates
+- Fix wallpaper cycle buttons, theme flavor buttons, power and sleep tab button groups
+- Make dock position match Dank Bar settings
+- Drop beta from configuration label
+- Don't clear caches or apply on startup
+- Fix modal not opening on latest quickshell
+
+**Lock Screen & Greeter**
+- DMS Greeter sync with niri include settings (cursor, debug, input, options)
+- Fix keyboard layout on Hyprland
+- Add lock at startup action
+- Add disable media player option on lock screen
+- Remove random facts from greeter and lock
+- Add option to hide profile image
+- Fix 12-hour format single digit hours
+- Power off monitors when lock screen activates
+- Add support for Debian greetd user/group name
+- MangoWC and Scroll Greeter support for NixOS
+- Restore baseline configs and fix Cosmic support
+- Add niri override kdl includes
+- Fix greeter directory permissions
+
+**Plugins**
+- Add plugin state helpers and toggle support with lazy daemon instantiation
+- Give popout customizable header actions
+- Fix reload IPC on failure
+- Ensure daemon plugins not instantiated twice
+- Represent featured plugins in built-in browsers
+- Fix first plugin install reactivity and confirm third-party repo window
+
+**niri**
+- Expose when-locked, inhibited, repeat options through GUI keybind editor
+- Support any screenshot editor tool
+- Add ensure colors.kdl existence
+- Restore lazy overview spotlight lifecycle to reduce idle VRAM
+- Replace github ref
+- Add screencast indicator
+
+**Network & VPN**
+- Add support for GlobalProtect VPN using SAML auth flow
+- Simplify connection handling
+- Fix VPN popout and widget tooltip positions
+- Uncheck "save password" by default
+
+**Wallpaper**
+- Support more image formats with case insensitivity
+- Only pause cycling when screen is locked or active window is fullscreen
+- Fix per-monitor view modes
+
+**Keybinds**
+- Don't pass dirs in keybinds
+- Fix MangoWC config traversal in provider
+
+**Widgets**
+- Add button color setting and theme text field selection color
+- Cleanup rectangles across popouts, modals, OSDs
+- Remove double rectangle artifact in popouts
+- Fix cross-monitor handling of widgets
+- Notepad widget with quick context menu, cursor color, and QOL updates
+- Refresh layout on plugin load
+- Add fallback for Steam app widgets
+
+**i18n**
+- General RTL fixes across settings, about tab, and Dank Bar
+- Capture missing strings and wrap in I18n.tr()
+- Multiple term updates and sync
+
+**Core & Backend**
+- Add generic DBus service with QML client (subscribe/introspect/getprop/setprop/call)
+- DMS Chroma syntax highlighter for Notepad
+- Set Qt platform to wayland;xcb by default
+- Add DL helper and gsettingsOrDconf helpers
+- Add screensaver introspect XML methods
+- Replace go-localereader directive
+- Add IPC handlers for color picker modal and tray icon control
+- Add toast IPCs
+- Fix DMS chroma hang on print
+- More intelligent Xresources editing for cursor
+- Doctor: add cups-pk-helper, MangoWC, labwc; use DBus for service checks; add --copy option
+- Polkit: allow empty passwords
+- System tray: allow re-ordering items, use id+title as identifier
+
+**Compositor Support**
+- Add Miracle WM support
+- labwc patch improvements
+- MangoWC and Scroll Greeter support
+
+**Build & Distribution**
+- Deprecate cliphist dependencies
+- Update NixOS packaging, vendorHash, and home module
+- Support specifying systemd target for NixOS
+- Add qt-imageformats to DMS QML dependencies for NixOS
+- Fix Fedora version format and dynamic versioning
+- Update OBS workflows and Makefile
+- Support XeroLinux via dankinstall
+- Update Go version and golangci-lint in CI
 
 </details>
 
