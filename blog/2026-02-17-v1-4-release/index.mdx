@@ -367,29 +367,30 @@ Your desktop theme can now switch between light and dark automatically. Set a si
 
 ## Notification Enhancements
 
-<figure style={{ textAlign: 'center', display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-  <div style={{ maxWidth: '360px', width: '100%' }}>
-    <ThemedImage
-      alt="Notification Toasts"
-      sources={{
-        light: useBaseUrl('/img/blog/v1.4/notification_toast_light.png'),
-        dark: useBaseUrl('/img/blog/v1.4/notification_toast_dark.png'),
-      }}
-      style={{ width: '100%' }}
-    />
-    <figcaption style={{ textAlign: 'center', marginTop: '0.5rem' }}>Smoother notification toasts with expressive motion.</figcaption>
+<figure style={{ textAlign: 'center' }}>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'start' }}>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="Notification Toasts"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/notification_toast_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/notification_toast_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="Notification Center"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/notification_center_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/notification_center_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
   </div>
-  <div style={{ maxWidth: '360px', width: '100%' }}>
-    <ThemedImage
-      alt="Notification Center"
-      sources={{
-        light: useBaseUrl('/img/blog/v1.4/notification_center_light.png'),
-        dark: useBaseUrl('/img/blog/v1.4/notification_center_dark.png'),
-      }}
-      style={{ width: '100%' }}
-    />
-    <figcaption style={{ textAlign: 'center', marginTop: '0.5rem' }}>Redesigned Notification Center with updated Material 3 Expressive visuals.</figcaption>
-  </div>
+  <figcaption>Notification toasts (left) and the redesigned Notification Center (right).</figcaption>
 </figure>
 
 Notifications got a visual overhaul based on Material 3 Expressive — new shadows, motion, and overall feel. The notification center and toasts both look and behave better.
