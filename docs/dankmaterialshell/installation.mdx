@@ -56,7 +56,7 @@ paru -S dms-shell-bin
 paru -S dms-shell-git
 ```
 
-These packages ship the shell, widgets, and CLI. Pair them with `niri`, `hyprland`, `sway`, `mangowc`, or `labwc` packages from the official repositories for a complete desktop stack.
+These packages ship the shell, widgets, and CLI. Pair them with `niri`, `hyprland`, `sway`, `mangowc`, `labwc`, or `miracle-wm` packages from the official repositories for a complete desktop stack.
 
 ## Fedora & CentOS
 
@@ -380,7 +380,7 @@ NixOS has dedicated documentation with two installation methods:
 
 :::warning
 
-This guide doesn't cover compositor installation. You need a compatible Wayland compositor (niri, Hyprland, sway, dwl/MangoWC, etc.).
+This guide doesn't cover compositor installation. You need a compatible Wayland compositor (niri, Hyprland, sway, dwl/MangoWC, Miracle WM, etc.).
 
 :::
 
@@ -462,7 +462,7 @@ Install optional components for full functionality using your distribution's pac
 
 After completing installation:
 
-1. **Generate compositor config** (niri/Hyprland only): Run `dms setup` to create a starter configuration with DMS keybinds and autostart. Other compositors (sway, MangoWC, labwc) are supported but require manual configuration.
+1. **Generate compositor config** (niri/Hyprland only): Run `dms setup` to create a starter configuration with DMS keybinds and autostart. Other compositors (sway, MangoWC, labwc, Miracle WM) are supported but require manual configuration.
 2. Enable the systemd service (recommended) or add `dms run` to your compositor config
 3. Configure your compositor keybinds - see the [Keybinds & IPC](keybinds-ipc) guide
 4. Customize appearance via [Themes](application-themes)
@@ -605,4 +605,23 @@ Bind DMS to the session:
 
 ```bash
 systemctl --user add-wants sway-session.target dms
+```
+
+#### Miracle WM
+
+[Miracle WM](https://github.com/miracle-wm-org/miracle-wm) is a tiling Wayland compositor built on Mir. Like other compositors without native systemd session integration, it requires manual environment export.
+
+Create a session target:
+
+```ini title="~/.config/systemd/user/miracle-wm-session.target"
+[Unit]
+Description=Miracle WM Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+Bind DMS to the session:
+
+```bash
+systemctl --user add-wants miracle-wm-session.target dms
 ```

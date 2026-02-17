@@ -18,6 +18,7 @@ const compositors = [
   { name: 'MangoWC', logo: '/img/mango.png', duration: 600 },
   { name: 'Sway', logo: '/img/sway.svg', duration: 600 },
   { name: 'labwc', logo: '/img/labwc.png', duration: 600 },
+  { name: 'Miracle', logo: '/img/miraclewm.svg', duration: 600 },
   { name: 'Wayland', logo: null, duration: 0 }, // End state - stays forever
 ];
 
@@ -27,6 +28,7 @@ const compositorLinks: Record<string, string> = {
   'MangoWC': 'https://github.com/DreamMaoMao/mangowc',
   'Sway': 'https://swaywm.org/',
   'labwc': 'https://labwc.github.io/',
+  'Miracle': 'https://github.com/miracle-wm-org/miracle-wm',
 };
 
 export default function Home() {
@@ -211,7 +213,7 @@ export default function Home() {
   return (
     <Layout
       title="Modern Desktop Suite"
-      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, and Sway.">
+      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, Sway, and Miracle WM.">
       <Head>
         <meta property="og:image" content="https://danklinux.com/img/homepage/danklinux-preview.png" />
         <meta property="og:image:width" content="2145" />

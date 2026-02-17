@@ -120,6 +120,24 @@ Custom compositor configurations allow you to configure displays (resolution, re
 
 3. Edit `/etc/greetd/mango.conf` however you see fit, the greeter will run under this compositor configuration
 
+### Miracle WM
+
+1. Create a baseline configuration file at `/etc/greetd/miracle-wm.yaml`:
+  ```bash
+  sudo tee /etc/greetd/miracle-wm.yaml > /dev/null << 'EOF'
+  # Miracle WM greeter configuration
+  EOF
+  ```
+
+2. Update the command in `/etc/greetd/config.toml to use this configuration
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command miracle-wm -C /etc/greetd/miracle-wm.yaml"
+  #...existing configuration
+  ```
+
+3. Edit `/etc/greetd/miracle-wm.yaml` however you see fit, the greeter will run under this compositor configuration
+
 ## Syncing with DMS
 
 You can automatically sync the system greeter with the logged in user's wallpaper, themes, fonts, etc.
