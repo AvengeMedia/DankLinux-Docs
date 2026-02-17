@@ -184,6 +184,18 @@ DMS supports different network stacks, NetworkManager is recommended for the vas
 - systemd-networkd : Ethernet only, no Wifi or VPN support
 - iwd+systemd-networkd : Wifi and Ethernet supported, no VPN support
 
+### gp-saml-gui
+
+Required for GlobalProtect VPN connections that use SAML (browser-based) authentication. When a GlobalProtect connection requires SAML, DMS launches [gp-saml-gui](https://github.com/dlenski/gp-saml-gui) to open a browser window for login, then captures the resulting authentication cookie.
+
+### openconnect
+
+Required alongside `gp-saml-gui` for GlobalProtect SAML VPN connections. After `gp-saml-gui` captures the SAML prelogin cookie, [openconnect](https://gitlab.com/openconnect/openconnect) converts it into a full authentication cookie that NetworkManager can use.
+
+:::note
+Both `gp-saml-gui` and `openconnect` are only needed for GlobalProtect VPNs with SAML authentication. Standard VPN connections that use username/password work without them.
+:::
+
 ### danksearch
 
 Used for indexed filesystem search in the launcher. Use `/` to initiate a fs search. See [DankSearch documentation](../danksearch/) for more information.
