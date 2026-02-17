@@ -385,6 +385,31 @@ sudo emaint sync -r tdgentoo
 sudo emerge --ask gui-wm/DankMaterialShell
 ```
 
+### dacyberduck overlay
+
+The [dacyberduck overlay](https://codeberg.org/dacyberduck/gentoo-overlay) provides DMS under `dank-base/dankmaterialshell`.
+
+```bash
+sudo eselect repository add dacyberduck git https://codeberg.org/dacyberduck/gentoo-overlay.git
+sudo emaint sync -r dacyberduck
+```
+
+Or manually in `/etc/portage/repos.conf/dacyberduck.conf`:
+
+```ini
+[dacyberduck]
+location = /var/db/repos/dacyberduck
+sync-type = git
+sync-uri = https://codeberg.org/dacyberduck/gentoo-overlay.git
+```
+
+Then sync and install:
+
+```bash
+sudo emaint sync -r dacyberduck
+sudo emerge --ask dank-base/dankmaterialshell
+```
+
 ## NixOS
 
 :::tip
