@@ -305,6 +305,10 @@ Control bar widget popouts, menus, and visibility (including plugins).
 | Function | Description | Parameters |
 | --- | --- | --- |
 | `toggle <widgetId>` | Toggle widget popout visibility | widget ID |
+| `openWith <widgetId> <mode>` | Open widget popout in a specific mode | widget ID, mode |
+| `toggleWith <widgetId> <mode>` | Toggle widget popout in a specific mode | widget ID, mode |
+| `openQuery <widgetId> <query>` | Open widget popout with a pre-filled search query | widget ID, query text |
+| `toggleQuery <widgetId> <query>` | Toggle widget popout with a pre-filled search query | widget ID, query text |
 | `list` | List all registered widget IDs with visibility state | - |
 | `status <widgetId>` | Get widget popout visibility status | widget ID |
 | `visibility <widgetId>` | Get widget visibility state | widget ID |
@@ -317,6 +321,17 @@ Control bar widget popouts, menus, and visibility (including plugins).
 dms ipc call widget list
 dms ipc call widget toggle clock
 dms ipc call widget status weather
+
+# Open widget popout in a specific mode (e.g., launcher tabs)
+dms ipc call widget openWith launcherButton all
+dms ipc call widget openWith launcherButton files
+dms ipc call widget openWith launcherButton apps
+dms ipc call widget openWith launcherButton plugins
+dms ipc call widget toggleWith launcherButton files
+
+# Open widget popout with a pre-filled search query
+dms ipc call widget openQuery launcherButton "browser"
+dms ipc call widget toggleQuery launcherButton "settings"
 
 # Control widget visibility on the bar
 dms ipc call widget visibility weather
