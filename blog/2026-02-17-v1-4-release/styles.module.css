@@ -5,7 +5,7 @@
   margin: 1rem -1rem 3rem -1rem;
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 30, 30, 0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 30% 80%, rgba(232, 168, 50, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(232, 168, 50, 0.06) 0%, transparent 70%),
     linear-gradient(180deg, rgba(107, 21, 21, 0.06) 0%, transparent 100%);
   border-radius: 24px;
   overflow: hidden;
@@ -14,7 +14,7 @@
 [data-theme='light'] .blogHero {
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 30, 30, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 30% 80%, rgba(212, 145, 42, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(212, 145, 42, 0.04) 0%, transparent 70%),
     linear-gradient(180deg, rgba(107, 21, 21, 0.04) 0%, transparent 100%);
 }
 
@@ -319,11 +319,11 @@
 /* ===== THANK YOU HERO ===== */
 .thankYouHero {
   position: relative;
-  padding: 2.5rem 2rem;
+  padding: 2.2rem 2rem;
   margin: 3rem -1rem 1rem -1rem;
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 30, 30, 0.22) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 70% 80%, rgba(232, 168, 50, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(232, 168, 50, 0.06) 0%, transparent 70%),
     linear-gradient(180deg, rgba(107, 21, 21, 0.06) 0%, transparent 100%);
   border-radius: 24px;
   overflow: hidden;
@@ -332,7 +332,7 @@
 [data-theme='light'] .thankYouHero {
   background:
     radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 30, 30, 0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 70% 80%, rgba(212, 145, 42, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 120% 60% at 50% 100%, rgba(212, 145, 42, 0.04) 0%, transparent 70%),
     linear-gradient(180deg, rgba(107, 21, 21, 0.04) 0%, transparent 100%);
 }
 
