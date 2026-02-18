@@ -220,6 +220,28 @@ export default function Home() {
         <meta property="og:image:height" content="1365" />
         <meta name="twitter:image" content="https://danklinux.com/img/homepage/danklinux-preview.png" />
       </Head>
+      <noscript>
+        <style>{`
+          .noscript-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            color: #92400e;
+            padding: 1rem 1.5rem;
+            margin: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-size: 0.95rem;
+          }
+          [data-theme='dark'] .noscript-warning {
+            background: #422006;
+            border-left-color: #f59e0b;
+            color: #fef3c7;
+          }
+        `}</style>
+        <div className="noscript-warning">
+          ⚠️ JavaScript is disabled. Some interactive features and animations on this site require JavaScript to function properly.
+        </div>
+      </noscript>
       <div className={styles.container}>
         {/* Background pattern overlay */}
         <div className={styles.backgroundPattern}></div>
@@ -243,6 +265,11 @@ export default function Home() {
                 <span className={styles.heroLine}>Modern Desktop</span>
                 <span className={styles.heroLine}>for</span>
                 <span className={styles.compositorRotatorWrapper}>
+                  <noscript>
+                    <span style={{display: 'inline', fontSize: 'inherit', color: 'inherit'}}>
+                      niri, Hyprland, Sway, and Wayland
+                    </span>
+                  </noscript>
                   <span className={styles.compositorRotator}>
                     {compositors.map((compositor, index) => (
                       <span
