@@ -60,3 +60,13 @@ spec:
                 secretKeyRef:
                   name: klipy-api-key
                   key: key
+            - name: POEDITOR_CALLBACK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: poeditor
+                  key: CALLBACK_SECRET
+            - name: DISCORD_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: poeditor
+                  key: DISCORD_WEBHOOK_URL

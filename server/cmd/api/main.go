@@ -12,6 +12,7 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/config"
 	gifs_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/gifs"
 	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/poeditor"
 	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
@@ -202,6 +203,12 @@ func startAPI(cfg *config.Config) {
 		})
 		stickersGroup.UseMiddleware(gifRateLimiter.HumaMiddleware)
 		stickers_handler.RegisterHandlers(srvImpl, klipyClient, stickersGroup)
+
+		poeditorGroup := huma.NewGroup(api, "/poeditor")
+		poeditorGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"POEditor"}
+		})
+		poeditor.RegisterHandlers(cfg.PoeditorCallbackSecret, cfg.DiscordWebhookURL, poeditorGroup)
 	})
 
 	addr := ":" + cfg.Port
