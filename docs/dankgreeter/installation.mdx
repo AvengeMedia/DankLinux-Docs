@@ -22,19 +22,27 @@ import Hero from '@site/src/components/Hero';
 
 :::note Already have the DankLinux repository?
 
-If have DMS or another DankLinux package installed, the repository is already configured. Skip the repo setup and install directly:
-- **Arch**: `paru -S greetd-dms-greeter-git` or `yay -S greetd-dms-greeter-git`
+If DMS or another DankLinux package is already installed, the repository is already configured. The simplest option is:
+
+```bash
+dms greeter install
+```
+
+This installs the package and handles all configuration automatically.
+
+> ⚠️ **[This replaces your current display manager.](#dankinstall-users)**
+
+Or install the package manually and proceed to [Completing Setup](#completing-setup):
+- **Arch**: `paru -S greetd-dms-greeter-git` or `yay -S greetd-dms-greeter-git` *(requires paru or yay for `dms greeter install`)*
 - **Fedora**: `sudo dnf install dms-greeter`
 - **Debian/Ubuntu**: `sudo apt install dms-greeter`
 - **openSUSE**: `sudo zypper install dms-greeter`
 
-Then proceed to [Completing Setup](#completing-setup).
-
 :::
 
-## Arch Linux
+## Distro Installation
 
-Install from the AUR:
+### Arch Linux
 
 ```bash
 paru -S greetd-dms-greeter-git
@@ -44,7 +52,7 @@ yay -S greetd-dms-greeter-git
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
-## Fedora
+### Fedora
 
 ```bash
 sudo dnf copr enable avengemedia/danklinux
@@ -53,7 +61,7 @@ sudo dnf install dms-greeter
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
-## Debian
+### Debian
 
 **Debian 13 (Trixie)**:
 
@@ -90,15 +98,7 @@ sudo apt install dms-greeter
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
-## Ubuntu
-
-```bash
-dms greeter install
-```
-
-This will automatically add the `ppa:avengemedia/danklinux` repository and install the package. Then proceed to [Completing Setup](#completing-setup) below.
-
-Or manually:
+### Ubuntu
 
 ```bash
 sudo add-apt-repository ppa:avengemedia/danklinux
@@ -106,7 +106,9 @@ sudo apt update
 sudo apt install dms-greeter
 ```
 
-## openSUSE
+After installation, proceed to [Completing Setup](#completing-setup) below.
+
+### openSUSE
 
 **Tumbleweed**:
 
@@ -142,11 +144,11 @@ sudo zypper install dms-greeter
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
-## Gentoo
+### Gentoo
 
 :::note
 
-DMS must already be installed on your system before running this command — the greeter wrapper is sourced from your local DMS installation.
+DMS must already be installed on your system before running this command. The greeter wrapper is sourced from your local DMS installation.
 
 :::
 
@@ -154,11 +156,9 @@ DMS must already be installed on your system before running this command — the
 dms greeter install
 ```
 
-This will automatically install `greetd` via Portage, copy the greeter wrapper from your local DMS installation, configure permissions, and set up greetd to use DMS.
+This will automatically install `greetd` via Portage, copy the greeter wrapper from your local DMS installation, configure permissions, and set up greetd to use DMS. To start the greeter immediately without rebooting, run `sudo systemctl start greetd`.
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
-
-## NixOS
+### NixOS
 
 :::tip
 
@@ -168,13 +168,22 @@ NixOS has dedicated documentation with two installation methods:
 
 :::
 
-## Other distributions
+## Installer & Manual Installation
 
-### dankinstall users
+### DankInstall Users
 
-If you're installing DMS using [dankinstall](/docs/dankinstall), dms-greeter is available as a selectable package in the TUI. Simply select **dms-greeter** from the package list during setup — no separate install command needed.
+`dms-greeter` is an **opt-in** component in the DankInstaller. It can be toggled on during the installation process, but is skipped by default to ensure users consciously choose to enable it (since it replaces your current display manager).
 
-After dankinstall completes, proceed to [Completing Setup](#completing-setup) below.
+
+If you enable `dms-greeter` in DankInstall, the full greeter setup (permissions, ACLs, greetd configuration, service enablement) runs automatically at the end of the install process. No further steps are required.
+
+If you skipped it during dankinstall and want to add it later, install the package for your distro (see the sections above) and then proceed to [Completing Setup](#completing-setup).
+
+:::warning
+
+Enabling `dms-greeter` will replace your current display manager.
+
+:::
 
 ### Manual installation (DMS already installed)
 
@@ -210,14 +219,13 @@ Some distributions may have different user/group names for the greetd user.
 
 #### Prerequisites for Theme Syncing
 
-If you want to sync your user's theme with the greeter, ensure the `acl` package is installed.
-ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files.
+ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files. The `acl` package is installed automatically when you run `dms greeter sync` or `dms greeter install`, so no manual action is needed on supported distributions.
 
 ## Completing Setup
 
 ### If you used `dms greeter install`
 
-This applies to: **Ubuntu**, **Gentoo**, and any other distro where you ran `dms greeter install` instead of installing the package directly.
+This applies to any distro where you ran `dms greeter install`, including **Arch Linux** (requires paru or yay), **Ubuntu**, **Fedora**, **Debian**, **openSUSE**, and **Gentoo**.
 
 Configuration, permissions, theme syncing, and greetd service enablement are all handled automatically. To start the greeter immediately without rebooting:
 
@@ -229,7 +237,7 @@ You can verify your setup at any time with `dms greeter status`. `dms greeter sy
 
 ### If you installed the package manually
 
-This applies to: **Arch Linux**, **Fedora**, **Debian**, **openSUSE**, and any distro where you installed the package directly using the commands above.
+This applies to: **Arch Linux**, and any other distro where you installed the package manually using the commands above.
 
 After installing the package, run these two commands to complete setup:
 
@@ -251,6 +259,7 @@ dms greeter sync
 ```
 
 This will:
+- Install `acl` (if not already installed)
 - Add your user to the `greeter` group (if needed)
 - Set up ACL permissions on parent directories for greeter access
 - Configure group permissions on DMS config directories
