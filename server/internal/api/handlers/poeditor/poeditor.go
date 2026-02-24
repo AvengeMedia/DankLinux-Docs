@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"sync"
+	"time"
 
 	"github.com/danielgtaylor/huma/v2"
 	discord "github.com/latte-soft/discord-webhooks-go"
@@ -13,11 +15,16 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 )
 
+const notifyCooldown = 1 * time.Hour
+
 const translatorRoleID = "1474112366412300309"
 
 type HandlerGroup struct {
 	callbackSecret string
 	webhookURL     string
+
+	mu             sync.Mutex
+	lastNotifiedAt time.Time
 }
 
 type callbackPayload struct {
@@ -89,6 +96,15 @@ func (h *HandlerGroup) notifyNewTerms(payload callbackPayload) {
 		log.Warn("DISCORD_WEBHOOK_URL not configured, skipping notification")
 		return
 	}
+
+	h.mu.Lock()
+	if time.Since(h.lastNotifiedAt) < notifyCooldown {
+		h.mu.Unlock()
+		log.Info("Skipping Discord notification (cooldown)", "remaining", notifyCooldown-time.Since(h.lastNotifiedAt))
+		return
+	}
+	h.lastNotifiedAt = time.Now()
+	h.mu.Unlock()
 
 	msg := &discord.Message{
 		Content: fmt.Sprintf(
