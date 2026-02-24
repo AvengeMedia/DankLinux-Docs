@@ -589,7 +589,7 @@ After=graphical-session.target
 Add to your Hyprland config (after any `env =` lines):
 
 ```conf title="~/.config/hypr/hyprland.conf"
-exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once = dbus-update-activation-environment --systemd --all
 exec-once = systemctl --user start hyprland-session.target
 ```
 
@@ -615,7 +615,7 @@ After=graphical-session.target
 Add to your MangoWC config:
 
 ```conf title="~/.config/mango/config.conf"
-exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec-once=dbus-update-activation-environment --systemd --all
 exec-once=systemctl --user start mango-session.target
 ```
 
@@ -641,7 +641,7 @@ After=graphical-session.target
 Add to your Sway config:
 
 ```conf title="~/.config/sway/config"
-exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec dbus-update-activation-environment --systemd --all
 exec systemctl --user start sway-session.target
 ```
 
