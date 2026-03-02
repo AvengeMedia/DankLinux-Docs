@@ -70,6 +70,35 @@ Disables layer effects on popout widgets for performance or compatibility reason
 DMS_DISABLE_LAYER=true dms run
 ```
 
+### Shadow & Elevation Migration Notes (Power Users)
+
+If you manually edit `settings.json`, use:
+
+```text
+~/.config/DankMaterialShell/settings.json
+```
+
+Important keys and compatibility notes:
+
+- Global shadow direction (`m3ElevationLightDirection`) supports: `autoBar`, `top`, `topLeft`, `topRight`, `bottom`.
+- Older/manual `left` or `right` values now fall back to `top`.
+- Per-bar override still uses `barConfigs[].shadowIntensity` (and related color/opacity keys) to activate bar-specific shadows.
+- Per-bar direction override keys:
+  - `barConfigs[].shadowDirectionMode`: `inherit` | `autoBar` | `manual`
+  - `barConfigs[].shadowDirection`: `top` | `topLeft` | `topRight` | `bottom`
+- Older/manual per-bar `shadowDirection: left/right` now falls back to `top`.
+
+Avoiding duplicate or unexpected shadow behavior:
+
+- `barElevationEnabled: false` does not disable an active per-bar override by itself.
+- If a bar still shows shadow, set that bar's `shadowIntensity` to `0`.
+- `m3ElevationEnabled: false` disables global elevation, but an active per-bar override can still render for that bar.
+
+Migration behavior:
+
+- Legacy bar shadow state is migrated to `barElevationEnabled` for older configs.
+- If `settings.json` is read-only, migration/write-back may not persist until the file is writable.
+
 ### DMS_DANKBAR_LAYER
 
 Controls Wayland layer for DankBar panel. Valid values: `bottom`, `overlay`, `background`, or `top` (default). Useful for window stacking issues.
