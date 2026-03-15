@@ -97,12 +97,12 @@ To import dgop from the flake, first add it to your flake inputs:
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";xd
-    
+
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     dgop = {
       url = "github:AvengeMedia/dgop";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -214,8 +214,10 @@ programs.dank-material-shell = {
       "alttab"                 # Please note that niri will throw an error if any of these files are missing.
       "binds"
       "colors"
+      "cursor"
       "layout"
       "outputs"
+      "windowrules"
       "wpblur"
     ];
   };
@@ -309,7 +311,7 @@ programs.dank-material-shell = {
 };
 ```
 
-If you change settings in the GUI while managing settings with home-manager, you will get a popup saying that settings are read-only, with an option to copy the new settings. You can then use json2nix on the copied settings to update your home-manager configuration. 
+If you change settings in the GUI while managing settings with home-manager, you will get a popup saying that settings are read-only, with an option to copy the new settings. You can then use json2nix on the copied settings to update your home-manager configuration.
 
 A complete up-to-date list of available settings can be found [here](https://raw.githubusercontent.com/AvengeMedia/DankMaterialShell/refs/heads/master/quickshell/Common/settings/SettingsSpec.js) and similarly for session settings an up-to-date list can be found [here](https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/Common/settings/SessionSpec.js).
 
@@ -328,12 +330,12 @@ First, add the plugin registry as a flake input:
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    
+
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    
+
     dms-plugin-registry = {
       url = "github:AvengeMedia/dms-plugin-registry";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -358,7 +360,7 @@ Then import the module and enable plugins:
       # Simply enable plugins by their ID (from the registry)
       dankBatteryAlerts.enable = true;
       dockerManager.enable = true;
-      
+
       # Add plugin-specific settings
       mediaPlayer = {
         enable = true;
@@ -405,15 +407,15 @@ programs.dank-material-shell = {
 
 #### Plugin Settings Management (home-manager only)
 
-You can choose whether or not to manage plugin settings with home-manager through the `managePluginSettings` option. 
+You can choose whether or not to manage plugin settings with home-manager through the `managePluginSettings` option.
 
 ```nix
 programs.dank-material-shell = {
   enable = true;
-  
+
   # Auto-enabled when plugins have settings configured
   managePluginSettings = true;
-  
+
   plugins = {
     somePlugin = {
       enable = true;
