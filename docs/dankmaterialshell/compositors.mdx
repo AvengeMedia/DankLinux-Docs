@@ -250,7 +250,7 @@ env = QT_QPA_PLATFORMTHEME_QT6,gtk3
 #### Layer Rules
 
 ```conf
-layerrule = noanim, ^(dms)$
+layerrule = no_anim on, match:namespace ^(dms)$
 ```
 For more about layer rules see [layer rules](./layers.mdx).
 
@@ -321,26 +321,25 @@ bindel = , XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5
 
 ```conf
 # Opacity for inactive windows
-windowrulev2 = opacity 0.9 0.9, floating:0, focus:0
+windowrule = opacity 0.9 0.9, match:float 0, match:focus 0
 
 # GNOME apps
-windowrulev2 = rounding 12, class:^(org\.gnome\.)
-windowrulev2 = noborder, class:^(org\.gnome\.)
+windowrule = rounding 12, border_size 0, match:class ^(org\.gnome\.)
 
 # Terminal apps - no borders
-windowrulev2 = noborder, class:^(org\.wezfurlong\.wezterm)$
-windowrulev2 = noborder, class:^(Alacritty)$
-windowrulev2 = noborder, class:^(zen)$
-windowrulev2 = noborder, class:^(com\.mitchellh\.ghostty)$
-windowrulev2 = noborder, class:^(kitty)$
+windowrule = border_size 0, match:class ^(org\.wezfurlong\.wezterm)$
+windowrule = border_size 0, match:class ^(Alacritty)$
+windowrule = border_size 0, match:class ^(zen)$
+windowrule = border_size 0, match:class ^(com\.mitchellh\.ghostty)$
+windowrule = border_size 0, match:class ^(kitty)$
 
 # Floating windows
-windowrulev2 = float, class:^(gnome-calculator)$
-windowrulev2 = float, class:^(blueman-manager)$
-windowrulev2 = float, class:^(org\.gnome\.Nautilus)$
+windowrule = float on, match:class ^(gnome-calculator)$
+windowrule = float on, match:class ^(blueman-manager)$
+windowrule = float on, match:class ^(org\.gnome\.Nautilus)$
 
 # Open DMS windows as floating by default
-windowrulev2 = float, class:^(org.quickshell)$
+windowrule = float on, match:class ^(org.quickshell)$
 ```
 
 ## MangoWC Configuration
