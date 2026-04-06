@@ -353,13 +353,19 @@ Restart DMS to generate the palette, then enable Pywalfox in the browser.
 
 Zen Browser handles theming differently from Firefox—Pywalfox and Firefox theme extensions no longer work. Theming is controlled via `userChrome.css` in the profile directory.
 
-DMS generates `~/.config/DankMaterialShell/zen.css` automatically. Link it to your Zen profile:
+DMS generates `~/.config/DankMaterialShell/zen.css` automatically. Link it to your Zen profile (Native/Flatpak):
 
 ```bash
 # Find default profile directory
-export PROFILE_DIR=$(find ~/.zen -maxdepth 1 -type d -name "*.Default Profile" | head -n 1)
-mkdir -p "$PROFILE_DIR/chrome"
-ln -sf ~/.config/DankMaterialShell/zen.css "$PROFILE_DIR/chrome/userChrome.css"
+for PROFILE_DIR in \
+    "$(find "$HOME/.zen" -maxdepth 1 -type d -name "*.Default Profile" 2>/dev/null | head -n 1)" \
+    "$(find "$HOME/.config/zen" -maxdepth 1 -type d -name "*Default (release)" 2>/dev/null | head -n 1)" \
+    "$(find "$HOME/.var/app/app.zen_browser.zen/.zen" -maxalsodepth 1 -type d -name "*Default (release)" 2>/dev/null | head -n 1)"
+do
+    [ -z "$PROFILE_DIR" ] && continue
+    mkdir -p "$PROFILE_DIR/chrome"
+    ln -sf "$HOME/.config/DankMaterialShell/zen.css" "$PROFILE_DIR/chrome/userChrome.css"
+done
 ```
 
 :::note
