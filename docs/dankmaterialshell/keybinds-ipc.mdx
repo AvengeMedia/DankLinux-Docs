@@ -81,7 +81,12 @@ Night mode (gamma/color temperature) control.
 | `enable` | Enable night mode | - |
 | `disable` | Disable night mode | - |
 | `status` | Get night mode status | - |
-| `temperature [value]` | Get/set color temperature | value in Kelvin (2500-6000, optional) |
+| `getCurrentTemp` | Get live gamma temperature | - |
+| `getTargetTemp` | Get configured night temperature | - |
+| `getDayTemp` | Get configured day temperature | - |
+| `setTargetTemp <value>` | Set night temperature | value in Kelvin (2500-6000) |
+| `setDayTemp <value>` | Set day temperature (applies when automation is on) | value in Kelvin (2500-6000) |
+| `getSchedule` | Get automation details (mode, period, sun times, next transition) | - |
 | `automation [mode]` | Get/set automation mode | "manual", "time", or "location" (optional) |
 | `schedule <start> <end>` | Set time-based schedule | start time (HH:MM), end time (HH:MM) |
 | `location <lat> <lon>` | Set location coordinates | latitude, longitude |
@@ -89,7 +94,10 @@ Night mode (gamma/color temperature) control.
 **Examples:**
 ```bash
 dms ipc call night toggle
-dms ipc call night temperature 4000
+dms ipc call night getCurrentTemp
+dms ipc call night setTargetTemp 4000
+dms ipc call night setDayTemp 5500
+dms ipc call night getSchedule
 dms ipc call night automation time
 dms ipc call night schedule 20:00 06:00
 dms ipc call night location 40.7128 -74.0060
