@@ -53,6 +53,7 @@ const sidebars: SidebarsConfig = {
         },
         'dankmaterialshell/compositors',
         'dankmaterialshell/layers',
+        'dankmaterialshell/compositor-blur',
         {
           type: 'category',
           label: 'Themes',
