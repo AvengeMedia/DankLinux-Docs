@@ -3,6 +3,7 @@ RUN apk add --no-cache libc6-compat python3 make g++
 WORKDIR /app
 
 COPY package*.json ./
+COPY patches ./patches
 
 RUN npm ci
 
