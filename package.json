@@ -14,16 +14,18 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@acid-info/docusaurus-og": "^1.0.2",
     "@actinc/docusaurus-plugin-panzoom": "^1.0.1",
     "@dipakparmar/docusaurus-plugin-umami": "^2.4.0",
-    "@docusaurus/core": "3.9.2",
-    "@docusaurus/plugin-client-redirects": "^3.9.2",
-    "@docusaurus/preset-classic": "3.9.2",
-    "@docusaurus/theme-mermaid": "3.9.2",
+    "@docusaurus/core": "3.10.0",
+    "@docusaurus/faster": "3.10.0",
+    "@docusaurus/plugin-client-redirects": "^3.10.0",
+    "@docusaurus/preset-classic": "3.10.0",
+    "@docusaurus/theme-mermaid": "3.10.0",
     "@easyops-cn/docusaurus-search-local": "^0.55.1",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
@@ -33,9 +35,10 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.9.2",
-    "@docusaurus/tsconfig": "3.9.2",
-    "@docusaurus/types": "3.9.2",
+    "@docusaurus/module-type-aliases": "3.10.0",
+    "@docusaurus/tsconfig": "3.10.0",
+    "@docusaurus/types": "3.10.0",
+    "patch-package": "^8.0.1",
     "typescript": "^5.9.3"
   },
   "browserslist": {
@@ -55,6 +58,11 @@
   },
   "overrides": {
     "lodash-es": "^4.17.21",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^5.2.1",
+    "serialize-javascript": "^7.0.5",
+    "uuid": "^14.0.0",
+    "express": {
+      "path-to-regexp": "^0.1.13"
+    }
   }
 }
