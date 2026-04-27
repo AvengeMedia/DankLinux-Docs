@@ -604,6 +604,7 @@ Desktop manifest uses `"type": "desktop"`:
 | `defaultWidth` | real | 200 | Initial width for new widgets |
 | `defaultHeight` | real | 200 | Initial height for new widgets |
 | `forceSquare` | bool | false | Constrain to square aspect ratio |
+| `acceptsKeyboardFocus` | bool | false | Opt in to receive keyboard focus when not interacting (see below) |
 
 **Helper functions:**
 
@@ -623,6 +624,30 @@ Desktop widgets support:
 |--------|---------|-------------|
 | Move | Right-click + drag anywhere | Repositions the widget |
 | Resize | Right-click + drag bottom-right corner | Resizes within min/max bounds |
+
+### Keyboard Focus
+
+By default, desktop widgets do not receive keyboard focus — keystrokes go to the focused application underneath. Opt in by setting `acceptsKeyboardFocus: true` on your component:
+
+```qml
+DesktopPluginComponent {
+    id: root
+
+    acceptsKeyboardFocus: true
+
+    TextInput {
+        anchors.fill: parent
+        focus: true
+        // Now receives keystrokes
+    }
+}
+```
+
+When enabled, the widget's layer requests `OnDemand` keyboard focus whenever the user is not actively dragging or resizing it. Use this for widgets with text inputs, search fields, or keyboard shortcuts. Leave it off (the default) for purely visual widgets so the wallpaper layer doesn't steal focus from real applications.
+
+:::warning
+Only enable this if your widget actually needs keyboard input. Always-focused desktop widgets can interfere with global shortcuts and the focused application.
+:::
 
 ### Responsive Layout
 
