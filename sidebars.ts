@@ -72,6 +72,11 @@ const sidebars: SidebarsConfig = {
           items: [
             'dankmaterialshell/cli-setup',
             'dankmaterialshell/cli-doctor',
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-system-updater',
+              label: 'System updater',
+            },
             'dankmaterialshell/cli-process-management',
             'dankmaterialshell/cli-keybinds-cheatsheets',
             {

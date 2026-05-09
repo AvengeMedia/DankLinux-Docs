@@ -715,14 +715,20 @@ dms ipc call plugins disable myPlugin
 
 ### systemupdater
 
-System updater external check request.
+System updater widget control and background update checks.
 
 | Function | Description |
 | --- | --- |
-| `updatestatus` | Trigger system update check |
+| `toggle` | Toggle the system updater popout open/closed |
+| `open` | Open the system updater popout |
+| `close` | Close the system updater popout |
+| `updatestatus` | Trigger a background update check |
 
 **Examples:**
 ```bash
+dms ipc call systemupdater toggle
+dms ipc call systemupdater open
+dms ipc call systemupdater close
 dms ipc call systemupdater updatestatus
 ```
 
