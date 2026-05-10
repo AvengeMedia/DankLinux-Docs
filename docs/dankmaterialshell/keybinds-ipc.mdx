@@ -245,8 +245,11 @@ Control individual bars using flexible selectors.
 | `autoHide <selector> <value>` | Enable auto-hide mode | selector + value |
 | `manualHide <selector> <value>` | Disable auto-hide mode | selector + value |
 | `toggleAutoHide <selector> <value>` | Toggle auto-hide mode | selector + value |
+| `toggleReveal <selector> <value>` | Toggle the runtime reveal/tuck state for an auto-hidden bar | selector + value |
 | `getPosition <selector> <value>` | Get bar position | selector + value |
 | `setPosition <selector> <value> <position>` | Set bar position | selector + value + position (top, bottom, left, right) |
+
+**Note:** `toggleReveal` only affects bars with auto-hide enabled. Moving the pointer into the bar reveal area clears the IPC reveal state and hands control back to normal hover auto-hide behavior.
 
 **Selectors:**
 - `index` - Select by position (0-based)
@@ -271,6 +274,7 @@ dms ipc call bar reveal id abc123
 dms ipc call bar autoHide index 0
 dms ipc call bar manualHide name "Main Bar"
 dms ipc call bar toggleAutoHide index 1
+dms ipc call bar toggleReveal index 0
 
 # Position controls
 dms ipc call bar getPosition index 0
