@@ -1,0 +1,12 @@
+diff --git a/node_modules/@docusaurus/tsconfig/tsconfig.json b/node_modules/@docusaurus/tsconfig/tsconfig.json
+index b89e41d..96c569a 100644
+--- a/node_modules/@docusaurus/tsconfig/tsconfig.json
++++ b/node_modules/@docusaurus/tsconfig/tsconfig.json
+@@ -11,7 +11,6 @@
+     "moduleResolution": "bundler",
+     "module": "esnext",
+     "noEmit": true,
+-    "baseUrl": ".",
+     "paths": {
+       "@site/*": ["./*"]
+     },

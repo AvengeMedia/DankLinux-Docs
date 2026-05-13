@@ -318,23 +318,26 @@ export default function Home() {
                   )}
                   <div className={styles.terminalHeader}>
                     <div className={styles.terminalLogos}>
-                      {compositors.slice(0, 5).map((compositor) => (
-                        <a
-                          key={compositor.name}
-                          href={compositorLinks[compositor.name]}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={compositor.name}
-                          className={styles.terminalLogoLink}
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <img
-                            src={compositor.logo}
-                            alt={compositor.name}
-                            className={styles.terminalLogo}
-                          />
-                        </a>
-                      ))}
+                      {compositors
+                        .slice(0, 5)
+                        .filter((compositor) => compositor.logo)
+                        .map((compositor) => (
+                          <a
+                            key={compositor.name}
+                            href={compositorLinks[compositor.name]}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={compositor.name}
+                            className={styles.terminalLogoLink}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <img
+                              src={compositor.logo!}
+                              alt={compositor.name}
+                              className={styles.terminalLogo}
+                            />
+                          </a>
+                        ))}
                     </div>
                   </div>
                   <div className={styles.terminalBody}>

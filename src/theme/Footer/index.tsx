@@ -5,7 +5,7 @@ import type {WrapperProps} from '@docusaurus/types';
 
 type Props = WrapperProps<typeof FooterType>;
 
-export default function FooterWrapper(props: Props): JSX.Element {
+export default function FooterWrapper(props: Props): React.JSX.Element {
   return (
     <div style={{position: 'relative'}}>
       <Footer {...props} />

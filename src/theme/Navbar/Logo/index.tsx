@@ -10,7 +10,7 @@ import styles from './styles.module.css';
 
 type Props = WrapperProps<typeof LogoType>;
 
-export default function LogoWrapper(props: Props): JSX.Element {
+export default function LogoWrapper(props: Props): React.JSX.Element {
   const {
     siteConfig: {title},
   } = useDocusaurusContext();

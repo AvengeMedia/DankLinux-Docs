@@ -11,7 +11,6 @@
     "target": "esnext",
     "jsx": "react",
     "types": ["node"],
-    "baseUrl": "./",
     "lib": ["DOM"],
     "skipLibCheck": true
   },
