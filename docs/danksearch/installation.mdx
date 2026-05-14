@@ -51,6 +51,26 @@ sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dsearch
 ```
 
+#### Gentoo
+
+`gui-apps/danksearch` is available in the official [guru](https://wiki.gentoo.org/wiki/Project:GURU) community overlay.
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/danksearch
+```
+
+:::note
+
+The guru overlay package is keyworded `~amd64`, so you may need to accept the testing keyword:
+
+```bash
+echo "gui-apps/danksearch ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/danksearch
+```
+
+:::
+
 Distribution packages include the systemd user service. Enable it for automatic index updates:
 
 ```bash

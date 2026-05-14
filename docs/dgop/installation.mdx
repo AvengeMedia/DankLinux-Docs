@@ -37,6 +37,26 @@ sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dgop
 ```
 
+#### Gentoo
+
+`gui-apps/dgop` is available in the official [guru](https://wiki.gentoo.org/wiki/Project:GURU) community overlay.
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/dgop
+```
+
+:::note
+
+The guru overlay package is keyworded `~amd64`, so you may need to accept the testing keyword:
+
+```bash
+echo "gui-apps/dgop ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/dgop
+```
+
+:::
+
 ### Pre-built Binaries
 
 Download the latest release for your architecture:

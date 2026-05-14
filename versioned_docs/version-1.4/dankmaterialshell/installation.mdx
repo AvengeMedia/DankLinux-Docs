@@ -318,7 +318,33 @@ These overlays are maintained by the community, not the DMS team. For issues wit
 
 :::
 
-Two community overlays provide DMS for Gentoo:
+The recommended option for Gentoo is the official [guru](https://wiki.gentoo.org/wiki/Project:GURU) community overlay, which packages DMS (`gui-apps/dankmaterialshell`) alongside companion tools `gui-apps/dgop` and `gui-apps/danksearch`.
+
+### guru (Recommended)
+
+Enable the guru overlay and install DMS:
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/dankmaterialshell
+```
+
+Install the optional companion tools:
+
+```bash
+sudo emerge --ask gui-apps/dgop gui-apps/danksearch
+```
+
+:::note
+
+The guru overlay packages are keyworded `~amd64`, so you may need to accept the testing keyword. For example:
+
+```bash
+echo "gui-apps/dankmaterialshell ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/dankmaterialshell
+```
+
+:::
 
 ### quilat-overlay
 
