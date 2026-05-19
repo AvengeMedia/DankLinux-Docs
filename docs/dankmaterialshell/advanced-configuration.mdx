@@ -99,9 +99,30 @@ Migration behavior:
 - Legacy bar shadow state is migrated to `barElevationEnabled` for older configs.
 - If `settings.json` is read-only, migration/write-back may not persist until the file is writable.
 
+### Layer Variables And Fullscreen Toggles
+
+DMS uses the compositor's layer-shell protocol for fullscreen stacking. By
+default, bar, dock, launcher, popout, modal, and notification surfaces use their
+documented `top` behavior. Use `overlay` only for surfaces that should appear
+above fullscreen windows.
+
+The Settings UI provides **Show Over Fullscreen** toggles for DankBar, Dock, and
+Launcher. These toggles map directly to `top` when off and `overlay` when on.
+Environment variables are stronger overrides: if a matching `DMS_*_LAYER`
+variable is set, that value wins over the UI toggle.
+
+Frame mode is separate from fullscreen policy. When a visible Frame is enabled,
+bar and dock surfaces may internally use `overlay` so their icons stack above
+the frame in both Separate and Connected modes. Fullscreen windows are still
+handled by the compositor and by the per-surface layer choices above.
+
 ### DMS_DANKBAR_LAYER
 
 Controls Wayland layer for DankBar panel. Valid values: `bottom`, `overlay`, `background`, or `top` (default). Useful for window stacking issues.
+
+The Settings UI also has per-bar **Show Over Fullscreen** toggles. If this
+environment variable is set, it takes precedence over the UI toggle for the bar
+layer.
 
 ```bash
 DMS_DANKBAR_LAYER=overlay dms run
@@ -112,6 +133,11 @@ DMS_DANKBAR_LAYER=overlay dms run
 
 Controls Wayland layer for DankBar popout widgets. Valid values: `bottom`, `overlay`, `background`, or `top` (default). Useful for window stacking issues.
 
+When this is unset, bar-launched popouts inherit the triggering bar's effective
+layer. For example, a bar with **Show Over Fullscreen** enabled opens its
+popouts on `overlay`. Setting `DMS_POPOUT_LAYER` explicitly overrides that
+inheritance.
+
 ```bash
 DMS_POPOUT_LAYER=overlay dms run
 ```
@@ -119,6 +145,11 @@ DMS_POPOUT_LAYER=overlay dms run
 ### DMS_MODAL_LAYER
 
 Controls Wayland layer for modal windows like the launcher, settings panel, and other popups. Valid values: `bottom`, `overlay`, `background`, or `top` (default).
+
+The Launcher settings page also has **Show Over Fullscreen**. If
+`DMS_MODAL_LAYER` is set, the environment variable wins for modal and launcher
+layering. When it is unset, the launcher can still use `overlay` through its UI
+toggle or by inheriting an overlay trigger from the Dock launcher button.
 
 ```bash
 DMS_MODAL_LAYER=overlay dms run
@@ -135,6 +166,8 @@ DMS_OSD_LAYER=top dms run
 ### DMS_NOTIFICATION_LAYER
 
 Controls Wayland layer for notification popups. Valid values: `bottom`, `overlay`, `background`, or `top` (default).
+
+This remains an environment-only layer override for notification popups.
 
 ```bash
 DMS_NOTIFICATION_LAYER=overlay dms run
