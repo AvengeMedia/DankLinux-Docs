@@ -426,7 +426,7 @@ See [Managing Your Installation](managing) for detailed guidance on service mana
 
 ### Systemd Integration (Recommended)
 
-:::tip DankInstall Users
+:::tip[DankInstall Users]
 
 If you used [dankinstall](../dankinstall), this is already configured. The installer runs `systemctl --user enable --now dms` during setup.
 
@@ -467,7 +467,7 @@ If using systemd autostart, remove `dms run` / `spawn "dms" "run"` / `exec-once=
 
 Different compositors have different levels of systemd session integration. Choose the section that matches your compositor.
 
-:::tip Why use add-wants?
+:::tip[Why use add-wants?]
 
 If you have multiple desktop environments installed (e.g., Plasma, GNOME, niri), using `systemctl --user enable dms` starts DMS in *all* of them. Using `add-wants` binds DMS to a specific compositor's service or session target, so it only runs where you want it. DMS won't launch when you log into Plasma or GNOME.
 
