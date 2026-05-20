@@ -18,7 +18,7 @@ spec:
         app: dlx-docs-server
     spec:
       volumes:
-        - name: uploads
+        - name: data
           persistentVolumeClaim:
             claimName: dlx-docs-server-uploads
       containers:
@@ -47,8 +47,8 @@ spec:
             initialDelaySeconds: 2
             periodSeconds: 5
           volumeMounts:
-            - name: uploads
-              mountPath: /data/uploads
+            - name: data
+              mountPath: /data
           env:
             - name: PORT
               value: "8337"
@@ -56,6 +56,8 @@ spec:
               value: "production"
             - name: UPLOAD_DIR
               value: "/data/uploads"
+            - name: CACHE_DIR
+              value: "/data/cache"
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:

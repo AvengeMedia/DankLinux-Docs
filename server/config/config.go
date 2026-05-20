@@ -13,6 +13,7 @@ type Config struct {
 	DiscordWebhookURL      string
 	UploadToken            string
 	UploadDir              string
+	CacheDir               string
 }
 
 func NewConfig() *Config {
@@ -37,6 +38,8 @@ func NewConfig() *Config {
 		uploadDir = "/data/uploads"
 	}
 
+	cacheDir := os.Getenv("CACHE_DIR")
+
 	return &Config{
 		Port:                   port,
 		Environment:            env,
@@ -46,5 +49,6 @@ func NewConfig() *Config {
 		DiscordWebhookURL:      discordWebhookURL,
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,
+		CacheDir:               cacheDir,
 	}
 }

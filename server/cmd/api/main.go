@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -71,7 +72,12 @@ func startAPI(cfg *config.Config) {
 	}()
 
 	pluginCache := registry.NewCache(cfg.GithubToken)
-	themeCache := registry.NewThemeCache(cfg.GithubToken)
+
+	var themeCacheFile string
+	if cfg.CacheDir != "" {
+		themeCacheFile = filepath.Join(cfg.CacheDir, "themes.json")
+	}
+	themeCache := registry.NewThemeCache(cfg.GithubToken, themeCacheFile)
 
 	srvImpl := &server.Server{
 		PluginCache: pluginCache,
@@ -139,17 +145,8 @@ func startAPI(cfg *config.Config) {
 	})
 
 	r.Get("/ready", func(w http.ResponseWriter, r *http.Request) {
-		switch {
-		case !pluginCache.IsReady():
-			w.WriteHeader(http.StatusServiceUnavailable)
-			w.Write([]byte("plugin cache warming up"))
-		case !themeCache.IsReady():
-			w.WriteHeader(http.StatusServiceUnavailable)
-			w.Write([]byte("theme cache warming up"))
-		default:
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("OK"))
-		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
 	})
 
 	r.Group(func(r chi.Router) {
