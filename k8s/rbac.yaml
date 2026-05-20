@@ -12,7 +12,7 @@ metadata:
   namespace: danklinux
 rules:
 - apiGroups: [""]
-  resources: ["services", "secrets", "configmaps", "pods", "pods/log"]
+  resources: ["services", "secrets", "configmaps", "pods", "pods/log", "persistentvolumeclaims"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 - apiGroups: ["apps"]
   resources: ["deployments", "replicasets"]
