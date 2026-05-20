@@ -11,6 +11,8 @@ type Config struct {
 	KlipyAPIKey            string
 	PoeditorCallbackSecret string
 	DiscordWebhookURL      string
+	UploadToken            string
+	UploadDir              string
 }
 
 func NewConfig() *Config {
@@ -28,6 +30,12 @@ func NewConfig() *Config {
 	klipyAPIKey := os.Getenv("KLIPY_API_KEY")
 	poeditorSecret := os.Getenv("POEDITOR_CALLBACK_SECRET")
 	discordWebhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
+	uploadToken := os.Getenv("UPLOAD_TOKEN")
+
+	uploadDir := os.Getenv("UPLOAD_DIR")
+	if uploadDir == "" {
+		uploadDir = "/data/uploads"
+	}
 
 	return &Config{
 		Port:                   port,
@@ -36,5 +44,7 @@ func NewConfig() *Config {
 		KlipyAPIKey:            klipyAPIKey,
 		PoeditorCallbackSecret: poeditorSecret,
 		DiscordWebhookURL:      discordWebhookURL,
+		UploadToken:            uploadToken,
+		UploadDir:              uploadDir,
 	}
 }

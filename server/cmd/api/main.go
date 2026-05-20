@@ -15,6 +15,7 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/poeditor"
 	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
+	uploads_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/uploads"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
@@ -133,6 +134,10 @@ func startAPI(cfg *config.Config) {
 		w.Write([]byte("OK"))
 	})
 
+	r.Get("/uploads/{filename}", func(w http.ResponseWriter, r *http.Request) {
+		uploads_handler.ServeFile(cfg.UploadDir, chi.URLParam(r, "filename"), w, r)
+	})
+
 	r.Get("/ready", func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case !pluginCache.IsReady():
@@ -209,6 +214,12 @@ func startAPI(cfg *config.Config) {
 			op.Tags = []string{"POEditor"}
 		})
 		poeditor.RegisterHandlers(cfg.PoeditorCallbackSecret, cfg.DiscordWebhookURL, poeditorGroup)
+
+		uploadsGroup := huma.NewGroup(api, "/uploads")
+		uploadsGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"Uploads"}
+		})
+		uploads_handler.RegisterHandlers(cfg.UploadDir, cfg.UploadToken, uploadsGroup)
 	})
 
 	addr := ":" + cfg.Port

@@ -8,10 +8,7 @@ metadata:
 spec:
   replicas: 1
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
+    type: Recreate
   selector:
     matchLabels:
       app: dlx-docs-server
@@ -20,6 +17,10 @@ spec:
       labels:
         app: dlx-docs-server
     spec:
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: dlx-docs-server-uploads
       containers:
         - name: dlx-docs-server
           image: replaceme-server
@@ -45,11 +46,16 @@ spec:
               port: 8337
             initialDelaySeconds: 2
             periodSeconds: 5
+          volumeMounts:
+            - name: uploads
+              mountPath: /data/uploads
           env:
             - name: PORT
               value: "8337"
             - name: ENVIRONMENT
               value: "production"
+            - name: UPLOAD_DIR
+              value: "/data/uploads"
             - name: GITHUB_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -70,3 +76,8 @@ spec:
                 secretKeyRef:
                   name: poeditor
                   key: DISCORD_WEBHOOK_URL
+            - name: UPLOAD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: dlx-docs-uploads
+                  key: token
