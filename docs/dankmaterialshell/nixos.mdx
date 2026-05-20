@@ -18,7 +18,7 @@ import Hero from '@site/src/components/Hero';
 
 DankMaterialShell can be installed on NixOS using the NixOS module. This guide covers the native nixpkgs installation method.
 
-:::info NixOS Unstable Required
+:::info[NixOS Unstable Required]
 DankMaterialShell is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable (currently 25.11), you'll need to use the [Flake Installation](nixos-flake) method instead.
 :::
 
@@ -91,7 +91,7 @@ programs.dms-shell = {
 
 #### Using Quickshell from Source
 
-:::tip Recommended for Latest Features
+:::tip[Recommended for Latest Features]
 
 Many features in DankMaterialShell rely on unreleased Quickshell features. For the best experience, you may want to use Quickshell built from source.
 
@@ -140,7 +140,7 @@ First, add the flake input to your `flake.nix`:
 }
 ```
 
-:::tip Using Unstable Version
+:::tip[Using Unstable Version]
 If you want to use the unstable (-git) version from the master branch for quicker updates, remove `/stable` from the URL:
 ```nix
 dms.url = "github:AvengeMedia/DankMaterialShell";

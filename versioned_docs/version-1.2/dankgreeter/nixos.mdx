@@ -19,7 +19,7 @@ import Hero from '@site/src/components/Hero';
 
 DankGreeter can be installed on NixOS using the native nixpkgs module. This is the recommended installation method for users on NixOS unstable.
 
-:::info NixOS Unstable Required
+:::info[NixOS Unstable Required]
 DankGreeter is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable (currently version 25.11), you'll need to use the [Flake Installation](nixos-flake) method instead.
 :::
 
@@ -110,7 +110,7 @@ First, add the flake input to your `flake.nix`:
 }
 ```
 
-:::tip Using Unstable Version
+:::tip[Using Unstable Version]
 If you want to use the unstable (-git) version from the master branch for quicker updates, remove `/stable` from the URL:
 ```nix
 dms.url = "github:AvengeMedia/DankMaterialShell";
