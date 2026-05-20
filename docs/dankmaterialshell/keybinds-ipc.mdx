@@ -367,11 +367,17 @@ These targets control various modal windows and overlays.
 
 Application launcher modal with search capabilities.
 
+:::note
+`spotlight` and `launcher` are synonymous — both targets call the same launcher modal for backwards compatibility.
+:::
+
 | Function | Description | Parameters |
 | --- | --- | --- |
 | `open` | Show launcher | - |
 | `close` | Hide launcher | - |
 | `toggle` | Toggle launcher visibility | - |
+| `openWith <mode>` | Open launcher in a specific mode | `all`, `apps`, `files`, `plugins` |
+| `toggleWith <mode>` | Toggle launcher in a specific mode | `all`, `apps`, `files`, `plugins` |
 | `openQuery <query>` | Show launcher with search | search text |
 | `toggleQuery <query>` | Toggle launcher with search | search text |
 
@@ -380,6 +386,27 @@ Application launcher modal with search capabilities.
 dms ipc call spotlight toggle
 dms ipc call spotlight openQuery browser
 dms ipc call spotlight toggleQuery "!"
+dms ipc call spotlight openWith apps
+dms ipc call spotlight toggleWith files
+```
+
+### spotlight-bar
+
+Spotlight Bar — a compact inline search bar that drops down from the top center of the screen. Designed for quick app launches and searches without opening the full launcher modal.
+
+**Default keybind:** `Alt + Space`
+
+| Function | Description |
+| --- | --- |
+| `open` | Show the Spotlight Bar |
+| `close` | Hide the Spotlight Bar |
+| `toggle` | Toggle the Spotlight Bar |
+
+**Examples:**
+```bash
+dms ipc call spotlight-bar toggle
+dms ipc call spotlight-bar open
+dms ipc call spotlight-bar close
 ```
 
 ### Other Modals
