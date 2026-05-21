@@ -156,6 +156,8 @@ List of directory names to skip during indexing. Supports both exact names and r
 
 Regex patterns are wrapped in `/` delimiters (e.g., `/^build-/`). Each pattern is matched against individual directory name components, not the full path. Invalid regex patterns are skipped with a warning.
 
+By default, `exclude_dirs` **replaces** the built-in defaults — anything you list is the complete set of excluded directories for that path. Set [`merge_default_exclude_dirs`](#merge_default_exclude_dirs) to `true` if you want your list merged onto the defaults instead.
+
 ```toml
 exclude_dirs = [
     "node_modules",     # Exact match
@@ -167,6 +169,9 @@ exclude_dirs = [
 **Default excludes:**
 ```toml
 exclude_dirs = [
+    # VCS
+    ".git", ".hg", ".svn",
+
     # JavaScript/Node.js
     "node_modules", "bower_components", ".npm", ".yarn",
 
@@ -205,6 +210,22 @@ exclude_dirs = [
     ".idea", ".vscode",
 ]
 ```
+
+#### `merge_default_exclude_dirs`
+When `true`, the path's `exclude_dirs` list is **merged** with the built-in defaults (deduplicated) instead of replacing them. Handy when you only want to add a few extras (like a `secrets/` directory) without copy-pasting the full defaults array.
+
+**Default:** `false` (existing behavior — `exclude_dirs` replaces the defaults)
+
+```toml
+[[index_paths]]
+path = "~/.dotfiles"
+max_depth = 0
+exclude_hidden = false        # show dotfiles like .config inside the repo
+merge_default_exclude_dirs = true
+exclude_dirs = ["secrets"]    # added on top of node_modules, .git, .cache, ...
+```
+
+This is especially useful for indexing dotfiles repos: you want `exclude_hidden = false` so directories like `.config` are visible, but you still want noise like `.git/` and `node_modules/` excluded.
 
 ## Multiple Index Paths
 
