@@ -47,6 +47,35 @@ dms ipc call audio mute
 dms ipc call audio cycleoutput
 ```
 
+:::note
+`audio setmic` and `audio micmute` remain available for backwards compatibility, but new scripts and keybinds should use the dedicated [`mic`](#mic) target below.
+:::
+
+### mic
+
+Dedicated microphone input control with interactive OSD support.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `setvolume <percentage>` | Set microphone volume | percentage (0-100) |
+| `increment <step>` | Increase microphone volume (unmutes if muted) | step (default: 5) |
+| `decrement <step>` | Decrease microphone volume (unmutes if muted) | step (default: 5) |
+| `mute` | Toggle microphone mute | - |
+| `status` | Get current microphone volume and mute state | - |
+
+**Examples:**
+```bash
+dms ipc call mic setvolume 75
+dms ipc call mic increment 5
+dms ipc call mic decrement 10
+dms ipc call mic mute
+dms ipc call mic status
+```
+
+**Notes:**
+- Adjusting the microphone volume triggers an interactive OSD (when `osdMicVolumeEnabled` is on) with a draggable slider and a mute toggle, mirroring the speaker volume OSD.
+- `increment` and `decrement` automatically unmute the microphone before changing the level.
+
 ### brightness
 
 Control display brightness for internal and external displays.
