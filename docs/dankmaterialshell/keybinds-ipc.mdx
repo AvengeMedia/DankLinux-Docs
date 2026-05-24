@@ -168,6 +168,39 @@ dms ipc call lock lock
 dms ipc call lock isLocked
 ```
 
+### sessions
+
+Switch between logind sessions that are already running on the current seat. Wraps `loginctl list-sessions` and `loginctl activate`.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `list` | List sessions as tab-separated rows (current marked `*current*`) | - |
+| `refresh` | Re-enumerate sessions in the background | - |
+| `open` | Refresh and open the Switch User picker | - |
+| `activate <sessionId>` | Activate a session by its numeric logind ID | sessionId |
+| `switchTo <target>` | Activate a session by username or session ID | target (username or sessionId) |
+
+**Examples:**
+```bash
+# See what's switchable
+dms ipc call sessions list
+
+# Open the Switch User picker (good for a keybind)
+dms ipc call sessions open
+
+# Jump straight to another logged-in user
+dms ipc call sessions switchTo testuser2
+
+# Or by session ID
+dms ipc call sessions activate 4
+```
+
+:::note
+This only switches between sessions that *already exist* on the current seat. Creating a brand-new session for a user who isn't logged in needs a multi-session greeter (greetd-flexiserver / GDM / LightDM); the picker's empty state offers a Log out fallback to reach the greeter.
+:::
+
+The `dms switch-user [target]` CLI command wraps the same calls with a friendlier interactive list when no target matches.
+
 ### inhibit
 
 Idle inhibitor control to prevent automatic sleep/lock.

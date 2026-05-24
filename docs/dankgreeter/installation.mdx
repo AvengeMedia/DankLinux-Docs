@@ -59,6 +59,8 @@ sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dms-greeter
 ```
 
+The `dms-greeter` RPM installs `/usr/lib/sysusers.d/dms-greeter.conf` so the `greeter` user is recreated from `/usr` on every boot. That matters on **Fedora Atomic**, Universal Blue, bootc, and other ostree systems where install-time `useradd` in `/etc/passwd` may not persist.
+
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
 ### Debian
@@ -143,6 +145,36 @@ sudo zypper install dms-greeter
 ```
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
+
+## Greeter system user (RPM, DEB, and immutable systems)
+
+Official `dms-greeter` packages (Arch AUR, Fedora, Debian, Ubuntu, openSUSE) ship two systemd declarations under `/usr`:
+
+| File | Purpose |
+|------|---------|
+| `/usr/lib/sysusers.d/dms-greeter.conf` | Declares the `greeter` UNIX account (home `/var/lib/greeter`, shell `/bin/bash`) |
+| `/usr/lib/tmpfiles.d/dms-greeter.conf` | Creates `/var/cache/dms-greeter` and `/var/lib/greeter` with `greeter:greeter` ownership |
+
+`systemd-sysusers` applies the user definition at boot and on package install. Package scriptlets (`useradd` / `adduser`) remain as a fallback on traditional mutable systems.
+
+### Immutable and image-based systems
+
+On Fedora Atomic, Universal Blue, bootc, [Zirconium](https://github.com/zirconium-dev/zirconium/), and similar systems:
+
+- Install **`dms-greeter` from your distro repo** (layered package or image build). Do **not** rely on `dms greeter install`, `dms greeter enable`, or `dms greeter uninstall` — those commands are disabled on immutable systems by DMS CLI policy.
+- After installing or upgrading `dms-greeter`, **reboot once** if `getent passwd greeter` is empty (sysusers runs early in boot).
+- Configure `/etc/greetd/config.toml`, enable `greetd`, and set up theme sync using your distro or image documentation. `dms greeter sync` may still work for theme files if not blocked by your image policy.
+
+Verify the account:
+
+```bash
+getent passwd greeter
+getent group greeter
+ls -l /usr/lib/sysusers.d/dms-greeter.conf
+systemd-sysusers --dry-run | grep greeter
+```
+
+If you previously added a manual `/usr/lib/sysusers.d/dms-greeter.conf` workaround (for example on Zirconium before upstream packaging), you can remove it once `dms-greeter` from DankLinux includes the same file.
 
 ### Gentoo
 
