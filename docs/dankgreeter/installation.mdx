@@ -297,10 +297,17 @@ This will:
 - Set up ACL permissions on parent directories for greeter access
 - Configure group permissions on DMS config directories
 - Create symlinks to sync settings, wallpapers, and color themes
+- Create your per-user cache slot at `/var/cache/dms-greeter/users/<username>/`
 
 :::note
 
 After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect.
+
+:::
+
+:::tip[Multi-user systems]
+
+One **main admin** runs `dms greeter sync` once for system setup. Add every other user to the `greeter` group in **Settings → Users** (greeter access toggle), or with `sudo usermod -aG greeter <username>`. Each of those accounts should then run **`dms greeter sync --profile`** after logging out and back in—not full sync. See [Configuration → Multi-user systems](./configuration#multi-user-systems).
 
 :::
 
@@ -318,7 +325,7 @@ You can check your greeter configuration at any time:
 dms greeter status
 ```
 
-This verifies your greeter setup and sync status. See the [Configuration guide](/docs/dankgreeter/configuration#checking-sync-status) for detailed information.
+This verifies your greeter setup and sync status. See the [Configuration guide](./configuration#checking-sync-status) for detailed information.
 
 ---
 

@@ -164,12 +164,100 @@ This will:
 - Set up ACL permissions on parent directories for greeter access
 - Configure group permissions on DMS config directories
 - Create symlinks to sync settings, wallpapers, and color themes
+- Copy your per-user theme slot to `/var/cache/dms-greeter/users/<username>/` (for multi-account picker preview)
 
 :::note
 
 After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect. After logging back in, your greeter will automatically reflect your current DMS theme, wallpaper, and settings.
 
 :::
+
+### Multi-user systems
+
+On a shared PC, each account can have its own greeter theme and profile photo on the login screen. DMS shows a **user picker** (avatar + inline list) when more than one local account exists.
+
+**Recommended workflow:** One main admin runs **`dms greeter sync`** once (system setup). Every other account—including other sudo admins—uses **`dms greeter sync --profile`** only. Full sync from multiple accounts repoints root cache symlinks and greetd; `--profile` updates only that user's login-screen slot.
+
+#### Roles
+
+| Who | Command | Needs sudo? |
+|-----|---------|-------------|
+| Main admin (first setup) | `dms greeter sync` | Yes |
+| All other users (including other admins) | `dms greeter sync --profile` | No |
+| Add users to greeter group | **Settings → Users** (toggle) or `sudo usermod -aG greeter <user>` | Yes (Polkit or sudo) |
+
+Full `dms greeter sync` only adds **the user running the command** to the `greeter` group. You must add other accounts explicitly.
+
+#### Adding users to the greeter group (admin)
+
+**GUI (recommended):** In DMS, open **Settings → Users**. Use the greeter access toggle (login icon) on each account, or enable **Allow greeter login access** when creating a user. DMS runs `usermod -aG` for granting administrator access to the user.
+
+:::note
+
+After you add someone to the greeter group, they must **log out and back in** before group membership applies, then run `dms greeter sync --profile` on their account.
+
+:::
+
+**CLI alternative:**
+
+```bash
+sudo usermod -aG greeter otheruser1 otheruser2
+```
+
+Each added user must **log out and back in**, then sync their own slot:
+
+```bash
+dms greeter sync --profile
+```
+
+#### One-time setup (main admin)
+
+```bash
+# Configure greetd, ACLs, and your own theme slot
+dms greeter sync
+```
+
+Then add every other account—either in **Settings → Users** (greeter toggle) or from a terminal:
+
+```bash
+sudo usermod -aG greeter alice bob charlie
+```
+
+#### Per-user setup (everyone except the main admin)
+
+After logging out and back in (so the `greeter` group applies):
+
+```bash
+dms greeter sync --profile
+```
+
+This writes only to `/var/cache/dms-greeter/users/<your-username>/` — settings, colors, wallpapers, and profile photo — without changing greetd or system configuration. Re-run after theme changes.
+
+#### What gets stored per user
+
+Under `/var/cache/dms-greeter/users/<username>/`:
+
+- `settings.json` — theme, clock, weather, fonts
+- `session.json` — wallpaper configuration (paths localized into the slot)
+- `colors.json` — color scheme
+- `profile.jpg` (or `.png`) — profile photo for the user picker
+- Wallpaper image copies as needed
+
+The root cache (`/var/cache/dms-greeter/settings.json`, etc.) remains the **default fallback** when no per-user slot exists or no user is selected yet.
+
+#### Developer note: `--local`
+
+When developing from a DMS checkout, only the **primary admin** should use:
+
+```bash
+dms greeter sync --local
+```
+
+All other accounts use `dms greeter sync --profile`. If greetd is already configured with a `-p` path to a shared checkout, the main admin can refresh that path with `--local`; other users should not need it.
+
+#### Not the same as Switch User
+
+DMS **Switch User** in the running session (`dms switch-user`) switches between active Wayland sessions. The greeter user picker lists **local login accounts** from the system password database for signing in after logout or reboot.
 
 ### Manual Sync
 
@@ -245,6 +333,10 @@ Configuration Symlinks:
   ✓ Session state: synced correctly
   ✓ Color theme: synced correctly
 
+Per-user slots (multi-account):
+  ✓ users/alice/ — synced
+  ✓ users/bob/ — not synced (run: dms greeter sync --profile)
+
 ✓ All checks passed! Greeter is properly configured.
 ```
 
@@ -263,6 +355,21 @@ dms greeter sync
 dms greeter sync
 ```
 
+**Secondary user cannot run full sync (not in sudoers):**
+```bash
+# Admin: Settings → Users → enable greeter access for that account
+# Or: sudo usermod -aG greeter <username>
+# User logs out/in, then:
+dms greeter sync --profile
+```
+
+**Per-user theme not showing in picker:**
+```bash
+# Run on that user's account after group membership is active:
+dms greeter sync --profile
+# Log out to see the updated theme on the login screen
+```
+
 **ACL permission issues (themes/wallpapers not appearing):**
 ```bash
 # Check if ACLs are set
@@ -279,6 +386,8 @@ The greeter uses three main configuration files located in `/var/cache/dms-greet
 - `settings.json` - Appearance, behavior, and widget settings
 - `session.json` - Wallpaper configuration
 - `colors.json` - Color scheme configuration
+
+On multi-user systems, each account may also have a copied slot under `/var/cache/dms-greeter/users/<username>/` with the same file names plus localized wallpapers and a `profile.*` image for the user picker. See [Multi-user systems](#multi-user-systems) above.
 
 :::note
 
