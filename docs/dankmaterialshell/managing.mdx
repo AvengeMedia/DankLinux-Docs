@@ -22,7 +22,7 @@ This guide covers how to manage, update, and configure DankMaterialShell after i
 
 DMS can run as a systemd user service or be launched manually. The `dms` CLI handles both transparently - commands like `dms restart` work regardless of how DMS was started.
 
-:::tip DankInstall Users
+:::tip[DankInstall Users]
 
 If you installed via [dankinstall](../dankinstall), DMS is configured as a systemd service by default. The installer runs `systemctl --user enable --now dms` during setup. You don't need to add `dms run` to your compositor config.
 
@@ -134,7 +134,7 @@ dms kill
 
 DMS and its themed applications need certain environment variables set. Where these live depends on your setup.
 
-:::tip DankInstall Users
+:::tip[DankInstall Users]
 
 dankinstall creates `~/.config/environment.d/90-dms.conf` with the necessary variables. This file is loaded by systemd for all user sessions. If you need to change Qt theming (e.g., switching to qt6ct), edit this file.
 
