@@ -217,6 +217,45 @@ dms ipc call inhibit toggle
 dms ipc call inhibit enable
 ```
 
+### powerprofile
+
+Power profile control via `power-profiles-daemon`. Changes stay in sync with DMS UI and trigger the power profile OSD when enabled in Settings → OSD.
+
+Requires `power-profiles-daemon` to be installed and running. Works on all compositors.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show the power profile picker modal | - |
+| `close` | Close the power profile picker modal | - |
+| `toggle` | Toggle power profile picker modal visibility | - |
+| `list` | List available profile slugs (one per line) | - |
+| `status` | Get the currently active profile slug | - |
+| `set <profile>` | Set the active power profile | slug or alias (see below) |
+| `cycle` | Cycle to the next available profile | - |
+
+**Profile slugs and aliases for `set`:**
+- `power-saver` — also `powersaver`, `saver`, `0`
+- `balanced` — also `1`
+- `performance` — also `2` (only when supported by hardware)
+
+**Cycle order:** `power-saver` → `balanced` → `performance` → `power-saver` (skips profiles not available on your hardware).
+
+**Examples:**
+```bash
+dms ipc call powerprofile status
+dms ipc call powerprofile list
+dms ipc call powerprofile cycle
+dms ipc call powerprofile set balanced
+dms ipc call powerprofile set performance
+dms ipc call powerprofile toggle
+```
+
+**Notes:**
+- `list` returns only profiles available on your system (performance is omitted when unsupported)
+- `status` returns the current slug: `power-saver`, `balanced`, or `performance`
+- Returns `ERROR: power-profiles-daemon not available` when the daemon is missing
+- Returns `ERROR: Failed to set power profile` if the profile change could not be applied
+
 ## Wallpaper & Profile
 
 ### wallpaper
@@ -946,6 +985,11 @@ fi
 current=$(dms ipc call brightness status | grep -oP '\d+')
 if [ "$current" -lt 50 ]; then
     dms ipc call brightness set 50
+fi
+
+# Cycle power profile only when not in performance mode
+if [ "$(dms ipc call powerprofile status)" != "performance" ]; then
+    dms ipc call powerprofile cycle
 fi
 ```
 
