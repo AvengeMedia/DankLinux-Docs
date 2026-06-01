@@ -122,6 +122,8 @@ If you're using the niri compositor, the home-manager module provides additional
 
 :::warning
 Note that `niri-stable` package from niri-flake is on version `25.08`, while the needed version for DankMaterialShell is the latest `26.05` (available in nixpkgs).
+
+`niri-flake`, while supported by DankMaterialShell, may not be ideal if you want to configure newer niri features like Background Effects or the Recent Windows switcher. A popular alternative is [niri-nix](https://codeberg.org/BANanaD3V/niri-nix), but you can just use home-manager or hjem to write your niri config directly. In both cases, the DMS integration files live under `~/.config/niri/dms`.
 :::
 
 ### Prerequisites
