@@ -19,32 +19,13 @@ import Hero from '@site/src/components/Hero';
 
 DankSearch can be installed on NixOS using the NixOS module. This guide covers the native nixpkgs installation method.
 
-:::info[NixOS Unstable Required]
-DankSearch is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable, you'll need to use the [Flake Installation](nixos-flake) method instead.
+:::info[Nixpkgs Stable Available]
+DankSearch is available in nixpkgs stable (26.05).
 :::
 
 ## Installation
 
-### 1. Enable NixOS Unstable
-
-Ensure you're using NixOS unstable by setting your channel or flake input:
-
-**Using channels:**
-```bash
-sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
-sudo nix-channel --update
-```
-
-**Using flakes (in `flake.nix`):**
-```nix
-{
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
-}
-```
-
-### 2. Enable DankSearch
+### 1. Enable DankSearch
 
 In your NixOS configuration, enable DankSearch:
 
@@ -99,7 +80,7 @@ First, add the flake input to your `flake.nix`:
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     
     danksearch = {
       url = "github:AvengeMedia/danksearch";

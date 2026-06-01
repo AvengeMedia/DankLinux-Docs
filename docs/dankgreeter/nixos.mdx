@@ -17,34 +17,11 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-DankGreeter can be installed on NixOS using the native nixpkgs module. This is the recommended installation method for users on NixOS unstable.
-
-:::info[NixOS Unstable Required]
-DankGreeter is currently only available in the **unstable** branch of nixpkgs. If you're on NixOS stable (currently version 25.11), you'll need to use the [Flake Installation](nixos-flake) method instead.
-:::
+DankGreeter can be installed on NixOS using the native nixpkgs module. This is the recommended installation method for users on NixOS 26.05+.
 
 ## Installation
 
-### 1. Enable NixOS Unstable
-
-Ensure you're using NixOS unstable by setting your channel or flake input:
-
-**Using channels:**
-```bash
-sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
-sudo nix-channel --update
-```
-
-**Using flakes (in `flake.nix`):**
-```nix
-{
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
-}
-```
-
-### 2. Enable DankGreeter
+### 1. Enable DankGreeter
 
 Enable and configure the greeter in your NixOS configuration:
 
@@ -100,7 +77,7 @@ First, add the flake input to your `flake.nix`:
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
@@ -110,7 +87,7 @@ First, add the flake input to your `flake.nix`:
 }
 ```
 
-:::tip[Using Unstable Version]
+:::tip[Using unstable Version]
 If you want to use the unstable (-git) version from the master branch for quicker updates, remove `/stable` from the URL:
 ```nix
 dms.url = "github:AvengeMedia/DankMaterialShell";

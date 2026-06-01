@@ -19,7 +19,7 @@ import Hero from '@site/src/components/Hero';
 DankMaterialShell can be installed on NixOS either system-wide using the NixOS module or per-user using home-manager. This guide covers both flake-based installation methods.
 
 :::info[Native nixpkgs Available]
-DankMaterialShell is now available in nixpkgs unstable! If you're on NixOS unstable (26.05), see [Installation - NixOS](nixos) for the native nixpkgs installation method which doesn't require flakes.
+DankMaterialShell is available in nixpkgs stable (26.05). If you're on NixOS 26.05+, the [Installation - NixOS](nixos) method is recommended and doesn't require flakes.
 :::
 
 ## Installation Methods
@@ -38,7 +38,7 @@ First, add the required flake inputs to your `flake.nix`:
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
@@ -48,8 +48,8 @@ First, add the required flake inputs to your `flake.nix`:
 }
 ```
 
-:::tip[Using Unstable Version]
-If you want to use the unstable (-git) version from the master branch, you can use:
+:::tip[Using the -git Version]
+If you want to use the -git version from the master branch, you can use:
 ```nix
 dms.url = "github:AvengeMedia/DankMaterialShell";
 ```
@@ -85,18 +85,12 @@ programs.dank-material-shell.enable = true;
 
 That's it! Rebuild your system (or standalone home-manager configuration) and DankMaterialShell will be installed  with sensible defaults.
 
-
-:::warning[dgop on NixOS Stable]
-`dgop` is not available in nixpkgs stable (25.11). If you're using NixOS stable, you'll need to either:
-- Import dgop from the dgop flake and manually set the package, or
-- Use nixpkgs unstable for dgop
-
-To import dgop from the flake, first add it to your flake inputs:
+If you want to import dgop from the flake, first add it to your flake inputs:
 
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";xd
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
@@ -127,7 +121,7 @@ programs.dank-material-shell = {
 If you're using the niri compositor, the home-manager module provides additional integration options including automatic keybindings and startup configuration.
 
 :::warning
-Note that `niri-stable` package from niri-flake is on version `25.08`, while the needed version for DankMaterialShell is the latest `25.11` (available in nixpkgs).
+Note that `niri-stable` package from niri-flake is on version `25.08`, while the needed version for DankMaterialShell is the latest `26.05` (available in nixpkgs).
 :::
 
 ### Prerequisites
@@ -329,7 +323,7 @@ First, add the plugin registry as a flake input:
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";

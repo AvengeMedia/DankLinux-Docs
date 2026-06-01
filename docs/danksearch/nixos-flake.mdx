@@ -20,7 +20,7 @@ import Hero from '@site/src/components/Hero';
 DankSearch can be installed on NixOS using home-manager with flakes. This guide covers the flake-based installation method for per-user installation.
 
 :::info[Native nixpkgs Available]
-DankSearch is now available in nixpkgs unstable! If you're on NixOS unstable, see [Installation - NixOS](nixos) for the native nixpkgs installation method which doesn't require flakes.
+DankSearch is available in nixpkgs stable (26.05). If you're on NixOS 26.05+, the [Installation - NixOS](nixos) method is recommended and doesn't require flakes.
 :::
 
 ## Installation
@@ -32,7 +32,7 @@ First, add the DankSearch flake to your `flake.nix`:
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     danksearch = {
       url = "github:AvengeMedia/danksearch";
