@@ -379,6 +379,42 @@ getfacl ~ ~/.config ~/.local ~/.cache ~/.local/state | grep "user:greeter"
 dms greeter sync
 ```
 
+## Auto-login on startup
+
+Auto-login skips the greeter password after boot — similar to the auto-login option in SDDM or GDM — until you sign out. It uses greetd's native `[initial_session]`, so:
+
+- After a reboot you land straight in your session without entering a password at the greeter.
+- **Signing out** returns you to the normal greeter, where a password is required.
+- Your **lock screen** is unaffected — unlocking always requires your password.
+
+:::warning
+
+Auto-login reduces physical security: anyone who powers on or reboots the machine reaches your session without a password. Only enable it on machines you physically trust, ideally with full-disk encryption.
+
+:::
+
+### Requirements
+
+Auto-login needs to know **which user and session** to start, so it requires **Remember last user** and **Remember last session** (both enabled by default). The first login is always interactive — DMS remembers the user and session you pick, then auto-logs in on subsequent boots.
+
+### Enabling and disabling
+
+**From Settings (recommended):** open **Settings → Greeter** and toggle **Sign in automatically on startup**. DMS updates greetd in the background and shows a confirmation; the change takes effect on your **next reboot**. Turn the same toggle off to require a password again.
+
+**From the login screen:** on the password screen, tap the **Auto-login** chip before signing in. Auto-login is enabled once you reach your desktop.
+
+If administrator access is needed and passwordless sudo isn't configured, DMS opens a terminal so you can enter your sudo password; it closes automatically when finished.
+
+### CLI
+
+The toggles run a focused sync under the hood. You can also apply just the auto-login state from a terminal:
+
+```bash
+dms greeter sync --autologin-only
+```
+
+Unlike a full `dms greeter sync`, this updates **only** greetd's `[initial_session]` block — adding it (with your remembered user and session) when enabled, or removing it when disabled — and skips the theme, ACL, and permission steps. It reads the `greeterAutoLogin` setting from your DMS configuration, so run it after changing that setting if you ever need to re-apply greetd manually.
+
 ## Manual Configuration
 
 The greeter uses three main configuration files located in `/var/cache/dms-greeter/` (or your custom `DMS_GREET_CFG_DIR`):
