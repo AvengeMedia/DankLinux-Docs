@@ -868,6 +868,31 @@ dms ipc call systemupdater close
 dms ipc call systemupdater updatestatus
 ```
 
+### defaultApp
+
+Launch the applications configured in Settings → Default Apps. Each function resolves the default handler for the associated MIME type and launches it.
+
+| Function | Description |
+| --- | --- |
+| `browser` | Launch the default web browser |
+| `fileManager` | Launch the default file manager |
+| `textEditor` | Launch the default text editor |
+| `pdfReader` | Launch the default PDF reader |
+| `imageViewer` | Launch the default image viewer |
+| `videoPlayer` | Launch the default video player |
+| `musicPlayer` | Launch the default music player |
+| `mail` | Launch the default mail client |
+| `calendar` | Launch the default calendar application |
+
+**Examples:**
+```bash
+dms ipc call defaultApp browser
+dms ipc call defaultApp fileManager
+dms ipc call defaultApp textEditor
+```
+
+**Note:** Returns a launch-request confirmation. If no default is configured (or its desktop entry can't be found) for the requested type, a warning is logged and nothing launches.
+
 ### desktopWidget
 
 Control desktop widget instances (clocks, system monitors, etc.).
