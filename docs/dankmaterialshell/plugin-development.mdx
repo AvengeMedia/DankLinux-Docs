@@ -1301,6 +1301,66 @@ PluginSettings {
 }
 ```
 
+## Composite Plugins
+
+A single plugin can provide **multiple surfaces at once** — for example a background daemon, a DankBar widget, and a desktop widget. Each surface has a different lifecycle (the daemon is instantiated once; bar and desktop widgets are instantiated per bar/placement, per screen), so each one is its own QML file.
+
+### Manifest
+
+Replace the single `type` + `component` with a `components` map, and set `type` to `composite`:
+
+```json
+{
+  "id": "myComposite",
+  "name": "My Composite Plugin",
+  "description": "A daemon plus a bar widget plus a desktop widget",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "composite",
+  "capabilities": ["daemon", "dankbar-widget", "desktop-widget"],
+  "components": {
+    "daemon":   "./MyDaemon.qml",
+    "widget":   "./MyBarWidget.qml",
+    "desktop":  "./MyDesktopWidget.qml",
+    "launcher": "./MyLauncher.qml"
+  },
+  "trigger": "#",
+  "settings": "./MySettings.qml",
+  "requires_dms": ">=1.5.0"
+}
+```
+
+Provide any subset of the four surface keys — you don't need all of them. A daemon + bar widget is just as valid as all four.
+
+### Surfaces
+
+| Key | Root component | Lifecycle |
+|-----|----------------|-----------|
+| `widget` | `PluginComponent` (bar pills + optional Control Center widget) | per bar, per screen |
+| `desktop` | `DesktopPluginComponent` | per placement, per screen |
+| `daemon` | `PluginComponent` (or any `Item` exposing `pluginService` / `pluginId`) | one persistent instance |
+| `launcher` | `QtObject` with `getItems` / `executeItem` (requires `trigger`) | one instance |
+
+Each surface is written exactly as it would be for a standalone plugin of that type — see the [Widget](#widget-plugins), [Daemon](#daemon-plugins), [Desktop](#desktop-plugins), and [Launcher](#launcher-plugins) sections above. They're simply bundled into one plugin directory and listed under `components`.
+
+### Sharing state between surfaces
+
+Each surface is a separate object, so they can't read each other's properties directly. Share runtime state through:
+
+- **Global variables** — `PluginService.getGlobalVar(pluginId, name, default)` / `setGlobalVar(...)`. Reactive, in-process, and namespaced per plugin. Use `PluginGlobalVar` inside widgets for a reactive binding.
+- **The daemon instance** — register `IpcHandler`s there and have the other surfaces read the resulting state via global variables.
+- **Settings** — `savePluginData` / `loadPluginData`. All surfaces of a plugin share one settings namespace, so a single `settings` component configures every surface.
+
+### Enabling
+
+Composite plugins respect the enable toggle in Settings → Plugins; they are **not** auto-loaded. (A pure `desktop` plugin still auto-loads for backwards compatibility, but a composite that happens to include a desktop surface does not, because it may also carry a daemon.) Enable it once, then add the bar widget and/or place the desktop widget as usual.
+
+:::note Requires DMS 1.5.0
+
+The `components` map is only understood by DMS 1.5.0 and later — declare `"requires_dms": ">=1.5.0"`. The legacy single `type` + `component` form continues to work unchanged on every version.
+
+:::
+
 ## Plugin Settings
 
 Use `PluginSettings` as the base and drop in setting components. They handle all the loading and saving automatically.
@@ -1570,9 +1630,17 @@ PluginComponent {
   "trigger": "#",
   "permissions": ["settings_read", "settings_write"],
   "requires_dms": ">=0.1.18",
-  "requires": ["tool1", "tool2"]
+  "requires": ["tool1", "tool2"],
+  "components": {
+    "daemon": "./Daemon.qml",
+    "widget": "./Widget.qml",
+    "desktop": "./Desktop.qml",
+    "launcher": "./Launcher.qml"
+  }
 }
 ```
+
+`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other.
 
 ### Plugin Types
 
@@ -1580,6 +1648,7 @@ PluginComponent {
 - `"daemon"` - Background service
 - `"launcher"` - Spotlight extension
 - `"desktop"` - Desktop layer widget
+- `"composite"` - Multiple surfaces in one plugin (use with `components`; requires DMS &ge; 1.5.0)
 
 ### Permissions
 
@@ -1629,6 +1698,7 @@ Check the `PLUGINS/` directory in the DMS repo for example plugins:
 - **ControlCenterExample** - Control Center toggle
 - **LauncherExample** - Spotlight extension
 - **WallpaperWatcherDaemon** - Background event watcher
+- **ExampleCompositePlugin** - Daemon + bar widget + desktop widget in one plugin
 
 **First-party plugins** (good references for real-world patterns):
 

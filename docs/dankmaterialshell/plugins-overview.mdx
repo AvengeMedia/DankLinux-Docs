@@ -29,7 +29,7 @@ Plugins are installed to `~/.config/DankMaterialShell/plugins/`. Each plugin is 
 
 ## Plugin Types
 
-DankMaterialShell supports four plugin types defined in `plugin.json`:
+DankMaterialShell supports the following plugin types, defined in `plugin.json`:
 
 ### 1. Bar Widget (`type: "widget"`)
 
@@ -85,6 +85,19 @@ Widgets that render directly on the desktop background layer using Wayland's wlr
 - Position/size persistence across sessions
 
 **Example use cases:** Desktop clock, system monitor, weather widget, sticky notes
+
+### 6. Composite Plugin (`type: "composite"`)
+
+A single plugin that provides several of the above surfaces at once — for example a daemon plus a bar widget plus a desktop widget. Instead of one `component`, it declares a `components` map pointing each surface at its own QML file.
+
+**Features:**
+- Any combination of `widget`, `desktop`, `daemon`, and `launcher` surfaces
+- One settings UI and one settings namespace shared across all surfaces
+- Shared runtime state via plugin global variables or the daemon instance
+
+**Example use cases:** A monitor daemon that also shows a bar pill and a desktop tile; an integration that exposes both a launcher and a background watcher
+
+> Composite plugins require DMS &ge; 1.5.0. See the [development guide](plugin-development#composite-plugins) for details.
 
 ## Installation
 
