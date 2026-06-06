@@ -410,7 +410,7 @@ If administrator access is needed and passwordless sudo isn't configured, DMS op
 The toggles run a focused sync under the hood. You can also apply just the auto-login state from a terminal:
 
 ```bash
-dms greeter sync --autologin-only
+dms greeter sync --autologin
 ```
 
 Unlike a full `dms greeter sync`, this updates **only** greetd's `[initial_session]` block — adding it (with your remembered user and session) when enabled, or removing it when disabled — and skips the theme, ACL, and permission steps. It reads the `greeterAutoLogin` setting from your DMS configuration, so run it after changing that setting if you ever need to re-apply greetd manually.
