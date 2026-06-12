@@ -340,7 +340,7 @@ Then import the module and enable plugins:
 {
   imports = [
     inputs.dms.homeModules.dank-material-shell
-    inputs.dms-plugin-registry.modules.default
+    inputs.dms-plugin-registry.homeModules.default
   ];
 
   programs.dank-material-shell = {
@@ -376,7 +376,7 @@ programs.dank-material-shell = {
   enable = true;
 
   plugins = {
-    DockerManager = {
+    dockerManager = {
       src = pkgs.fetchFromGitHub {
         owner = "LuckShiba";
         repo = "DmsDockerManager";
