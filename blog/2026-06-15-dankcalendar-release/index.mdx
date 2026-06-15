@@ -1,0 +1,162 @@
+---
+title: Introducing DankCalendar
+description: A standalone calendar app that unifies Local, Google, Microsoft, CalDAV, and iCloud calendars. Now available.
+slug: dankcalendar-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<div className={styles.blogHero}>
+  <div className={styles.tiles} aria-hidden="true">
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '14%', left: '4%', '--rot': '-12deg' }}>15</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '44%', left: '9%', '--rot': '8deg' }}>3</div>
+    <div className={`${styles.tile} ${styles.tileFloat3}`} style={{ top: '70%', left: '3%', '--rot': '15deg' }}>28</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '80%', left: '13%', '--rot': '-8deg' }}>9</div>
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '14%', left: '90%', '--rot': '10deg' }}>21</div>
+    <div className={`${styles.tile} ${styles.tileFloat3}`} style={{ top: '44%', left: '95%', '--rot': '-14deg' }}>6</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '70%', left: '88%', '--rot': '6deg' }}>17</div>
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '80%', left: '78%', '--rot': '12deg' }}>30</div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      Dank<span className={styles.gradientText}>Calendar</span>
+    </h1>
+    <p className={styles.heroSubtitle}>0.1 · First Release</p>
+  </div>
+</div>
+
+**DankCalendar** is a solution for calendar management on Linux that unifies Local, Google, Microsoft, CalDAV, and iCloud calendars into a single agenda. It features background synchronization, native event reminders, secure credential storage, a comprehensive GUI, keyboard-driven navigation, and a scriptable IPC interface. Now available on Arch Linux via the AUR, coming soon to the rest of the Dank Linux repositories.
+
+{/* truncate */}
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/dankcalendar/preview.png')}
+    alt="DankCalendar showing the month view, settings, and the add-account picker"
+    style={{ maxWidth: '520px', width: '100%', borderRadius: '12px' }}
+  />
+  <figcaption>DankCalendar with the month view, settings, and account setup.</figcaption>
+</figure>
+
+<div className={styles.featureGrid}>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>Every Calendar, One View</h3>
+    <p>Connect Local, Google, Microsoft, CalDAV, and iCloud accounts and see them all in a single unified agenda.</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>Background Sync</h3>
+    <p>A lightweight daemon keeps accounts in sync and serves notifications.</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>Event Reminders</h3>
+    <p>Native desktop notifications for upcoming events, configurable per-event and per-calendar.</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>Secure by Default</h3>
+    <p>OAuth tokens and account secrets are stored in your system keyring, not in plaintext config files.</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>Keyboard First</h3>
+    <p>Full keyboard-driven navigation with a shortcuts overlay and spotlight-style event search.</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>Scriptable IPC</h3>
+    <p>A full IPC surface for compositor keybinds and automation. Toggle, query events, and more from scripts.</p>
+  </div>
+</div>
+
+## Built into DMS 1.5
+
+DMS 1.5 detects a running `dcal` daemon and uses it as a calendar backend over IPC, with no extra setup.
+
+- **Unified agenda in DankDash.** The calendar card shows your real events from every connected account, color-coded per calendar.
+- **Create and edit events from the shell.** You can add, edit, and delete events right in DankDash. The old khal integration was read-only, so this is new.
+- **Keyboard navigation throughout.** Move around the agenda, open event details, and dismiss it all from the keyboard.
+- **Native reminders.** Upcoming-event notifications come through the DMS notification system you already use.
+- **A backend selector** lives in Settings > Time & Weather (Auto, khal, or DankCalendar), along with a Launch DankCalendar button.
+
+If `dcal` isn't running, DMS falls back to khal, so nothing breaks.
+
+## Credentials and data
+
+There's no DankLinux server involved. `dcal` talks to Google, Microsoft, your CalDAV or iCloud host, or your local `.ics` files directly, so your events and tokens never leave your machine. For Google and Microsoft you create your own OAuth app, so the whole connection is yours.
+
+- Credentials go in your system keyring (e.g. GNOME Keyring, KWallet) rather than your config files. If no keyring is available, `dcal` falls back to an encrypted on-disk store.
+- Synced calendars and events are cached in a local SQLite database under `~/.local/share/dankcal/`, following the XDG base directory spec. Everything works offline, and sync catches up when you're back online.
+- The daemon listens on a per-user Unix socket in `$XDG_RUNTIME_DIR`, scoped to your login session. It's not a network port.
+
+## Getting Started
+
+Install on Arch from the AUR:
+
+```bash
+# Prebuilt binary
+yay -S dankcalendar-bin
+
+# Or build from latest git
+yay -S dankcalendar-git
+```
+
+You can connect accounts from the GUI or the CLI.
+
+
+```bash
+dcal run                  # Launch DankCalendar
+dcal account add google   # or microsoft, caldav, icloud, local
+```
+
+DankCalendar runs as a daemon, so closing the window only hides it and sync and reminders keep running in the tray - you can change the close behavior in settings. Enable **Start at login** from Settings, or install the systemd user service.
+
+See the [DankCalendar documentation](/docs/dankcalendar/) for full installation, account setup, and IPC reference.
+
+## Why a new Linux calendar?
+
+It fits the Dank philosophy of focused tools ([dgop](/docs/dgop/), [dsearch](/docs/danksearch/)) that do one thing well and integrate together, without unnecessary dependencies or assumptions about your setup. The calendar is a core part of the user experience, so it deserves a first-party solution that works well with the shell and with your existing accounts.
+
+khal and vdirsyncer are scriptable and lightweight, but they're two tools you wire together yourself. You write a `vdirsyncer` config, set up OAuth tokens by hand, run sync on a cron, then point khal at the output. It's not a user-friendly or comprehensive solution.
+
+Evolution and Evolution Data Server are powerful, but they're tied to the GNOME desktop and incredibly difficult to build on or integrate with. The calendar is just one part of a huge suite of apps sharing the EDS backend.
+
+- The calendar is buried inside an Outlook-style suite, and account setup is spread across GNOME Settings, GNOME Online Accounts, and Evolution itself, so it's never clear which one actually owns a calendar.
+- EDS is a shared backend, which is a good idea, but its API is GObject/C with async GLib and very few real examples. Writing a launcher widget, a shell card, or a CLI against it means digging through source-registry concepts and `ECalClient` instead of calling something simple.
+- It drags in a heavy GTK and WebKitGTK stack and assumes you're on GNOME, which is awkward on niri, Hyprland, Sway, KDE, or a custom shell.
+
+DankCalendar keeps the good part of that idea, one synced backend that lots of things can read, but makes it pleasant to use and to build on: sign-in style account setup, a local cache that works offline, a documented IPC API (`dcal ipc events.list`, `events.create`, and so on) with JSON output, and a daemon-plus-frontends design that behaves the same on any compositor.
+
+## Resources
+
+<a href="/docs/dankcalendar/" className={styles.getStartedLink}>
+  Read the DankCalendar docs <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/dankcalendar" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="/docs/dankcalendar/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.communityHero}>
+  <div className={styles.tiles} aria-hidden="true">
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '18%', left: '6%', '--rot': '-10deg' }}>12</div>
+    <div className={`${styles.tile} ${styles.tileFloat3}`} style={{ top: '62%', left: '9%', '--rot': '12deg' }}>5</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '20%', left: '89%', '--rot': '9deg' }}>24</div>
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '64%', left: '86%', '--rot': '-12deg' }}>8</div>
+  </div>
+  <div className={styles.heroContent}>
+    <h2 className={styles.communityTitle}>
+      Join the <span className={styles.gradientText}>community</span>
+    </h2>
+    <p className={styles.communityText}>DankCalendar is brand new, so feedback and bug reports go a long way. Come hang out in the <code>#dms</code> channels on the niri Discord, or open an issue on GitHub. Providers, widgets, and translations are all welcome.</p>
+    <div className={styles.communityLinks}>
+      <a href="https://discord.gg/ppWTpKmPgT" className={styles.discordButton}>Join the Discord</a>
+      <a href="https://github.com/AvengeMedia/dankcalendar/issues" className={styles.ghostButton}>Report an issue</a>
+    </div>
+  </div>
+</div>

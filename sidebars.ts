@@ -200,6 +200,22 @@ const sidebars: SidebarsConfig = {
         'danksearch/usage',
       ],
     },
+    {
+      type: 'category',
+      label: 'DankCalendar (dcal)',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'dankcalendar/index',
+          label: 'Overview',
+        },
+        'dankcalendar/installation',
+        'dankcalendar/accounts',
+        'dankcalendar/usage',
+        'dankcalendar/ipc',
+      ],
+    },
     'contributing',
     {
       type: 'doc',

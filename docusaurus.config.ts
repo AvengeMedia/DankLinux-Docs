@@ -364,6 +364,14 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card (fallback for pages without images)
     image: 'img/homepage/danklinux-preview.png',
+    announcementBar: {
+      id: 'dankcalendar-release',
+      content:
+        '🗓️ <b>DankCalendar 0.1 is here</b> — all your calendars in one standalone app. <a href="/blog/dankcalendar-release">Read the announcement</a>',
+      backgroundColor: '#6B46C1',
+      textColor: '#ffffff',
+      isCloseable: true,
+    },
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,

@@ -53,7 +53,7 @@ The installer adds the appropriate repository (COPR, OBS, or PPA) or installs fr
 - **[dgop](dgop/)** - A stateless, cursor-based system and process monitoring tool with a tui, cli, and REST API.
 - **[dsearch](danksearch/)** - Extremely fast, configurable, zero-dependency indexed filesystem search service.
 - **[dankinstall](dankinstall/)** - An automated installer and management tool for the entire Dank Linux suite
-- **dcal (in development)** - A calendar application that integrates with online and local calendars.
+- **[dcal](dankcalendar/)** - A standalone calendar app that unifies Local, Google, Microsoft, CalDAV, and iCloud calendars.
 
 ## Batteries Included
 
@@ -204,6 +204,17 @@ DankSearch is a zero-dependency, blazingly-fast, fully configurable in 1 file, i
   <figcaption>DankSearch file search interface</figcaption>
 </figure>
 
+### dankcalendar - All Your Calendars in One Place
+
+Calendars on Linux usually mean wrestling with `vdirsyncer` and `khal` config files just to see your Google or iCloud events. DankCalendar replaces that with a single standalone app.
+
+`dcal` brings Local, Google, Microsoft, CalDAV, and iCloud calendars together in one unified agenda. It runs as a lightweight daemon with a tray icon, keeps everything synced in the background, and fires native reminders for upcoming events — all with the look and feel of DankMaterialShell.
+
+- **Unified Agenda**: Every account and calendar in one view.
+- **Background Sync**: A lightweight daemon keeps accounts synced and serves the UI over IPC.
+- **Secure**: OAuth tokens and secrets live in your system keyring, not in plaintext config files.
+- **Scriptable**: A full IPC surface for keybinds and automation.
+
 ## Open Source
 
 Dank Linux and all its components are open source and MIT-licensed.
@@ -214,6 +225,7 @@ Source code:
 - [dms first-party plugins](https://github.com/AvengeMedia/dms-plugins)
 - [dgop GitHub](https://github.com/AvengeMedia/dgop)
 - [danksearch GitHub](https://github.com/AvengeMedia/danksearch)
+- [dankcalendar GitHub](https://github.com/AvengeMedia/dankcalendar)
 
 ## Get Started
 

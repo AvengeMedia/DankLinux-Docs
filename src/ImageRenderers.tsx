@@ -486,6 +486,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
   let isV1Release = false
   let isV12Release = false
   let isV14Release = false
+  let isDankCalendar = false
 
   if (data.pageType === 'post' && data.data) {
     const postData = data.data as Record<string, unknown>
@@ -497,6 +498,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     isV1Release = id === 'v1-release' || permalink.includes('v1-release') || title.includes('1.0')
     isV12Release = id === 'v1-2-release' || permalink.includes('v1-2-release') || title.includes('1.2')
     isV14Release = id === 'v1-4-release' || permalink.includes('v1-4-release') || title.includes('1.4')
+    isDankCalendar = id === 'dankcalendar-release' || permalink.includes('dankcalendar-release') || title.includes('DankCalendar')
   } else if (data.pageType === 'tag' && 'label' in data.data) {
     title = `Tag: ${String(data.data.label)}`
   } else if (data.pageType === 'archive') {
@@ -933,6 +935,148 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
             }}
           >
             Spicy Miso
+          </div>
+        </div>
+      </div>,
+      {
+        width: BASE_WIDTH,
+        height: BASE_HEIGHT,
+        fonts,
+      },
+    ]
+  }
+
+  // Special OG image for the DankCalendar launch - matches the blog hero
+  if (isDankCalendar) {
+    const CalTile = ({ day, size, left, top, rot, opacity }: { day: string; size: number; left: string; top: string; rot: number; opacity: number }) => (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'absolute',
+          left,
+          top,
+          width: size,
+          height: size,
+          borderRadius: size * 0.18,
+          border: '2px solid rgba(128, 90, 213, 0.45)',
+          background: 'rgba(128, 90, 213, 0.12)',
+          color: '#B794F4',
+          fontFamily: 'Adwaita Sans',
+          fontWeight: 700,
+          fontSize: size * 0.42,
+          transform: `rotate(${rot}deg)`,
+          opacity,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: size * 0.22,
+            background: 'rgba(128, 90, 213, 0.55)',
+            borderRadius: `${size * 0.18}px ${size * 0.18}px 0 0`,
+          }}
+        />
+        {day}
+      </div>
+    )
+
+    return [
+      <div
+        style={{
+          display: 'flex',
+          width: BASE_WIDTH,
+          height: BASE_HEIGHT,
+          backgroundColor: '#0d0d0d',
+          position: 'relative',
+          overflow: 'hidden',
+          fontSmooth: 'always',
+          WebkitFontSmoothing: 'antialiased',
+          MozOsxFontSmoothing: 'grayscale',
+        }}
+      >
+        {/* Gradient overlays */}
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(128, 90, 213, 0.25) 0%, transparent 60%), radial-gradient(circle at 85% 85%, rgba(99, 179, 237, 0.1) 0%, transparent 45%)',
+          }}
+        />
+
+        {/* Floating calendar tiles - kept to the edges */}
+        <CalTile day="15" size={88} left="6%" top="16%" rot={-12} opacity={0.85} />
+        <CalTile day="3" size={70} left="11%" top="52%" rot={8} opacity={0.7} />
+        <CalTile day="28" size={64} left="4%" top="78%" rot={15} opacity={0.6} />
+        <CalTile day="21" size={80} left="84%" top="15%" rot={10} opacity={0.8} />
+        <CalTile day="6" size={66} left="90%" top="50%" rot={-14} opacity={0.65} />
+        <CalTile day="30" size={76} left="82%" top="78%" rot={12} opacity={0.75} />
+
+        {/* Main content */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            zIndex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              fontFamily: 'Adwaita Sans',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '150px',
+                fontWeight: 800,
+                color: '#ffffff',
+                letterSpacing: '-4px',
+              }}
+            >
+              Dank
+            </div>
+            <div
+              style={{
+                fontSize: '150px',
+                fontWeight: 800,
+                letterSpacing: '-4px',
+                background: 'linear-gradient(135deg, #D0BCFF 0%, #805AD5 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                color: 'transparent',
+              }}
+            >
+              Calendar
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: '32px',
+              fontWeight: 600,
+              color: 'rgba(183, 148, 244, 0.5)',
+              fontFamily: 'Adwaita Sans',
+              marginTop: '16px',
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+            }}
+          >
+            0.1 · First Release
           </div>
         </div>
       </div>,
