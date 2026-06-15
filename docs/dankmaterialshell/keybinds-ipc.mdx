@@ -22,6 +22,20 @@ DankMaterialShell provides comprehensive IPC (Inter-Process Communication) funct
 dms ipc call <target> <function> [parameters...]
 ```
 
+## Discovering IPC commands
+
+List all available targets and functions while DMS is running:
+
+```bash
+dms ipc list     # list all targets and functions
+dms ipc          # same
+dms ipc --help   # same, plus usage text
+```
+
+:::note
+Live listing requires DMS to be running. If listing fails, use this page as the offline reference or start the shell with `dms run`.
+:::
+
 ## Core Controls
 
 ### audio
@@ -607,6 +621,29 @@ File browser controls for selecting wallpapers and profile images.
 dms ipc call file browse wallpaper
 dms ipc call file browse profile
 ```
+
+### color-picker
+
+In-shell color picker modal for theme and settings color selection.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show color picker modal | - |
+| `openColor <color>` | Show modal with a pre-selected color | color string (e.g. `#ff0000`) |
+| `close` | Hide color picker modal | - |
+| `closeInstant` | Hide without animation | - |
+| `toggle` | Toggle modal visibility | - |
+| `toggleInstant` | Toggle without animation on hide | - |
+
+**Examples:**
+```bash
+dms ipc call color-picker toggle
+dms ipc call color-picker openColor "#3f51b5"
+```
+
+:::tip
+**Screen eyedropper:** `dms color pick` is a standalone CLI command, not an IPC target. See [Color Picker CLI](cli-color-picker).
+:::
 
 ### dankdash
 
