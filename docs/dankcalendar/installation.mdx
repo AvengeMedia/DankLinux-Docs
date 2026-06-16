@@ -22,9 +22,61 @@ DankCalendar installs a single `dcal` binary, the Quickshell UI config, and a de
 
 ## Requirements
 
-- [Quickshell](https://quickshell.org) (`qs`)
+- [Quickshell](https://quickshell.org) (`qs`) — `quickshell-git` or `quickshell` from the [DankLinux repository](../danklinux/)
 - Qt 6 declarative, including `Qt.labs.platform` for the tray icon
-- Go 1.25+ (build only, the binary is pure Go, no CGO)
+- Go 1.25+ (build from source only; the packaged binary is pure Go with no CGO)
+
+## Distribution Packages
+
+The [DankLinux repository](../danklinux/) publishes **`dankcalendar-git`**, a rolling build from upstream `master`. A stable `dankcalendar` package may follow tagged releases later.
+
+:::tip
+
+See the [DankLinux repository guide](../danklinux/) for full repository setup. Add the repo for your distribution, then install `dankcalendar-git`.
+
+:::
+
+#### Fedora & CentOS
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dankcalendar-git
+```
+
+#### Debian (OBS)
+
+```bash
+# Debian 13 (Trixie) — adjust the repo URL for Testing or Sid if needed
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dankcalendar-git
+```
+
+#### Ubuntu (PPA)
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+sudo apt install dankcalendar-git
+```
+
+#### OpenSUSE
+
+```bash
+# Tumbleweed — see the DankLinux guide for Leap / Slowroll repo URLs
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dankcalendar-git
+```
+
+Distribution packages install:
+
+- `dcal` to `/usr/bin/dcal`
+- Quickshell UI to `/usr/share/quickshell/dankcal`
+- Desktop entry, icon, shell completions, and `dcal.service` under `/usr/lib/systemd/user/`
 
 ## Arch Linux (AUR)
 
@@ -57,6 +109,14 @@ Override the prefix with `PREFIX=/usr sudo make install`.
 DankCalendar runs as a background daemon, and the window is just a view onto it. To keep it running across logins, choose one of:
 
 ### systemd user service
+
+The distribution package and `make install-systemd` both provide a user unit. After installing from DankLinux or building from source:
+
+```bash
+systemctl --user enable --now dcal
+```
+
+When building from source without the systemd install target:
 
 ```bash
 make install-systemd
