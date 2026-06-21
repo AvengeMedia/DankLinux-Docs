@@ -450,6 +450,38 @@ Install the `niri-session`, `sway-session`, or 'labwc-session` packages for thos
 
 :::
 
+## Void Linux
+
+:::note
+
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Once merged, install with:
+
+```bash
+sudo xbps-install -S dms
+```
+
+:::
+
+Until then, build from source with `xbps-src`. Every runtime dependency except `dgop` and `danksearch` is already in the Void repositories; the `dms`, `dms-greeter`, `dgop`, and `danksearch` templates are maintained in the [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) and [danklinux](https://github.com/AvengeMedia/danklinux/tree/master/distro/void) repos.
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the DMS templates, then build (dms requires dgop)
+./xbps-src pkg dgop
+./xbps-src pkg danksearch
+./xbps-src pkg dms
+./xbps-src pkg dms-greeter        # optional greetd greeter
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs dms dgop
+```
+
+Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list and greeter setup.
+
 ## All Other Distributions
 
 :::warning
