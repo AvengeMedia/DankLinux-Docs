@@ -3,6 +3,7 @@ package webhooks
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 
@@ -17,6 +18,17 @@ type Moderator interface {
 	CreateCommentReaction(ctx context.Context, owner, repo string, commentID int64, content string) error
 	AppendAudit(ctx context.Context, owner, repo string, issue int, line string) error
 }
+
+// PluginAuthorLookup resolves a plugin's repository owner (its GitHub author handle)
+// so authors can be blocked from verifying their own plugins.
+type PluginAuthorLookup interface {
+	RepoOwner(pluginID string) (string, bool)
+}
+
+var pluginIDMarker = regexp.MustCompile(`<!--\s*dms-plugin-id:\s*([A-Za-z0-9]+)\s*-->`)
+
+// selfRestricted commands cannot be used by a plugin's own author (only an Owner can).
+var selfRestrictedLabels = map[string]bool{"status:verified": true}
 
 type command struct {
 	add   bool
@@ -82,15 +94,30 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 
 	go func() {
 		ctx := context.Background()
+		user := p.Comment.User.Login
 
-		member, err := h.moderator.IsOrgTeamMember(ctx, h.org, h.team, p.Comment.User.Login)
+		isOwner, err := h.moderator.IsOrgTeamMember(ctx, h.org, h.ownersTeam, user)
 		if err != nil {
-			log.Error("Failed to check moderator membership", "err", err)
+			log.Error("Failed to check owners membership", "err", err)
 			return
 		}
-		if !member {
-			h.react(ctx, p.Comment.ID, "confused")
-			return
+
+		if !isOwner {
+			isModerator, err := h.moderator.IsOrgTeamMember(ctx, h.org, h.team, user)
+			if err != nil {
+				log.Error("Failed to check moderator membership", "err", err)
+				return
+			}
+			if !isModerator {
+				h.react(ctx, p.Comment.ID, "confused")
+				return
+			}
+
+			actions = h.filterSelfModeration(p, user, actions)
+			if len(actions) == 0 {
+				h.react(ctx, p.Comment.ID, "confused")
+				return
+			}
 		}
 
 		timestamp := time.Now().UTC().Format(time.RFC3339)
@@ -101,7 +128,7 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 			if !action.add {
 				verb = "removed"
 			}
-			auditLines = append(auditLines, fmt.Sprintf("- %s · @%s %s `%s`", timestamp, p.Comment.User.Login, verb, action.label))
+			auditLines = append(auditLines, fmt.Sprintf("- %s · @%s %s `%s`", timestamp, user, verb, action.label))
 		}
 
 		h.react(ctx, p.Comment.ID, "+1")
@@ -114,6 +141,34 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 			log.Error("Failed to refresh feedback after moderation", "err", err)
 		}
 	}()
+}
+
+// filterSelfModeration drops verify/unverify actions when the commenter is the plugin's
+// own author, so a moderator can't self-verify. Owners bypass this entirely (checked earlier).
+func (h *HandlerGroup) filterSelfModeration(p eventPayload, user string, actions []command) []command {
+	if h.authors == nil {
+		return actions
+	}
+
+	match := pluginIDMarker.FindStringSubmatch(p.Issue.Body)
+	if match == nil {
+		return actions
+	}
+
+	owner, ok := h.authors.RepoOwner(match[1])
+	if !ok || !strings.EqualFold(owner, user) {
+		return actions
+	}
+
+	var allowed []command
+	for _, action := range actions {
+		if selfRestrictedLabels[action.label] {
+			log.Warnf("Blocking self-moderation of %s by author @%s", action.label, user)
+			continue
+		}
+		allowed = append(allowed, action)
+	}
+	return allowed
 }
 
 func (h *HandlerGroup) applyCommand(ctx context.Context, issue int, action command) {

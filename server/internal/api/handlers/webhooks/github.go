@@ -24,23 +24,27 @@ type FeedbackRefresher interface {
 }
 
 type Config struct {
-	Secret    string
-	Owner     string
-	Repo      string
-	Org       string
-	Team      string
-	Cache     FeedbackRefresher
-	Moderator Moderator
+	Secret     string
+	Owner      string
+	Repo       string
+	Org        string
+	Team       string
+	OwnersTeam string
+	Cache      FeedbackRefresher
+	Moderator  Moderator
+	Authors    PluginAuthorLookup
 }
 
 type HandlerGroup struct {
-	secret    string
-	owner     string
-	repo      string
-	org       string
-	team      string
-	cache     FeedbackRefresher
-	moderator Moderator
+	secret     string
+	owner      string
+	repo       string
+	org        string
+	team       string
+	ownersTeam string
+	cache      FeedbackRefresher
+	moderator  Moderator
+	authors    PluginAuthorLookup
 
 	mu          sync.Mutex
 	lastRefresh time.Time
@@ -62,6 +66,7 @@ type eventPayload struct {
 	Action string `json:"action"`
 	Issue  struct {
 		Number int     `json:"number"`
+		Body   string  `json:"body"`
 		Labels []label `json:"labels"`
 	} `json:"issue"`
 	Comment struct {
@@ -75,13 +80,15 @@ type eventPayload struct {
 
 func RegisterHandlers(cfg Config, grp *huma.Group) {
 	h := &HandlerGroup{
-		secret:    cfg.Secret,
-		owner:     cfg.Owner,
-		repo:      cfg.Repo,
-		org:       cfg.Org,
-		team:      cfg.Team,
-		cache:     cfg.Cache,
-		moderator: cfg.Moderator,
+		secret:     cfg.Secret,
+		owner:      cfg.Owner,
+		repo:       cfg.Repo,
+		org:        cfg.Org,
+		team:       cfg.Team,
+		ownersTeam: cfg.OwnersTeam,
+		cache:      cfg.Cache,
+		moderator:  cfg.Moderator,
+		authors:    cfg.Authors,
 	}
 
 	huma.Register(grp, huma.Operation{

@@ -17,6 +17,7 @@ type Config struct {
 	GithubAppPrivateKey    string
 	ModOrg                 string
 	ModTeam                string
+	OwnersTeam             string
 	DiscordWebhookURL      string
 	UploadToken            string
 	UploadDir              string
@@ -52,6 +53,11 @@ func NewConfig() *Config {
 		modTeam = "plugin-moderators"
 	}
 
+	ownersTeam := os.Getenv("PLUGIN_OWNERS_TEAM")
+	if ownersTeam == "" {
+		ownersTeam = "owners"
+	}
+
 	discordWebhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	uploadToken := os.Getenv("UPLOAD_TOKEN")
 
@@ -74,6 +80,7 @@ func NewConfig() *Config {
 		GithubAppPrivateKey:    githubAppPrivateKey,
 		ModOrg:                 modOrg,
 		ModTeam:                modTeam,
+		OwnersTeam:             ownersTeam,
 		DiscordWebhookURL:      discordWebhookURL,
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,

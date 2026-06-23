@@ -238,13 +238,15 @@ func startAPI(cfg *config.Config) {
 			moderator = githubapp.NewToken(cfg.GithubModToken, registryOwner, registryRepo)
 		}
 		webhooks.RegisterHandlers(webhooks.Config{
-			Secret:    cfg.GithubWebhookSecret,
-			Owner:     registryOwner,
-			Repo:      registryRepo,
-			Org:       cfg.ModOrg,
-			Team:      cfg.ModTeam,
-			Cache:     pluginCache,
-			Moderator: moderator,
+			Secret:     cfg.GithubWebhookSecret,
+			Owner:      registryOwner,
+			Repo:       registryRepo,
+			Org:        cfg.ModOrg,
+			Team:       cfg.ModTeam,
+			OwnersTeam: cfg.OwnersTeam,
+			Cache:      pluginCache,
+			Moderator:  moderator,
+			Authors:    pluginCache,
 		}, webhooksGroup)
 	})
 

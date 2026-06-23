@@ -137,6 +137,23 @@ func (c *Cache) saveToDisk() error {
 	return os.Rename(tmp, c.persistPath)
 }
 
+func (c *Cache) RepoOwner(pluginID string) (string, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	for _, plugin := range c.plugins {
+		if plugin.ID != pluginID {
+			continue
+		}
+		_, owner, _, err := parseRepoURL(plugin.Repo)
+		if err != nil {
+			return "", false
+		}
+		return owner, true
+	}
+	return "", false
+}
+
 func (c *Cache) IsReady() bool {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
