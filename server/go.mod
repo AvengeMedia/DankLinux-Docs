@@ -9,6 +9,8 @@ require (
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-chi/cors v1.2.2
 	github.com/go-co-op/gocron/v2 v2.19.1
+	github.com/golang-jwt/jwt/v5 v5.3.1
+	github.com/google/go-github/v69 v69.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/latte-soft/discord-webhooks-go v0.1.4
 )
@@ -22,6 +24,7 @@ require (
 	github.com/clipperhouse/displaywidth v0.10.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/go-logfmt/logfmt v0.6.1 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect

@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 )
 
 type Config struct {
@@ -12,6 +13,8 @@ type Config struct {
 	PoeditorCallbackSecret string
 	GithubWebhookSecret    string
 	GithubModToken         string
+	GithubAppID            int64
+	GithubAppPrivateKey    string
 	ModOrg                 string
 	ModTeam                string
 	DiscordWebhookURL      string
@@ -36,6 +39,8 @@ func NewConfig() *Config {
 	poeditorSecret := os.Getenv("POEDITOR_CALLBACK_SECRET")
 	githubWebhookSecret := os.Getenv("GITHUB_WEBHOOK_SECRET")
 	githubModToken := os.Getenv("GITHUB_MOD_TOKEN")
+	githubAppID, _ := strconv.ParseInt(os.Getenv("GITHUB_APP_ID"), 10, 64)
+	githubAppPrivateKey := os.Getenv("GITHUB_APP_PRIVATE_KEY")
 
 	modOrg := os.Getenv("PLUGIN_MOD_ORG")
 	if modOrg == "" {
@@ -65,6 +70,8 @@ func NewConfig() *Config {
 		PoeditorCallbackSecret: poeditorSecret,
 		GithubWebhookSecret:    githubWebhookSecret,
 		GithubModToken:         githubModToken,
+		GithubAppID:            githubAppID,
+		GithubAppPrivateKey:    githubAppPrivateKey,
 		ModOrg:                 modOrg,
 		ModTeam:                modTeam,
 		DiscordWebhookURL:      discordWebhookURL,

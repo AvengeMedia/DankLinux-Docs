@@ -20,7 +20,7 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/webhooks"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/githubapp"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
@@ -224,14 +224,23 @@ func startAPI(cfg *config.Config) {
 		webhooksGroup.UseSimpleModifier(func(op *huma.Operation) {
 			op.Tags = []string{"Webhooks"}
 		})
+		const registryOwner, registryRepo = "AvengeMedia", "dms-plugin-registry"
 		var moderator webhooks.Moderator
-		if cfg.GithubModToken != "" {
-			moderator = github.NewClient(cfg.GithubModToken)
+		switch {
+		case cfg.GithubAppID != 0 && cfg.GithubAppPrivateKey != "":
+			appClient, err := githubapp.NewApp(cfg.GithubAppID, cfg.GithubAppPrivateKey, registryOwner, registryRepo)
+			if err != nil {
+				log.Error("Failed to init GitHub App moderator", "err", err)
+			} else {
+				moderator = appClient
+			}
+		case cfg.GithubModToken != "":
+			moderator = githubapp.NewToken(cfg.GithubModToken, registryOwner, registryRepo)
 		}
 		webhooks.RegisterHandlers(webhooks.Config{
 			Secret:    cfg.GithubWebhookSecret,
-			Owner:     "AvengeMedia",
-			Repo:      "dms-plugin-registry",
+			Owner:     registryOwner,
+			Repo:      registryRepo,
 			Org:       cfg.ModOrg,
 			Team:      cfg.ModTeam,
 			Cache:     pluginCache,
