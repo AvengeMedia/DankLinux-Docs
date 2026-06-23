@@ -133,15 +133,6 @@ services.displayManager = {
 `services.displayManager.sessionPackages`) is required — the module needs to
 know which session to start, and will fail to build otherwise.
 
-:::tip
-
-The session launch command is resolved declaratively from your current session
-packages, so it stays correct across rebuilds and won't break after
-`nix-collect-garbage`. Prefer this over the greeter's remembered-session
-auto-login on NixOS.
-
-:::
-
 ## Rebuilding
 
 After making configuration changes, don't forget to rebuild your configuration:
