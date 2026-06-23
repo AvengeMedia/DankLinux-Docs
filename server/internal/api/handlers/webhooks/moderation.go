@@ -2,7 +2,9 @@ package webhooks
 
 import (
 	"context"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 )
@@ -13,6 +15,7 @@ type Moderator interface {
 	AddLabel(ctx context.Context, owner, repo string, issue int, label string) error
 	RemoveLabel(ctx context.Context, owner, repo string, issue int, label string) error
 	CreateCommentReaction(ctx context.Context, owner, repo string, commentID int64, content string) error
+	AppendAudit(ctx context.Context, owner, repo string, issue int, line string) error
 }
 
 type command struct {
@@ -31,6 +34,7 @@ var commands = map[string]command{
 	"/unmaintained": {add: true, label: "status:unmaintained"},
 	"/deprecated":   {add: true, label: "status:deprecated"},
 	"/verified":     {add: true, label: "status:verified"},
+	"/unverified":   {add: false, label: "status:verified"},
 }
 
 var statusLabels = map[string]labelMeta{
@@ -89,11 +93,22 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 			return
 		}
 
+		timestamp := time.Now().UTC().Format(time.RFC3339)
+		var auditLines []string
 		for _, action := range actions {
 			h.applyCommand(ctx, p.Issue.Number, action)
+			verb := "added"
+			if !action.add {
+				verb = "removed"
+			}
+			auditLines = append(auditLines, fmt.Sprintf("- %s · @%s %s `%s`", timestamp, p.Comment.User.Login, verb, action.label))
 		}
 
 		h.react(ctx, p.Comment.ID, "+1")
+
+		if err := h.moderator.AppendAudit(ctx, h.owner, h.repo, p.Issue.Number, strings.Join(auditLines, "\n")); err != nil {
+			log.Error("Failed to append moderation audit log", "err", err)
+		}
 
 		if err := h.cache.RefreshFeedback(ctx); err != nil {
 			log.Error("Failed to refresh feedback after moderation", "err", err)

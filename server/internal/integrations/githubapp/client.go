@@ -5,12 +5,16 @@ import (
 	"crypto/rsa"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/go-github/v69/github"
 )
+
+const auditMarker = "<!-- dms-audit-log -->"
+const auditHeader = "### Moderation History"
 
 // Client performs plugin moderation actions through the GitHub API. It can authenticate
 // either as a GitHub App installation (so actions are attributed to the App's bot) or with
@@ -173,4 +177,51 @@ func (c *Client) CreateCommentReaction(ctx context.Context, owner, repo string, 
 
 	_, _, err = gh.Reactions.CreateIssueCommentReaction(ctx, owner, repo, commentID, content)
 	return err
+}
+
+// AppendAudit records a moderation action in a single bot-owned comment on the issue,
+// creating it on first use and appending to it thereafter. The comment survives deletion
+// of the moderator's own comment, preserving who did what.
+func (c *Client) AppendAudit(ctx context.Context, owner, repo string, issue int, line string) error {
+	gh, err := c.authedClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	existing, err := c.findAuditComment(ctx, gh, owner, repo, issue)
+	if err != nil {
+		return err
+	}
+
+	if existing == nil {
+		body := fmt.Sprintf("%s\n%s\n\n%s", auditHeader, auditMarker, line)
+		_, _, err = gh.Issues.CreateComment(ctx, owner, repo, issue, &github.IssueComment{Body: github.Ptr(body)})
+		return err
+	}
+
+	body := strings.TrimRight(existing.GetBody(), "\n") + "\n" + line
+	_, _, err = gh.Issues.EditComment(ctx, owner, repo, existing.GetID(), &github.IssueComment{Body: github.Ptr(body)})
+	return err
+}
+
+func (c *Client) findAuditComment(ctx context.Context, gh *github.Client, owner, repo string, issue int) (*github.IssueComment, error) {
+	opts := &github.IssueListCommentsOptions{ListOptions: github.ListOptions{PerPage: 100}}
+
+	for {
+		comments, resp, err := gh.Issues.ListComments(ctx, owner, repo, issue, opts)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, comment := range comments {
+			if strings.Contains(comment.GetBody(), auditMarker) {
+				return comment, nil
+			}
+		}
+
+		if resp.NextPage == 0 {
+			return nil, nil
+		}
+		opts.Page = resp.NextPage
+	}
 }
