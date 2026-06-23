@@ -1,6 +1,7 @@
 package github
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -90,6 +91,116 @@ func (c *Client) doOnce(ctx context.Context, method, path string) ([]byte, int, 
 	}
 
 	return body, resp.StatusCode, nil
+}
+
+func (c *Client) sendJSON(ctx context.Context, method, path string, payload any) (int, error) {
+	var body io.Reader
+	if payload != nil {
+		data, err := json.Marshal(payload)
+		if err != nil {
+			return 0, err
+		}
+		body = bytes.NewReader(data)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, c.baseURL+path, body)
+	if err != nil {
+		return 0, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("Accept", "application/vnd.github+json")
+	if payload != nil {
+		req.Header.Set("Content-Type", "application/json")
+	}
+	if c.token != "" {
+		req.Header.Set("Authorization", "Bearer "+c.token)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return 0, fmt.Errorf("request failed: %w", err)
+	}
+	defer resp.Body.Close()
+	io.Copy(io.Discard, resp.Body)
+
+	return resp.StatusCode, nil
+}
+
+func (c *Client) IsOrgTeamMember(ctx context.Context, org, team, user string) (bool, error) {
+	body, status, err := c.doOnce(ctx, http.MethodGet, fmt.Sprintf("/orgs/%s/teams/%s/memberships/%s", org, team, user))
+	if err != nil {
+		return false, err
+	}
+
+	switch status {
+	case http.StatusOK:
+		var membership struct {
+			State string `json:"state"`
+		}
+		if err := json.Unmarshal(body, &membership); err != nil {
+			return false, fmt.Errorf("failed to unmarshal membership: %w", err)
+		}
+		return membership.State == "active", nil
+	case http.StatusNotFound:
+		return false, nil
+	default:
+		return false, fmt.Errorf("unexpected status code: %d", status)
+	}
+}
+
+func (c *Client) EnsureLabel(ctx context.Context, owner, repo, name, color, description string) error {
+	_, status, err := c.doOnce(ctx, http.MethodGet, fmt.Sprintf("/repos/%s/%s/labels/%s", owner, repo, name))
+	if err != nil {
+		return err
+	}
+	if status == http.StatusOK {
+		return nil
+	}
+
+	payload := map[string]string{"name": name, "color": color, "description": description}
+	created, err := c.sendJSON(ctx, http.MethodPost, fmt.Sprintf("/repos/%s/%s/labels", owner, repo), payload)
+	if err != nil {
+		return err
+	}
+	if created != http.StatusCreated {
+		return fmt.Errorf("unexpected status code creating label: %d", created)
+	}
+	return nil
+}
+
+func (c *Client) AddLabel(ctx context.Context, owner, repo string, issue int, label string) error {
+	payload := map[string][]string{"labels": {label}}
+	status, err := c.sendJSON(ctx, http.MethodPost, fmt.Sprintf("/repos/%s/%s/issues/%d/labels", owner, repo, issue), payload)
+	if err != nil {
+		return err
+	}
+	if status != http.StatusOK {
+		return fmt.Errorf("unexpected status code adding label: %d", status)
+	}
+	return nil
+}
+
+func (c *Client) RemoveLabel(ctx context.Context, owner, repo string, issue int, label string) error {
+	status, err := c.sendJSON(ctx, http.MethodDelete, fmt.Sprintf("/repos/%s/%s/issues/%d/labels/%s", owner, repo, issue, label), nil)
+	if err != nil {
+		return err
+	}
+	if status != http.StatusOK && status != http.StatusNotFound {
+		return fmt.Errorf("unexpected status code removing label: %d", status)
+	}
+	return nil
+}
+
+func (c *Client) CreateCommentReaction(ctx context.Context, owner, repo string, commentID int64, content string) error {
+	payload := map[string]string{"content": content}
+	status, err := c.sendJSON(ctx, http.MethodPost, fmt.Sprintf("/repos/%s/%s/issues/comments/%d/reactions", owner, repo, commentID), payload)
+	if err != nil {
+		return err
+	}
+	if status != http.StatusOK && status != http.StatusCreated {
+		return fmt.Errorf("unexpected status code creating reaction: %d", status)
+	}
+	return nil
 }
 
 func retryableStatus(status int) bool {

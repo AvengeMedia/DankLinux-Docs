@@ -68,6 +68,11 @@ spec:
                 secretKeyRef:
                   name: github-webhook
                   key: secret
+            - name: GITHUB_MOD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-mod-token
+                  key: token
             - name: KLIPY_API_KEY
               valueFrom:
                 secretKeyRef:

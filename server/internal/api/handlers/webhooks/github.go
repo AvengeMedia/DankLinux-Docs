@@ -17,13 +17,30 @@ import (
 
 const refreshDebounce = 2 * time.Second
 
+const pluginLabel = "plugin"
+
 type FeedbackRefresher interface {
 	RefreshFeedback(ctx context.Context) error
 }
 
+type Config struct {
+	Secret    string
+	Owner     string
+	Repo      string
+	Org       string
+	Team      string
+	Cache     FeedbackRefresher
+	Moderator Moderator
+}
+
 type HandlerGroup struct {
-	secret string
-	cache  FeedbackRefresher
+	secret    string
+	owner     string
+	repo      string
+	org       string
+	team      string
+	cache     FeedbackRefresher
+	moderator Moderator
 
 	mu          sync.Mutex
 	lastRefresh time.Time
@@ -37,12 +54,35 @@ type WebhookInput struct {
 
 type WebhookOutput struct{}
 
-type issuePayload struct {
-	Action string `json:"action"`
+type label struct {
+	Name string `json:"name"`
 }
 
-func RegisterHandlers(secret string, cache FeedbackRefresher, grp *huma.Group) {
-	h := &HandlerGroup{secret: secret, cache: cache}
+type eventPayload struct {
+	Action string `json:"action"`
+	Issue  struct {
+		Number int     `json:"number"`
+		Labels []label `json:"labels"`
+	} `json:"issue"`
+	Comment struct {
+		ID   int64  `json:"id"`
+		Body string `json:"body"`
+		User struct {
+			Login string `json:"login"`
+		} `json:"user"`
+	} `json:"comment"`
+}
+
+func RegisterHandlers(cfg Config, grp *huma.Group) {
+	h := &HandlerGroup{
+		secret:    cfg.Secret,
+		owner:     cfg.Owner,
+		repo:      cfg.Repo,
+		org:       cfg.Org,
+		team:      cfg.Team,
+		cache:     cfg.Cache,
+		moderator: cfg.Moderator,
+	}
 
 	huma.Register(grp, huma.Operation{
 		OperationID: "github-webhook",
@@ -57,17 +97,20 @@ func (h *HandlerGroup) Handle(_ context.Context, input *WebhookInput) (*WebhookO
 		return nil, huma.Error401Unauthorized("invalid signature")
 	}
 
-	if input.Event != "issues" {
-		return &WebhookOutput{}, nil
-	}
-
-	var payload issuePayload
+	var payload eventPayload
 	if err := json.Unmarshal(input.RawBody, &payload); err != nil {
 		return nil, huma.Error400BadRequest("invalid payload")
 	}
 
-	if relevantAction(payload.Action) {
-		h.triggerRefresh()
+	switch input.Event {
+	case "issues":
+		if relevantAction(payload.Action) {
+			h.triggerRefresh()
+		}
+	case "issue_comment":
+		if payload.Action == "created" {
+			h.handleComment(payload)
+		}
 	}
 
 	return &WebhookOutput{}, nil

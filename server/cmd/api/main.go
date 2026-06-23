@@ -20,6 +20,7 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/webhooks"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
@@ -223,7 +224,19 @@ func startAPI(cfg *config.Config) {
 		webhooksGroup.UseSimpleModifier(func(op *huma.Operation) {
 			op.Tags = []string{"Webhooks"}
 		})
-		webhooks.RegisterHandlers(cfg.GithubWebhookSecret, pluginCache, webhooksGroup)
+		var moderator webhooks.Moderator
+		if cfg.GithubModToken != "" {
+			moderator = github.NewClient(cfg.GithubModToken)
+		}
+		webhooks.RegisterHandlers(webhooks.Config{
+			Secret:    cfg.GithubWebhookSecret,
+			Owner:     "AvengeMedia",
+			Repo:      "dms-plugin-registry",
+			Org:       cfg.ModOrg,
+			Team:      cfg.ModTeam,
+			Cache:     pluginCache,
+			Moderator: moderator,
+		}, webhooksGroup)
 	})
 
 	addr := ":" + cfg.Port

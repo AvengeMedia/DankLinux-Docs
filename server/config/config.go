@@ -11,6 +11,9 @@ type Config struct {
 	KlipyAPIKey            string
 	PoeditorCallbackSecret string
 	GithubWebhookSecret    string
+	GithubModToken         string
+	ModOrg                 string
+	ModTeam                string
 	DiscordWebhookURL      string
 	UploadToken            string
 	UploadDir              string
@@ -32,6 +35,18 @@ func NewConfig() *Config {
 	klipyAPIKey := os.Getenv("KLIPY_API_KEY")
 	poeditorSecret := os.Getenv("POEDITOR_CALLBACK_SECRET")
 	githubWebhookSecret := os.Getenv("GITHUB_WEBHOOK_SECRET")
+	githubModToken := os.Getenv("GITHUB_MOD_TOKEN")
+
+	modOrg := os.Getenv("PLUGIN_MOD_ORG")
+	if modOrg == "" {
+		modOrg = "AvengeMedia"
+	}
+
+	modTeam := os.Getenv("PLUGIN_MOD_TEAM")
+	if modTeam == "" {
+		modTeam = "plugin-moderators"
+	}
+
 	discordWebhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	uploadToken := os.Getenv("UPLOAD_TOKEN")
 
@@ -49,6 +64,9 @@ func NewConfig() *Config {
 		KlipyAPIKey:            klipyAPIKey,
 		PoeditorCallbackSecret: poeditorSecret,
 		GithubWebhookSecret:    githubWebhookSecret,
+		GithubModToken:         githubModToken,
+		ModOrg:                 modOrg,
+		ModTeam:                modTeam,
 		DiscordWebhookURL:      discordWebhookURL,
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,
