@@ -14,6 +14,7 @@ import (
 type PluginSortBy string
 
 const (
+	SortByUpvotes   PluginSortBy = "upvotes"
 	SortByUpdatedAt PluginSortBy = "updated_at"
 	SortByName      PluginSortBy = "name"
 	SortByRandom    PluginSortBy = "random"
@@ -24,6 +25,7 @@ func (u PluginSortBy) Schema(r huma.Registry) *huma.Schema {
 		schemaRef := r.Schema(reflect.TypeOf(""), true, "PluginSortBy")
 		schemaRef.Title = "PluginSortBy"
 		schemaRef.Enum = append(schemaRef.Enum, []any{
+			string(SortByUpvotes),
 			string(SortByUpdatedAt),
 			string(SortByName),
 			string(SortByRandom),
@@ -34,11 +36,12 @@ func (u PluginSortBy) Schema(r huma.Registry) *huma.Schema {
 }
 
 type ListPluginsInput struct {
-	Category   string       `query:"category" doc:"Filter by category"`
-	Compositor string       `query:"compositor" doc:"Filter by compositor (niri, hyprland, any)"`
-	FirstParty bool         `query:"firstParty" doc:"Only show first-party plugins"`
-	Capability string       `query:"capability" doc:"Filter by capability"`
-	SortBy     PluginSortBy `query:"sortBy" doc:"Sort plugins by field"`
+	Category      string       `query:"category" doc:"Filter by category"`
+	Compositor    string       `query:"compositor" doc:"Filter by compositor (niri, hyprland, any)"`
+	FirstParty    bool         `query:"firstParty" doc:"Only show first-party plugins"`
+	Capability    string       `query:"capability" doc:"Filter by capability"`
+	ExcludeStatus []string     `query:"excludeStatus" doc:"Exclude plugins with these status labels (e.g. broken, deprecated)"`
+	SortBy        PluginSortBy `query:"sortBy" doc:"Sort plugins by field"`
 }
 
 type ListPluginsResponse struct {
@@ -54,20 +57,31 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 	}
 
 	filterOpts := registry.FilterOptions{
-		Category:   input.Category,
-		Compositor: input.Compositor,
-		FirstParty: input.FirstParty,
-		Capability: input.Capability,
+		Category:      input.Category,
+		Compositor:    input.Compositor,
+		FirstParty:    input.FirstParty,
+		Capability:    input.Capability,
+		ExcludeStatus: input.ExcludeStatus,
 	}
 
 	plugins := self.srv.PluginCache.FilterPlugins(filterOpts)
 
 	sortBy := input.SortBy
 	if sortBy == "" {
-		sortBy = SortByUpdatedAt
+		sortBy = SortByUpvotes
 	}
 
 	switch sortBy {
+	case SortByUpvotes:
+		sort.Slice(plugins, func(i, j int) bool {
+			if plugins[i].Upvotes != plugins[j].Upvotes {
+				return plugins[i].Upvotes > plugins[j].Upvotes
+			}
+			if vi, vj := isVerified(plugins[i]), isVerified(plugins[j]); vi != vj {
+				return vi
+			}
+			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
+		})
 	case SortByUpdatedAt:
 		sort.Slice(plugins, func(i, j int) bool {
 			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
@@ -87,4 +101,13 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 	resp.Body.Count = len(plugins)
 
 	return resp, nil
+}
+
+func isVerified(plugin models.Plugin) bool {
+	for _, status := range plugin.Status {
+		if status == "verified" {
+			return true
+		}
+	}
+	return false
 }

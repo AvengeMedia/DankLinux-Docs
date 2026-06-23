@@ -10,6 +10,7 @@ type Config struct {
 	GithubToken            string
 	KlipyAPIKey            string
 	PoeditorCallbackSecret string
+	GithubWebhookSecret    string
 	DiscordWebhookURL      string
 	UploadToken            string
 	UploadDir              string
@@ -30,6 +31,7 @@ func NewConfig() *Config {
 	githubToken := os.Getenv("GITHUB_TOKEN")
 	klipyAPIKey := os.Getenv("KLIPY_API_KEY")
 	poeditorSecret := os.Getenv("POEDITOR_CALLBACK_SECRET")
+	githubWebhookSecret := os.Getenv("GITHUB_WEBHOOK_SECRET")
 	discordWebhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	uploadToken := os.Getenv("UPLOAD_TOKEN")
 
@@ -46,6 +48,7 @@ func NewConfig() *Config {
 		GithubToken:            githubToken,
 		KlipyAPIKey:            klipyAPIKey,
 		PoeditorCallbackSecret: poeditorSecret,
+		GithubWebhookSecret:    githubWebhookSecret,
 		DiscordWebhookURL:      discordWebhookURL,
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,

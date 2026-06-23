@@ -17,6 +17,7 @@ import (
 	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	uploads_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/uploads"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/webhooks"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
@@ -217,6 +218,12 @@ func startAPI(cfg *config.Config) {
 			op.Tags = []string{"Uploads"}
 		})
 		uploads_handler.RegisterHandlers(cfg.UploadDir, cfg.UploadToken, uploadsGroup)
+
+		webhooksGroup := huma.NewGroup(api, "/webhooks/github")
+		webhooksGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"Webhooks"}
+		})
+		webhooks.RegisterHandlers(cfg.GithubWebhookSecret, pluginCache, webhooksGroup)
 	})
 
 	addr := ":" + cfg.Port

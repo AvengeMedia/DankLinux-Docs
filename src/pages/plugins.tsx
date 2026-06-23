@@ -12,7 +12,6 @@ interface Plugin {
   repo: string;
   author: string;
   firstParty: boolean;
-  featured: boolean;
   description: string;
   dependencies: string[];
   compositors: string[];
@@ -23,6 +22,9 @@ interface Plugin {
   permissions?: string[];
   requires_dms?: string;
   updated_at: string;
+  upvotes: number;
+  issueUrl?: string;
+  status?: string[];
 }
 
 interface ThemeVariantOption {
@@ -110,10 +112,33 @@ const compositors = [
 ];
 
 const sortOptions = [
+  { id: 'upvotes', label: 'Most Upvoted' },
   { id: 'updated_at', label: 'Recently Updated' },
   { id: 'name', label: 'Name' },
   { id: 'random', label: 'Random' },
 ];
+
+const STATUS_LABELS: Record<string, string> = {
+  broken: 'Broken',
+  unmaintained: 'Unmaintained',
+  deprecated: 'Deprecated',
+  verified: 'Verified',
+};
+
+function statusBadgeClass(status: string): string {
+  switch (status) {
+    case 'broken':
+      return styles.statusBroken;
+    case 'unmaintained':
+      return styles.statusUnmaintained;
+    case 'deprecated':
+      return styles.statusDeprecated;
+    case 'verified':
+      return styles.statusVerified;
+    default:
+      return '';
+  }
+}
 
 type ViewMode = 'grid' | 'list';
 
@@ -139,7 +164,9 @@ export default function Plugins() {
   const [selectedCompositor, setSelectedCompositor] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
-  const [sortBy, setSortBy] = useState('updated_at');
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+  const [hideBroken, setHideBroken] = useState(false);
+  const [sortBy, setSortBy] = useState('upvotes');
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
   const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
@@ -176,7 +203,7 @@ export default function Plugins() {
 
   useEffect(() => {
     filterPlugins();
-  }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly]);
+  }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly, showVerifiedOnly, hideBroken]);
 
   useEffect(() => {
     filterThemes();
@@ -223,6 +250,16 @@ export default function Plugins() {
       filtered = filtered.filter(p => p.firstParty);
     }
 
+    if (showVerifiedOnly) {
+      filtered = filtered.filter(p => p.status?.includes('verified'));
+    }
+
+    if (hideBroken) {
+      filtered = filtered.filter(p =>
+        !p.status?.includes('broken') && !p.status?.includes('deprecated')
+      );
+    }
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
@@ -233,12 +270,6 @@ export default function Plugins() {
       );
     }
 
-    filtered.sort((a, b) => {
-      if (a.featured && !b.featured) return -1;
-      if (!a.featured && b.featured) return 1;
-      return 0;
-    });
-
     setFilteredPlugins(filtered);
   };
 
@@ -247,7 +278,8 @@ export default function Plugins() {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
       const baseUrl = isDev ? 'http://localhost:8337/themes' : 'https://api.danklinux.com/themes';
-      const apiUrl = `${baseUrl}?sortBy=${sortBy}`;
+      const themeSort = sortBy === 'upvotes' ? 'updated_at' : sortBy;
+      const apiUrl = `${baseUrl}?sortBy=${themeSort}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch themes');
@@ -472,19 +504,43 @@ export default function Plugins() {
                     <span>Official only</span>
                   </label>
                 )}
+                {activeTab === 'plugins' && (
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={showVerifiedOnly}
+                      onChange={(e) => setShowVerifiedOnly(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span>Verified only</span>
+                  </label>
+                )}
+                {activeTab === 'plugins' && (
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={hideBroken}
+                      onChange={(e) => setHideBroken(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span>Hide broken</span>
+                  </label>
+                )}
                 <div className={styles.sortGroup}>
                   <label className={styles.filterLabel} htmlFor="sort-select">Sort by</label>
                   <select
                     id="sort-select"
                     className={styles.sortSelect}
-                    value={sortBy}
+                    value={activeTab === 'themes' && sortBy === 'upvotes' ? 'updated_at' : sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                   >
-                    {sortOptions.map(option => (
-                      <option key={option.id} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
+                    {sortOptions
+                      .filter(option => option.id !== 'upvotes' || activeTab === 'plugins')
+                      .map(option => (
+                        <option key={option.id} value={option.id}>
+                          {option.label}
+                        </option>
+                      ))}
                   </select>
                 </div>
                 <div className={styles.viewToggle}>
@@ -584,13 +640,7 @@ export default function Plugins() {
           {!loading && !error && activeTab === 'plugins' && (
             <section className={viewMode === 'grid' ? styles.pluginsGrid : styles.pluginsList}>
               {filteredPlugins.map(plugin => (
-                <div key={plugin.id} className={`${styles.pluginCard} ${viewMode === 'list' ? styles.listCard : ''} ${plugin.featured ? styles.featuredCard : ''}`}>
-                  {plugin.featured && viewMode === 'grid' && (
-                    <div className={styles.featuredRibbon}>
-                      <span className="material-symbols-outlined">star</span>
-                      Featured
-                    </div>
-                  )}
+                <div key={plugin.id} className={`${styles.pluginCard} ${viewMode === 'list' ? styles.listCard : ''}`}>
                   {plugin.screenshot && viewMode === 'grid' && (
                     <div className={styles.pluginImage}>
                       <img src={plugin.screenshot} alt={plugin.name} loading="lazy" />
@@ -608,10 +658,17 @@ export default function Plugins() {
                         </h3>
                         <p className={styles.pluginAuthor}>by {plugin.author}</p>
                       </div>
-                      {plugin.featured && viewMode === 'list' && (
-                        <div className={styles.featuredRibbon}>
-                          <span className="material-symbols-outlined">star</span>
-                        </div>
+                      {plugin.issueUrl && (
+                        <a
+                          href={plugin.issueUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.upvoteChip}
+                          title="Upvote on GitHub"
+                        >
+                          <span className="material-symbols-outlined">thumb_up</span>
+                          {plugin.upvotes}
+                        </a>
                       )}
                     </div>
 
@@ -619,6 +676,11 @@ export default function Plugins() {
 
                     <div className={styles.pluginMeta}>
                       <div className={styles.pluginTags}>
+                        {plugin.status?.map(s => (
+                          <span key={s} className={`${styles.statusBadge} ${statusBadgeClass(s)}`}>
+                            {STATUS_LABELS[s] || s}
+                          </span>
+                        ))}
                         <span className={styles.tag}>{plugin.category}</span>
                         {viewMode === 'grid' && plugin.version && (
                           <span className={styles.tag}>v{plugin.version}</span>
@@ -684,6 +746,18 @@ export default function Plugins() {
                         </svg>
                         {viewMode === 'grid' && <span>Repository</span>}
                       </a>
+                      {plugin.issueUrl && (
+                        <a
+                          href={plugin.issueUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.discussButton}
+                          title="Discuss / Vote"
+                        >
+                          <span className="material-symbols-outlined">forum</span>
+                          {viewMode === 'grid' && <span>Discuss</span>}
+                        </a>
+                      )}
                     </div>
                   </div>
                   {viewMode === 'grid' && <div className={styles.cardGlow}></div>}
@@ -851,7 +925,9 @@ export default function Plugins() {
                   setSelectedCompositor('all');
                   setSearchQuery('');
                   setShowFirstPartyOnly(false);
-                  setSortBy('updated_at');
+                  setShowVerifiedOnly(false);
+                  setHideBroken(false);
+                  setSortBy('upvotes');
                 }}
                 className={styles.resetButton}
               >

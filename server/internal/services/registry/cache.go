@@ -46,6 +46,20 @@ func (c *Cache) Refresh(ctx context.Context) error {
 	return nil
 }
 
+func (c *Cache) RefreshFeedback(ctx context.Context) error {
+	feedback, err := c.parser.FetchFeedback(ctx)
+	if err != nil {
+		return err
+	}
+
+	c.mu.Lock()
+	mergeFeedback(c.plugins, feedback)
+	c.mu.Unlock()
+
+	log.Info("Plugin feedback refreshed")
+	return nil
+}
+
 func (c *Cache) IsReady() bool {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
@@ -68,10 +82,11 @@ func (c *Cache) GetLastUpdate() time.Time {
 }
 
 type FilterOptions struct {
-	Category   string
-	Compositor string
-	FirstParty bool
-	Capability string
+	Category      string
+	Compositor    string
+	FirstParty    bool
+	Capability    string
+	ExcludeStatus []string
 }
 
 func (c *Cache) FilterPlugins(opts FilterOptions) []models.Plugin {
@@ -120,6 +135,14 @@ func matchesFilter(plugin models.Plugin, opts FilterOptions) bool {
 		}
 		if !found {
 			return false
+		}
+	}
+
+	for _, excluded := range opts.ExcludeStatus {
+		for _, status := range plugin.Status {
+			if status == excluded {
+				return false
+			}
 		}
 	}
 
