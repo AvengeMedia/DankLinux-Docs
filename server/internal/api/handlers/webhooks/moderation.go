@@ -95,6 +95,7 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 	go func() {
 		ctx := context.Background()
 		user := p.Comment.User.Login
+		pluginID := extractPluginID(p.Issue.Body)
 
 		isOwner, err := h.moderator.IsOrgTeamMember(ctx, h.org, h.ownersTeam, user)
 		if err != nil {
@@ -113,7 +114,7 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 				return
 			}
 
-			actions = h.filterSelfModeration(p, user, actions)
+			actions = h.filterSelfModeration(pluginID, user, actions)
 			if len(actions) == 0 {
 				h.react(ctx, p.Comment.ID, "confused")
 				return
@@ -124,6 +125,9 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 		var auditLines []string
 		for _, action := range actions {
 			h.applyCommand(ctx, p.Issue.Number, action)
+			if pluginID != "" {
+				h.cache.ApplyStatus(pluginID, strings.TrimPrefix(action.label, "status:"), action.add)
+			}
 			verb := "added"
 			if !action.add {
 				verb = "removed"
@@ -136,26 +140,25 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 		if err := h.moderator.AppendAudit(ctx, h.owner, h.repo, p.Issue.Number, strings.Join(auditLines, "\n")); err != nil {
 			log.Error("Failed to append moderation audit log", "err", err)
 		}
-
-		if err := h.cache.RefreshFeedback(ctx); err != nil {
-			log.Error("Failed to refresh feedback after moderation", "err", err)
-		}
 	}()
+}
+
+func extractPluginID(body string) string {
+	match := pluginIDMarker.FindStringSubmatch(body)
+	if match == nil {
+		return ""
+	}
+	return match[1]
 }
 
 // filterSelfModeration drops verify/unverify actions when the commenter is the plugin's
 // own author, so a moderator can't self-verify. Owners bypass this entirely (checked earlier).
-func (h *HandlerGroup) filterSelfModeration(p eventPayload, user string, actions []command) []command {
-	if h.authors == nil {
+func (h *HandlerGroup) filterSelfModeration(pluginID, user string, actions []command) []command {
+	if h.authors == nil || pluginID == "" {
 		return actions
 	}
 
-	match := pluginIDMarker.FindStringSubmatch(p.Issue.Body)
-	if match == nil {
-		return actions
-	}
-
-	owner, ok := h.authors.RepoOwner(match[1])
+	owner, ok := h.authors.RepoOwner(pluginID)
 	if !ok || !strings.EqualFold(owner, user) {
 		return actions
 	}

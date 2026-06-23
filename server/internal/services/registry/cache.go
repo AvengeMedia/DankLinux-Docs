@@ -137,6 +137,37 @@ func (c *Cache) saveToDisk() error {
 	return os.Rename(tmp, c.persistPath)
 }
 
+// ApplyStatus updates a plugin's status labels in place so a moderation action is
+// reflected immediately, without waiting for the next GitHub re-fetch (which can lag
+// behind a just-applied label due to API eventual consistency).
+func (c *Cache) ApplyStatus(pluginID, status string, add bool) {
+	c.mu.Lock()
+	for i := range c.plugins {
+		if c.plugins[i].ID == pluginID {
+			c.plugins[i].Status = upsertStatus(c.plugins[i].Status, status, add)
+			break
+		}
+	}
+	c.mu.Unlock()
+
+	if err := c.saveToDisk(); err != nil {
+		log.Warn("Failed to persist plugin cache after status update", "err", err)
+	}
+}
+
+func upsertStatus(statuses []string, status string, add bool) []string {
+	var out []string
+	for _, s := range statuses {
+		if s != status {
+			out = append(out, s)
+		}
+	}
+	if add {
+		out = append(out, status)
+	}
+	return out
+}
+
 func (c *Cache) RepoOwner(pluginID string) (string, bool) {
 	c.mu.RLock()
 	defer c.mu.RUnlock()

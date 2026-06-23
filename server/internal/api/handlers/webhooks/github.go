@@ -21,6 +21,7 @@ const pluginLabel = "plugin"
 
 type FeedbackRefresher interface {
 	RefreshFeedback(ctx context.Context) error
+	ApplyStatus(pluginID, status string, add bool)
 }
 
 type Config struct {
