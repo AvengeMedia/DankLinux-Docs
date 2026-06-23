@@ -111,6 +111,28 @@ When using the flake package with the native nixpkgs module, some dependencies m
 
 :::
 
+## Auto-login
+
+DankGreeter can skip the login screen and launch a session automatically on
+boot using the standard NixOS display-manager options:
+
+```nix
+services.displayManager = {
+  autoLogin = {
+    enable = true;
+    user = "yourusername";
+  };
+
+  # Required for auto-login: identifies which session to launch.
+  # Use the .desktop basename without the extension (e.g. "niri", "hyprland").
+  defaultSession = "niri";
+};
+```
+
+`defaultSession` (or at least one entry in
+`services.displayManager.sessionPackages`) is required — the module needs to
+know which session to start, and will fail to build otherwise.
+
 ## Rebuilding
 
 After making configuration changes, don't forget to rebuild your configuration:
