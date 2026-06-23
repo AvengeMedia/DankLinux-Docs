@@ -72,12 +72,12 @@ func startAPI(cfg *config.Config) {
 		cancel()
 	}()
 
-	pluginCache := registry.NewCache(cfg.GithubToken)
-
-	var themeCacheFile string
+	var pluginCacheFile, themeCacheFile string
 	if cfg.CacheDir != "" {
+		pluginCacheFile = filepath.Join(cfg.CacheDir, "plugins.json")
 		themeCacheFile = filepath.Join(cfg.CacheDir, "themes.json")
 	}
+	pluginCache := registry.NewCache(cfg.GithubToken, pluginCacheFile)
 	themeCache := registry.NewThemeCache(cfg.GithubToken, themeCacheFile)
 
 	srvImpl := &server.Server{

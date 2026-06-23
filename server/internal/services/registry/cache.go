@@ -2,6 +2,11 @@ package registry
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"io/fs"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -10,21 +15,38 @@ import (
 )
 
 type Cache struct {
-	mu         sync.RWMutex
-	plugins    []models.Plugin
-	parser     *Parser
-	lastUpdate time.Time
-	ready      bool
+	mu          sync.RWMutex
+	plugins     []models.Plugin
+	parser      *Parser
+	lastUpdate  time.Time
+	ready       bool
+	persistPath string
 }
 
-func NewCache(githubToken string) *Cache {
+type pluginSnapshot struct {
+	Plugins    []models.Plugin `json:"plugins"`
+	LastUpdate time.Time       `json:"last_update"`
+}
+
+func NewCache(githubToken, persistPath string) *Cache {
 	return &Cache{
-		plugins: []models.Plugin{},
-		parser:  NewParser(githubToken),
+		plugins:     []models.Plugin{},
+		parser:      NewParser(githubToken),
+		persistPath: persistPath,
 	}
 }
 
 func (c *Cache) Initialize(ctx context.Context) error {
+	if c.persistPath != "" {
+		if err := c.loadFromDisk(); err == nil {
+			c.mu.RLock()
+			n := len(c.plugins)
+			c.mu.RUnlock()
+			log.Infof("Plugin cache loaded from disk with %d plugins; refreshing in background", n)
+		} else if !errors.Is(err, fs.ErrNotExist) {
+			log.Warn("Failed to load plugin cache from disk", "err", err)
+		}
+	}
 	return c.Refresh(ctx)
 }
 
@@ -42,6 +64,10 @@ func (c *Cache) Refresh(ctx context.Context) error {
 	c.ready = true
 	c.mu.Unlock()
 
+	if err := c.saveToDisk(); err != nil {
+		log.Warn("Failed to persist plugin cache", "err", err)
+	}
+
 	log.Infof("Plugin cache refreshed with %d plugins", len(plugins))
 	return nil
 }
@@ -56,8 +82,59 @@ func (c *Cache) RefreshFeedback(ctx context.Context) error {
 	mergeFeedback(c.plugins, feedback)
 	c.mu.Unlock()
 
+	if err := c.saveToDisk(); err != nil {
+		log.Warn("Failed to persist plugin cache", "err", err)
+	}
+
 	log.Info("Plugin feedback refreshed")
 	return nil
+}
+
+func (c *Cache) loadFromDisk() error {
+	data, err := os.ReadFile(c.persistPath)
+	if err != nil {
+		return err
+	}
+
+	var snap pluginSnapshot
+	if err := json.Unmarshal(data, &snap); err != nil {
+		return err
+	}
+
+	c.mu.Lock()
+	c.plugins = snap.Plugins
+	c.lastUpdate = snap.LastUpdate
+	c.ready = true
+	c.mu.Unlock()
+	return nil
+}
+
+func (c *Cache) saveToDisk() error {
+	if c.persistPath == "" {
+		return nil
+	}
+
+	c.mu.RLock()
+	snap := pluginSnapshot{
+		Plugins:    c.plugins,
+		LastUpdate: c.lastUpdate,
+	}
+	c.mu.RUnlock()
+
+	data, err := json.Marshal(snap)
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(filepath.Dir(c.persistPath), 0o755); err != nil {
+		return err
+	}
+
+	tmp := c.persistPath + ".tmp"
+	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+		return err
+	}
+	return os.Rename(tmp, c.persistPath)
 }
 
 func (c *Cache) IsReady() bool {
