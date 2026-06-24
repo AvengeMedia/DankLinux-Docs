@@ -1361,6 +1361,63 @@ The `components` map is only understood by DMS 1.5.0 and later — declare `"req
 
 :::
 
+## Dependency Checks
+
+A plugin can optionally gate activation behind a dependency check, so it refuses to load (and tells the user why) when something it needs is missing. The check runs **before** the plugin loads — both when the user enables it and when it auto-loads at startup.
+
+Point the manifest's `startupCheck` field at a small component, and list the tools you depend on in `dependencies`:
+
+```json
+{
+  "id": "myPlugin",
+  "name": "My Plugin",
+  "type": "widget",
+  "component": "./Widget.qml",
+  "startupCheck": "./StartupCheck.qml",
+  "dependencies": ["boregard"]
+}
+```
+
+The check component must be **non-visual** — use a `QtObject` so nothing is created in the graphics scene. It exposes a `check` function. Call `done(null)` to allow activation, or `done(error)` to block it:
+
+```qml
+// StartupCheck.qml
+import QtQuick
+import qs.Common
+
+QtObject {
+    function check(done) {
+        Proc.runCommand("myPlugin.depCheck", ["which", "boregard"], (stdout, exitCode) => {
+            if (exitCode === 0) {
+                done(null)
+                return
+            }
+            done({
+                title: I18n.tr("boregard is required"),
+                details: I18n.tr("The 'boregard' tool is not installed or not on your PATH.\n\nInstall it from https://danklinux.com, then re-enable this plugin.")
+            })
+        })
+    }
+}
+```
+
+The error passed to `done` can be:
+
+- a **string** — shown as the toast title, or
+- an **object** `{ title, details }` — where `details` is long-form text rendered as an expandable section of the toast. Use this for multi-line install instructions or links.
+
+A **synchronous** variant is supported for in-process checks — declare `check()` with no argument and return the result directly:
+
+```qml
+QtObject {
+    function check() {
+        return SomeService.ready ? null : I18n.tr("Service unavailable")
+    }
+}
+```
+
+When the check fails the enable toggle reverts and the error is shown as a toast. Plugins without a `startupCheck` are unaffected. The last error per plugin is available at `PluginService.pluginLoadErrors[pluginId]`. See **ExampleStartupCheck** in the `PLUGINS/` directory for a complete plugin.
+
 ## Plugin Settings
 
 Use `PluginSettings` as the base and drop in setting components. They handle all the loading and saving automatically.
@@ -1627,10 +1684,11 @@ PluginComponent {
 {
   "icon": "material_icon",
   "settings": "./Settings.qml",
+  "startupCheck": "./StartupCheck.qml",
   "trigger": "#",
   "permissions": ["settings_read", "settings_write"],
   "requires_dms": ">=0.1.18",
-  "requires": ["tool1", "tool2"],
+  "dependencies": ["tool1", "tool2"],
   "components": {
     "daemon": "./Daemon.qml",
     "widget": "./Widget.qml",
@@ -1699,6 +1757,7 @@ Check the `PLUGINS/` directory in the DMS repo for example plugins:
 - **LauncherExample** - Spotlight extension
 - **WallpaperWatcherDaemon** - Background event watcher
 - **ExampleCompositePlugin** - Daemon + bar widget + desktop widget in one plugin
+- **ExampleStartupCheck** - Blocks activation when a system dependency is missing
 
 **First-party plugins** (good references for real-world patterns):
 

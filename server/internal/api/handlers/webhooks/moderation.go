@@ -20,7 +20,7 @@ type Moderator interface {
 }
 
 // PluginAuthorLookup resolves a plugin's repository owner (its GitHub author handle)
-// so authors can be blocked from verifying their own plugins.
+// so authors can be blocked from marking their own plugins reviewed.
 type PluginAuthorLookup interface {
 	RepoOwner(pluginID string) (string, bool)
 }
@@ -28,7 +28,7 @@ type PluginAuthorLookup interface {
 var pluginIDMarker = regexp.MustCompile(`<!--\s*dms-plugin-id:\s*([A-Za-z0-9]+)\s*-->`)
 
 // selfRestricted commands cannot be used by a plugin's own author (only an Owner can).
-var selfRestrictedLabels = map[string]bool{"status:verified": true}
+var selfRestrictedLabels = map[string]bool{"status:reviewed": true}
 
 type command struct {
 	add   bool
@@ -45,15 +45,15 @@ var commands = map[string]command{
 	"/working":      {add: false, label: "status:broken"},
 	"/unmaintained": {add: true, label: "status:unmaintained"},
 	"/deprecated":   {add: true, label: "status:deprecated"},
-	"/verified":     {add: true, label: "status:verified"},
-	"/unverified":   {add: false, label: "status:verified"},
+	"/review":       {add: true, label: "status:reviewed"},
+	"/unreview":     {add: false, label: "status:reviewed"},
 }
 
 var statusLabels = map[string]labelMeta{
 	"status:broken":       {color: "b60205", description: "Reported broken"},
 	"status:unmaintained": {color: "fbca04", description: "No longer maintained"},
 	"status:deprecated":   {color: "cccccc", description: "Deprecated / retired"},
-	"status:verified":     {color: "0e8a16", description: "Reviewed by maintainers"},
+	"status:reviewed":     {color: "0e8a16", description: "Reviewed by catalog moderators"},
 }
 
 func parseCommands(body string) []command {
@@ -151,8 +151,9 @@ func extractPluginID(body string) string {
 	return match[1]
 }
 
-// filterSelfModeration drops verify/unverify actions when the commenter is the plugin's
-// own author, so a moderator can't self-verify. Owners bypass this entirely (checked earlier).
+// filterSelfModeration drops review/unreview actions when the commenter is the plugin's
+// own author, so a moderator can't mark their own plugin reviewed. Owners bypass this
+// entirely (checked earlier).
 func (h *HandlerGroup) filterSelfModeration(pluginID, user string, actions []command) []command {
 	if h.authors == nil || pluginID == "" {
 		return actions

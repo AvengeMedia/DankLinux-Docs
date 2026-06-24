@@ -122,7 +122,11 @@ const STATUS_LABELS: Record<string, string> = {
   broken: 'Broken',
   unmaintained: 'Unmaintained',
   deprecated: 'Deprecated',
-  verified: 'Verified',
+  reviewed: 'Reviewed',
+};
+
+const STATUS_TOOLTIPS: Record<string, string> = {
+  reviewed: 'Reviewed by catalog moderators for basic quality, ownership, and policy compliance. This is not a security guarantee.',
 };
 
 function statusBadgeClass(status: string): string {
@@ -133,8 +137,8 @@ function statusBadgeClass(status: string): string {
       return styles.statusUnmaintained;
     case 'deprecated':
       return styles.statusDeprecated;
-    case 'verified':
-      return styles.statusVerified;
+    case 'reviewed':
+      return styles.statusReviewed;
     default:
       return '';
   }
@@ -164,7 +168,7 @@ export default function Plugins() {
   const [selectedCompositor, setSelectedCompositor] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
-  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
+  const [showReviewedOnly, setShowReviewedOnly] = useState(false);
   const [hideBroken, setHideBroken] = useState(false);
   const [sortBy, setSortBy] = useState('upvotes');
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
@@ -203,7 +207,7 @@ export default function Plugins() {
 
   useEffect(() => {
     filterPlugins();
-  }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly, showVerifiedOnly, hideBroken]);
+  }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly, showReviewedOnly, hideBroken]);
 
   useEffect(() => {
     filterThemes();
@@ -250,8 +254,8 @@ export default function Plugins() {
       filtered = filtered.filter(p => p.firstParty);
     }
 
-    if (showVerifiedOnly) {
-      filtered = filtered.filter(p => p.status?.includes('verified'));
+    if (showReviewedOnly) {
+      filtered = filtered.filter(p => p.status?.includes('reviewed'));
     }
 
     if (hideBroken) {
@@ -508,11 +512,11 @@ export default function Plugins() {
                   <label className={styles.checkboxLabel}>
                     <input
                       type="checkbox"
-                      checked={showVerifiedOnly}
-                      onChange={(e) => setShowVerifiedOnly(e.target.checked)}
+                      checked={showReviewedOnly}
+                      onChange={(e) => setShowReviewedOnly(e.target.checked)}
                       className={styles.checkbox}
                     />
-                    <span>Verified only</span>
+                    <span>Show reviewed plugins</span>
                   </label>
                 )}
                 {activeTab === 'plugins' && (
@@ -677,7 +681,7 @@ export default function Plugins() {
                     <div className={styles.pluginMeta}>
                       <div className={styles.pluginTags}>
                         {plugin.status?.map(s => (
-                          <span key={s} className={`${styles.statusBadge} ${statusBadgeClass(s)}`}>
+                          <span key={s} className={`${styles.statusBadge} ${statusBadgeClass(s)}`} title={STATUS_TOOLTIPS[s]}>
                             {STATUS_LABELS[s] || s}
                           </span>
                         ))}
@@ -925,7 +929,7 @@ export default function Plugins() {
                   setSelectedCompositor('all');
                   setSearchQuery('');
                   setShowFirstPartyOnly(false);
-                  setShowVerifiedOnly(false);
+                  setShowReviewedOnly(false);
                   setHideBroken(false);
                   setSortBy('upvotes');
                 }}

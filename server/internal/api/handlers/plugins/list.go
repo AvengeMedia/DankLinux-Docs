@@ -77,7 +77,7 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 			if plugins[i].Upvotes != plugins[j].Upvotes {
 				return plugins[i].Upvotes > plugins[j].Upvotes
 			}
-			if vi, vj := isVerified(plugins[i]), isVerified(plugins[j]); vi != vj {
+			if vi, vj := isReviewed(plugins[i]), isReviewed(plugins[j]); vi != vj {
 				return vi
 			}
 			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
@@ -103,9 +103,9 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 	return resp, nil
 }
 
-func isVerified(plugin models.Plugin) bool {
+func isReviewed(plugin models.Plugin) bool {
 	for _, status := range plugin.Status {
-		if status == "verified" {
+		if status == "reviewed" {
 			return true
 		}
 	}
