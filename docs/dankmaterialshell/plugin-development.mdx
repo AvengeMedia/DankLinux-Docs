@@ -1404,7 +1404,7 @@ QtObject {
 The error passed to `done` can be:
 
 - a **string** — shown as the toast title, or
-- an **object** `{ title, details }` — where `details` is long-form text rendered as an expandable section of the toast. Use this for multi-line install instructions or links.
+- an **object** `{ title, details }` — where `details` is long-form text rendered as an expandable section of the toast. Use this for multi-line install instructions. Any `http(s)` URL in `details` becomes a clickable link that opens in the browser.
 
 A **synchronous** variant is supported for in-process checks — declare `check()` with no argument and return the result directly:
 
@@ -1415,6 +1415,10 @@ QtObject {
     }
 }
 ```
+
+:::note
+Async vs sync is chosen by **arity**: if you declare `check(done)` (one argument) it is treated as async and you must call `done(...)`; if you declare `check()` (no arguments) its return value is used directly. Don't mix the two — a one-argument `check` that returns instead of calling `done` will hang activation.
+:::
 
 When the check fails the enable toggle reverts and the error is shown as a toast. Plugins without a `startupCheck` are unaffected. The last error per plugin is available at `PluginService.pluginLoadErrors[pluginId]`. See **ExampleStartupCheck** in the `PLUGINS/` directory for a complete plugin.
 
