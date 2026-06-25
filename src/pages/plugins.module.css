@@ -551,27 +551,33 @@
 
 .pluginCard {
   position: relative;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(12, 10, 18, 0.72);
   border: 1px solid rgba(208, 188, 255, 0.1);
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 [data-theme='light'] .pluginCard {
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.78);
   border-color: rgba(128, 90, 213, 0.2);
 }
 
 .pluginCard:hover {
   transform: translateY(-4px);
+  background: rgba(12, 10, 18, 0.92);
   border-color: rgba(208, 188, 255, 0.3);
   box-shadow: 0 12px 40px rgba(208, 188, 255, 0.15);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 [data-theme='light'] .pluginCard:hover {
+  background: rgba(255, 255, 255, 0.94);
   border-color: rgba(128, 90, 213, 0.4);
   box-shadow: 0 12px 40px rgba(128, 90, 213, 0.15);
 }
@@ -713,7 +719,7 @@
 .cardGlow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(208, 188, 255, 0.15), transparent 70%);
+  background: radial-gradient(circle at 50% 0%, rgba(208, 188, 255, 0.08), transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -738,6 +744,8 @@
 }
 
 .pluginContent {
+  position: relative;
+  z-index: 1;
   padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;

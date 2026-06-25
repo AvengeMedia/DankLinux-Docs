@@ -16,6 +16,8 @@ type PluginSortBy string
 const (
 	SortByUpvotes   PluginSortBy = "upvotes"
 	SortByUpdatedAt PluginSortBy = "updated_at"
+	SortByNewest    PluginSortBy = "newest"
+	SortByOldest    PluginSortBy = "oldest"
 	SortByName      PluginSortBy = "name"
 	SortByRandom    PluginSortBy = "random"
 )
@@ -27,6 +29,8 @@ func (u PluginSortBy) Schema(r huma.Registry) *huma.Schema {
 		schemaRef.Enum = append(schemaRef.Enum, []any{
 			string(SortByUpvotes),
 			string(SortByUpdatedAt),
+			string(SortByNewest),
+			string(SortByOldest),
 			string(SortByName),
 			string(SortByRandom),
 		}...)
@@ -82,9 +86,13 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 			}
 			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
 		})
-	case SortByUpdatedAt:
+	case SortByUpdatedAt, SortByNewest:
 		sort.Slice(plugins, func(i, j int) bool {
 			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
+		})
+	case SortByOldest:
+		sort.Slice(plugins, func(i, j int) bool {
+			return plugins[i].UpdatedAt.Before(plugins[j].UpdatedAt)
 		})
 	case SortByName:
 		sort.Slice(plugins, func(i, j int) bool {

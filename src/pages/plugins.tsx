@@ -115,6 +115,8 @@ const compositors = [
 const sortOptions = [
   { id: 'upvotes', label: 'Most Upvoted' },
   { id: 'updated_at', label: 'Recently Updated' },
+  { id: 'newest', label: 'Newest' },
+  { id: 'oldest', label: 'Oldest' },
   { id: 'name', label: 'Name' },
   { id: 'random', label: 'Random' },
 ];
