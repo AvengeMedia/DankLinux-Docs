@@ -149,6 +149,83 @@ function statusBadgeClass(status: string): string {
 
 type ViewMode = 'grid' | 'list';
 
+interface SortDropdownProps {
+  id: string;
+  options: { id: string; label: string }[];
+  value: string;
+  onChange: (value: string) => void;
+}
+
+function SortDropdown({ id, options, value, onChange }: SortDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const selected = options.find(option => option.id === value);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div className={styles.sortDropdown} ref={containerRef}>
+      <button
+        type="button"
+        id={id}
+        className={`${styles.sortDropdownTrigger} ${open ? styles.sortDropdownTriggerOpen : ''}`}
+        onClick={() => setOpen(current => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span>{selected?.label ?? 'Sort'}</span>
+        <span className={`material-symbols-outlined ${styles.sortDropdownChevron} ${open ? styles.sortDropdownChevronOpen : ''}`}>
+          expand_more
+        </span>
+      </button>
+      {open && (
+        <ul className={styles.sortDropdownMenu} role="listbox" aria-labelledby={id}>
+          {options.map(option => (
+            <li key={option.id} role="presentation">
+              <button
+                type="button"
+                role="option"
+                aria-selected={option.id === value}
+                className={`${styles.sortDropdownOption} ${option.id === value ? styles.sortDropdownOptionActive : ''}`}
+                onClick={() => {
+                  onChange(option.id);
+                  setOpen(false);
+                }}
+              >
+                {option.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function Plugins() {
   const location = useLocation();
   const history = useHistory();
@@ -235,8 +312,9 @@ export default function Plugins() {
         throw new Error('Failed to fetch plugins');
       }
       const data: PluginsResponse = await response.json();
-      setPlugins(data.plugins);
-      setFilteredPlugins(data.plugins);
+      const pluginList = data.plugins ?? [];
+      setPlugins(pluginList);
+      setFilteredPlugins(pluginList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -245,7 +323,7 @@ export default function Plugins() {
   };
 
   const filterPlugins = () => {
-    let filtered = [...plugins];
+    let filtered = [...(plugins ?? [])];
 
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(p => p.category === selectedCategory);
@@ -300,8 +378,9 @@ export default function Plugins() {
         throw new Error('Failed to fetch themes');
       }
       const data: ThemesResponse = await response.json();
-      setThemes(data.themes);
-      setFilteredThemes(data.themes);
+      const themeList = data.themes ?? [];
+      setThemes(themeList);
+      setFilteredThemes(themeList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -542,21 +621,13 @@ export default function Plugins() {
                   </label>
                 )}
                 <div className={styles.sortGroup}>
-                  <label className={styles.filterLabel} htmlFor="sort-select">Sort by</label>
-                  <select
+                  <span className={styles.filterLabel} id="sort-select-label">Sort by</span>
+                  <SortDropdown
                     id="sort-select"
-                    className={styles.sortSelect}
+                    options={sortOptions.filter(option => option.id !== 'upvotes' || activeTab === 'plugins')}
                     value={activeTab === 'themes' && sortBy === 'upvotes' ? 'updated_at' : sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    {sortOptions
-                      .filter(option => option.id !== 'upvotes' || activeTab === 'plugins')
-                      .map(option => (
-                        <option key={option.id} value={option.id}>
-                          {option.label}
-                        </option>
-                      ))}
-                  </select>
+                    onChange={setSortBy}
+                  />
                 </div>
                 <div className={styles.viewToggle}>
                   <button

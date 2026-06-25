@@ -105,6 +105,9 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 	}
 
 	resp := &ListPluginsResponse{}
+	if plugins == nil {
+		plugins = []models.Plugin{}
+	}
 	resp.Body.Plugins = plugins
 	resp.Body.Count = len(plugins)
 

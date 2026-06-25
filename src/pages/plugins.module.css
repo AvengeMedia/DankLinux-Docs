@@ -331,60 +331,142 @@
   color: rgba(26, 22, 37, 0.4);
 }
 
-.sortSelect {
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
+.sortDropdown {
+  position: relative;
+  min-width: 168px;
+}
+
+.sortDropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(208, 188, 255, 0.2);
-  border-radius: 8px;
+  border-radius: 10px;
   color: #ffffff;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23D0BCFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 12px;
-  min-width: 160px;
 }
 
-[data-theme='light'] .sortSelect {
-  background-color: rgba(128, 90, 213, 0.08);
+[data-theme='light'] .sortDropdownTrigger {
+  background: rgba(128, 90, 213, 0.08);
   border-color: rgba(128, 90, 213, 0.3);
   color: #1a1625;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23805AD5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-.sortSelect:hover {
-  background-color: rgba(208, 188, 255, 0.1);
+.sortDropdownTrigger:hover,
+.sortDropdownTriggerOpen {
+  background: rgba(208, 188, 255, 0.1);
   border-color: rgba(208, 188, 255, 0.4);
 }
 
-[data-theme='light'] .sortSelect:hover {
-  background-color: rgba(128, 90, 213, 0.15);
+[data-theme='light'] .sortDropdownTrigger:hover,
+[data-theme='light'] .sortDropdownTriggerOpen {
+  background: rgba(128, 90, 213, 0.15);
   border-color: rgba(128, 90, 213, 0.5);
 }
 
-.sortSelect:focus {
+.sortDropdownTrigger:focus-visible {
   outline: none;
   border-color: rgba(208, 188, 255, 0.5);
-  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(208, 188, 255, 0.15);
 }
 
-[data-theme='light'] .sortSelect:focus {
+[data-theme='light'] .sortDropdownTrigger:focus-visible {
   border-color: rgba(128, 90, 213, 0.5);
-  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.15);
 }
 
-.sortSelect option {
-  background: #1a1625;
+.sortDropdownChevron {
+  font-size: 1.125rem;
+  color: #D0BCFF;
+  transition: transform 0.2s ease;
+}
+
+[data-theme='light'] .sortDropdownChevron {
+  color: #805AD5;
+}
+
+.sortDropdownChevronOpen {
+  transform: rotate(180deg);
+}
+
+.sortDropdownMenu {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: 0.375rem;
+  list-style: none;
+  background: rgba(12, 10, 18, 0.95);
+  border: 1px solid rgba(208, 188, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+[data-theme='light'] .sortDropdownMenu {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(128, 90, 213, 0.25);
+  box-shadow: 0 12px 32px rgba(128, 90, 213, 0.15);
+}
+
+.sortDropdownOption {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+[data-theme='light'] .sortDropdownOption {
+  color: rgba(26, 22, 37, 0.85);
+}
+
+.sortDropdownOption:hover {
+  background: rgba(208, 188, 255, 0.12);
   color: #ffffff;
 }
 
-[data-theme='light'] .sortSelect option {
-  background: #ffffff;
+[data-theme='light'] .sortDropdownOption:hover {
+  background: rgba(128, 90, 213, 0.12);
   color: #1a1625;
+}
+
+.sortDropdownOptionActive {
+  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+[data-theme='light'] .sortDropdownOptionActive {
+  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  color: #ffffff;
+}
+
+.sortDropdownOptionActive:hover {
+  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  color: #ffffff;
+}
+
+[data-theme='light'] .sortDropdownOptionActive:hover {
+  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  color: #ffffff;
 }
 
 .filterButtons {
@@ -1225,7 +1307,7 @@
     flex-direction: row;
   }
 
-  .sortSelect {
+  .sortDropdown {
     min-width: 140px;
   }
 

@@ -81,6 +81,9 @@ func (h *HandlerGroup) GetThemes(ctx context.Context, input *ListThemesInput) (*
 	}
 
 	resp := &ListThemesResponse{}
+	if themes == nil {
+		themes = []models.Theme{}
+	}
 	resp.Body.Themes = themes
 	resp.Body.Count = len(themes)
 
