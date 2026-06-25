@@ -96,7 +96,7 @@ func (h *HandlerGroup) editIssueSimilar(ctx context.Context, issue int, other si
 		return false
 	}
 
-	newBody, changed := editSimilarBlock(body, other, add)
+	newBody, changed := editSimilarBlock(body, other, add, h.renderSimilarBlock)
 	if !changed {
 		return false
 	}
@@ -108,7 +108,7 @@ func (h *HandlerGroup) editIssueSimilar(ctx context.Context, issue int, other si
 	return true
 }
 
-func editSimilarBlock(body string, other similarEntry, add bool) (string, bool) {
+func editSimilarBlock(body string, other similarEntry, add bool, render func([]similarEntry) string) (string, bool) {
 	entries := parseSimilarEntries(body)
 
 	idx := -1
@@ -128,7 +128,7 @@ func editSimilarBlock(body string, other similarEntry, add bool) (string, bool) 
 		return body, false
 	}
 
-	block := buildSimilarBlock(entries)
+	block := render(entries)
 	if replaced, ok := replaceSimilarRegion(body, block); ok {
 		return replaced, true
 	}
@@ -156,20 +156,38 @@ func parseSimilarEntries(body string) []similarEntry {
 	return entries
 }
 
-func buildSimilarBlock(entries []similarEntry) string {
+func (h *HandlerGroup) renderSimilarBlock(entries []similarEntry) string {
+	return renderSimilarBlock(entries, h.pluginName, h.owner, h.repo)
+}
+
+func (h *HandlerGroup) pluginName(id string) string {
+	if h.authors == nil {
+		return id
+	}
+	if plugin, ok := h.authors.PluginByID(id); ok && plugin.Name != "" {
+		return plugin.Name
+	}
+	return id
+}
+
+// renderSimilarBlock builds the managed block as a markdown list of related plugins, each
+// linking to its tracking issue by full name. The hidden `dms-similar` marker carries the
+// machine-readable `id=issueNumber` pairs the feedback parser and later edits rely on.
+func renderSimilarBlock(entries []similarEntry, nameOf func(string) string, owner, repo string) string {
 	if len(entries) == 0 {
 		return similarStart + "\n" + similarEnd
 	}
 
-	refs := make([]string, len(entries))
+	items := make([]string, len(entries))
 	data := make([]string, len(entries))
 	for i, entry := range entries {
-		refs[i] = fmt.Sprintf("#%d", entry.number)
+		url := fmt.Sprintf("https://github.com/%s/%s/issues/%d", owner, repo, entry.number)
+		items[i] = fmt.Sprintf("- [%s](%s)", nameOf(entry.id), url)
 		data[i] = fmt.Sprintf("%s=%d", entry.id, entry.number)
 	}
 
-	return fmt.Sprintf("%s\n**Related plugins:** %s\n<!-- dms-similar: %s -->\n%s",
-		similarStart, strings.Join(refs, " · "), strings.Join(data, ","), similarEnd)
+	return fmt.Sprintf("%s\n**Related plugins:**\n%s\n<!-- dms-similar: %s -->\n%s",
+		similarStart, strings.Join(items, "\n"), strings.Join(data, ","), similarEnd)
 }
 
 func replaceSimilarRegion(body, block string) (string, bool) {

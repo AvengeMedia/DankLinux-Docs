@@ -4,6 +4,10 @@ import "testing"
 
 const emptyBody = "Body text\n\n" + similarStart + "\n" + similarEnd + "\n\n<!-- dms-plugin-id: worldClockMulti -->"
 
+func testRender(entries []similarEntry) string {
+	return renderSimilarBlock(entries, func(id string) string { return id }, "AvengeMedia", "dms-plugin-registry")
+}
+
 func TestParseSimilarCommands(t *testing.T) {
 	cmds := parseSimilarCommands("/similar WorldClock #530\n/unsimilar #42\nnoise /similarity #99")
 
@@ -19,7 +23,7 @@ func TestParseSimilarCommands(t *testing.T) {
 }
 
 func TestEditSimilarBlockAddRemove(t *testing.T) {
-	added, changed := editSimilarBlock(emptyBody, similarEntry{id: "worldClock", number: 530}, true)
+	added, changed := editSimilarBlock(emptyBody, similarEntry{id: "worldClock", number: 530}, true, testRender)
 	if !changed {
 		t.Fatal("expected add to change body")
 	}
@@ -27,16 +31,16 @@ func TestEditSimilarBlockAddRemove(t *testing.T) {
 		t.Fatalf("unexpected entries after add: %+v", got)
 	}
 
-	if _, changed := editSimilarBlock(added, similarEntry{id: "worldClock", number: 530}, true); changed {
+	if _, changed := editSimilarBlock(added, similarEntry{id: "worldClock", number: 530}, true, testRender); changed {
 		t.Fatal("re-adding the same entry should be a no-op")
 	}
 
-	second, changed := editSimilarBlock(added, similarEntry{id: "foo", number: 12}, true)
+	second, changed := editSimilarBlock(added, similarEntry{id: "foo", number: 12}, true, testRender)
 	if !changed || len(parseSimilarEntries(second)) != 2 {
 		t.Fatalf("expected two entries after second add, got %+v", parseSimilarEntries(second))
 	}
 
-	removed, changed := editSimilarBlock(second, similarEntry{id: "worldClock", number: 530}, false)
+	removed, changed := editSimilarBlock(second, similarEntry{id: "worldClock", number: 530}, false, testRender)
 	if !changed {
 		t.Fatal("expected remove to change body")
 	}
@@ -45,7 +49,7 @@ func TestEditSimilarBlockAddRemove(t *testing.T) {
 		t.Fatalf("unexpected entries after remove: %+v", got)
 	}
 
-	if _, changed := editSimilarBlock(emptyBody, similarEntry{id: "foo", number: 12}, false); changed {
+	if _, changed := editSimilarBlock(emptyBody, similarEntry{id: "foo", number: 12}, false, testRender); changed {
 		t.Fatal("removing an absent entry should be a no-op")
 	}
 }
@@ -53,7 +57,7 @@ func TestEditSimilarBlockAddRemove(t *testing.T) {
 func TestEditSimilarBlockInsertsWhenMissing(t *testing.T) {
 	body := "Plain body\n\n<!-- dms-plugin-id: foo -->"
 
-	out, changed := editSimilarBlock(body, similarEntry{id: "bar", number: 7}, true)
+	out, changed := editSimilarBlock(body, similarEntry{id: "bar", number: 7}, true, testRender)
 	if !changed {
 		t.Fatal("expected insert to change body")
 	}
