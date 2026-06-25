@@ -4,6 +4,8 @@ description: Pre-built packages for Fedora, CentOS, Debian, Ubuntu, and OpenSUSE
 ---
 
 import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <Hero
   asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
@@ -71,143 +73,254 @@ All packages in the DankLinux repository can be installed independently. First, 
 
 ### Debian
 
-**Debian 13 (Trixie)**:
+Select your release, then choose stable or development packages.
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-
-# Install stable packages
 sudo apt install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
 sudo apt install quickshell-git niri-git
 ```
 
-**Debian Testing**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-
-# Install stable packages
 sudo apt install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
 sudo apt install quickshell-git niri-git
 ```
 
-**Debian Sid**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-
-# Install stable packages
 sudo apt install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
 sudo apt install quickshell-git niri-git
 ```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
 
 ### Ubuntu
 
+#### Step 1: Add the DankLinux PPA
+
 ```bash
-# Add DankLinux PPA
 sudo add-apt-repository ppa:avengemedia/danklinux
 sudo apt update
+```
 
-# Install stable packages
+#### Step 2: Install packages
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
 sudo apt install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
 sudo apt install quickshell-git niri-git
 ```
 
+</TabItem>
+</Tabs>
+
 ### OpenSUSE
 
-**OpenSUSE Tumbleweed**:
+Select your distribution, then choose stable or development packages.
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
 sudo zypper install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
 sudo zypper install quickshell-git niri-git
 ```
 
-**OpenSUSE Leap 16**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
 sudo zypper install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
 sudo zypper install quickshell-git niri-git
 ```
 
-**OpenSUSE Leap 16.1**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
 sudo zypper install quickshell niri
-
-# Or install development packages
-sudo zypper install quickshell-git niri-git
 ```
 
-**OpenSUSE Slowroll**:
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
-# Add DankLinux repository
-sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
-sudo zypper install quickshell niri
-
-# Or install development packages
 sudo zypper install quickshell-git niri-git
 ```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
 
 ### Fedora & CentOS
 
-The COPR repositories provide packages for Fedora 41/42/43 rawhide and CentOS 10:
+The COPR repositories provide packages for Fedora 41/42/43 rawhide and CentOS 10.
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux COPR
 sudo dnf copr enable avengemedia/danklinux
-
-# Install stable packages
 sudo dnf install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
 sudo dnf install quickshell-git niri-git
 ```
+
+</TabItem>
+</Tabs>
 
 :::note
 

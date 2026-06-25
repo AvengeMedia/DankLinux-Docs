@@ -6,6 +6,8 @@ image: img/dankinstall.png
 ---
 
 import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <Hero
   asciiArt={`██████╗ ███╗   ███╗███████╗
@@ -50,21 +52,26 @@ These packages ship the shell, widgets, and CLI. Pair them with `niri`, `hyprlan
 
 ## Fedora & CentOS
 
-DankMaterialShell is available through COPR repositories for Fedora 41/42/43 rawhide and CentOS 10. Enable the COPR repositories managed by the team to install prebuilt packages:
+DankMaterialShell is available through COPR repositories for Fedora 41/42/43 rawhide and CentOS 10.
 
-### Stable Release
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 sudo dnf copr enable avengemedia/dms
 sudo dnf install dms
 ```
 
-### Latest Development Build
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 sudo dnf copr enable avengemedia/dms-git
 sudo dnf install dms
 ```
+
+</TabItem>
+</Tabs>
 
 The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `matugen`, and other utilities used by the default configuration.
 
@@ -74,7 +81,15 @@ DankMaterialShell is available through Open Build Service (OBS) for Debian and L
 
 ### Debian
 
-For **Debian 13 (Trixie)**:
+Packages are published on OBS for **Debian 13 (Trixie)**, **Debian Testing**, and **Debian Sid**.
+
+Select your release, then choose stable or development packages.
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -83,21 +98,46 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS stable repository
+# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+sudo apt update
 
-# DMS development repository
+# Install DMS
+sudo apt install dms
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
 sudo apt update
+
+# Install DMS
+sudo apt install dms-git
 ```
 
-For **Debian Testing**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -106,21 +146,46 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS stable repository
+# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+sudo apt update
 
-# DMS development repository
+# Install DMS
+sudo apt install dms
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
 sudo apt update
+
+# Install DMS
+sudo apt install dms-git
 ```
 
-For **Debian Sid**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -129,39 +194,50 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS stable repository
+# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+sudo apt update
 
-# DMS development repository
+# Install DMS
+sudo apt install dms
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
 sudo apt update
-```
 
-#### Install Packages
-
-Install the **stable release**:
-
-```bash
-sudo apt install dms
-```
-
-Install the **latest development build**:
-
-```bash
+# Install DMS
 sudo apt install dms-git
 ```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
 
 ### Ubuntu
 
 Ubuntu 26.04 LTS+ (Resolute Raccoon) is supported via Launchpad PPA.
 
-#### Stable Release
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 sudo add-apt-repository ppa:avengemedia/danklinux
@@ -170,7 +246,8 @@ sudo apt update
 sudo apt install dms
 ```
 
-#### Latest Development Build
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 sudo add-apt-repository ppa:avengemedia/danklinux
@@ -178,6 +255,9 @@ sudo add-apt-repository ppa:avengemedia/dms-git
 sudo apt update
 sudo apt install dms-git
 ```
+
+</TabItem>
+</Tabs>
 
 :::tip
 
@@ -188,11 +268,15 @@ Add **niri** or **niri-git** to your system to get the best experience.
 
 ## OpenSUSE & Derivatives
 
-DankMaterialShell is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed, Leap 16/16.1 & Slowroll.
+DankMaterialShell is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed, Leap 16/16.1, and Slowroll.
 
-### OpenSUSE Tumbleweed
+Select your distribution, then choose stable or development packages.
 
-#### Stable Release
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -206,7 +290,8 @@ sudo zypper refresh
 sudo zypper install dms
 ```
 
-#### Latest Development Build
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 # DankLinux repository
@@ -220,9 +305,14 @@ sudo zypper refresh
 sudo zypper install dms-git
 ```
 
-### OpenSUSE Leap 16
+</TabItem>
+</Tabs>
 
-#### Stable Release
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -236,7 +326,8 @@ sudo zypper refresh
 sudo zypper install dms
 ```
 
-#### Latest Development Build
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 # DankLinux repository
@@ -250,9 +341,14 @@ sudo zypper refresh
 sudo zypper install dms-git
 ```
 
-### OpenSUSE Leap 16.1
+</TabItem>
+</Tabs>
 
-#### Stable Release
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -266,7 +362,8 @@ sudo zypper refresh
 sudo zypper install dms
 ```
 
-#### Latest Development Build
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 # DankLinux repository
@@ -280,9 +377,14 @@ sudo zypper refresh
 sudo zypper install dms-git
 ```
 
-### OpenSUSE Slowroll
+</TabItem>
+</Tabs>
 
-#### Stable Release
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 # DankLinux repository
@@ -296,7 +398,8 @@ sudo zypper refresh
 sudo zypper install dms
 ```
 
-#### Latest Development Build
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 # DankLinux repository
@@ -309,6 +412,12 @@ sudo zypper refresh
 # Install DMS
 sudo zypper install dms-git
 ```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
 
 ## Gentoo (Community)
 
@@ -446,7 +555,7 @@ sudo eopkg install dankmaterialshell
 
 :::tip
 
-Install the `niri-session`, `sway-session`, or 'labwc-session` packages for those compositors to appear in the session list for your greeter.
+Install the `niri-session`, `sway-session`, or `labwc-session` packages for those compositors to appear in the session list for your greeter.
 
 :::
 

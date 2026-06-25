@@ -5,6 +5,8 @@ sidebar_position: 2
 ---
 
 import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <Hero
   asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
@@ -65,7 +67,10 @@ After installation, proceed to [Completing Setup](#completing-setup) below.
 
 ### Debian
 
-**Debian 13 (Trixie)**:
+#### Step 1: Add the DankLinux repository
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
@@ -73,10 +78,10 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install dms-greeter
 ```
 
-**Debian Testing**:
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
@@ -84,10 +89,10 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install dms-greeter
 ```
 
-**Debian Sid (Unstable)**:
+</TabItem>
+<TabItem value="sid" label="Debian Sid (Unstable)">
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
@@ -95,6 +100,14 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+```
+
+</TabItem>
+</Tabs>
+
+#### Step 2: Install DankGreeter
+
+```bash
 sudo apt install dms-greeter
 ```
 
@@ -112,7 +125,8 @@ After installation, proceed to [Completing Setup](#completing-setup) below.
 
 ### openSUSE
 
-**Tumbleweed**:
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
@@ -120,7 +134,8 @@ sudo zypper refresh
 sudo zypper install dms-greeter
 ```
 
-**Leap 16**:
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
@@ -128,7 +143,8 @@ sudo zypper refresh
 sudo zypper install dms-greeter
 ```
 
-**Leap 16.1**:
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
@@ -136,13 +152,17 @@ sudo zypper refresh
 sudo zypper install dms-greeter
 ```
 
-**Slowroll**:
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
 sudo zypper install dms-greeter
 ```
+
+</TabItem>
+</Tabs>
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
