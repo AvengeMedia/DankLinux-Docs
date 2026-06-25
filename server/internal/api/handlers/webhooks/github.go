@@ -22,6 +22,7 @@ const pluginLabel = "plugin"
 type FeedbackRefresher interface {
 	RefreshFeedback(ctx context.Context) error
 	ApplyStatus(pluginID, status string, add bool)
+	ApplySimilar(pluginID, similarID string, add bool)
 }
 
 type Config struct {
@@ -33,7 +34,7 @@ type Config struct {
 	OwnersTeam string
 	Cache      FeedbackRefresher
 	Moderator  Moderator
-	Authors    PluginAuthorLookup
+	Authors    PluginLookup
 }
 
 type HandlerGroup struct {
@@ -45,7 +46,7 @@ type HandlerGroup struct {
 	ownersTeam string
 	cache      FeedbackRefresher
 	moderator  Moderator
-	authors    PluginAuthorLookup
+	authors    PluginLookup
 
 	mu          sync.Mutex
 	lastRefresh time.Time

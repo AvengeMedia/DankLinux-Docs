@@ -94,8 +94,11 @@ When your plugin is merged, a tracking issue is automatically opened for it in t
   | `/unmaintained` | Marks **Unmaintained** |
   | `/deprecated` | Marks **Deprecated** |
   | `/review` / `/unreview` | Marks (or clears) **Reviewed** |
+  | `/similar #<issue>` / `/unsimilar #<issue>` | Links (or unlinks) a related plugin |
 
   Moderators can't `/review` or `/unreview` a plugin they authored — only Owners can.
+
+  `/similar` references another plugin's tracking issue by number (e.g. `/similar #530`) and links the two plugins both ways — each issue lists the other under **Related plugins**, and the directory and DMS surface the relationship. Use `/unsimilar #<issue>` to remove the link.
 
 The directory links to each plugin's issue from its **Discuss** button.
 

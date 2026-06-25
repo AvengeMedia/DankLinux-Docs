@@ -155,6 +155,47 @@ func (c *Cache) ApplyStatus(pluginID, status string, add bool) {
 	}
 }
 
+// ApplySimilar updates a plugin's related-plugin list in place so a /similar moderation
+// action is reflected immediately, without waiting for the next GitHub re-fetch.
+func (c *Cache) ApplySimilar(pluginID, similarID string, add bool) {
+	c.mu.Lock()
+	for i := range c.plugins {
+		if c.plugins[i].ID == pluginID {
+			c.plugins[i].Similar = upsertStatus(c.plugins[i].Similar, similarID, add)
+			break
+		}
+	}
+	c.mu.Unlock()
+
+	if err := c.saveToDisk(); err != nil {
+		log.Warn("Failed to persist plugin cache after similar update", "err", err)
+	}
+}
+
+func (c *Cache) PluginByID(id string) (models.Plugin, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	for _, plugin := range c.plugins {
+		if plugin.ID == id {
+			return plugin, true
+		}
+	}
+	return models.Plugin{}, false
+}
+
+func (c *Cache) PluginByIssue(number int) (models.Plugin, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+
+	for _, plugin := range c.plugins {
+		if plugin.IssueNumber == number {
+			return plugin, true
+		}
+	}
+	return models.Plugin{}, false
+}
+
 func upsertStatus(statuses []string, status string, add bool) []string {
 	var out []string
 	for _, s := range statuses {

@@ -967,6 +967,44 @@
   color: rgba(26, 22, 37, 0.8);
 }
 
+.pluginRelated {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.6);
+  padding-top: 0.25rem;
+}
+
+[data-theme='light'] .pluginRelated {
+  color: rgba(26, 22, 37, 0.6);
+}
+
+.pluginRelated strong {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme='light'] .pluginRelated strong {
+  color: rgba(26, 22, 37, 0.8);
+}
+
+.relatedChip {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 92, 255, 0.4);
+  background: rgba(124, 92, 255, 0.12);
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.relatedChip:hover {
+  background: rgba(124, 92, 255, 0.22);
+  border-color: rgba(124, 92, 255, 0.7);
+}
+
 .pluginActions {
   margin-top: auto;
   padding-top: 0.5rem;

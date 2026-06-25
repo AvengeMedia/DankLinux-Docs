@@ -169,6 +169,29 @@ func (c *Client) RemoveLabel(ctx context.Context, owner, repo string, issue int,
 	return nil
 }
 
+func (c *Client) GetIssueBody(ctx context.Context, owner, repo string, issue int) (string, error) {
+	gh, err := c.authedClient(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	iss, _, err := gh.Issues.Get(ctx, owner, repo, issue)
+	if err != nil {
+		return "", err
+	}
+	return iss.GetBody(), nil
+}
+
+func (c *Client) UpdateIssueBody(ctx context.Context, owner, repo string, issue int, body string) error {
+	gh, err := c.authedClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	_, _, err = gh.Issues.Edit(ctx, owner, repo, issue, &github.IssueRequest{Body: github.Ptr(body)})
+	return err
+}
+
 func (c *Client) CreateCommentReaction(ctx context.Context, owner, repo string, commentID int64, content string) error {
 	gh, err := c.authedClient(ctx)
 	if err != nil {

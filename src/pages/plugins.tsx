@@ -25,6 +25,7 @@ interface Plugin {
   upvotes: number;
   issueUrl?: string;
   status?: string[];
+  similar?: string[];
 }
 
 interface ThemeVariantOption {
@@ -175,6 +176,14 @@ export default function Plugins() {
   const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
   const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+
+  const pluginsById = React.useMemo(() => {
+    const map: Record<string, Plugin> = {};
+    for (const p of plugins) {
+      map[p.id] = p;
+    }
+    return map;
+  }, [plugins]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -726,6 +735,24 @@ export default function Plugins() {
                       {viewMode === 'grid' && plugin.requires_dms && (
                         <div className={styles.pluginRequires}>
                           <strong>Requires DMS:</strong> {plugin.requires_dms}+
+                        </div>
+                      )}
+
+                      {plugin.similar && plugin.similar.length > 0 && (
+                        <div className={styles.pluginRelated}>
+                          <strong>Related:</strong>
+                          {plugin.similar.map(id => (
+                            <button
+                              key={id}
+                              type="button"
+                              className={styles.relatedChip}
+                              onClick={() => {
+                                setSearchQuery(pluginsById[id]?.name || id);
+                              }}
+                            >
+                              {pluginsById[id]?.name || id}
+                            </button>
+                          ))}
                         </div>
                       )}
                     </div>

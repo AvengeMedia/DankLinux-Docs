@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
 )
 
 type Moderator interface {
@@ -17,12 +18,16 @@ type Moderator interface {
 	RemoveLabel(ctx context.Context, owner, repo string, issue int, label string) error
 	CreateCommentReaction(ctx context.Context, owner, repo string, commentID int64, content string) error
 	AppendAudit(ctx context.Context, owner, repo string, issue int, line string) error
+	GetIssueBody(ctx context.Context, owner, repo string, issue int) (string, error)
+	UpdateIssueBody(ctx context.Context, owner, repo string, issue int, body string) error
 }
 
-// PluginAuthorLookup resolves a plugin's repository owner (its GitHub author handle)
-// so authors can be blocked from marking their own plugins reviewed.
-type PluginAuthorLookup interface {
+// PluginLookup resolves plugins by id, author handle, and issue number so the handler can
+// block self-review and wire up bidirectional /similar relationships.
+type PluginLookup interface {
 	RepoOwner(pluginID string) (string, bool)
+	PluginByID(id string) (models.Plugin, bool)
+	PluginByIssue(number int) (models.Plugin, bool)
 }
 
 var pluginIDMarker = regexp.MustCompile(`<!--\s*dms-plugin-id:\s*([A-Za-z0-9]+)\s*-->`)
@@ -87,60 +92,84 @@ func (h *HandlerGroup) handleComment(p eventPayload) {
 		return
 	}
 
-	actions := parseCommands(p.Comment.Body)
-	if len(actions) == 0 {
+	labelActions := parseCommands(p.Comment.Body)
+	similarActions := parseSimilarCommands(p.Comment.Body)
+	if len(labelActions) == 0 && len(similarActions) == 0 {
 		return
 	}
 
-	go func() {
-		ctx := context.Background()
-		user := p.Comment.User.Login
-		pluginID := extractPluginID(p.Issue.Body)
+	go h.processComment(p, labelActions, similarActions)
+}
 
-		isOwner, err := h.moderator.IsOrgTeamMember(ctx, h.org, h.ownersTeam, user)
-		if err != nil {
-			log.Error("Failed to check owners membership", "err", err)
-			return
+func (h *HandlerGroup) processComment(p eventPayload, labelActions []command, similarActions []similarCommand) {
+	ctx := context.Background()
+	user := p.Comment.User.Login
+	pluginID := extractPluginID(p.Issue.Body)
+
+	isOwner, isModerator, err := h.membership(ctx, user)
+	if err != nil {
+		log.Error("Failed to check team membership", "err", err)
+		return
+	}
+	if !isOwner && !isModerator {
+		h.react(ctx, p.Comment.ID, "confused")
+		return
+	}
+
+	if !isOwner {
+		labelActions = h.filterSelfModeration(pluginID, user, labelActions)
+	}
+
+	if len(labelActions) == 0 && len(similarActions) == 0 {
+		h.react(ctx, p.Comment.ID, "confused")
+		return
+	}
+
+	timestamp := time.Now().UTC().Format(time.RFC3339)
+	var auditLines []string
+
+	for _, action := range labelActions {
+		h.applyCommand(ctx, p.Issue.Number, action)
+		if pluginID != "" {
+			h.cache.ApplyStatus(pluginID, strings.TrimPrefix(action.label, "status:"), action.add)
 		}
-
-		if !isOwner {
-			isModerator, err := h.moderator.IsOrgTeamMember(ctx, h.org, h.team, user)
-			if err != nil {
-				log.Error("Failed to check moderator membership", "err", err)
-				return
-			}
-			if !isModerator {
-				h.react(ctx, p.Comment.ID, "confused")
-				return
-			}
-
-			actions = h.filterSelfModeration(pluginID, user, actions)
-			if len(actions) == 0 {
-				h.react(ctx, p.Comment.ID, "confused")
-				return
-			}
+		verb := "added"
+		if !action.add {
+			verb = "removed"
 		}
+		auditLines = append(auditLines, fmt.Sprintf("- %s · @%s %s `%s`", timestamp, user, verb, action.label))
+	}
 
-		timestamp := time.Now().UTC().Format(time.RFC3339)
-		var auditLines []string
-		for _, action := range actions {
-			h.applyCommand(ctx, p.Issue.Number, action)
-			if pluginID != "" {
-				h.cache.ApplyStatus(pluginID, strings.TrimPrefix(action.label, "status:"), action.add)
-			}
-			verb := "added"
-			if !action.add {
-				verb = "removed"
-			}
-			auditLines = append(auditLines, fmt.Sprintf("- %s · @%s %s `%s`", timestamp, user, verb, action.label))
+	for _, action := range similarActions {
+		if line := h.applySimilar(ctx, pluginID, user, action, timestamp); line != "" {
+			auditLines = append(auditLines, line)
 		}
+	}
 
-		h.react(ctx, p.Comment.ID, "+1")
+	h.react(ctx, p.Comment.ID, "+1")
 
-		if err := h.moderator.AppendAudit(ctx, h.owner, h.repo, p.Issue.Number, strings.Join(auditLines, "\n")); err != nil {
-			log.Error("Failed to append moderation audit log", "err", err)
-		}
-	}()
+	if len(auditLines) == 0 {
+		return
+	}
+	if err := h.moderator.AppendAudit(ctx, h.owner, h.repo, p.Issue.Number, strings.Join(auditLines, "\n")); err != nil {
+		log.Error("Failed to append moderation audit log", "err", err)
+	}
+}
+
+func (h *HandlerGroup) membership(ctx context.Context, user string) (isOwner, isModerator bool, err error) {
+	isOwner, err = h.moderator.IsOrgTeamMember(ctx, h.org, h.ownersTeam, user)
+	if err != nil {
+		return false, false, err
+	}
+	if isOwner {
+		return true, false, nil
+	}
+
+	isModerator, err = h.moderator.IsOrgTeamMember(ctx, h.org, h.team, user)
+	if err != nil {
+		return false, false, err
+	}
+	return false, isModerator, nil
 }
 
 func extractPluginID(body string) string {

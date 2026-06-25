@@ -12,12 +12,14 @@ import (
 const statusLabelPrefix = "status:"
 
 var markerRe = regexp.MustCompile(`<!--\s*dms-plugin-id:\s*([A-Za-z0-9]+)\s*-->`)
+var similarRe = regexp.MustCompile(`<!--\s*dms-similar:\s*([^>]*?)\s*-->`)
 
 type Feedback struct {
 	Upvotes     int
 	IssueURL    string
 	IssueNumber int
 	Status      []string
+	Similar     []string
 }
 
 func (p *Parser) FetchFeedback(ctx context.Context) (map[string]Feedback, error) {
@@ -47,6 +49,7 @@ func (p *Parser) FetchFeedback(ctx context.Context) (map[string]Feedback, error)
 			IssueURL:    issue.HTMLURL,
 			IssueNumber: issue.Number,
 			Status:      extractStatus(issue),
+			Similar:     extractSimilar(issue.Body),
 		}
 	}
 
@@ -63,7 +66,29 @@ func mergeFeedback(plugins []models.Plugin, feedback map[string]Feedback) {
 		plugins[i].IssueURL = fb.IssueURL
 		plugins[i].IssueNumber = fb.IssueNumber
 		plugins[i].Status = fb.Status
+		plugins[i].Similar = fb.Similar
 	}
+}
+
+// extractSimilar reads the moderator-managed `dms-similar` marker, whose payload is a
+// comma-separated list of `id=issueNumber` pairs, and returns the related plugin ids.
+func extractSimilar(body string) []string {
+	match := similarRe.FindStringSubmatch(body)
+	if match == nil {
+		return nil
+	}
+
+	var ids []string
+	for _, part := range strings.Split(match[1], ",") {
+		id := strings.TrimSpace(part)
+		if idx := strings.Index(id, "="); idx != -1 {
+			id = strings.TrimSpace(id[:idx])
+		}
+		if id != "" {
+			ids = append(ids, id)
+		}
+	}
+	return ids
 }
 
 func extractStatus(issue github.Issue) []string {

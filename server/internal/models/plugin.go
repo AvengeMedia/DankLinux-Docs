@@ -56,6 +56,7 @@ type Plugin struct {
 	IssueURL     string    `json:"issueUrl,omitempty"`
 	IssueNumber  int       `json:"issueNumber,omitempty"`
 	Status       []string  `json:"status,omitempty"`
+	Similar      []string  `json:"similar,omitempty"`
 }
 
 type ThemeVariantOption struct {
