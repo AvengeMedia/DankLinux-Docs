@@ -271,6 +271,40 @@
   gap: 0.5rem;
 }
 
+.sortOrderButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(208, 188, 255, 0.2);
+  border-radius: 8px;
+  color: #D0BCFF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sortOrderButton:hover {
+  background: rgba(208, 188, 255, 0.1);
+  border-color: rgba(208, 188, 255, 0.4);
+}
+
+.sortOrderButton .material-symbols-outlined {
+  font-size: 1.125rem;
+}
+
+[data-theme='light'] .sortOrderButton {
+  background-color: rgba(128, 90, 213, 0.08);
+  border-color: rgba(128, 90, 213, 0.3);
+  color: #805AD5;
+}
+
+[data-theme='light'] .sortOrderButton:hover {
+  background-color: rgba(128, 90, 213, 0.12);
+  border-color: rgba(128, 90, 213, 0.5);
+}
+
 .filterRow {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

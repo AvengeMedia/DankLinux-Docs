@@ -113,13 +113,17 @@ const compositors = [
 ];
 
 const sortOptions = [
-  { id: 'upvotes', label: 'Most Upvoted' },
-  { id: 'updated_at', label: 'Recently Updated' },
-  { id: 'newest', label: 'Newest' },
-  { id: 'oldest', label: 'Oldest' },
+  { id: 'upvotes', label: 'Upvotes' },
+  { id: 'updated_at', label: 'Last Updated' },
+  { id: 'created_at', label: 'Date Added' },
   { id: 'name', label: 'Name' },
   { id: 'random', label: 'Random' },
 ];
+
+// Sorts that only apply to plugins (themes have no upvotes or registry-added date).
+const pluginOnlySorts = ['upvotes', 'created_at'];
+
+const defaultSortOrder = (sort: string): 'asc' | 'desc' => (sort === 'name' ? 'asc' : 'desc');
 
 const STATUS_LABELS: Record<string, string> = {
   broken: 'Broken',
@@ -251,6 +255,7 @@ export default function Plugins() {
   const [showReviewedOnly, setShowReviewedOnly] = useState(false);
   const [hideBroken, setHideBroken] = useState(false);
   const [sortBy, setSortBy] = useState('upvotes');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
   const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
@@ -291,7 +296,7 @@ export default function Plugins() {
       default:
         fetchPlugins();
     }
-  }, [sortBy, activeTab]);
+  }, [sortBy, sortOrder, activeTab]);
 
   useEffect(() => {
     filterPlugins();
@@ -306,7 +311,7 @@ export default function Plugins() {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
       const baseUrl = isDev ? 'http://localhost:8337/plugins' : 'https://api.danklinux.com/plugins';
-      const apiUrl = `${baseUrl}?sortBy=${sortBy}`;
+      const apiUrl = `${baseUrl}?sortBy=${sortBy}&order=${sortOrder}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch plugins');
@@ -371,7 +376,7 @@ export default function Plugins() {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
       const baseUrl = isDev ? 'http://localhost:8337/themes' : 'https://api.danklinux.com/themes';
-      const themeSort = sortBy === 'upvotes' ? 'updated_at' : sortBy;
+      const themeSort = pluginOnlySorts.includes(sortBy) ? 'updated_at' : sortBy;
       const apiUrl = `${baseUrl}?sortBy=${themeSort}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
@@ -624,10 +629,26 @@ export default function Plugins() {
                   <span className={styles.filterLabel} id="sort-select-label">Sort by</span>
                   <SortDropdown
                     id="sort-select"
-                    options={sortOptions.filter(option => option.id !== 'upvotes' || activeTab === 'plugins')}
-                    value={activeTab === 'themes' && sortBy === 'upvotes' ? 'updated_at' : sortBy}
-                    onChange={setSortBy}
+                    options={sortOptions.filter(option => activeTab === 'plugins' || !pluginOnlySorts.includes(option.id))}
+                    value={activeTab === 'themes' && pluginOnlySorts.includes(sortBy) ? 'updated_at' : sortBy}
+                    onChange={(next) => {
+                      setSortBy(next);
+                      setSortOrder(defaultSortOrder(next));
+                    }}
                   />
+                  {activeTab === 'plugins' && sortBy !== 'random' && (
+                    <button
+                      type="button"
+                      className={styles.sortOrderButton}
+                      onClick={() => setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'))}
+                      title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                      aria-label={sortOrder === 'asc' ? 'Sort ascending' : 'Sort descending'}
+                    >
+                      <span className="material-symbols-outlined">
+                        {sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward'}
+                      </span>
+                    </button>
+                  )}
                 </div>
                 <div className={styles.viewToggle}>
                   <button
@@ -1032,6 +1053,7 @@ export default function Plugins() {
                   setShowReviewedOnly(false);
                   setHideBroken(false);
                   setSortBy('upvotes');
+                  setSortOrder('desc');
                 }}
                 className={styles.resetButton}
               >

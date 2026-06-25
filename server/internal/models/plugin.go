@@ -52,6 +52,7 @@ type Plugin struct {
 	Icon         string    `json:"icon,omitempty"`
 	Permissions  []string  `json:"permissions,omitempty"`
 	UpdatedAt    time.Time `json:"updated_at"`
+	CreatedAt    time.Time `json:"created_at"`
 	Upvotes      int       `json:"upvotes"`
 	IssueURL     string    `json:"issueUrl,omitempty"`
 	IssueNumber  int       `json:"issueNumber,omitempty"`

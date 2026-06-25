@@ -4,6 +4,7 @@ import (
 	"context"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
@@ -18,6 +19,7 @@ type Feedback struct {
 	Upvotes     int
 	IssueURL    string
 	IssueNumber int
+	CreatedAt   time.Time
 	Status      []string
 	Similar     []string
 }
@@ -48,6 +50,7 @@ func (p *Parser) FetchFeedback(ctx context.Context) (map[string]Feedback, error)
 			Upvotes:     issue.Reactions.PlusOne,
 			IssueURL:    issue.HTMLURL,
 			IssueNumber: issue.Number,
+			CreatedAt:   issue.CreatedAt,
 			Status:      extractStatus(issue),
 			Similar:     extractSimilar(issue.Body),
 		}
@@ -65,6 +68,7 @@ func mergeFeedback(plugins []models.Plugin, feedback map[string]Feedback) {
 		plugins[i].Upvotes = fb.Upvotes
 		plugins[i].IssueURL = fb.IssueURL
 		plugins[i].IssueNumber = fb.IssueNumber
+		plugins[i].CreatedAt = fb.CreatedAt
 		plugins[i].Status = fb.Status
 		plugins[i].Similar = fb.Similar
 	}

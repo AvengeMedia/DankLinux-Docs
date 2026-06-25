@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"reflect"
 	"sort"
+	"strings"
+	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
@@ -16,10 +18,16 @@ type PluginSortBy string
 const (
 	SortByUpvotes   PluginSortBy = "upvotes"
 	SortByUpdatedAt PluginSortBy = "updated_at"
-	SortByNewest    PluginSortBy = "newest"
-	SortByOldest    PluginSortBy = "oldest"
+	SortByCreatedAt PluginSortBy = "created_at"
 	SortByName      PluginSortBy = "name"
 	SortByRandom    PluginSortBy = "random"
+)
+
+type PluginSortOrder string
+
+const (
+	OrderAscending  PluginSortOrder = "asc"
+	OrderDescending PluginSortOrder = "desc"
 )
 
 func (u PluginSortBy) Schema(r huma.Registry) *huma.Schema {
@@ -29,8 +37,7 @@ func (u PluginSortBy) Schema(r huma.Registry) *huma.Schema {
 		schemaRef.Enum = append(schemaRef.Enum, []any{
 			string(SortByUpvotes),
 			string(SortByUpdatedAt),
-			string(SortByNewest),
-			string(SortByOldest),
+			string(SortByCreatedAt),
 			string(SortByName),
 			string(SortByRandom),
 		}...)
@@ -39,13 +46,27 @@ func (u PluginSortBy) Schema(r huma.Registry) *huma.Schema {
 	return &huma.Schema{Ref: "#/components/schemas/PluginSortBy"}
 }
 
+func (u PluginSortOrder) Schema(r huma.Registry) *huma.Schema {
+	if r.Map()["PluginSortOrder"] == nil {
+		schemaRef := r.Schema(reflect.TypeOf(""), true, "PluginSortOrder")
+		schemaRef.Title = "PluginSortOrder"
+		schemaRef.Enum = append(schemaRef.Enum, []any{
+			string(OrderAscending),
+			string(OrderDescending),
+		}...)
+		r.Map()["PluginSortOrder"] = schemaRef
+	}
+	return &huma.Schema{Ref: "#/components/schemas/PluginSortOrder"}
+}
+
 type ListPluginsInput struct {
-	Category      string       `query:"category" doc:"Filter by category"`
-	Compositor    string       `query:"compositor" doc:"Filter by compositor (niri, hyprland, any)"`
-	FirstParty    bool         `query:"firstParty" doc:"Only show first-party plugins"`
-	Capability    string       `query:"capability" doc:"Filter by capability"`
-	ExcludeStatus []string     `query:"excludeStatus" doc:"Exclude plugins with these status labels (e.g. broken, deprecated)"`
-	SortBy        PluginSortBy `query:"sortBy" doc:"Sort plugins by field"`
+	Category      string          `query:"category" doc:"Filter by category"`
+	Compositor    string          `query:"compositor" doc:"Filter by compositor (niri, hyprland, any)"`
+	FirstParty    bool            `query:"firstParty" doc:"Only show first-party plugins"`
+	Capability    string          `query:"capability" doc:"Filter by capability"`
+	ExcludeStatus []string        `query:"excludeStatus" doc:"Exclude plugins with these status labels (e.g. broken, deprecated)"`
+	SortBy        PluginSortBy    `query:"sortBy" doc:"Sort plugins by field"`
+	Order         PluginSortOrder `query:"order" doc:"Sort direction (asc or desc); defaults to descending, ascending for name"`
 }
 
 type ListPluginsResponse struct {
@@ -75,32 +96,21 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 		sortBy = SortByUpvotes
 	}
 
-	switch sortBy {
-	case SortByUpvotes:
-		sort.Slice(plugins, func(i, j int) bool {
-			if plugins[i].Upvotes != plugins[j].Upvotes {
-				return plugins[i].Upvotes > plugins[j].Upvotes
-			}
-			if vi, vj := isReviewed(plugins[i]), isReviewed(plugins[j]); vi != vj {
-				return vi
-			}
-			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
-		})
-	case SortByUpdatedAt, SortByNewest:
-		sort.Slice(plugins, func(i, j int) bool {
-			return plugins[i].UpdatedAt.After(plugins[j].UpdatedAt)
-		})
-	case SortByOldest:
-		sort.Slice(plugins, func(i, j int) bool {
-			return plugins[i].UpdatedAt.Before(plugins[j].UpdatedAt)
-		})
-	case SortByName:
-		sort.Slice(plugins, func(i, j int) bool {
-			return plugins[i].Name < plugins[j].Name
-		})
-	case SortByRandom:
+	if sortBy == SortByRandom {
 		rand.Shuffle(len(plugins), func(i, j int) {
 			plugins[i], plugins[j] = plugins[j], plugins[i]
+		})
+	} else {
+		descending := resolveOrder(sortBy, input.Order)
+		sort.SliceStable(plugins, func(i, j int) bool {
+			cmp := comparePlugins(plugins[i], plugins[j], sortBy)
+			if cmp != 0 {
+				if descending {
+					return cmp > 0
+				}
+				return cmp < 0
+			}
+			return strings.ToLower(plugins[i].Name) < strings.ToLower(plugins[j].Name)
 		})
 	}
 
@@ -112,6 +122,65 @@ func (self *HandlerGroup) GetPlugins(ctx context.Context, input *ListPluginsInpu
 	resp.Body.Count = len(plugins)
 
 	return resp, nil
+}
+
+// comparePlugins returns the ascending ordering of a and b for the given sort field
+// (negative when a sorts first). Direction is applied by the caller.
+func comparePlugins(a, b models.Plugin, sortBy PluginSortBy) int {
+	switch sortBy {
+	case SortByUpdatedAt:
+		return compareTime(a.UpdatedAt, b.UpdatedAt)
+	case SortByCreatedAt:
+		return compareTime(a.CreatedAt, b.CreatedAt)
+	case SortByName:
+		return strings.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
+	default:
+		if a.Upvotes != b.Upvotes {
+			return compareInt(a.Upvotes, b.Upvotes)
+		}
+		if ar, br := isReviewed(a), isReviewed(b); ar != br {
+			if ar {
+				return 1
+			}
+			return -1
+		}
+		return compareTime(a.UpdatedAt, b.UpdatedAt)
+	}
+}
+
+// resolveOrder maps an explicit asc/desc to a descending flag, falling back to each
+// field's natural default: name reads best A→Z, everything else newest/highest first.
+func resolveOrder(sortBy PluginSortBy, order PluginSortOrder) bool {
+	switch order {
+	case OrderAscending:
+		return false
+	case OrderDescending:
+		return true
+	default:
+		return sortBy != SortByName
+	}
+}
+
+func compareInt(a, b int) int {
+	switch {
+	case a < b:
+		return -1
+	case a > b:
+		return 1
+	default:
+		return 0
+	}
+}
+
+func compareTime(a, b time.Time) int {
+	switch {
+	case a.Before(b):
+		return -1
+	case a.After(b):
+		return 1
+	default:
+		return 0
+	}
 }
 
 func isReviewed(plugin models.Plugin) bool {

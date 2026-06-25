@@ -172,6 +172,7 @@ type Issue struct {
 	HTMLURL     string    `json:"html_url"`
 	Body        string    `json:"body"`
 	State       string    `json:"state"`
+	CreatedAt   time.Time `json:"created_at"`
 	PullRequest *struct{} `json:"pull_request,omitempty"`
 	Labels      []struct {
 		Name string `json:"name"`
