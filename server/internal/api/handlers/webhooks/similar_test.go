@@ -22,6 +22,47 @@ func TestParseSimilarCommands(t *testing.T) {
 	}
 }
 
+func TestParseSimilarCommandsMultipleRefs(t *testing.T) {
+	cmds := parseSimilarCommands("/similar #403 #411 #403")
+
+	if len(cmds) != 2 {
+		t.Fatalf("expected 2 deduped commands, got %d: %+v", len(cmds), cmds)
+	}
+	for i, want := range []int{403, 411} {
+		if cmds[i].remove || cmds[i].number != want {
+			t.Fatalf("command %d: expected add #%d, got %+v", i, want, cmds[i])
+		}
+	}
+}
+
+func TestParseSimilarCommandsMixedVerbsOneLine(t *testing.T) {
+	cmds := parseSimilarCommands("/similar #1 #2 /unsimilar #3")
+
+	if len(cmds) != 3 {
+		t.Fatalf("expected 3 commands, got %d: %+v", len(cmds), cmds)
+	}
+	if cmds[0].remove || cmds[1].remove {
+		t.Fatalf("first two refs should be additions: %+v", cmds)
+	}
+	if !cmds[2].remove || cmds[2].number != 3 {
+		t.Fatalf("trailing ref should be an unlink of #3: %+v", cmds[2])
+	}
+}
+
+func TestFilterAuthorLabels(t *testing.T) {
+	actions := parseCommands("/deprecated /unmaintained /broken /review")
+
+	allowed := filterAuthorLabels(actions)
+	if len(allowed) != 2 {
+		t.Fatalf("expected only deprecated + unmaintained, got %+v", allowed)
+	}
+	for _, action := range allowed {
+		if !authorLabels[action.label] {
+			t.Fatalf("author should not be allowed to set %s", action.label)
+		}
+	}
+}
+
 func TestEditSimilarBlockAddRemove(t *testing.T) {
 	added, changed := editSimilarBlock(emptyBody, similarEntry{id: "worldClock", number: 530}, true, testRender)
 	if !changed {

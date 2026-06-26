@@ -15,9 +15,13 @@ const (
 	similarEnd   = "<!-- dms-similar-end -->"
 )
 
-// similarCmdRe matches `/similar #530` or `/unsimilar #530`, tolerating a free-text plugin
-// name between the command and the issue reference (e.g. `/similar WorldClock #530`).
-var similarCmdRe = regexp.MustCompile(`/(un)?similar\b[^\n#]*#(\d+)`)
+// similarCmdRe matches a `/similar` or `/unsimilar` command keyword. Each command may be
+// followed by one or more `#<issue>` references on the same line (e.g. `/similar #403 #411`),
+// optionally with free-text plugin names in between (e.g. `/similar WorldClock #530`).
+var similarCmdRe = regexp.MustCompile(`/(un)?similar\b`)
+
+// issueRefRe extracts each `#<issue>` reference that follows a similar command.
+var issueRefRe = regexp.MustCompile(`#(\d+)`)
 
 // similarDataRe reads the machine-readable payload of the managed similar block: a
 // comma-separated list of `id=issueNumber` pairs.
@@ -34,17 +38,31 @@ type similarEntry struct {
 }
 
 func parseSimilarCommands(body string) []similarCommand {
-	matches := similarCmdRe.FindAllStringSubmatch(body, -1)
+	locs := similarCmdRe.FindAllStringSubmatchIndex(body, -1)
 
 	var cmds []similarCommand
 	seen := map[int]bool{}
-	for _, match := range matches {
-		number, err := strconv.Atoi(match[2])
-		if err != nil || seen[number] {
-			continue
+	for i, loc := range locs {
+		remove := loc[2] != -1 // capture group 1 ("un") participated
+
+		// A command owns every issue ref up to the next command, bounded by the line it
+		// lives on, so `/similar #1 /unsimilar #2` keeps each ref under the right verb.
+		segment := body[loc[1]:]
+		if i+1 < len(locs) {
+			segment = body[loc[1]:locs[i+1][0]]
 		}
-		seen[number] = true
-		cmds = append(cmds, similarCommand{remove: match[1] == "un", number: number})
+		if nl := strings.IndexByte(segment, '\n'); nl != -1 {
+			segment = segment[:nl]
+		}
+
+		for _, ref := range issueRefRe.FindAllStringSubmatch(segment, -1) {
+			number, err := strconv.Atoi(ref[1])
+			if err != nil || seen[number] {
+				continue
+			}
+			seen[number] = true
+			cmds = append(cmds, similarCommand{remove: remove, number: number})
+		}
 	}
 	return cmds
 }

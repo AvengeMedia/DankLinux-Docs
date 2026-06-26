@@ -35,6 +35,13 @@ var pluginIDMarker = regexp.MustCompile(`<!--\s*dms-plugin-id:\s*([A-Za-z0-9]+)\
 // selfRestricted commands cannot be used by a plugin's own author (only an Owner can).
 var selfRestrictedLabels = map[string]bool{"status:reviewed": true}
 
+// authorLabels are the status flags a plugin's own author may set on their own plugin,
+// even without a moderator or owner role.
+var authorLabels = map[string]bool{
+	"status:deprecated":   true,
+	"status:unmaintained": true,
+}
+
 type command struct {
 	add   bool
 	label string
@@ -111,13 +118,21 @@ func (h *HandlerGroup) processComment(p eventPayload, labelActions []command, si
 		log.Error("Failed to check team membership", "err", err)
 		return
 	}
-	if !isOwner && !isModerator {
+	isAuthor := h.isPluginAuthor(pluginID, user)
+	if !isOwner && !isModerator && !isAuthor {
 		h.react(ctx, p.Comment.ID, "confused")
 		return
 	}
 
-	if !isOwner {
+	switch {
+	case isOwner:
+		// Owners have no restrictions.
+	case isModerator:
 		labelActions = h.filterSelfModeration(pluginID, user, labelActions)
+	default:
+		// Plugin author without a moderator role: limited to self-service status flags.
+		labelActions = filterAuthorLabels(labelActions)
+		similarActions = nil
 	}
 
 	if len(labelActions) == 0 && len(similarActions) == 0 {
@@ -180,16 +195,19 @@ func extractPluginID(body string) string {
 	return match[1]
 }
 
+func (h *HandlerGroup) isPluginAuthor(pluginID, user string) bool {
+	if h.authors == nil || pluginID == "" {
+		return false
+	}
+	owner, ok := h.authors.RepoOwner(pluginID)
+	return ok && strings.EqualFold(owner, user)
+}
+
 // filterSelfModeration drops review/unreview actions when the commenter is the plugin's
 // own author, so a moderator can't mark their own plugin reviewed. Owners bypass this
 // entirely (checked earlier).
 func (h *HandlerGroup) filterSelfModeration(pluginID, user string, actions []command) []command {
-	if h.authors == nil || pluginID == "" {
-		return actions
-	}
-
-	owner, ok := h.authors.RepoOwner(pluginID)
-	if !ok || !strings.EqualFold(owner, user) {
+	if !h.isPluginAuthor(pluginID, user) {
 		return actions
 	}
 
@@ -197,6 +215,19 @@ func (h *HandlerGroup) filterSelfModeration(pluginID, user string, actions []com
 	for _, action := range actions {
 		if selfRestrictedLabels[action.label] {
 			log.Warnf("Blocking self-moderation of %s by author @%s", action.label, user)
+			continue
+		}
+		allowed = append(allowed, action)
+	}
+	return allowed
+}
+
+// filterAuthorLabels keeps only the status flags an unprivileged plugin author may set on
+// their own plugin (e.g. /unmaintained, /deprecated).
+func filterAuthorLabels(actions []command) []command {
+	var allowed []command
+	for _, action := range actions {
+		if !authorLabels[action.label] {
 			continue
 		}
 		allowed = append(allowed, action)
