@@ -600,7 +600,7 @@ export default function Plugins() {
                       onChange={(e) => setShowFirstPartyOnly(e.target.checked)}
                       className={styles.checkbox}
                     />
-                    <span>Official only</span>
+                    <span>First-party only</span>
                   </label>
                 )}
                 {activeTab === 'plugins' && (
@@ -611,7 +611,7 @@ export default function Plugins() {
                       onChange={(e) => setShowReviewedOnly(e.target.checked)}
                       className={styles.checkbox}
                     />
-                    <span>Show reviewed plugins</span>
+                    <span>Reviewed only</span>
                   </label>
                 )}
                 {activeTab === 'plugins' && (
