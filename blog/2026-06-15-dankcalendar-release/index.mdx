@@ -28,7 +28,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
   </div>
 </div>
 
-**DankCalendar** is a solution for calendar management on Linux that unifies Local, Google, Microsoft, CalDAV, and iCloud calendars into a single agenda. It features background synchronization, native event reminders, secure credential storage, a comprehensive GUI, keyboard-driven navigation, and a scriptable IPC interface. Now available on Arch Linux via the AUR, coming soon to the rest of the Dank Linux repositories.
+**DankCalendar** is a solution for calendar management on Linux that unifies Local, Google, Microsoft, CalDAV, and iCloud calendars into a single agenda. It features background synchronization, native event reminders, secure credential storage, a comprehensive GUI, keyboard-driven navigation, and a scriptable IPC interface. It is available now on every DankLinux-supported distro: Arch (AUR), Fedora, Debian, Ubuntu, and openSUSE.
 
 {/* truncate */}
 
@@ -68,9 +68,9 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
   </div>
 </div>
 
-## Built into DMS 1.5
+## Built into DMS v1.5
 
-DMS 1.5 detects a running `dcal` daemon and uses it as a calendar backend over IPC, with no extra setup.
+DMS v1.5 detects a running `dcal` daemon and uses it as a calendar backend over IPC, with no extra setup.
 
 - **Unified agenda in DankDash.** The calendar card shows your real events from every connected account, color-coded per calendar.
 - **Create and edit events from the shell.** You can add, edit, and delete events right in DankDash. The old khal integration was read-only, so this is new.
@@ -90,17 +90,36 @@ There's no DankLinux server involved. `dcal` talks to Google, Microsoft, your Ca
 
 ## Getting Started
 
-Install on Arch from the AUR:
+DankCalendar ships as **`dankcalendar-git`**, a rolling build from upstream `master`, across the DankLinux repositories. On Arch you can also use the prebuilt **`dankcalendar-bin`** AUR package.
+
+**Arch Linux (AUR)**
 
 ```bash
-# Prebuilt binary
-yay -S dankcalendar-bin
-
-# Or build from latest git
-yay -S dankcalendar-git
+yay -S dankcalendar-bin    # prebuilt binary
+# or
+yay -S dankcalendar-git    # build from latest git
 ```
 
-On **Fedora, Debian, Ubuntu, and OpenSUSE**, install **`dankcalendar-git`** from the [DankLinux repository](/docs/danklinux/) (COPR, OBS, or PPA depending on your distro). See the [installation guide](/docs/dankcalendar/installation) for repository setup commands.
+**Fedora & CentOS (COPR)**
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dankcalendar-git
+```
+
+**Debian (OBS)** and **Ubuntu (PPA)** first enable the [DankLinux repository](/docs/danklinux/), then:
+
+```bash
+sudo apt install dankcalendar-git
+```
+
+**openSUSE (OBS)**
+
+```bash
+sudo zypper install dankcalendar-git
+```
+
+Repository setup commands for each Debian release, Ubuntu, and openSUSE variant are in the [installation guide](/docs/dankcalendar/installation). You can also build from source with `git clone` and `make install`.
 
 You can connect accounts from the GUI or the CLI.
 
