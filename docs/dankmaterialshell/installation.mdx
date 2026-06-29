@@ -621,6 +621,56 @@ sudo xbps-install --repository=hostdir/binpkgs dms dgop
 
 Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list and greeter setup.
 
+### Running Wayland from TTY (Without a Display Manager)
+
+:::tip
+
+If you use **`dms-greeter`**, all seat management, D-Bus initialization, and runtime directories are handled for you automatically. You only need the manual steps below if you choose to bypass display managers entirely and launch your compositor manually from a pure TTY shell.
+
+:::
+
+If you choose to launch your compositor (like `niri`, `Hyprland`, or `sway`) directly from a TTY login prompt instead of using a display manager (like `greetd`), Void Linux requires some manual runtime configuration because it does not run systemd by default:
+
+#### 1. Configure Seat Management (`seatd`)
+Wayland compositors require permissions to access input and graphics hardware devices directly. Void uses `seatd` for this:
+
+```bash
+# Install and enable the seatd daemon
+sudo xbps-install -S seatd
+sudo ln -s /etc/sv/seatd /var/service/
+
+# Add your user to the seatd group to allow hardware access
+sudo usermod -a -G _seatd $(whoami)
+```
+*Note: You must log out of the TTY and log back in (or reboot) for your user group changes to take effect.*
+
+#### 2. Start D-Bus and Launch the Session
+A D-Bus session bus is required for desktop utilities (including the DMS daemon and panels) to communicate. Install and enable the system bus, then launch your compositor wrapped inside a D-Bus session:
+
+```bash
+# Install and enable the system-wide D-Bus service
+sudo xbps-install -S dbus
+sudo ln -s /etc/sv/dbus /var/service/
+
+# Launch your compositor from the TTY command line:
+dbus-run-session niri
+# or
+dbus-run-session Hyprland
+```
+
+#### 3. Handle `XDG_RUNTIME_DIR`
+Wayland sockets and configurations require `XDG_RUNTIME_DIR` to be defined. If it is not automatically set on your system (e.g. if you are not running `elogind`), add the following fallback script to your shell login configuration file (e.g., `~/.bash_profile` or `~/.zprofile`):
+
+```bash
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+    export XDG_RUNTIME_DIR=/run/user/$(id -u)
+    if [ ! -d "$XDG_RUNTIME_DIR" ]; then
+        mkdir -p "$XDG_RUNTIME_DIR"
+        chmod 700 "$XDG_RUNTIME_DIR"
+    fi
+fi
+```
+
 ## All Other Distributions
 
 :::warning
