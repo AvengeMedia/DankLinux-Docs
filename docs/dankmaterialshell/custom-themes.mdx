@@ -122,15 +122,22 @@ For themes without light/dark variants, define colors at the top level:
 - `surfaceText` - Primary text color on surface backgrounds
 - `surfaceVariant` - Alternate surface for subtle differentiation
 - `surfaceVariantText` - Text color for surfaceVariant backgrounds
-- `surfaceContainerLowest` - Lowest elevation container (darkest in dark mode, lightest in light mode)
-- `surfaceContainerLow` - Low elevation container, between surface and surfaceContainer
+- `surfaceContainerLowest` - Lowest elevation container (darkest in dark mode, lightest in light mode) — _matugen-only, see note below_
+- `surfaceContainerLow` - Low elevation container, between surface and surfaceContainer — _matugen-only, see note below_
 - `surfaceContainer` - Container surface, slightly different from surface
 - `surfaceContainerHigh` - Elevated container for layered interfaces
 - `surfaceContainerHighest` - Highest elevation container for top-level surfaces
 
+:::note Not all colors are used by DMS itself
+A few keys complete the Material palette but aren't rendered by DMS's own UI —
+currently `surfaceContainerLowest`, `surfaceContainerLow`, and `backgroundText`. They are
+still required and are exported to matugen templates (VS Code, KDE, Firefox, Zed, etc.), so
+external apps themed by DMS use them even though the shell does not.
+:::
+
 ### Background Colors
 - `background` - Main background color for the interface
-- `backgroundText` - Text color for background areas
+- `backgroundText` - Text color for background areas — _matugen-only, see note above_
 
 ### Outline
 - `outline` - Color for subtle borders, dividers, muted icons, and extra subtle text
