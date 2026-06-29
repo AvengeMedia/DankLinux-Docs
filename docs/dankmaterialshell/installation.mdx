@@ -563,15 +563,40 @@ Install the `niri-session`, `sway-session`, or `labwc-session` packages for thos
 
 :::note
 
-Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Once merged, install with:
-
-```bash
-sudo xbps-install -S dms
-```
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories served via GitHub Pages.
 
 :::
 
-Until then, build from source with `xbps-src`. Every runtime dependency except `dgop` and `danksearch` is already in the Void repositories; the `dms`, `dms-greeter`, `dgop`, and `danksearch` templates are maintained in the [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) and [danklinux](https://github.com/AvengeMedia/danklinux/tree/master/distro/void) repos.
+### Using the Self-Hosted Repositories
+
+#### 1. Add Repository Configurations
+
+Create configuration files in `/etc/xbps.d/` pointing to the repositories (needed for both stable and git/nightly variants):
+
+```bash
+echo "repository=https://avengemedia.github.io/DankMaterialShell/current" | sudo tee /etc/xbps.d/dms.conf
+echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+```
+
+#### 2. Install DMS
+
+Synchronize repositories and install the package:
+
+*   For the **stable** variant:
+    ```bash
+    sudo xbps-install -S dms
+    ```
+
+*   For the **git/nightly** variant (this will conflict with and replace the stable package):
+    ```bash
+    sudo xbps-install -S dms-git
+    ```
+
+*Note: On the first sync, `xbps-install` will output our signing key fingerprint and ask you to type `y` to trust and import it. Verify that the key matches our official signing fingerprint.*
+
+### Build from Source (Alternative)
+
+If you prefer to build from source using `xbps-src`:
 
 ```bash
 # Set up the Void packages tree (one time)
@@ -579,7 +604,11 @@ git clone --depth 1 https://github.com/void-linux/void-packages.git
 cd void-packages
 ./xbps-src binary-bootstrap
 
-# Copy in the DMS templates, then build (dms requires dgop)
+# Copy in the DMS and DankLinux templates (adjust paths as needed)
+cp -R ../DankLinux/distro/void/srcpkgs/* srcpkgs/
+cp -R ../DankMaterialShell/distro/void/srcpkgs/* srcpkgs/
+
+# Build the packages (dms requires dgop)
 ./xbps-src pkg dgop
 ./xbps-src pkg danksearch
 ./xbps-src pkg dms
@@ -588,6 +617,7 @@ cd void-packages
 # Install the results
 sudo xbps-install --repository=hostdir/binpkgs dms dgop
 ```
+
 
 Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list and greeter setup.
 

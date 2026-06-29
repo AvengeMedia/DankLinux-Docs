@@ -222,13 +222,14 @@ NixOS has dedicated documentation with two installation methods:
 
 ### Void Linux
 
-Build the `dms-greeter` package with `xbps-src` (see the [DMS installation guide](../dankmaterialshell/installation#void-linux) for the full build steps), then install and enable it:
+Install the `dms-greeter` package (see the [DMS installation guide](../dankmaterialshell/installation#void-linux) to configure the repository), then install and enable it:
 
 ```bash
-sudo xbps-install --repository=hostdir/binpkgs dms-greeter
+sudo xbps-install -S dms-greeter
 dms greeter enable
 dms greeter sync     # optional: share theming with the shell
 ```
+
 
 On Void, `dms greeter enable` sets up everything logind provides automatically on systemd distros: it configures greetd, enables `seatd`, adds the `_greeter` user to the `_seatd`/`video`/`input` groups, and adds `pam_rundir` to `/etc/pam.d/greetd` so the post-login session gets an `XDG_RUNTIME_DIR`.
 
