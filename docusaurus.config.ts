@@ -178,6 +178,11 @@ const config: Config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    faster: {
+      // SWC HTML minifier strips optional <main>/<div> tags on blog pages and
+      // breaks the three-column layout (content appears unformatted below footer).
+      swcHtmlMinimizer: false,
+    },
   },
 
   // Add favicon, icons, and Open Graph meta tags

@@ -703,6 +703,19 @@ body.blog-page main {
   padding-top: 0;
 }
 
+@media (max-width: 996px) {
+  /* BlogSidebar hides its nav here; drop the empty left column on post/list pages */
+  body.blog-page aside.col--3 {
+    display: none;
+  }
+
+  body.blog-page .container.margin-vert--lg > .row > main {
+    --ifm-col-width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
 /* Markdown headers with purple accent */
 .markdown h1,
 .markdown h2 {
