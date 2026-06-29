@@ -24,7 +24,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
     <h1 className={styles.heroTitle}>
       Dank<span className={styles.gradientText}>Calendar</span>
     </h1>
-    <p className={styles.heroSubtitle}>0.1 · First Release</p>
+    <p className={styles.heroSubtitle}>0.2 · Latest Release</p>
   </div>
 </div>
 
@@ -113,6 +113,42 @@ dcal account add google   # or microsoft, caldav, icloud, local
 DankCalendar runs as a daemon, so closing the window only hides it and sync and reminders keep running in the tray - you can change the close behavior in settings. Enable **Start at login** from Settings, or install the systemd user service.
 
 See the [DankCalendar documentation](/docs/dankcalendar/) for full installation, account setup, and IPC reference.
+
+## Updates since v0.1
+
+DankCalendar has moved quickly since the initial release. [v0.2.0](https://github.com/AvengeMedia/dankcalendar/releases/tag/v0.2.0) is the latest; here are the headline additions from v0.1.1 through v0.2.0.
+
+### Calendar sources
+
+- **iCal feeds and webcal URLs** — Subscribe to public calendar feeds and open `webcal://` links directly.
+- **Evolution Data Server** — Read calendars already managed by GNOME Evolution without duplicating account setup.
+
+### Tasks, events, and reminders
+
+- **Tasks and reminders (VTODO)** — View and manage tasks from every connected provider, not just calendar events.
+- **Event RSVP** — Accept or decline invitations from inside DankCalendar.
+- **Meeting links** — Video call URLs are parsed from events and shown in event details and reminders.
+- **Event-driven reminders** — The reminder scheduler wakes on upcoming events instead of polling on a fixed interval.
+
+### UI and navigation
+
+- **Theme engine** — Custom themes plus a native colorscheme watcher that follows your system light/dark preference.
+- **Sidebar** — Resizable, collapsible, and scrollable, with long calendar names elided cleanly.
+- **Month view** — Scroll through dense months and expand a day to see every event when a cell overflows.
+- **Day and week views** — A time-of-day indicator marks your current position in the schedule.
+- **View shortcuts** — `Ctrl+1` through `Ctrl+5` jump between agenda views.
+- **Quick create** — Double-click a time slot to start a new event.
+- **Close behavior** — Choose whether the window close button hides DankCalendar or quits entirely.
+
+### IPC and integration
+
+- **Open in a specific view** — IPC can show the calendar already focused on month, week, day, or agenda.
+
+### Translations
+
+- **More languages** — Dutch, Italian, Vietnamese, Spanish, Hebrew, Russian, Ukrainian (with RTL), Polish, and Chinese Simplified.
+
+See the full [release history](https://github.com/AvengeMedia/dankcalendar/releases) on GitHub for version-by-version notes.
 
 ## Why a new Linux calendar?
 
