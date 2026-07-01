@@ -137,6 +137,67 @@ Below is a template that can be used with matugen:
 }
 ```
 
+## Keybinds
+
+The interactive TUI reads keybinds from `~/.config/dgop/keybinds.json`. The file is created with the defaults on first run, and changes are hot-reloaded while dgop is running.
+
+Custom keys are **additive**: any keys you set are added on top of the built-in defaults, so the default arrow/vim keys keep working. This makes it easy to add bindings for alternative keyboard layouts (e.g. Colemak-DH) without losing the defaults.
+
+Each action maps to a list of keys. Special keys use the names `up`, `down`, `left`, `right`, `enter`, `esc`, and modifiers like `ctrl+c`.
+
+Default `keybinds.json`:
+
+```json
+{
+  "quit": ["q", "ctrl+c"],
+  "refresh": ["r"],
+  "details": ["d"],
+  "kill": ["x"],
+  "group": ["g"],
+  "sortCPU": ["c"],
+  "sortMemory": ["m"],
+  "sortName": ["n"],
+  "sortPID": ["p"],
+  "navUp": ["up", "k"],
+  "navDown": ["down", "j"],
+  "selectLeft": ["left", "h"],
+  "selectRight": ["right", "l"],
+  "confirm": ["enter"],
+  "cancel": ["esc", "escape"]
+}
+```
+
+### Actions
+
+| Action | Description |
+| --- | --- |
+| `quit` | Exit the TUI |
+| `refresh` | Force a data refresh |
+| `details` | Toggle the process details panel |
+| `kill` | Open the kill confirmation for the selected process |
+| `group` | Toggle grouping of child processes |
+| `sortCPU` | Sort processes by CPU usage |
+| `sortMemory` | Sort processes by memory usage |
+| `sortName` | Sort processes by name |
+| `sortPID` | Sort processes by PID |
+| `navUp` / `navDown` | Move the process selection up/down |
+| `selectLeft` / `selectRight` | Move between options in the kill confirmation |
+| `confirm` | Confirm the kill action |
+| `cancel` | Dismiss the kill confirmation |
+
+### Example: Colemak-DH navigation
+
+Add your layout's home-row keys for navigation. The defaults (`j`/`k`, arrows) still work alongside them:
+
+```json
+{
+  "navUp": ["e"],
+  "navDown": ["n"]
+}
+```
+
+You only need to include the actions you want to extend — omitted actions keep their defaults.
+
 ## Troubleshooting
 
 ### Common Issues
