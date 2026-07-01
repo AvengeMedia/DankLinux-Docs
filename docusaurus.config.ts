@@ -370,10 +370,10 @@ const config: Config = {
     // Replace with your project's social card (fallback for pages without images)
     image: 'img/homepage/danklinux-preview.png',
     announcementBar: {
-      id: 'dankcalendar-release',
+      id: 'v1-5-release',
       content:
-        '🗓️ <b>DankCalendar 0.1 is here</b> — all your calendars in one standalone app. <a href="/blog/dankcalendar-release">Read the announcement</a>',
-      backgroundColor: '#6B46C1',
+        '🦡 <b>DMS 1.5 "The Wolverine" is here</b> — Frame Mode, DankCalendar integration, Hyprland Lua, and a lot more. <a href="/blog/v1-5-release">Read the announcement</a>',
+      backgroundColor: '#C77B3B',
       textColor: '#ffffff',
       isCloseable: true,
     },

@@ -1,0 +1,393 @@
+---
+title: DMS 1.5 "The Wolverine" Released
+description: The fourth major release of DMS — Frame Mode, DankCalendar integration, Hyprland Lua config, MangoWC support, and a lot more.
+slug: v1-5-release
+authors: danklinux
+tags: [release, announcement]
+image: /img/blog/v1.5/og.png
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+{/* Wolverine claw tears - the surface looks ripped open, with a molten glow
+   showing through three jagged, tapered gashes. Edges are recessed with a dark
+   shadow so the dark surface reads as torn away. */}
+export const buildGash = (xTop, xBot, halfW, jitter) => {
+  const N = jitter.length - 1;
+  const pt = (i, side) => {
+    const t = i / N;
+    const x = xTop + (xBot - xTop) * t;
+    const y = 4 + 236 * t;
+    const w = halfW * Math.sin(Math.PI * t); // taper to points at both ends
+    return `${(x + side * w + jitter[i]).toFixed(1)} ${y.toFixed(1)}`;
+  };
+  const right = [];
+  for (let i = 0; i <= N; i++) right.push(`L ${pt(i, 1)}`);
+  const left = [];
+  for (let i = N; i >= 0; i--) left.push(`L ${pt(i, -1)}`);
+  return `M ${pt(0, 1)} ${right.join(' ')} ${left.join(' ')} Z`;
+};
+
+export const ClawMarks = ({ className, opacity = 0.6, mirror = false }) => {
+  const uid = Math.random().toString(36).slice(2, 7);
+  const glow = `tear-g-${uid}`;
+  const rim = `tear-r-${uid}`;
+  const shadow = `tear-s-${uid}`;
+  // tops cluster, bottoms splay outward — a real paw rake diverges
+  const gashes = [
+    buildGash(54, 16, 8, [0, 2.5, -3.5, 3, -2.5, 4, -3, 2.5, -3.5, 1.5, 0]),
+    buildGash(96, 74, 9, [0, -3, 3.5, -2.5, 4, -3.5, 2.5, -4, 3, -2.5, 0]),
+    buildGash(138, 146, 8, [0, 2.5, -3, 3.5, -2.5, 3, -4, 2.5, -3, 2, 0]),
+  ];
+  // bits of surface flung off the strike
+  const debris = [
+    { x: 8, y: 60, r: 2.2 }, { x: 150, y: 50, r: 1.8 }, { x: 24, y: 150, r: 1.6 },
+    { x: 156, y: 168, r: 2.4 }, { x: 70, y: 230, r: 1.8 }, { x: 120, y: 18, r: 1.5 },
+  ];
+  return (
+    <svg viewBox="0 0 164 244" preserveAspectRatio="none" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={glow} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFE9B8" stopOpacity="0" />
+          <stop offset="20%" stopColor="#FFF3D6" stopOpacity="0.95" />
+          <stop offset="48%" stopColor="#F0A93C" stopOpacity="0.95" />
+          <stop offset="78%" stopColor="#C2641F" stopOpacity="0.78" />
+          <stop offset="100%" stopColor="#8A4B1A" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={rim} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFF6E0" stopOpacity="0" />
+          <stop offset="30%" stopColor="#FFF6E0" stopOpacity="1" />
+          <stop offset="70%" stopColor="#FFCE7A" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#FFCE7A" stopOpacity="0" />
+        </linearGradient>
+        <filter id={shadow} x="-70%" y="-30%" width="240%" height="160%">
+          {/* dark recess so the surface reads as lifted/torn around the glow */}
+          <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#05070B" floodOpacity="0.9" />
+        </filter>
+      </defs>
+      <g transform={mirror ? 'translate(164,0) scale(-1,1)' : ''} filter={`url(#${shadow})`}>
+        {gashes.map((d, i) => (
+          <g key={i}>
+            <path fill={`url(#${glow})`} d={d} />
+            {/* bright torn-edge highlight — the lifted surface edge catching the glow */}
+            <path fill="none" stroke={`url(#${rim})`} strokeWidth="0.9" strokeLinejoin="round" d={d} />
+          </g>
+        ))}
+        {debris.map((p, i) => (
+          <circle key={`d${i}`} cx={p.x} cy={p.y} r={p.r} fill={`url(#${rim})`} opacity="0.7" />
+        ))}
+      </g>
+    </svg>
+  );
+};
+
+{/*
+  Screenshots still need to be captured — each section marks where light/dark
+  images go with an "INSERT LIGHT/DARK IMAGES HERE" note.
+  Stats below (stars/contributors) are approximate — verify before publishing.
+*/}
+
+<div className={styles.blogHero}>
+  <div className={styles.claws} aria-hidden="true">
+    <div className={`${styles.clawSet} ${styles.clawLeft}`}>
+      <ClawMarks className={styles.clawAnim1} opacity={0.5} />
+    </div>
+    <div className={`${styles.clawSet} ${styles.clawRight}`}>
+      <ClawMarks className={styles.clawAnim2} opacity={0.5} mirror />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.5</span>
+    </h1>
+    <p className={styles.heroSubtitle}>The Wolverine</p>
+  </div>
+</div>
+
+We're excited to announce DankMaterialShell (DMS) 1.5 "The Wolverine"! This release introduces Frame Mode, a new connected surface that ties the whole shell together, along with native DankCalendar integration, Hyprland Lua config and MangoWC support, a reworked Material 3 shadow system, and hundreds of fixes and improvements across DMS.
+
+{/* truncate */}
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>3,900+</span>
+    <span className={styles.statLabel}>Commits</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>7k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>200+</span>
+    <span className={styles.statLabel}>Contributors</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>230+</span>
+    <span className={styles.statLabel}>Plugins</span>
+  </div>
+</div>
+
+## Frame Mode — Connected & Standalone
+
+> **INSERT LIGHT/DARK IMAGES HERE** — Frame Mode: the bar, dock, popouts, and modals drawn as one connected surface.
+
+Frame Mode is the big one in 1.5. It lets the Dank Bar, dock, popouts, modals, and notifications draw as a single connected surface instead of separate floating pieces.
+
+- **Connected mode** joins shell elements together with SDF-rendered corners and connectors. Popouts and the dock attach to the bar based on which edge it's on.
+- **Standalone mode** keeps elements separate, with configurable inset padding and spacing.
+- Every surface adapts to whichever side your bar is on, and the dock auto-hides under maximized windows and games.
+
+## DankCalendar Integration
+
+> **INSERT LIGHT/DARK IMAGES HERE** — creating, editing, and navigating events right from the shell.
+
+DMS can now use [DankCalendar](/blog/dankcalendar-release) as a calendar backend over IPC. You can **create, edit, and delete events** directly in the calendar overview — the old khal integration was read-only. There's also a local to-do/task planner, keyboard navigation throughout, an optional week-number display, and a backend selector (Auto, khal, or DankCalendar) in Settings. If `dcal` isn't running, DMS falls back to khal automatically.
+
+## Hyprland Lua Configuration
+
+> **INSERT LIGHT/DARK IMAGES HERE** — Hyprland Lua config parsing, keybinds, and migration.
+
+DMS now supports Hyprland's **Lua** configuration — reading and writing Lua config, Lua-based default keybinds and dispatchers, fractional-scaling display presets, touchpad gestures, and a resize-on-border layout option. Migration tools convert legacy `conf` setups to Lua, and your existing `conf` config keeps working until you migrate.
+
+## MangoWC Support
+
+DMS 1.5 brings full support for MangoWC across the shell, the installer, and the UI tools, with live config reloads, a new workspace pill in the overview, and MangoWC keybinds and dispatchers.
+
+## Material 3 Shadows & Elevation
+
+> **INSERT LIGHT/DARK IMAGES HERE** — the reworked elevation system with global and per-bar shadow controls.
+
+The Material 3 elevation and shadow system has been reworked so shadows stay consistent across notifications, popouts, and other surfaces. A global shadow toggle lives in the Themes tab, with light-color and direction overrides, plus independent shadow settings per Dank Bar.
+
+## Launcher, Spotlight & Clipboard
+
+> **INSERT LIGHT/DARK IMAGES HERE** — the lightweight Spotlight option, plus integrated clipboard and settings search.
+
+There's a new lightweight **Spotlight** launcher alongside the original Dank Launcher. Both get integrated clipboard and settings search, `/d` and `/f` prefixes for directory/file search, launcher history, a toggleable color-picker entry, and `Alt+1/2/3/4` context switching. The **clipboard editor** is back too, with type filters (text/images), search over saved entries, and configurable action buttons.
+
+## Notepad
+
+> **INSERT LIGHT/DARK IMAGES HERE** — the full popout Notepad with side selection and conflict-aware file handling.
+
+The Notepad got a big refactor. A new **popout mode** gives you a full editing surface that docks to the left or right side of the screen, with its own layout, gap, and shortcut settings. There are also stronger safeguards to preserve your work, a banner when a note changes on disk, support for files without an extension, and drag-and-drop tab reordering.
+
+## Network, Battery & Tailscale
+
+> **INSERT LIGHT/DARK IMAGES HERE** — Secret Service integration, connection progress, and the new battery tab.
+
+A lot changed across networking and power this release:
+
+- **Network:** WiFi/VPN secrets retrieved from the D-Bus Secret Service (with unlock support), saved-WiFi state, connection progress indicators, enterprise-WiFi password modals, and stable signal-bucketed ordering.
+- **Battery:** A new battery settings tab, percentage and remaining-time toggles, a critical-battery alert system (ported from the DankBatteryAlerts plugin), and Bluetooth device battery detection.
+- **Tailscale:** A control-center integration with connect/disconnect, exit-node selection, LAN-access toggles, and live status.
+
+## Greeter & Lock Screen
+
+> **INSERT LIGHT/DARK IMAGES HERE** — the multi-user greeter, auto-login, and FIDO2/U2F security key support.
+
+The greeter got a redesigned multi-user UI with per-user theme sync, an **auto-login** option, and user management from DMS Settings. The lock screen now supports **FIDO2/U2F security keys**, unified PAM services with the greeter, faillock lockout reasons (instead of a generic "incorrect password"), and IME bypass for password entry.
+
+## Headless Installation
+
+The `dankinstall` installer can now run **fully unattended** — no TUI, scriptable for provisioning, dotfile bootstraps, and CI. Passing `--compositor` and `--term` switches it into headless mode:
+
+```bash
+dankinstall --compositor niri --term ghostty --yes
+```
+
+Choose `niri`, `hyprland`, or `mango` for the compositor and `ghostty`, `kitty`, or `alacritty` for the terminal. Additional flags give you control over the rest of the install: `--include-deps` / `--exclude-deps` to tune optional dependencies (like `dms-greeter`), `--replace-configs` (or `--replace-configs-all`) to deploy named configs, and `--yes` to auto-confirm every prompt. Install logs are written to `$DANKINSTALL_LOG` (falling back to `/var/tmp`) and streamed to stdout.
+
+## Available Distributions
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/NixOS.svg')} alt="NixOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/gentoo-logo.svg')} alt="Gentoo" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/void.svg')} alt="Void Linux" /></div>
+  </div>
+</div>
+
+DMS is available for Arch Linux, Fedora, openSUSE, Debian, Ubuntu, CentOS, NixOS, Gentoo, Void Linux, and more. New in 1.5: initial **Void Linux** packaging and **Ubuntu 26.10 / 26.04 LTS** support. See the [installation guide](/docs/getting-started) for setup instructions.
+
+## Upgrade Notes
+
+:::warning
+This release contains changes that may require manual intervention.
+:::
+
+### (Breaking) App ID Change
+
+The DMS app ID is now `com.danklinux.dms`. If you have compositor window rules targeting the old app ID, you'll need to update them to the new ID.
+
+### Quickshell 0.3+ Required
+
+DMS 1.5 requires Quickshell 0.3 or newer; support for 0.2 has been dropped. If you install via the Dank Linux repositories or `dankinstall`, this is handled for you — otherwise update Quickshell before upgrading DMS.
+
+## Bug Fixes and Improvements
+
+<details>
+<summary>View Details (700+ commits)</summary>
+
+Since the 1.4 release, DMS has received extensive fixes and improvements across every component:
+
+**Frame Mode & Connected UI**
+- Standalone and Connected surface modes with SDF-rendered corners/connectors
+- Hover mode to reveal popouts and the launcher across all bar modes
+- Dynamic modal, popout, dock, and notification geometry based on bar position
+- Bar inset padding controls; modal escape handling in connected mode
+- Dock geometry component and unified base management
+- Connected-mode surface recovery and fullscreen layering refinement
+
+**Launcher & Spotlight**
+- New lightweight Spotlight launcher alongside the original
+- Integrated clipboard/settings search, launcher history
+- `/d` and `/f` file/directory search prefixes
+- Expandable search bar and plugin browser sorting/filtering
+- Color-picker entry toggle, hide package-source badges
+- `Alt+1/2/3/4` context switching and keyboard-nav improvements
+
+**Clipboard**
+- Clipboard editor revived with type filters and search over saved entries
+- Configurable action-button visibility, preferred image MIME types
+- Larger payload support, pinned-entry dedupe, HTML remote-fetch mitigation
+
+**Calendar**
+- DankCalendar backend with event create/edit and keyboard nav
+- Local to-do/task planner, week-number option, backend selector
+
+**Hyprland**
+- Full Lua config parsing/writing, Lua keybinds and dispatchers
+- Fractional-scaling presets, touchpad gestures, resize-on-border
+- Legacy conf migration tools, window rules tab, mouse-wheel keysim fixes
+
+**MangoWC**
+- Full support in DMS, installer, and UI tools
+- Live config reloads, overview workspace pill, dispatcher keybinds
+
+**Themes & Shadows**
+- Reworked M3 elevation/shadow system with global and per-bar controls
+- Bidirectional freedesktop color-scheme sync
+- New neovim theme engine
+- Separate light/dark icon paths with hot-reload, external theme detection
+- DankColorSwatch component, Vencord/Zed theming, tray icon tinting/monochrome option
+
+**Notifications**
+- Configurable summary/body font size, opt-in timeout progress bar
+- Duplicate dedupe, do-not-disturb with durations, suppress-sound hint
+- Crisper whole-pixel rendering and toast blur fixes
+
+**Dock & Bar**
+- Dank Bar refactor with granular background toggles, icon/text max sizes, M3 padding slider, and per-widget icon scale
+- Workspace/widget color customization, inset padding for frame mode
+- Separate workspace appearance for unfocused displays, stronger active-app highlight
+- Do-Not-Disturb / Idle-Inhibitor indicators on the Control Center button, optional keyboard-layout icon
+- Auto-hide under maximized windows/games, multi-monitor fullscreen detection
+- Tray overflow popup, freeze/wallpaper recovery after DPMS resume
+
+**Network & Connectivity**
+- Secret Service WiFi/VPN secret retrieval with unlock
+- Saved-WiFi state, connection progress, VPN status indicators
+- Enterprise-WiFi password modals, signal bucketing, stale-link pruning
+
+**Battery & Power**
+- New battery tab, percentage/remaining-time toggles, critical alerts
+- Bluetooth battery detection, native power-profile target and cycling keybind
+
+**Greeter & Lock Screen**
+- Multi-user UI with per-user theme sync, auto-login, user management
+- Local user session switching, animated-GIF profile pictures
+- Video wallpapers as lock-screen screensaver
+- FIDO2/U2F security keys, unified PAM services, faillock reasons, IME bypass
+- Bundled PAM services, AppArmor profile management, Lua Hyprland support
+
+**Display & Monitor**
+- Display Profiles control-center widget with disabled-output support
+- Display auto-switching backed by JSON profile storage
+- Fractional-scaling presets, wallpaper background color, DPMS recovery
+- Wallpaper thumbnail preloading with switch/sort options
+
+**Media & Audio**
+- Scroll/right-click output device control in media popout
+- Interactive microphone volume OSD with IPC controls
+- Unified media controls, exclude specific MPRIS players, adaptive media width
+- Configurable sound muting during media playback, persist last active player
+
+**Notepad**
+- Complete refactor with a new popout mode, blur, and settings
+- Tab reordering via drag-and-drop, expand/collapse IPC handlers
+
+**Settings & UI**
+- New Compositor, Battery, Autostart, and Default Apps sections
+- DiskUsage widget config overlay, configurable Control Center group ordering
+- Network split into logical tabs, dedup'd search index, dynamic card registration
+
+**Plugins**
+- Runtime discovery with scan/rescan/reload IPCs, composite plugins
+- Desktop widget plugins with screen/focus exposure, browser sorting/filtering
+
+**Localization**
+- New Swedish, German, Russian, Esperanto, and Vietnamese locales
+- Locale-override with hot-reload, decoupled time/language locale, RTL fixes
+
+**Distro & Packaging**
+- Void Linux, Ubuntu 26.10/26.04 LTS, and Fedora "evernight" spin support
+- Greeter packaging for Debian/openSUSE on OBS, bundled Go toolchain, Gentoo GURU overlay
+
+**Core & Performance**
+- Quickshell 0.3+ requirement, LegacyNetworkService rewrite to Quickshell.Networking
+- App ID migration to `com.danklinux.dms`, font cache auto-rebuild, Mockery v3
+- Headless mode with command-line flags, System Update IPC commands
+- Terminal-multiplexer launcher, GeoClue2 location backend, login sound
+
+</details>
+
+## Resources
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  Get Started with DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>Plugins</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>Sponsor on GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>Special thanks to <a href="https://github.com/YaLTeR">YaLTeR</a> for collaborating with the DMS team, for <a href="https://github.com/niri-wm/niri">niri</a> - the compositor that inspired DMS, and for hosting DMS on the <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a>.</span>
+</div>
+
+<div className={styles.thankYouHero}>
+  <div className={styles.claws} aria-hidden="true">
+    <div className={`${styles.clawSet} ${styles.clawLeft}`}>
+      <ClawMarks className={styles.clawAnim1} opacity={0.4} />
+    </div>
+    <div className={`${styles.clawSet} ${styles.clawRight}`}>
+      <ClawMarks className={styles.clawAnim2} opacity={0.4} mirror />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      Thank <span className={styles.gradientText}>You</span>
+    </h2>
+    <p className={styles.thankYouText}>To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.</p>
+    <p className={styles.thankYouTagline}>Zan, Zendegi, Azadi</p>
+  </div>
+</div>
