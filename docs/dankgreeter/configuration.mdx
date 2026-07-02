@@ -268,6 +268,11 @@ If you prefer to set up syncing manually:
   sudo usermod -aG greeter <username>
   ```
 
+  On NixOS use:
+  ```nix
+  users.users.your-username.extraGroups = [ "greeter" ];
+  ```
+
 2. Set up ACL permissions on parent directories:
   ```bash
   setfacl -m u:greeter:x ~
@@ -417,7 +422,7 @@ Unlike a full `dms greeter sync`, this updates **only** greetd's `[initial_sessi
 
 ## Manual Configuration
 
-The greeter uses three main configuration files located in `/var/cache/dms-greeter/` (or your custom `DMS_GREET_CFG_DIR`):
+The greeter uses three main configuration files located in `/var/cache/dms-greeter/`. If you defined a custom directory, it will be in `DMS_GREET_CFG_DIR`. For NixOS users it is under `/var/lib/dms-greeter/`:
 
 - `settings.json` - Appearance, behavior, and widget settings
 - `session.json` - Wallpaper configuration
