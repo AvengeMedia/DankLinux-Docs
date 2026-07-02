@@ -105,20 +105,17 @@ Select your release, then choose stable or development packages.
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
-sudo apt update
 
-# Install DMS
+sudo apt update
 sudo apt install dms
 ```
 
@@ -126,20 +123,17 @@ sudo apt install dms
 <TabItem value="git" label="Latest Development Build">
 
 ```bash
-# DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
-sudo apt update
 
-# Install DMS
+sudo apt update
 sudo apt install dms-git
 ```
 
@@ -153,20 +147,17 @@ sudo apt install dms-git
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
-sudo apt update
 
-# Install DMS
+sudo apt update
 sudo apt install dms
 ```
 
@@ -174,20 +165,17 @@ sudo apt install dms
 <TabItem value="git" label="Latest Development Build">
 
 ```bash
-# DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
-sudo apt update
 
-# Install DMS
+sudo apt update
 sudo apt install dms-git
 ```
 
@@ -201,20 +189,17 @@ sudo apt install dms-git
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
-sudo apt update
 
-# Install DMS
+sudo apt update
 sudo apt install dms
 ```
 
@@ -222,20 +207,17 @@ sudo apt install dms
 <TabItem value="git" label="Latest Development Build">
 
 ```bash
-# DankLinux repository
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 
-# DMS repository
 curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
 echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
-sudo apt update
 
-# Install DMS
+sudo apt update
 sudo apt install dms-git
 ```
 
@@ -440,22 +422,19 @@ These overlays are maintained by the community, not the DMS team. For issues wit
 
 :::
 
-The recommended option for Gentoo is the official [guru](https://wiki.gentoo.org/wiki/Project:GURU) community overlay, which packages DMS (`gui-apps/dankmaterialshell`) alongside companion tools `gui-apps/dgop` and `gui-apps/danksearch`.
+DankMaterialShell is available on Gentoo through various community overlays.
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ### guru (Recommended)
 
-Enable the guru overlay and install DMS:
+Enable the official [guru](https://wiki.gentoo.org/wiki/Project:GURU) overlay, which packages DMS (`gui-apps/dankmaterialshell`) alongside companion tools `gui-apps/dgop` and `gui-apps/danksearch`.
 
 ```bash
 sudo eselect repository enable guru
 sudo emaint sync -r guru
 sudo emerge --ask gui-apps/dankmaterialshell
-```
-
-Install the optional companion tools:
-
-```bash
-sudo emerge --ask gui-apps/dgop gui-apps/danksearch
 ```
 
 :::note
@@ -468,85 +447,68 @@ echo "gui-apps/dankmaterialshell ~amd64" | sudo tee -a /etc/portage/package.acce
 
 :::
 
+### Alternative Overlays
+
+If you prefer not to use `guru`, you can use one of these alternative stable overlays:
+
+<Tabs groupId="gentoo-alternative-stable">
+<TabItem value="tdgentoo" label="tdgentoo" default>
+
+Provides a versioned ebuild (`gui-wm/DankMaterialShell`) pinned to stable releases:
+
+```bash
+sudo eselect repository add tdgentoo git https://github.com/timdodge/tdgentoo.git
+sudo emaint sync -r tdgentoo
+sudo emerge --ask gui-wm/DankMaterialShell
+```
+
+</TabItem>
+<TabItem value="dacyberduck" label="dacyberduck">
+
+Provides DMS under `dank-base/dankmaterialshell`:
+
+```bash
+sudo eselect repository add dacyberduck git https://codeberg.org/dacyberduck/gentoo-overlay.git
+sudo emaint sync -r dacyberduck
+sudo emerge --ask dank-base/dankmaterialshell
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
 ### quilat-overlay
 
-The [quilat-overlay](https://github.com/Graght/quilat-overlay) provides a live ebuild (`gui-shell/dms-9999`) with OpenRC and systemd support. This tracks git master, so updates come via `emerge --sync && emerge -uDN @world`.
+Provides a live ebuild (`gui-shell/dms-9999`) tracking git master with OpenRC and systemd support.
 
 ```bash
 sudo eselect repository add quilat-overlay git https://github.com/Graght/quilat-overlay.git
 sudo emaint sync -r quilat-overlay
 ```
 
-Or manually in `/etc/portage/repos.conf/quilat-overlay.conf`:
+Choose the appropriate command for your init system:
 
-```ini
-[quilat-overlay]
-location = /var/db/repos/quilat-overlay
-sync-type = git
-sync-uri = https://github.com/Graght/quilat-overlay.git
-```
-
-Then sync and install:
+<Tabs groupId="gentoo-init">
+<TabItem value="systemd" label="systemd" default>
 
 ```bash
-sudo emaint sync -r quilat-overlay
-
-# With systemd
 sudo emerge --ask gui-shell/dms
+```
 
-# With OpenRC (elogind)
+</TabItem>
+<TabItem value="openrc" label="OpenRC">
+
+```bash
 sudo USE="-systemd" emerge --ask gui-shell/dms
 ```
 
-### tdgentoo
+</TabItem>
+</Tabs>
 
-The [tdgentoo](https://github.com/timdodge/tdgentoo) overlay provides a versioned ebuild (`gui-wm/DankMaterialShell`) pinned to stable releases.
-
-```bash
-sudo eselect repository add tdgentoo git https://github.com/timdodge/tdgentoo.git
-sudo emaint sync -r tdgentoo
-```
-
-Or manually in `/etc/portage/repos.conf/tdgentoo.conf`:
-
-```ini
-[tdgentoo]
-location = /var/db/repos/tdgentoo
-sync-type = git
-sync-uri = https://github.com/timdodge/tdgentoo.git
-```
-
-Then sync and install:
-
-```bash
-sudo emaint sync -r tdgentoo
-sudo emerge --ask gui-wm/DankMaterialShell
-```
-
-### dacyberduck overlay
-
-The [dacyberduck overlay](https://codeberg.org/dacyberduck/gentoo-overlay) provides DMS under `dank-base/dankmaterialshell`.
-
-```bash
-sudo eselect repository add dacyberduck git https://codeberg.org/dacyberduck/gentoo-overlay.git
-sudo emaint sync -r dacyberduck
-```
-
-Or manually in `/etc/portage/repos.conf/dacyberduck.conf`:
-
-```ini
-[dacyberduck]
-location = /var/db/repos/dacyberduck
-sync-type = git
-sync-uri = https://codeberg.org/dacyberduck/gentoo-overlay.git
-```
-
-Then sync and install:
-
-```bash
-sudo emaint sync -r dacyberduck
-sudo emerge --ask dank-base/dankmaterialshell
-```
+</TabItem>
+</Tabs>
 
 ## NixOS
 
@@ -576,38 +538,44 @@ Install the `niri-session`, `sway-session`, or `labwc-session` packages for thos
 
 :::note
 
-Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories served via GitHub Pages.
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories or build them from source.
 
 :::
 
-### Using the Self-Hosted Repositories
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DMS-Hosted Repository" default>
 
-#### 1. Add Repository Configurations
-
-Create configuration files in `/etc/xbps.d/` pointing to the repositories (needed for both stable and git/nightly variants):
+<Tabs>
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 echo "repository=https://avengemedia.github.io/DankMaterialShell/current" | sudo tee /etc/xbps.d/dms.conf
 echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S dms
 ```
 
-#### 2. Install DMS
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
-Synchronize repositories and install the package:
+```bash
+echo "repository=https://avengemedia.github.io/DankMaterialShell/current" | sudo tee /etc/xbps.d/dms.conf
+echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S dms-git
+```
 
-*   For the **stable** variant:
-    ```bash
-    sudo xbps-install -S dms
-    ```
+</TabItem>
+</Tabs>
 
-*   For the **git/nightly** variant (this will conflict with and replace the stable package):
-    ```bash
-    sudo xbps-install -S dms-git
-    ```
+:::note
 
-*Note: On the first sync, `xbps-install` will output our signing key fingerprint and ask you to type `y` to trust and import it. Verify that the key matches our official signing fingerprint.*
+On the first sync, `xbps-install` will output our signing key fingerprint and ask you to type `y` to trust and import it. Verify that the key matches our official signing fingerprint.
 
-### Build from Source (Alternative)
+:::
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
 
 If you prefer to build from source using `xbps-src`:
 
@@ -631,8 +599,10 @@ cp -R ../DankMaterialShell/distro/void/srcpkgs/* srcpkgs/
 sudo xbps-install --repository=hostdir/binpkgs dms dgop
 ```
 
+</TabItem>
+</Tabs>
 
-Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list and greeter setup.
+Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `dankcalendar` (calendar), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list and greeter setup.
 
 ### Running Wayland from TTY (Without a Display Manager)
 
