@@ -5,6 +5,8 @@ sidebar_position: 2
 ---
 
 import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <Hero
   asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
@@ -26,16 +28,180 @@ import Hero from '@site/src/components/Hero';
 
 ### Distribution Packages
 
-#### Arch Linux
+### Arch & Derivatives
+
+<Tabs>
+<TabItem value="stable" label="Stable Release" default>
+
 ```bash
 sudo pacman -S dgop
 ```
 
-#### Fedora
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+paru -S dgop-git
+```
+
+</TabItem>
+</Tabs>
+
+### Fedora & CentOS
+
 ```bash
 sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dgop
 ```
+
+### Debian & Ubuntu
+
+#### Debian
+
+Packages are published on OBS for **Debian 13 (Trixie)**, **Debian Testing**, and **Debian Sid**.
+
+Select your release:
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dgop
+```
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dgop
+```
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dgop
+```
+
+</TabItem>
+</Tabs>
+
+#### Ubuntu
+
+Ubuntu 26.04 LTS+ (Resolute Raccoon) is supported via Launchpad PPA.
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+sudo apt install dgop
+```
+
+### openSUSE & Derivatives
+
+DGOP is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed, Leap 16/16.1, and Slowroll.
+
+Select your distribution:
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux
+
+:::note
+
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories or build them from source.
+
+:::
+
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DMS-Hosted Repository" default>
+
+```bash
+echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S dgop
+```
+
+:::note
+
+On the first sync, `xbps-install` will output our signing key fingerprint and ask you to type `y` to trust and import it. Verify that the key matches our official signing fingerprint.
+
+:::
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
+
+If you prefer to build from source using `xbps-src`:
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the templates (adjust paths as needed)
+cp -R ../DankLinux/distro/void/srcpkgs/dgop* srcpkgs/
+
+# Build the package
+./xbps-src pkg dgop
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs dgop
+```
+
+</TabItem>
+</Tabs>
 
 #### Gentoo
 

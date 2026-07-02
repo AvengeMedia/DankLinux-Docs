@@ -34,27 +34,17 @@ This installs the package and handles all configuration automatically.
 
 > ⚠️ **[This replaces your current display manager.](#dankinstall-users)**
 
-Or install the package manually and proceed to [Completing Setup](#completing-setup):
-- **Arch**: `paru -S greetd-dms-greeter-git` or `yay -S greetd-dms-greeter-git` *(requires paru or yay for `dms greeter install`)*
-- **Fedora**: `sudo dnf install dms-greeter`
-- **Debian/Ubuntu**: `sudo apt install dms-greeter`
-- **openSUSE**: `sudo zypper install dms-greeter`
-
 :::
 
 ## Distro Installation
 
-### Arch Linux (AUR)
+### Arch & Derivatives
 
 ```bash
 paru -S greetd-dms-greeter-git
-# Or with yay
-yay -S greetd-dms-greeter-git
 ```
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
-
-### Fedora
+### Fedora & CentOS
 
 ```bash
 sudo dnf copr enable avengemedia/danklinux
@@ -63,11 +53,13 @@ sudo dnf install dms-greeter
 
 The `dms-greeter` RPM installs `/usr/lib/sysusers.d/dms-greeter.conf` so the `greeter` user is recreated from `/usr` on every boot. That matters on **Fedora Atomic**, Universal Blue, bootc, and other ostree systems where install-time `useradd` in `/etc/passwd` may not persist.
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
+### Debian & Ubuntu
 
-### Debian
+#### Debian
 
-#### Step 1: Add the DankLinux repository
+Packages are published on OBS for **Debian 13 (Trixie)**, **Debian Testing**, and **Debian Sid**.
+
+Select your release:
 
 <Tabs groupId="debian-release">
 <TabItem value="trixie" label="Debian 13 (Trixie)" default>
@@ -78,6 +70,7 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+sudo apt install dms-greeter
 ```
 
 </TabItem>
@@ -89,10 +82,11 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+sudo apt install dms-greeter
 ```
 
 </TabItem>
-<TabItem value="sid" label="Debian Sid (Unstable)">
+<TabItem value="sid" label="Debian Sid">
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
@@ -100,20 +94,15 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+sudo apt install dms-greeter
 ```
 
 </TabItem>
 </Tabs>
 
-#### Step 2: Install DankGreeter
+#### Ubuntu
 
-```bash
-sudo apt install dms-greeter
-```
-
-After installation, proceed to [Completing Setup](#completing-setup) below.
-
-### Ubuntu
+Ubuntu 26.04 LTS+ (Resolute Raccoon) is supported via Launchpad PPA.
 
 ```bash
 sudo add-apt-repository ppa:avengemedia/danklinux
@@ -121,9 +110,11 @@ sudo apt update
 sudo apt install dms-greeter
 ```
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
+### openSUSE & Derivatives
 
-### openSUSE
+DankGreeter is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed, Leap 16/16.1, and Slowroll.
+
+Select your distribution:
 
 <Tabs groupId="opensuse-distro">
 <TabItem value="tumbleweed" label="Tumbleweed" default>
@@ -159,6 +150,53 @@ sudo zypper install dms-greeter
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
 sudo zypper install dms-greeter
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux
+
+:::note
+
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories or build them from source.
+
+:::
+
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DMS-Hosted Repository" default>
+
+```bash
+echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S dms-greeter
+```
+
+:::note
+
+On the first sync, `xbps-install` will output our signing key fingerprint and ask you to type `y` to trust and import it. Verify that the key matches our official signing fingerprint.
+
+:::
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
+
+If you prefer to build from source using `xbps-src`:
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the templates (adjust paths as needed)
+cp -R ../DankLinux/distro/void/srcpkgs/dms-greeter* srcpkgs/
+
+# Build the package
+./xbps-src pkg dms-greeter
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs dms-greeter
 ```
 
 </TabItem>
