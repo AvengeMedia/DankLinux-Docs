@@ -25,7 +25,7 @@ This guide covers installation of DankMaterialShell across different Linux distr
 
 - [**Quickshell**](https://github.com/quickshell-mirror/quickshell) (required) - The core framework
 - [**cava**](https://github.com/karlstav/cava) (optional) - Audio visualizer widget
-- [**cliphist**](https://github.com/sentriz/cliphist) + [**wl-clipboard**](https://github.com/bugaevc/wl-clipboard) (optional) - Clipboard history
+- [**dankcalendar**](https://github.com/AvengeMedia/dankcalendar) (optional) - Complete desktop calendar app with native integration for DMS calendar widgets
 - [**dgop**](https://github.com/AvengeMedia/dgop) (optional) - System telemetry for resource widgets
 - [**dsearch**](https://github.com/AvengeMedia/danksearch) (optional) - Filesystem search engine
 - [**matugen**](https://github.com/InioX/matugen) (optional) - Material Design color palette generation
@@ -42,11 +42,24 @@ Only **Quickshell** is required. All other dependencies are optional and enable 
 
 ## Arch & Derivatives
 
-`dms` is available in the official Arch repositories (extra).
+`dms` is available in the official Arch repositories (extra), and as a development package in the AUR.
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
 sudo pacman -S dms-shell
 ```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+paru -S dms-shell-git
+```
+
+</TabItem>
+</Tabs>
 
 These packages ship the shell, widgets, and CLI. Pair them with `niri`, `hyprland`, `sway`, `mangowc`, `labwc`, or `miracle-wm` packages from the official repositories for a complete desktop stack.
 
@@ -73,7 +86,7 @@ sudo dnf install dms
 </TabItem>
 </Tabs>
 
-The COPR repositories also provide companion packages such as `quickshell-git`, `cliphist`, `matugen`, and other utilities used by the default configuration.
+The COPR repositories also provide companion packages such as `quickshell-git`, `dankcalendar`, `matugen`, and other utilities used by the default configuration.
 
 ## Debian & Ubuntu
 
@@ -749,7 +762,7 @@ Install optional components for full functionality using your distribution's pac
 - `dsearch` - Filesystem search engine
 - `matugen` - Material Design color palette generation
 - `i2c-tools` - ddc monitor backlight control
-- `wl-clipboard` + `cliphist` - Clipboard history
+- `dankcalendar` - Desktop calendar integration
 - `cava` - Audio visualizer widget
 - `qt6-multimedia` - System sound feedback
 
