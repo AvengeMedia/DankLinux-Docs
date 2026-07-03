@@ -268,11 +268,6 @@ If you prefer to set up syncing manually:
   sudo usermod -aG greeter <username>
   ```
 
-  On NixOS use:
-  ```nix
-  users.users.your-username.extraGroups = [ "greeter" ];
-  ```
-
 2. Set up ACL permissions on parent directories:
   ```bash
   setfacl -m u:greeter:x ~
