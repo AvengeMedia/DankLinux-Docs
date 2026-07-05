@@ -54,6 +54,14 @@ Disables matugen dynamic theming system for troubleshooting or when using static
 DMS_DISABLE_MATUGEN=1 dms run
 ```
 
+### DMS_ENABLE_GTK4_REFRESH
+
+Enables the GTK4 live theme refresh after each matugen rebuild. Running GTK4/libadwaita apps only reload `~/.config/gtk-4.0` colors when the system color-scheme changes, so DMS briefly round-trips `color-scheme` through the opposite value to force it. Some apps that follow the portal color-scheme (notably Chromium/Chrome) can miss the restore signal and get stuck in the wrong mode, so this is disabled by default — without it, GTK4 apps pick up new colors on their next launch. Set to `1` to enable.
+
+```bash
+DMS_ENABLE_GTK4_REFRESH=1 dms run
+```
+
 ### DMS_DISABLE_CAVA
 
 Disables the built-in Cava audio visualizer. Set to `1` to disable.
