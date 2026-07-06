@@ -408,7 +408,36 @@ code --install-extension dms-theme.vsix
   style={{ maxWidth: '800px', width: '100%' }}
 />
 
+### Neovim
 
+Theming for Neovim requires the [base46 plugin](https://github.com/AvengeMedia/base46) be installed. You can install this with your preferred Neovim plugin manager. For example, using `lazy.nvim`:
+
+```lua
+{
+  "AvengeMedia/base46",
+  lazy = true,
+  opts = {},
+}
+```
+
+DMS generates `~/.config/nvim/colors/dms.lua` and `~/.config/nvim/lua/lualine/themes/dms.lua` that work in conjuction with the base46 plugin.
+
+Loading the colorscheme can be as simple as adding the following to your Neovim config:
+
+```lua
+vim.cmd.colorscheme("dms")
+```
+
+Those that use LazyVim may instead prefer to override and set their colorscheme similar to what is shown in the official [LazyVim documentation](https://www.lazyvim.org/plugins/colorscheme):
+
+```lua
+-- ~/.config/nvim/lua/plugins/colorscheme.lua
+
+return {
+  "LazyVim/LazyVim",
+  opts = { colorscheme = "dms" },
+}
+```
 
 ## Terminal Applications
 
