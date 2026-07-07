@@ -105,60 +105,60 @@ In order for some layer rules (such as `animation`, `blur` and `dimaround`), you
 
 #### Blur Settings
 
-```conf
-decoration {
-    blur {
-        enabled = true
-        size = 10
-        passes = 4
-
-        ignore_opacity = true
-        new_optimizations = true
-        xray = false
-
-        noise = 0.02
-        contrast = 1.1
-        vibrancy = 0.2
-        vibrancy_darkness = 0.3
-    }
-
-    drop_shadow = true
-    shadow_range = 20
-    shadow_render_power = 3
-    col.shadow = rgba(00000099)
-}
+```lua
+hl.config({
+    decoration = {
+        blur = {
+            enabled = true,
+            size = 10,
+            passes = 4,
+            ignore_opacity = true,
+            new_optimizations = true,
+            xray = false,
+            noise = 0.02,
+            contrast = 1.1,
+            vibrancy = 0.2,
+            vibrancy_darkness = 0.3
+        },
+        shadow = {
+            enabled = true,
+            range = 20,
+            render_power = 3,
+            color = "rgba(00000099)"
+        },
+    },
+})
 ```
 
 #### Layer Rules
 
 Add these layer rules to enable blur for DMS components:
 
-```conf
-# Animations
-layerrule {
-    animation = slide right
-    match:namespace = dms:control-center
-}
+```lua
+hl.layer_rule({
+    match = { namespace = "dms:control-center" },
+    animation = "slide right"
+})
 
-layerrule {
-    animation = slide top
-    match:namespace = dms:workspace-overview
-}
-# You can find all available animations here: https://wiki.hypr.land/Configuring/Animations/#animation-tree
+hl.layer_rule({
+    match= { namespace = "dms:workspace-overview" },
+    animation = "slide top"
+})
+-- You can find all available animations here: https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/#animation-tree
 
-# Blur
-# You can use match:namespace with regex to target multiple layers
-layerrule {
-    blur = on
+-- Blur
+-- You can use match.namespace with regex to target multiple layers
+hl.layer_rule({
+    match = { namespace = "dms:(color-picker|clipboard|spotlight|settings)" },
+    blur = true,
     ignore_alpha = 0
-    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
-}
+})
 
-# Dim (if you prefer a dim instead of a blur effect)
-layerrule {
-    dimaround = on
-    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
-}
+-- Dim (if you prefer a dim instead of a blur effect)
+hl.layer_rule({
+    match = { namespace = "dms:(color-picker|clipboard|spotlight|settings)" },
+    dim_around = true
+})
 ```
 #### Examples
 
@@ -167,20 +167,20 @@ layerrule {
 ##### Add a blur effect on the shell's Components
 
 Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
-```conf
-# Modals
-layerrule {
-    blur = on
+```lua
+-- Modals
+hl.layer_rule({
+    match = { namespace = "dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)" },
+    blur = true,
     ignore_alpha = 0
-    match:namespace = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
-}
+})
 
-# Shell components (bar, popouts, etc.)
-layerrule {
-    blur = on
+-- Shell components (bar, popouts, etc.)
+hl.layer_rule({
+    match = { namespace = "dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)" },
+    blur = true,
     ignore_alpha = 0
-    match:namespace = dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
-}
+})
 ```
 </details>
 #### Performance Tuning

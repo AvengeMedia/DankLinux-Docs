@@ -226,11 +226,11 @@ See the [Keybinds & IPC](/docs/dankmaterialshell/keybinds-ipc#brightness) docume
 
 **Example keybind integration**:
 
-```conf
-# Hyprland example - shows OSD overlay
-bind = , XF86MonBrightnessUp, exec, dms ipc call brightness increment 5
-bind = , XF86MonBrightnessDown, exec, dms ipc call brightness decrement 5
-bind = , XF86MonBrightnessDown+Shift, exec, dms ipc call brightness toggleExponential
+```lua
+-- Hyprland example - shows OSD overlay
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("dms ipc call brightness increment 5"))
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightness decrement 5"))
+hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightness toggleExponential"))
 ```
 
 ## Comparison with Other Tools

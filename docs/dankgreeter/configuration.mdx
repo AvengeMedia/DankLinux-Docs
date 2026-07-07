@@ -62,25 +62,27 @@ Custom compositor configurations allow you to configure displays (resolution, re
 
 ### Hyprland
 
-1. Create a baseline configuration file at `/etc/greetd/hypr.conf`:
+1. Create a baseline configuration file at `/etc/greetd/hypr.lua`:
   ```bash
-  sudo tee /etc/greetd/hypr.conf > /dev/null << 'EOF'
-  env = DMS_RUN_GREETER,1
+  sudo tee /etc/greetd/hypr.lua > /dev/null << 'EOF'
+  hl.env("DMS_RUN_GREETER", "1")
 
-  misc {
-      disable_hyprland_logo = true
-  }
+  hl.config({
+      misc = {
+          disable_hyprland_logo = true
+      }
+  })
   EOF
   ```
 
 2. Update the command in `/etc/greetd/config.toml to use this configuration
   ```toml
   #...existing configuration
-  command = "dms-greeter --command hyprland -C /etc/greetd/hypr.conf"
+  command = "dms-greeter --command hyprland -C /etc/greetd/hypr.lua"
   #...existing configuration
   ```
 
-3. Edit `/etc/greetd/hypr.conf` however you see fit, the greeter will run under this compositor configuration
+3. Edit `/etc/greetd/hypr.lua` however you see fit, the greeter will run under this compositor configuration
 
 
 ### Sway

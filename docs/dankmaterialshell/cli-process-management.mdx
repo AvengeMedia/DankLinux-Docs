@@ -168,9 +168,11 @@ If using systemd, don't add `dms run` to your compositor config - you'll end up 
 
 Add to your compositor's autostart configuration:
 
-**Hyprland** (`~/.config/hypr/hyprland.conf`):
-```conf
-exec-once = dms run
+**Hyprland** (`~/.config/hypr/hyprland.lua`):
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("dms run")
+end)
 ```
 
 **Sway** (`~/.config/sway/config`):
