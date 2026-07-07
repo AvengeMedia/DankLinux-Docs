@@ -191,9 +191,9 @@ environment {
 ```
 
 **Hyprland Configuration:**
-```conf
-env = QT_QPA_PLATFORMTHEME,gtk3
-env = QT_QPA_PLATFORMTHEME_QT6,gtk3
+```lua
+hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
+hl.env("QT_QPA_PLATFORMTHEME_QT6", "gtk3")
 ```
 
 ### Option 2: Dedicated Qt Control (Advanced)
@@ -256,9 +256,9 @@ environment {
 ```
 
 **Hyprland:**
-```conf
-env = QT_QPA_PLATFORMTHEME,qt6ct
-env = QT_QPA_PLATFORMTHEME_QT6,qt6ct
+```lua
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+hl.env("QT_QPA_PLATFORMTHEME_QT6", "qt6ct")
 ```
 
 **Enable Qt Theming:**

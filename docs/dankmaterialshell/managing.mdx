@@ -90,8 +90,10 @@ For testing, debugging, or if you prefer compositor-managed startup:
 **Compositor autostart:**
 
 ```bash
-# Hyprland (~/.config/hypr/hyprland.conf)
-exec-once = dms run
+# Hyprland (~/.config/hypr/hyprland.lua)
+hl.on("hyprland.start", function()
+  hl.exec_cmd("dms run")
+end)
 
 # Sway (~/.config/sway/config)
 exec dms run
@@ -165,11 +167,11 @@ environment {
 }
 ```
 
-**Hyprland** (`~/.config/hypr/hyprland.conf`):
-```conf
-env = QT_QPA_PLATFORM,wayland
-env = QT_QPA_PLATFORMTHEME,gtk3
-env = ELECTRON_OZONE_PLATFORM_HINT,auto
+**Hyprland** (`~/.config/hypr/hyprland.lua`):
+```lua
+hl.env("QT_QPA_PLATFORM", "wayland")
+hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 ```
 
 Or create `~/.config/environment.d/90-dms.conf`:

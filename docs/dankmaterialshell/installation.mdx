@@ -781,9 +781,11 @@ After=graphical-session.target
 
 Add to your Hyprland config (after any `env =` lines):
 
-```conf title="~/.config/hypr/hyprland.conf"
-exec-once = dbus-update-activation-environment --systemd --all
-exec-once = systemctl --user start hyprland-session.target
+```lua title="~/.config/hypr/hyprland.lua"
+hl.on("hyprland.start", function()
+  hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+  hl.exec_cmd("systemctl --user start hyprland-session.target")
+end)
 ```
 
 Bind DMS to the session target:
