@@ -1037,23 +1037,23 @@ figcaption {
    ======================================== */
 
 /* Base details element */
+/* Base details element */
 details {
-  border: 1px solid rgba(208, 188, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 0.5rem !important;
   padding: 0 !important;
   margin: 1.5rem 0 !important;
-  background: rgba(128, 90, 213, 0.06) !important;
-  backdrop-filter: blur(8px);
+  background: #18181b !important;
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 details:hover {
-  border-color: rgba(208, 188, 255, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 details[open] {
-  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Summary (clickable header) */
@@ -1065,10 +1065,13 @@ details > summary {
   margin: 0 !important;
   user-select: none;
   list-style: none !important;
-  background: rgba(128, 90, 213, 0.08);
-  color: var(--dank-purple-light);
+  background: rgba(255, 255, 255, 0.03);
+  color: #f4f4f5;
   transition: background 0.2s ease, color 0.2s ease;
   border-radius: 0.5rem 0.5rem 0 0;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* Hide all default markers/arrows */
@@ -1090,10 +1093,9 @@ details > summary::before {
 details > summary::after {
   content: '▸';
   display: inline-block;
-  margin-left: auto;
   font-size: 0.875rem;
   transition: transform 0.2s ease;
-  color: var(--dank-purple-light);
+  color: #a1a1aa;
 }
 
 details[open] > summary::after {
@@ -1101,8 +1103,8 @@ details[open] > summary::after {
 }
 
 details > summary:hover {
-  background: rgba(128, 90, 213, 0.12);
-  color: var(--dank-purple-lighter);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
 /* Content area */
@@ -1112,8 +1114,8 @@ details > summary ~ * {
 
 details > summary + div,
 details > .collapsibleContent_i85q {
-  padding: 1rem 1.25rem !important;
-  border-top: 1px solid rgba(208, 188, 255, 0.15);
+  padding: 1.25rem !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* Reset alert styling that Docusaurus applies */
@@ -1129,35 +1131,59 @@ details.alert--info {
 
 /* Light mode adjustments */
 [data-theme='light'] details {
-  border-color: rgba(128, 90, 213, 0.2) !important;
-  background: rgba(128, 90, 213, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  background: #f4f4f5 !important;
 }
 
 [data-theme='light'] details:hover {
-  border-color: rgba(128, 90, 213, 0.35) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 [data-theme='light'] details[open] {
-  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme='light'] details > summary {
-  background: rgba(128, 90, 213, 0.06);
-  color: var(--dank-purple-dark);
+  background: rgba(0, 0, 0, 0.02);
+  color: #18181b;
 }
 
 [data-theme='light'] details > summary:hover {
-  background: rgba(128, 90, 213, 0.1);
-  color: var(--dank-purple-darker);
+  background: rgba(0, 0, 0, 0.04);
+  color: #000000;
 }
 
 [data-theme='light'] details > summary::after {
-  color: var(--dank-purple-dark);
+  color: #71717a;
 }
 
 [data-theme='light'] details > summary + div,
 [data-theme='light'] details > .collapsibleContent_i85q {
-  border-top-color: rgba(128, 90, 213, 0.12);
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Details inner text and link colors override to prevent Docusaurus alert theme purple bleed */
+details {
+  color: var(--ifm-font-color-base) !important;
+}
+
+details a {
+  color: var(--ifm-link-color) !important;
+}
+
+details a:hover {
+  color: var(--ifm-link-hover-color) !important;
+}
+
+/* Category headers are bold paragraphs */
+details p > strong {
+  color: var(--ifm-color-primary) !important;
+  font-size: 1.1rem;
+}
+
+/* Nested bold texts inside lists (like names) inherit base color */
+details li strong {
+  color: var(--ifm-font-color-base) !important;
 }
 
 /* Nested list styling within details */
@@ -1259,5 +1285,11 @@ a.navbar-version-dropdown.navbar__link::after {
 /* Search results hover fix - use dark text on highlighted results */
 [data-theme='dark'] {
   --search-local-hit-active-color: #1a1a1a;
+}
+
+/* Color H2 and H3 headings inside markdown pages with the primary purple color */
+.markdown h2,
+.markdown h3 {
+  color: var(--ifm-color-primary);
 }
 

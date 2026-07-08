@@ -40,9 +40,30 @@ This installs the package and handles all configuration automatically.
 
 ### Arch & Derivatives
 
+DankGreeter is available in the AUR as a prebuilt binary package or a source (`-git`) package.
+
+<Tabs groupId="greeter-channel">
+<TabItem value="bin" label="Prebuilt Binary" default>
+
+```bash
+paru -S greetd-dms-greeter-bin
+```
+
+`greetd-dms-greeter-bin` installs a prebuilt binary from the latest tagged release, so there is nothing to compile. This is the fastest way to install and the recommended option for most users.
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
 ```bash
 paru -S greetd-dms-greeter-git
 ```
+
+`greetd-dms-greeter-git` builds from the tip of the `master` branch. Use it if you want the newest changes before they are tagged, at the cost of a local compile and possible instability.
+
+</TabItem>
+</Tabs>
+
+Both packages ship the `dms-greeter` wrapper along with the `/usr/lib/sysusers.d/dms-greeter.conf` and `/usr/lib/tmpfiles.d/dms-greeter.conf` declarations described in [Greeter system user](#greeter-system-user-rpm-deb-and-immutable-systems). After installing, either run `dms greeter install` (see the note at the top) or continue with [Completing Setup](#completing-setup).
 
 ### Fedora & CentOS
 

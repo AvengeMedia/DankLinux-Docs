@@ -1,0 +1,677 @@
+---
+title: DMS 1.5 "The Wolverine" Released
+description: The fourth major release of DMS - Frame Mode, DankCalendar integration, Hyprland Lua config, enhanced MangoWM support, and a lot more.
+slug: v1-5-release
+authors: danklinux
+tags: [release, announcement]
+image: /img/blog/v1.5/og.png
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+{/* Wolverine claw tears - the surface looks ripped open, with a molten glow
+   showing through three jagged, tapered gashes. Edges are recessed with a dark
+   shadow so the dark surface reads as torn away. */}
+export const buildGash = (xTop, xBot, halfW, jitter) => {
+  const N = jitter.length - 1;
+  const pt = (i, side) => {
+    const t = i / N;
+    const x = xTop + (xBot - xTop) * t;
+    const y = 4 + 236 * t;
+    const w = halfW * Math.sin(Math.PI * t); // taper to points at both ends
+    return `${(x + side * w + jitter[i]).toFixed(1)} ${y.toFixed(1)}`;
+  };
+  const right = [];
+  for (let i = 0; i <= N; i++) right.push(`L ${pt(i, 1)}`);
+  const left = [];
+  for (let i = N; i >= 0; i--) left.push(`L ${pt(i, -1)}`);
+  return `M ${pt(0, 1)} ${right.join(' ')} ${left.join(' ')} Z`;
+};
+
+export const ClawMarks = ({ className, opacity = 0.6, mirror = false }) => {
+  const uid = Math.random().toString(36).slice(2, 7);
+  const glow = `tear-g-${uid}`;
+  const rim = `tear-r-${uid}`;
+  const shadow = `tear-s-${uid}`;
+  // tops cluster, bottoms splay outward - a real paw rake diverges
+  const gashes = [
+    buildGash(54, 16, 8, [0, 2.5, -3.5, 3, -2.5, 4, -3, 2.5, -3.5, 1.5, 0]),
+    buildGash(96, 74, 9, [0, -3, 3.5, -2.5, 4, -3.5, 2.5, -4, 3, -2.5, 0]),
+    buildGash(138, 146, 8, [0, 2.5, -3, 3.5, -2.5, 3, -4, 2.5, -3, 2, 0]),
+  ];
+  // bits of surface flung off the strike
+  const debris = [
+    { x: 8, y: 60, r: 2.2 }, { x: 150, y: 50, r: 1.8 }, { x: 24, y: 150, r: 1.6 },
+    { x: 156, y: 168, r: 2.4 }, { x: 70, y: 230, r: 1.8 }, { x: 120, y: 18, r: 1.5 },
+  ];
+  return (
+    <svg viewBox="0 0 164 244" preserveAspectRatio="none" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={glow} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFE9B8" stopOpacity="0" />
+          <stop offset="20%" stopColor="#FFF3D6" stopOpacity="0.95" />
+          <stop offset="48%" stopColor="#F0A93C" stopOpacity="0.95" />
+          <stop offset="78%" stopColor="#C2641F" stopOpacity="0.78" />
+          <stop offset="100%" stopColor="#8A4B1A" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={rim} x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFF6E0" stopOpacity="0" />
+          <stop offset="30%" stopColor="#FFF6E0" stopOpacity="1" />
+          <stop offset="70%" stopColor="#FFCE7A" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#FFCE7A" stopOpacity="0" />
+        </linearGradient>
+        <filter id={shadow} x="-70%" y="-30%" width="240%" height="160%">
+          {/* dark recess so the surface reads as lifted/torn around the glow */}
+          <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#05070B" floodOpacity="0.9" />
+        </filter>
+      </defs>
+      <g transform={mirror ? 'translate(164,0) scale(-1,1)' : ''} filter={`url(#${shadow})`}>
+        {gashes.map((d, i) => (
+          <g key={i}>
+            <path fill={`url(#${glow})`} d={d} />
+            {/* bright torn-edge highlight - the lifted surface edge catching the glow */}
+            <path fill="none" stroke={`url(#${rim})`} strokeWidth="0.9" strokeLinejoin="round" d={d} />
+          </g>
+        ))}
+        {debris.map((p, i) => (
+          <circle key={`d${i}`} cx={p.x} cy={p.y} r={p.r} fill={`url(#${rim})`} opacity="0.7" />
+        ))}
+      </g>
+    </svg>
+  );
+};
+
+{/*
+  Screenshots still need to be captured - each section marks where light/dark
+  images go with an "INSERT LIGHT/DARK IMAGES HERE" note.
+  Stats below (stars/contributors) are approximate - verify before publishing.
+*/}
+
+<div className={styles.blogHero}>
+  <div className={styles.claws} aria-hidden="true">
+    <div className={`${styles.clawSet} ${styles.clawLeft}`}>
+      <ClawMarks className={styles.clawAnim1} opacity={0.5} />
+    </div>
+    <div className={`${styles.clawSet} ${styles.clawRight}`}>
+      <ClawMarks className={styles.clawAnim2} opacity={0.5} mirror />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.5</span>
+    </h1>
+    <p className={styles.heroSubtitle}>The Wolverine</p>
+  </div>
+</div>
+
+DankMaterialShell (DMS) 1.5 "The Wolverine" is here! This release introduces Frame Mode, a new connected surface that ties the whole shell together, native DankCalendar integration, Hyprland Lua config and enhanced MangoWM support, a reworked Material 3-like shadow system, and hundreds of fixes and improvements across DMS.
+
+{/* truncate */}
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>4,000+</span>
+    <span className={styles.statLabel}>Commits</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>7k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>200+</span>
+    <span className={styles.statLabel}>Contributors</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>230+</span>
+    <span className={styles.statLabel}>Plugins</span>
+  </div>
+</div>
+
+## Frame Mode + Connected or Standalone Surfaces
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Frame Mode: the bar, dock, popouts, and modals drawn as one connected surface"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/frame_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/frame_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>Frame Mode ties the bar, dock, popouts, and modals into one connected surface.</figcaption>
+</figure>
+
+DMS 1.5 adds the option to draw the shell surfaces as one connected surface, tying modals (such as the launcher), popouts, and notifications into the bar and frame.
+
+- **New Animations**: There are new animation options "Directional" and "Depth" in addition to the standard and default "Fade and Scale"
+- **Hover to Open**: Optionally popouts can be opened on hover, without a mouse-click
+
+## DankCalendar
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Creating, editing, and navigating events right from the shell"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/dcal_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/dcal_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>Create, edit, and navigate events right from the shell calendar overview.</figcaption>
+</figure>
+
+DMS 1.5 brings native support for [DankCalendar](/blog/dankcalendar-release) ([docs](/docs/1.5/dankcalendar)) as a calendar backend over IPC. This is a major new application addition that unifies Local, Google, Microsoft, CalDAV, and iCloud accounts into a single agenda.
+
+When the `dcal` daemon is active, DMS detects it and establishes a bidirectional IPC connection. That connection enables several shell integrations:
+
+- **Full Event CRUD:** You can now create, edit, and delete events directly within the shell calendar overview.
+- **Reminders Routing:** Upcoming-event notifications are delivered natively through the DMS notification system.
+- **Offline Cache:** Managed via a local SQLite cache database so agenda views work offline, syncing back as soon as connection is re-established.
+- **Secure Keyring Storage:** OAuth tokens and secrets are stored directly in your system keyring (GNOME Keyring/KWallet) instead of plaintext files.
+- **Keyboard Navigation:** Full arrow-key navigation for managing calendar events.
+- **Fully On Device:** DankCalendar runs entirely on-device, connecting directly to your providers.
+
+The DMS calendar provider is configurable for backwards compatibility with [Khal](/docs/1.5/dankmaterialshell/calendar-integration), so users can continue to use the `khal` backend if desired.
+
+### Integrated Task Planner
+
+In addition to task/reminder/VTODO integration from DankCalendar, a local to-do and task planner widget has been added to the calendar overview, contributed by **[goatnath](https://github.com/goatnath)** ([PR #2583](https://github.com/AvengeMedia/DankMaterialShell/pull/2583)). It manages your to-do lists and task states from within the shell calendar panel.
+
+## Greeter Enhancements
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="The DMS greeter login screen with user selection and auto-login"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/greeter_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/greeter_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>The DMS greeter with user selection, session picker, and auto-login.</figcaption>
+</figure>
+
+DMS 1.5 adds a settings GUI, multi-user account management, and per-user theme sync to the [greeter](/docs/1.5/dankgreeter).
+
+- **Settings GUI:** Manage dms-greeter and greetd settings without editing config files by hand.
+- **Improved PAM Support:** PAM authentication for fingerprint readers and U2F devices, with timeout recovery and unlock-state sync.
+- **User Accounts:** A **Users** tab in DMS Settings creates accounts - username, initial password, and optional `wheel`/`sudo` privileges and greeter-group access - and lists every human user on the system with their UID, GECOS, and group membership.
+- **Behavior Toggles:** Remember the last user, remember the last session, and auto-login.
+- **Greeter Appearance:** Per-greeter font family, 24-hour clock, seconds display, hour padding, and date format presets, separate from the lock screen settings.
+- **Custom Greeter Wallpaper:** A login screen background independent of your desktop wallpaper, with the same fill-mode options.
+- **Sync Pending Indicator:** A floating pill appears at the bottom of the tab when there are unsaved changes, so you can apply them without scrolling back to the top.
+- **Per-User Theme Sync:** Each account gets an independent cache slot, so users can sync their own login-screen appearance - theme, wallpaper (light/dark/per-monitor variants), custom theme files, and profile picture - without system-wide sudo.
+  - `dms greeter sync` pushes the primary user's full theme, wallpaper, and auth config.
+  - `dms greeter sync --profile` syncs just one greeter-group user's slot, without touching the global config.
+  - A **Sync** button in Settings handles both modes, falling back to a terminal when sudo isn't available.
+
+## Window Rules Manager
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Creating a new window rule with match criteria and conditions"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/windowrule_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/windowrule_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Configure match criteria and state-based conditions for a new window rule.</figcaption>
+</figure>
+
+DMS 1.5 adds a **Window Rules Manager** for controlling window behaviors across Hyprland, Niri, and MangoWM.
+
+A dedicated settings page allows viewing, editing, and creating window rules. A new [IPC](https://danklinux.com/docs/1.5/dankmaterialshell/keybinds-ipc#window-rules) allows creating a window rule for the currently focused window.
+
+## Display Profiles
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Display Profiles and monitor configuration with auto-switching layouts"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/displayconfig_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/displayconfig_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Save monitor layouts as Display Profiles and auto-switch as outputs change.</figcaption>
+</figure>
+
+DMS 1.5 adds Display Profiles: saved monitor layouts that DMS can switch between automatically as outputs are connected or disconnected.
+
+- **Automatic Switching:** DMS matches the connected set of outputs to a saved profile and applies it, so docking, undocking, or plugging in an external display restores the right layout.
+- **Control Center Widget:** A Display Profiles widget switches layouts without opening Settings.
+- **Fractional Scaling Presets:** Hyprland setups gain fractional scaling display presets.
+- **Disabled Outputs:** Profiles can leave specific outputs turned off.
+
+## Hyprland Lua Configuration
+
+DMS 1.5 moves all Hyprland default configurations to the new [Lua format](https://hypr.land/news/26_lua/). When DMS deploys configs for Hyprland (via `dms setup` or `dankinstall`), it generates native Lua files instead of the older `.conf` format. This applies to all DMS-managed configurations such as key binds and monitor/output configurations. See the [Hyprland configuration guide](/docs/1.5/dankmaterialshell/compositors#hyprland-configuration) for details.
+
+## Enhanced MangoWM Support
+
+DMS 1.5 adds better support for the [MangoWM compositor](/docs/1.5/dankmaterialshell/compositors#mangowc-configuration) across the shell, installer, and UI tools. `dms setup` now deploys MangoWM configurations and `dankinstall` supports MangoWM as a compositor option.
+
+## Material 3 Shadows & Elevation
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="The reworked shadow and elevation controls with global and per-surface settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/shadow_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/shadow_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>Global shadow controls with intensity, opacity, color, and per-surface elevation.</figcaption>
+</figure>
+
+To support Frame Mode, the Material 3 elevation and shadow system was reworked so shadows stay consistent across connected, floating, and overlapping surfaces. A global shadow toggle lives in the Themes tab, with light/dark overrides and independent shadow controls per Dank Bar.
+
+## Spotlight - Lightweight Launcher
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="The lightweight Spotlight launcher searching files with a directory prefix"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/spotlight_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/spotlight_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>New spotlight-style launcher</figcaption>
+</figure>
+
+DMS 1.5 introduces **Spotlight**, a lightweight overlay launcher for minimalist setups. It sits in the center of your screen and searches files, folders, applications, and settings.
+
+- **Search Persistence:** Spotlight persists your last search query and highlights it on open, contributed by **[Legend-017](https://github.com/Legend-017)** ([PR #2726](https://github.com/AvengeMedia/DankMaterialShell/pull/2726)).
+- **Prefix Queries:** Use `/d` and `/f` prefix tags to narrow the search to directories and files when [dsearch](https://danklinux.com/docs/danksearch/) is installed.
+
+## Notepad Rewritten with Standalone Window & Mime-Type Registration
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="The redesigned Notepad as a standalone window"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/notepad_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/notepad_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>Notepad can now convert into a standalone window and back to a surface.</figcaption>
+</figure>
+
+The Notepad utility has been rewritten with the ability to convert it into a standalone window and back to a surface. Additionally mime-type registration has been added so DMS Notepad can be (optionally) used as a default text editor for files.
+
+## Native Tailscale Integration
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Tailscale status and device controls in the Control Center"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.5/tailscale_light.png'),
+      dark: useBaseUrl('/img/blog/v1.5/tailscale_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>Tailscale connection status, device search, and controls in the Control Center.</figcaption>
+</figure>
+
+DMS 1.5 adds native **Tailscale** support inside the Control Center. Instead of custom scripts or command-line wrappers, DMS talks directly to the local Tailscale daemon for full VPN controls.
+
+- **Connection Toggle:** Connect or disconnect your tailnet from the Control Center.
+- **Exit Node Selector:** A dropdown lists the available exit nodes on your tailnet to route your traffic through.
+- **LAN Access Toggle:** Allow or disallow local network access when connected to an exit node, so you can still reach local devices.
+- **Node Details:** Shows your active Tailscale IP addresses (IPv4 and IPv6) and connection quality indicators.
+
+## System Management
+
+DMS 1.5 pulls more of the system into the shell, so you can manage updates, power, autostart, and default apps without leaving your desktop.
+
+- **[System Updater](/docs/1.5/dankmaterialshell/cli-system-updater):** Check for and apply system updates from the shell, with multiple package-manager backends and polkit authentication for privileged operations.
+- **Power Profiles:** Switch between power-saver, balanced, and performance profiles from the Control Center or by scrolling the battery widget. A `cycleProfile` IPC command is bound to `Mod+P` by default.
+- **XDG Autostart:** A new Autostart tab in Settings manages the applications that launch at login, following the XDG autostart specification.
+- **Default Apps:** A Default Apps page in Settings sets your preferred applications for file types and URL schemes.
+- **User Session Switching:** Switch between local user sessions directly from the shell.
+
+## Other Notable Features
+
+DMS 1.5 also brings a wide array of enhancements and options across other components of the shell:
+
+### Launcher & Clipboard
+- **Plugin Browser Screenshot Previews:** The plugin browser now displays inline screenshot previews while browsing, alongside brand new sorting and filtering controls.
+- **Launcher QOL Improvements:** Grid mode now supports `Ctrl+H/L` navigation (contributed by **[kanghengliu](https://github.com/kanghengliu)**, [PR #2688](https://github.com/AvengeMedia/DankMaterialShell/pull/2688)), toggleable color-picker entries (**[lambdaclan](https://github.com/lambdaclan)**, [PR #2667](https://github.com/AvengeMedia/DankMaterialShell/pull/2667)), and the option to hide package source badges (**[hthienloc](https://github.com/hthienloc)**, [PR #2676](https://github.com/AvengeMedia/DankMaterialShell/pull/2676)).
+- **Clipboard Type Filtering:** The clipboard history popout can now filter between Text, Image, and pinned entries, contributed by **[dionjoshualobo](https://github.com/dionjoshualobo)** ([PR #2640](https://github.com/AvengeMedia/DankMaterialShell/pull/2640)).
+- **Launcher History:** The launcher keeps a history of recent entries ([PR #2086](https://github.com/AvengeMedia/DankMaterialShell/pull/2086)).
+- **Terminal Multiplexer Launcher:** A launcher mode for opening and attaching to terminal multiplexer sessions ([PR #1687](https://github.com/AvengeMedia/DankMaterialShell/pull/1687)).
+- **Clipboard Editor & Search:** Edit saved clipboard entries and search or filter clipboard history ([PR #2492](https://github.com/AvengeMedia/DankMaterialShell/pull/2492), [PR #2464](https://github.com/AvengeMedia/DankMaterialShell/pull/2464)).
+
+### Network & Power
+- **Secret Service Integration:** Auto-retrieves and unlocks WiFi/VPN credentials directly from D-Bus Secret Service backends.
+- **Saved Wi-Fi & Progress:** WiFi connection progress indicators (contributed by **[NihilDigit](https://github.com/NihilDigit)**, [PR #2684](https://github.com/AvengeMedia/DankMaterialShell/pull/2684)) and a dedicated saved-networks editor tab (contributed by **[jbwfu](https://github.com/jbwfu)**, [PR #2648](https://github.com/AvengeMedia/DankMaterialShell/pull/2648)) are now integrated, alongside a subtab network layout ([PR #2633](https://github.com/AvengeMedia/DankMaterialShell/pull/2633)).
+- **Network Link Rate Reporting:** DMS now reports the negotiated link speed when connected, providing accurate bandwidth context rather than theoretical maximums.
+- **Battery Settings Tab:** A new battery management section in settings with toggles for remaining time, percentage display, and critical alerts was designed by **[hthienloc](https://github.com/hthienloc)** ([PR #2634](https://github.com/AvengeMedia/DankMaterialShell/pull/2634)).
+- **Battery Refresh Rate:** Automatically lower display refresh rates on battery power to conserve energy, contributed by **[atimofeev](https://github.com/atimofeev)** ([PR #2428](https://github.com/AvengeMedia/DankMaterialShell/pull/2428)).
+- **Bluetooth Status:** Added a visual bar indicator for connected Bluetooth devices, contributed by **[yechielw](https://github.com/yechielw)** ([PR #2662](https://github.com/AvengeMedia/DankMaterialShell/pull/2662)).
+- **Bluetooth Trust/Untrust:** Control trusted status of Bluetooth devices directly from the Control Center.
+
+### Privacy & Security
+- **Screen Casting Detection on Niri:** The privacy indicator now correctly detects active screen casting sessions on the Niri compositor via PipeWire ([PR #2185](https://github.com/AvengeMedia/DankMaterialShell/pull/2185)).
+- **Night Mode & OSD Restoration:** Night mode and OSD surfaces are now correctly restored after system resume from suspend ([PR #2254](https://github.com/AvengeMedia/DankMaterialShell/pull/2254)).
+
+### Lock Screen
+- **Lock Screen IME Bypass:** Implemented a direct keyboard layout and input method bypass for lock screen password fields, avoiding login failure due to layout mismatches (contributed by **[awerty-noob](https://github.com/awerty-noob)**, [PR #2609](https://github.com/AvengeMedia/DankMaterialShell/pull/2609)).
+- **Lockout Feedback:** Rather than showing generic errors, the lock screen now queries and displays explicit faillock lockout reasons, contributed by **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** ([PR #2669](https://github.com/AvengeMedia/DankMaterialShell/pull/2669)).
+- **Fingerprint/U2F Auth:** Lock screen fingerprint and U2F authentication has been restored and hardened with timeout recovery and unlock-state sync ([PR #2052](https://github.com/AvengeMedia/DankMaterialShell/pull/2052)).
+- **Video Wallpapers:** Support for video files as a screen-saving background when the lock screen activates.
+- **Declarative NixOS Auto-Login:** Added native support for configuring greeter auto-login declaratively within NixOS modules ([PR #2734](https://github.com/AvengeMedia/DankMaterialShell/pull/2734)).
+
+
+### Odds & Ends
+
+A handful of smaller fixes and quality-of-life touches, several from the community:
+
+- **DankDash Drag-n-Drop:** Rearrange dashboard tabs and widget layout, with visibility toggles in Settings.
+- **System Tray Icon Tinting:** Tint overrides keep tray icons consistent with your Material theme ([PR #2266](https://github.com/AvengeMedia/DankMaterialShell/pull/2266)).
+- **Animated GIF Profile Pictures:** The user avatar now supports animated GIFs ([PR #1804](https://github.com/AvengeMedia/DankMaterialShell/pull/1804)).
+- **Tilde Expansion in Config Paths:** `~` now expands in all user-provided file paths ([PR #2242](https://github.com/AvengeMedia/DankMaterialShell/pull/2242)).
+- **`dms randr` Command:** Query physical monitor scale factors without opening the display configurator.
+- **Per-Screen Focus:** The focused app widget tracks only the focused window on its own screen in multi-monitor setups ([PR #2152](https://github.com/AvengeMedia/DankMaterialShell/pull/2152)).
+- **Do Not Disturb & Idle Inhibitor Indicators:** New Control Center button indicators for do-not-disturb and idle-inhibitor state ([PR #2513](https://github.com/AvengeMedia/DankMaterialShell/pull/2513)).
+- **Microphone Volume OSD:** An interactive microphone volume OSD with IPC controls ([PR #2406](https://github.com/AvengeMedia/DankMaterialShell/pull/2406)).
+- **Locale Hot-Reload:** Change the shell locale and have it apply without a restart ([PR #1817](https://github.com/AvengeMedia/DankMaterialShell/pull/1817)).
+- **Neovim Theme Engine:** A rebuilt Neovim theme engine for Matugen color sync ([PR #1985](https://github.com/AvengeMedia/DankMaterialShell/pull/1985)).
+- **GeoClue2 Location:** Optional GeoClue2 location as an alternative to IP-based location ([PR #1856](https://github.com/AvengeMedia/DankMaterialShell/pull/1856)).
+
+## Headless Installation
+
+The [`dankinstall`](/docs/1.5/dankinstall) installer can now run **fully unattended** - no TUI, scriptable for provisioning, dotfile bootstraps, and CI. Passing `--compositor` and `--term` switches it into headless mode:
+
+```bash
+dankinstall --compositor niri --term ghostty --yes
+```
+
+Choose `niri`, `hyprland`, or `mango` for the compositor and `ghostty`, `kitty`, or `alacritty` for the terminal. Additional flags give you control over the rest of the install: `--include-deps` / `--exclude-deps` to tune optional dependencies (like `dms-greeter`), `--replace-configs` (or `--replace-configs-all`) to deploy named configs, and `--yes` to auto-confirm every prompt. Install logs are written to `$DANKINSTALL_LOG` (falling back to `/var/tmp`) and streamed to stdout.
+
+## Available Distributions
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/NixOS.svg')} alt="NixOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/gentoo-logo.svg')} alt="Gentoo" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/void.svg')} alt="Void Linux" /></div>
+  </div>
+</div>
+
+:::tip[New Supported Distributions]
+DMS 1.5 officially adds support for **Void Linux** and introduces official compatibility with Ubuntu **26.04 LTS**.
+:::
+
+See the [installation guide](/docs/getting-started) for setup instructions.
+
+## Upgrade Notes
+
+:::warning
+This release contains changes that may require manual intervention.
+:::
+
+### (Breaking) App ID Change
+
+The DMS app ID is now `com.danklinux.dms`. If you have compositor window rules targeting the old app ID, you'll need to update them to the new ID.
+
+### Quickshell 0.3.0+ Required
+
+DMS 1.5 requires Quickshell 0.3.0 or newer; support for 0.2 has been dropped. If you install via the Dank Linux repositories or `dankinstall`, this is handled for you - otherwise update Quickshell before upgrading DMS.
+
+## Bug Fixes and Improvements
+
+<details>
+<summary>View Details (700+ commits across v1.4.1–v1.5)</summary>
+
+The following is a summary of notable fixes shipped across the v1.4.x hotfix series and incorporated into v1.5. All of these are part of the v1.5 release.
+
+**Frame Mode & Connected UI**
+- Fixed connected-mode surface recovery and fullscreen layering refinement.
+- Fixed modal escape key handling in connected mode.
+- Fixed bar offset calculation when using multi-monitor layouts.
+
+**Launcher & Spotlight**
+- Fixed file search premature exit when browsing deep subdirectories.
+- Fixed keyboard navigation failing to show the last delegate item in grid view.
+- Fixed settings focus loss when launching settings from the search bar.
+- Fixed launcher text contrast on primaryContainer theme backgrounds (contributed by **[Silzinc](https://github.com/Silzinc)** [PR #2586](https://github.com/AvengeMedia/DankMaterialShell/pull/2586)).
+- Fixed frecency ranking in search results ([#1799](https://github.com/AvengeMedia/DankMaterialShell/issues/1799)).
+- Fixed launcher tab selection memory not persisting across opens ([#1806](https://github.com/AvengeMedia/DankMaterialShell/issues/1806)).
+
+**Clipboard**
+- Fixed clipboard memory leak caused by unbounded Wayland offer maps and unguarded file reads.
+- Improved clipboard thumbnail loading performance for large images (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #1759](https://github.com/AvengeMedia/DankMaterialShell/pull/1759)).
+- Deduplicated pinned clipboard entries (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #2605](https://github.com/AvengeMedia/DankMaterialShell/pull/2605)).
+- Fixed HTML elements getting parsed in clipboard text views (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #1798](https://github.com/AvengeMedia/DankMaterialShell/pull/1798)).
+- Fixed powermenu close behavior during paste actions (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #2598](https://github.com/AvengeMedia/DankMaterialShell/pull/2598)).
+- Fixed clipboard reliability in modal/popout contexts; forked child now registers Wayland source before returning.
+- Fixed `file://` prefix being missing for `--file` arguments in `dms notify` ([#1962](https://github.com/AvengeMedia/DankMaterialShell/issues/1962)).
+
+**Calendar & Tasks**
+- Fixed week-number option fallback when khal cache is empty.
+- Fixed OSD calendar positioning on secondary monitors.
+
+**Hyprland & MangoWM**
+- Fixed Hyprland window focus during popout close sequences (contributed by **[awerty-noob](https://github.com/awerty-noob)** [PR #2655](https://github.com/AvengeMedia/DankMaterialShell/pull/2655)).
+- Fixed display configurator operations in Hyprland profiles (contributed by **[Stodtyy](https://github.com/Stodtyy)** [PR #2506](https://github.com/AvengeMedia/DankMaterialShell/pull/2506)).
+- Fixed mouse-wheel keysim scroll events mapping in Hyprland setups.
+- Fixed missing import in Hyprland service.
+- Fixed `no_initial_focus` parameter name in Hyprland window rules (contributed by **[Qubes_Geek](https://github.com/Qubes-Geek)** [PR #1726](https://github.com/AvengeMedia/DankMaterialShell/pull/1726)).
+- Fixed recycled Wayland server object IDs for workspace/group handles (contributed by **[Qubes_Geek](https://github.com/Qubes-Geek)** [PR #1725](https://github.com/AvengeMedia/DankMaterialShell/pull/1725)).
+- Fixed `resizeactive` keybind to include height dimension ([PR #2126](https://github.com/AvengeMedia/DankMaterialShell/pull/2126)).
+
+**Themes, Matugen & Shadows**
+- Matugen pywalfox light/dark transitions (contributed by **[miguelsaliba](https://github.com/miguelsaliba)** [PR #2537](https://github.com/AvengeMedia/DankMaterialShell/pull/2537)).
+- Fixed separate light/dark icon paths hot-reloading latency.
+- Fixed tray icon tinting and monochrome icon overrides.
+- Fixed Matugen v4 version detection reliability.
+- Fixed Matugen Zed Linux binary alias detection ([PR #1982](https://github.com/AvengeMedia/DankMaterialShell/pull/1982)).
+- Fixed Matugen `zed` template path quoting ([PR #1972](https://github.com/AvengeMedia/DankMaterialShell/pull/1972)).
+- Fixed Matugen skipping theme refresh when colors haven't changed.
+- Fixed light/dark mode portal sync.
+- Fixed custom JSON theme settings rendering all theme options correctly.
+- Fixed animation speed binding in notifications settings tab ([#1974](https://github.com/AvengeMedia/DankMaterialShell/issues/1974)).
+
+**Notifications**
+- Configurable summary/body font sizes and opt-in progress bar (contributed by **[bogdan-velicu](https://github.com/bogdan-velicu)** [PR #2587](https://github.com/AvengeMedia/DankMaterialShell/pull/2587)).
+- Maintained notification shadow during popup expansion.
+- Fixed notification toast blur artifacts in connected layout modes.
+- Added notification card inset for consistent visual alignment.
+
+**Dock & Bar**
+- Separate workspace appearance for unfocused displays (contributed by **[b0o](https://github.com/b0o)** [PR #2687](https://github.com/AvengeMedia/DankMaterialShell/pull/2687)).
+- Fixed dropdown animation duration latency (contributed by **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** [PR #2661](https://github.com/AvengeMedia/DankMaterialShell/pull/2661)).
+- Cleared bar blur region on autohide (contributed by **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** [PR #2658](https://github.com/AvengeMedia/DankMaterialShell/pull/2658)).
+- Excluded scroll events from propagating through workspace selector panels ([#2108](https://github.com/AvengeMedia/DankMaterialShell/issues/2108)).
+- Fixed dock context menu styling ([#1742](https://github.com/AvengeMedia/DankMaterialShell/issues/1742)).
+- Fixed dock transparency setting ([#1739](https://github.com/AvengeMedia/DankMaterialShell/issues/1739)).
+- Fixed dock visible when there's no active app ([PR #1797](https://github.com/AvengeMedia/DankMaterialShell/pull/1797)).
+- Fixed dock max height mask in vertical mode.
+- Fixed app ordering in the dock on Niri.
+- Fixed focused app widget fallback to app name in compact mode ([#2005](https://github.com/AvengeMedia/DankMaterialShell/issues/2005)).
+- Fixed named workspace icons not rendering.
+- Fixed DankBar syncing settings to new bars on reload.
+
+**Wallpaper & Display**
+- Fixed multi-monitor wallpaper cycling not working ([PR #2042](https://github.com/AvengeMedia/DankMaterialShell/pull/2042)).
+- Fixed wallpaper redraw after lock screen dismissal ([PR #2037](https://github.com/AvengeMedia/DankMaterialShell/pull/2037)).
+- Fixed per-monitor wallpaper cycling when changing interval ([PR #1981](https://github.com/AvengeMedia/DankMaterialShell/pull/1981)).
+- Fixed wallpaper thumbnail cache preloading crash on large JPG collections.
+- Fixed screenshot global coordinate space scaling across all screens.
+- Fixed DPMS Off/On recovery storms (contributed by **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** [PR #2654](https://github.com/AvengeMedia/DankMaterialShell/pull/2654)).
+- Fixed display output config on delete and popup height.
+
+**Network & Connectivity**
+- Fixed enterprise-WiFi connection prompt password field boundaries.
+- Cleaned up stale network links and VPN route tracking.
+- Fixed DDC brightness not applying because process exits before debounce timer runs ([PR #2217](https://github.com/AvengeMedia/DankMaterialShell/pull/2217)).
+- Fixed negative WaitGroup counter on rapid DDC brightness changes.
+
+**Battery & Power**
+- Fixed Bluetooth battery detection latency for BLE peripherals.
+
+**Control Center**
+- Fixed invalid percentage number displays in Control Center ([#2010](https://github.com/AvengeMedia/DankMaterialShell/issues/2010)).
+- Fixed CC plugin reloading on bar position changes.
+
+**Greeter & Lock Screen**
+- Fixed wake monitors on input events when powered off by lock screen rules (contributed by **[nabaco](https://github.com/nabaco)** [PR #2572](https://github.com/AvengeMedia/DankMaterialShell/pull/2572)).
+- Fixed awk parser script bugs in new greeter parsing scripts (contributed by **[ewtodd](https://github.com/ewtodd)** [PR #2508](https://github.com/AvengeMedia/DankMaterialShell/pull/2508)).
+- Removed max bpc options from greeter (contributed by **[LuckShiba](https://github.com/LuckShiba)** [PR #2528](https://github.com/AvengeMedia/DankMaterialShell/pull/2528)).
+- Fixed greeter auto theme accent variants and color selection.
+- Fixed greeter wireplumber state directory and U2F environment variables.
+- Fixed greeter PAM allowing empty password submits to reach PAM.
+- Fixed greeter duplicate crash handlers.
+- Fixed greeter AppArmor install/uninstall behind `IsAppArmorEnabled()` guard.
+- Fixed greeter on immutable distros by restoring `dms greeter sync`.
+
+**Audio & Media**
+- Fixed output device switching controls on media popout scroll (contributed by **[hthienloc](https://github.com/hthienloc)** [PR #2615](https://github.com/AvengeMedia/DankMaterialShell/pull/2615)).
+- Excluded specific MPRIS players from displaying empty titles (contributed by **[cwelsys](https://github.com/cwelsys)** [PR #2509](https://github.com/AvengeMedia/DankMaterialShell/pull/2509)).
+- Fixed sound muting logic during active media playback (contributed by **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** [PR #2652](https://github.com/AvengeMedia/DankMaterialShell/pull/2652)).
+- Fixed audio output cycle and icon resolution for sink ([#1808](https://github.com/AvengeMedia/DankMaterialShell/issues/1808)).
+- Disabled audio effects during active MPRIS playback.
+- Fixed OSD volume optional chain coercion ([PR #2101](https://github.com/AvengeMedia/DankMaterialShell/pull/2101)).
+
+**Notepad & Settings**
+- Fixed settings search indexing crash for non-UTF8 locales.
+- Fixed wallpaper redrawing on fill mode change (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #2542](https://github.com/AvengeMedia/DankMaterialShell/pull/2542)).
+- Fixed settings search localization (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #2521](https://github.com/AvengeMedia/DankMaterialShell/pull/2521)).
+- Fixed Notepad decode path URI when saving or creating a file ([PR #1805](https://github.com/AvengeMedia/DankMaterialShell/pull/1805)).
+- Fixed Notepad hide behavior and streamlined auto-save function.
+
+**Plugins & Localization**
+- Fixed plugin settings focus loss.
+- Fixed RTL layout alignment for Hebrew and Arabic translation options.
+- Added missing i18n strings (contributed by **[jbwfu](https://github.com/jbwfu)** [PR #1746](https://github.com/AvengeMedia/DankMaterialShell/pull/1746), [PR #1729](https://github.com/AvengeMedia/DankMaterialShell/pull/1729)).
+
+**Doctor & Installer**
+- Fixed `dms doctor` quickshell version regex ([#2204](https://github.com/AvengeMedia/DankMaterialShell/issues/2204)).
+- Fixed `dms doctor` imageformats detection ([PR #1811](https://github.com/AvengeMedia/DankMaterialShell/pull/1811)).
+- Added `qt6-imageformats` check to doctor output.
+- Fixed `dankinstall` Arch AUR package installation logic.
+- Fixed `dankinstall` Debian ARM64 detection.
+- Enhanced DMS minimal install logic for all supported distros.
+- Added Arch `dms-shell` package migration support.
+- Fixed `dankinstall` on Arch/extra package repository changes.
+
+**Popout & Surfaces**
+- Fixed popout transparency artifacts.
+- Fixed popout focus of password prompts when popout is open.
+- Fixed popout calls on stale references.
+- Fully unload popout layers on close for memory efficiency.
+- Decoupled shadow from content layer for cleaner rendering.
+- Fixed popout anchor height-changing surfaces to top and bottom.
+
+**NixOS / Nix**
+- Updated Quickshell version in Nix flake ([PR #2263](https://github.com/AvengeMedia/DankMaterialShell/pull/2263)).
+- Added `package` option for `dms-shell` in Nix ([PR #1864](https://github.com/AvengeMedia/DankMaterialShell/pull/1864)).
+- Fixed NixOS greeter skip invalid `customThemeFile` in preStart ([PR #1997](https://github.com/AvengeMedia/DankMaterialShell/pull/1997)).
+
+**Event Handling & Core**
+- Added better handling in the Wayland event dispatcher (contributed by **[Qubes_Geek](https://github.com/Qubes-Geek)** [PR #1980](https://github.com/AvengeMedia/DankMaterialShell/pull/1980)).
+- Fixed udev event loop termination; bumped Go to 1.26.
+- Fixed window rule to use `fixed` as default for width/height ([#1774](https://github.com/AvengeMedia/DankMaterialShell/issues/1774)).
+- Fixed screensaver `ActiveChanged` signal on lock/unlock ([PR #1761](https://github.com/AvengeMedia/DankMaterialShell/pull/1761)).
+- Fixed keybinds scroll position on list change ([#1766](https://github.com/AvengeMedia/DankMaterialShell/issues/1766)).
+- Fixed escape key handling in keybinds modal.
+
+</details>
+
+## Community Contributors
+
+DMS 1.5 - and the hotfix series leading up to it - would not be possible without the contributions of the wider community. A huge thank you to everyone who opened a PR, filed a detailed issue, tested a fix, or helped translate the shell.
+
+*If you were missed we're sorry! It's hard to keep track of everything sometimes, reach out on Discord or Github and we'll make sure to add you to the list.*
+
+### Feature Contributors
+
+| Contributor | Contribution |
+|---|---|
+| **[goatnath](https://github.com/goatnath)** | [PR #2583](https://github.com/AvengeMedia/DankMaterialShell/pull/2583) - Integrated Task Planner widget in the calendar overview |
+| **[Legend-017](https://github.com/Legend-017)** | [PR #2726](https://github.com/AvengeMedia/DankMaterialShell/pull/2726) - Spotlight search persistence and highlight-on-open |
+| **[kanghengliu](https://github.com/kanghengliu)** | [PR #2688](https://github.com/AvengeMedia/DankMaterialShell/pull/2688) - Ctrl+H/L grid navigation in launcher |
+| **[lambdaclan](https://github.com/lambdaclan)** | [PR #2667](https://github.com/AvengeMedia/DankMaterialShell/pull/2667) - Toggleable color-picker entries in launcher |
+| **[hthienloc](https://github.com/hthienloc)** | [PR #2676](https://github.com/AvengeMedia/DankMaterialShell/pull/2676), [PR #2634](https://github.com/AvengeMedia/DankMaterialShell/pull/2634) - Hide package source badges; Battery Settings tab |
+| **[dionjoshualobo](https://github.com/dionjoshualobo)** | [PR #2640](https://github.com/AvengeMedia/DankMaterialShell/pull/2640) - Clipboard type filtering (Text / Image / Pinned) |
+| **[NihilDigit](https://github.com/NihilDigit)** | [PR #2684](https://github.com/AvengeMedia/DankMaterialShell/pull/2684) - WiFi connection progress indicators |
+| **[jbwfu](https://github.com/jbwfu)** | [PR #2648](https://github.com/AvengeMedia/DankMaterialShell/pull/2648) - Saved networks editor tab |
+| **[atimofeev](https://github.com/atimofeev)** | [PR #2428](https://github.com/AvengeMedia/DankMaterialShell/pull/2428) - Battery refresh rate reduction on battery power |
+| **[yechielw](https://github.com/yechielw)** | [PR #2662](https://github.com/AvengeMedia/DankMaterialShell/pull/2662) - Bluetooth signal bar indicator |
+| **[b0o](https://github.com/b0o)** | [PR #2687](https://github.com/AvengeMedia/DankMaterialShell/pull/2687) - Separate workspace appearance for unfocused displays |
+| **[awerty-noob](https://github.com/awerty-noob)** | [PR #2609](https://github.com/AvengeMedia/DankMaterialShell/pull/2609) - Lock screen IME bypass for keyboard layout mismatches |
+
+### Bug Fix Contributors
+
+| Contributor | Contribution |
+|---|---|
+| **[jbwfu](https://github.com/jbwfu)** | [PR #2605](https://github.com/AvengeMedia/DankMaterialShell/pull/2605), [#2598](https://github.com/AvengeMedia/DankMaterialShell/pull/2598), [#2542](https://github.com/AvengeMedia/DankMaterialShell/pull/2542), [#2550](https://github.com/AvengeMedia/DankMaterialShell/pull/2550), [#2521](https://github.com/AvengeMedia/DankMaterialShell/pull/2521), [#1798](https://github.com/AvengeMedia/DankMaterialShell/pull/1798), [#1759](https://github.com/AvengeMedia/DankMaterialShell/pull/1759), [#1746](https://github.com/AvengeMedia/DankMaterialShell/pull/1746), [#1729](https://github.com/AvengeMedia/DankMaterialShell/pull/1729) - Clipboard, settings, wallpaper, i18n, and thumbnail fixes |
+| **[Silzinc](https://github.com/Silzinc)** | [PR #2586](https://github.com/AvengeMedia/DankMaterialShell/pull/2586), [#1823](https://github.com/AvengeMedia/DankMaterialShell/pull/1823) - Launcher text contrast; icon resolution and switcher fallback styling |
+| **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** | [PR #2669](https://github.com/AvengeMedia/DankMaterialShell/pull/2669), [#2661](https://github.com/AvengeMedia/DankMaterialShell/pull/2661), [#2658](https://github.com/AvengeMedia/DankMaterialShell/pull/2658), [#2654](https://github.com/AvengeMedia/DankMaterialShell/pull/2654), [#2652](https://github.com/AvengeMedia/DankMaterialShell/pull/2652) - Lockout feedback, bar/DPMS/media fixes |
+| **[awerty-noob](https://github.com/awerty-noob)** | [PR #2655](https://github.com/AvengeMedia/DankMaterialShell/pull/2655) - Hyprland window focus on popout close |
+| **[Stodtyy](https://github.com/Stodtyy)** | [PR #2506](https://github.com/AvengeMedia/DankMaterialShell/pull/2506) - Hyprland display configurator profiles |
+| **[miguelsaliba](https://github.com/miguelsaliba)** | [PR #2537](https://github.com/AvengeMedia/DankMaterialShell/pull/2537) - Matugen pywalfox light/dark transitions |
+| **[bogdan-velicu](https://github.com/bogdan-velicu)** | [PR #2587](https://github.com/AvengeMedia/DankMaterialShell/pull/2587) - Notification font sizes and progress bar |
+| **[nabaco](https://github.com/nabaco)** | [PR #2572](https://github.com/AvengeMedia/DankMaterialShell/pull/2572) - Wake monitors on input when lock screen powers them off |
+| **[ewtodd](https://github.com/ewtodd)** | [PR #2508](https://github.com/AvengeMedia/DankMaterialShell/pull/2508) - Greeter awk parser script fixes |
+| **[LuckShiba](https://github.com/LuckShiba)** | [PR #2528](https://github.com/AvengeMedia/DankMaterialShell/pull/2528) - Remove max bpc options from greeter |
+| **[hthienloc](https://github.com/hthienloc)** | [PR #2615](https://github.com/AvengeMedia/DankMaterialShell/pull/2615) - Media popout output device switching fix |
+| **[cwelsys](https://github.com/cwelsys)** | [PR #2509](https://github.com/AvengeMedia/DankMaterialShell/pull/2509) - Exclude MPRIS players with empty titles |
+| **[Qubes_Geek](https://github.com/Qubes-Geek)** | [PR #1980](https://github.com/AvengeMedia/DankMaterialShell/pull/1980), [#1726](https://github.com/AvengeMedia/DankMaterialShell/pull/1726), [#1725](https://github.com/AvengeMedia/DankMaterialShell/pull/1725) - Event dispatcher, Hyprland windowrule, Wayland object ID fixes |
+
+## Resources
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  Get Started with DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>Documentation</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>Plugins</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>Sponsor on GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>Support on Ko-fi</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>Special thanks to <a href="https://github.com/YaLTeR">YaLTeR</a> for collaborating with the DMS team, for <a href="https://github.com/niri-wm/niri">niri</a> - the compositor that inspired DMS, and for hosting DMS on the <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a>.</span>
+</div>
+
+<div className={styles.thankYouHero}>
+  <div className={styles.claws} aria-hidden="true">
+    <div className={`${styles.clawSet} ${styles.clawLeft}`}>
+      <ClawMarks className={styles.clawAnim1} opacity={0.4} />
+    </div>
+    <div className={`${styles.clawSet} ${styles.clawRight}`}>
+      <ClawMarks className={styles.clawAnim2} opacity={0.4} mirror />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      Thank <span className={styles.gradientText}>You</span>
+    </h2>
+    <p className={styles.thankYouText}>To everyone who has supported DMS through feedback, contributions, sponsorships, donations, and packaging.</p>
+    <p className={styles.thankYouTagline}>Zan, Zendegi, Azadi</p>
+  </div>
+</div>
