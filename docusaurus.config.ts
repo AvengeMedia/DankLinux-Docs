@@ -282,16 +282,20 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
-          lastVersion: '1.4',
+          lastVersion: '1.5',
           versions: {
             current: {
-              label: '1.5',
-              path: '1.5',
+              label: '1.6',
+              path: '1.6',
               banner: 'unreleased',
+            },
+            '1.5': {
+              label: '1.5',
+              path: '',
             },
             '1.4': {
               label: '1.4',
-              path: '',
+              path: '1.4',
             },
             '1.2': {
               label: '1.2',

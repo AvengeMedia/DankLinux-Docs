@@ -162,7 +162,7 @@ DMS 1.5 adds the option to draw the shell surfaces as one connected surface, tyi
   <figcaption>Create, edit, and navigate events right from the shell calendar overview.</figcaption>
 </figure>
 
-DMS 1.5 brings native support for [DankCalendar](/blog/dankcalendar-release) ([docs](/docs/1.5/dankcalendar)) as a calendar backend over IPC. This is a major new application addition that unifies Local, Google, Microsoft, CalDAV, and iCloud accounts into a single agenda.
+DMS 1.5 brings native support for [DankCalendar](/blog/dankcalendar-release) ([docs](/docs/dankcalendar)) as a calendar backend over IPC. This is a major new application addition that unifies Local, Google, Microsoft, CalDAV, and iCloud accounts into a single agenda.
 
 When the `dcal` daemon is active, DMS detects it and establishes a bidirectional IPC connection. That connection enables several shell integrations:
 
@@ -173,7 +173,7 @@ When the `dcal` daemon is active, DMS detects it and establishes a bidirectional
 - **Keyboard Navigation:** Full arrow-key navigation for managing calendar events.
 - **Fully On Device:** DankCalendar runs entirely on-device, connecting directly to your providers.
 
-The DMS calendar provider is configurable for backwards compatibility with [Khal](/docs/1.5/dankmaterialshell/calendar-integration), so users can continue to use the `khal` backend if desired.
+The DMS calendar provider is configurable for backwards compatibility with [Khal](/docs/dankmaterialshell/calendar-integration), so users can continue to use the `khal` backend if desired.
 
 ### Integrated Task Planner
 
@@ -193,7 +193,7 @@ In addition to task/reminder/VTODO integration from DankCalendar, a local to-do 
   <figcaption>The DMS greeter with user selection, session picker, and auto-login.</figcaption>
 </figure>
 
-DMS 1.5 adds a settings GUI, multi-user account management, and per-user theme sync to the [greeter](/docs/1.5/dankgreeter).
+DMS 1.5 adds a settings GUI, multi-user account management, and per-user theme sync to the [greeter](/docs/dankgreeter).
 
 - **Settings GUI:** Manage dms-greeter and greetd settings without editing config files by hand.
 - **Improved PAM Support:** PAM authentication for fingerprint readers and U2F devices, with timeout recovery and unlock-state sync.
@@ -223,7 +223,7 @@ DMS 1.5 adds a settings GUI, multi-user account management, and per-user theme s
 
 DMS 1.5 adds a **Window Rules Manager** for controlling window behaviors across Hyprland, Niri, and MangoWM.
 
-A dedicated settings page allows viewing, editing, and creating window rules. A new [IPC](https://danklinux.com/docs/1.5/dankmaterialshell/keybinds-ipc#window-rules) allows creating a window rule for the currently focused window.
+A dedicated settings page allows viewing, editing, and creating window rules. A new [IPC](https://danklinux.com/docs/dankmaterialshell/keybinds-ipc#window-rules) allows creating a window rule for the currently focused window.
 
 ## Display Profiles
 
@@ -248,11 +248,11 @@ DMS 1.5 adds Display Profiles: saved monitor layouts that DMS can switch between
 
 ## Hyprland Lua Configuration
 
-DMS 1.5 moves all Hyprland default configurations to the new [Lua format](https://hypr.land/news/26_lua/). When DMS deploys configs for Hyprland (via `dms setup` or `dankinstall`), it generates native Lua files instead of the older `.conf` format. This applies to all DMS-managed configurations such as key binds and monitor/output configurations. See the [Hyprland configuration guide](/docs/1.5/dankmaterialshell/compositors#hyprland-configuration) for details.
+DMS 1.5 moves all Hyprland default configurations to the new [Lua format](https://hypr.land/news/26_lua/). When DMS deploys configs for Hyprland (via `dms setup` or `dankinstall`), it generates native Lua files instead of the older `.conf` format. This applies to all DMS-managed configurations such as key binds and monitor/output configurations. See the [Hyprland configuration guide](/docs/dankmaterialshell/compositors#hyprland-configuration) for details.
 
 ## Enhanced MangoWM Support
 
-DMS 1.5 adds better support for the [MangoWM compositor](/docs/1.5/dankmaterialshell/compositors#mangowc-configuration) across the shell, installer, and UI tools. `dms setup` now deploys MangoWM configurations and `dankinstall` supports MangoWM as a compositor option.
+DMS 1.5 adds better support for the [MangoWM compositor](/docs/dankmaterialshell/compositors#mangowc-configuration) across the shell, installer, and UI tools. `dms setup` now deploys MangoWM configurations and `dankinstall` supports MangoWM as a compositor option.
 
 ## Material 3 Shadows & Elevation
 
@@ -330,7 +330,7 @@ DMS 1.5 adds native **Tailscale** support inside the Control Center. Instead of 
 
 DMS 1.5 pulls more of the system into the shell, so you can manage updates, power, autostart, and default apps without leaving your desktop.
 
-- **[System Updater](/docs/1.5/dankmaterialshell/cli-system-updater):** Check for and apply system updates from the shell, with multiple package-manager backends and polkit authentication for privileged operations.
+- **[System Updater](/docs/dankmaterialshell/cli-system-updater):** Check for and apply system updates from the shell, with multiple package-manager backends and polkit authentication for privileged operations.
 - **Power Profiles:** Switch between power-saver, balanced, and performance profiles from the Control Center or by scrolling the battery widget. A `cycleProfile` IPC command is bound to `Mod+P` by default.
 - **XDG Autostart:** A new Autostart tab in Settings manages the applications that launch at login, following the XDG autostart specification.
 - **Default Apps:** A Default Apps page in Settings sets your preferred applications for file types and URL schemes.
@@ -387,7 +387,7 @@ A handful of smaller fixes and quality-of-life touches, several from the communi
 
 ## Headless Installation
 
-The [`dankinstall`](/docs/1.5/dankinstall) installer can now run **fully unattended** - no TUI, scriptable for provisioning, dotfile bootstraps, and CI. Passing `--compositor` and `--term` switches it into headless mode:
+The [`dankinstall`](/docs/dankinstall) installer can now run **fully unattended** - no TUI, scriptable for provisioning, dotfile bootstraps, and CI. Passing `--compositor` and `--term` switches it into headless mode:
 
 ```bash
 dankinstall --compositor niri --term ghostty --yes
