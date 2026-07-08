@@ -336,6 +336,21 @@ DMS 1.5 pulls more of the system into the shell, so you can manage updates, powe
 - **Default Apps:** A Default Apps page in Settings sets your preferred applications for file types and URL schemes.
 - **User Session Switching:** Switch between local user sessions directly from the shell.
 
+## Plugin Ranking, Moderation, and Community Feedback
+
+With 230+ community plugins in the registry, DMS 1.5 introduces a ranking and feedback system so the best plugins rise to the top. Every plugin now has a tracking issue in the [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry/issues) that doubles as a forum and voting surface, and the [plugins directory](https://plugins.danklinux.com) displays all of the new metadata affiliated with plugins.
+
+- **Upvotes:** Anyone with a GitHub account can 👍 a plugin's issue to upvote it. The plugins page ranks by upvotes by default, so popular plugins surface first.
+- **Sorting & Filtering:** Sort by upvotes, last updated, date added, name, or random, with an ascending/descending toggle, plus filters for reviewed-only and first-party-only plugins.
+- **Status Badges:** Plugins can be flagged `reviewed`, `broken`, `unmaintained`, or `deprecated`, surfaced as badges both on the web page and in the in-shell plugin browser.
+- **Moderator & Author Commands:** Catalog moderators apply status flags via bot commands on the issue, and a plugin's own author can self-flag their plugin `/unmaintained` (seeking a new maintainer) or `/deprecated` (superseded by another plugin or a built-in DMS feature).
+
+Browse and vote on plugins at **[plugins.danklinux.com](https://plugins.danklinux.com)**.
+
+**Huge thanks to [hthienloc](https://github.com/hthienloc) for working through the existing plugin registry to review and significantly improve the quality of the plugin ecosystem!**
+
+If you wish to contribute as a plugin moderator, refer to [this ticket](https://github.com/AvengeMedia/dms-plugin-registry/issues/573) for details.
+
 ## Other Notable Features
 
 DMS 1.5 also brings a wide array of enhancements and options across other components of the shell:
