@@ -454,11 +454,6 @@ DMS 1.5 requires Quickshell 0.3.0 or newer; support for 0.2 has been dropped. If
 
 The following is a summary of notable fixes shipped across the v1.4.x hotfix series and incorporated into v1.5. All of these are part of the v1.5 release.
 
-**Frame Mode & Connected UI**
-- Fixed connected-mode surface recovery and fullscreen layering refinement.
-- Fixed modal escape key handling in connected mode.
-- Fixed bar offset calculation when using multi-monitor layouts.
-
 **Launcher & Spotlight**
 - Fixed file search premature exit when browsing deep subdirectories.
 - Fixed keyboard navigation failing to show the last delegate item in grid view.
@@ -609,44 +604,236 @@ The following is a summary of notable fixes shipped across the v1.4.x hotfix ser
 
 ## Community Contributors
 
-DMS 1.5 - and the hotfix series leading up to it - would not be possible without the contributions of the wider community. A huge thank you to everyone who opened a PR, filed a detailed issue, tested a fix, or helped translate the shell.
+DMS 1.5, and the hotfix series leading up to it, would not be possible without the contributions of the wider community. A huge thank you to everyone who opened a PR, filed a detailed issue, tested a fix, or helped translate the shell.
 
-*If you were missed we're sorry! It's hard to keep track of everything sometimes, reach out on Discord or Github and we'll make sure to add you to the list.*
+### Quick Acknowledgements
+
+* Special thanks to our **NixOS Maintainers**, **LuckShiba and EricDraven**, for their numerous contributions to DMS overall and maintaining the NixOS Community!
+
+* If you were missed we're sorry! It's hard to keep track of everything sometimes, reach out on Discord or Github and we'll make sure to add you to the list.*
 
 ### Feature Contributors
 
 | Contributor | Contribution |
 |---|---|
-| **[goatnath](https://github.com/goatnath)** | [PR #2583](https://github.com/AvengeMedia/DankMaterialShell/pull/2583) - Integrated Task Planner widget in the calendar overview |
-| **[Legend-017](https://github.com/Legend-017)** | [PR #2726](https://github.com/AvengeMedia/DankMaterialShell/pull/2726) - Spotlight search persistence and highlight-on-open |
-| **[kanghengliu](https://github.com/kanghengliu)** | [PR #2688](https://github.com/AvengeMedia/DankMaterialShell/pull/2688) - Ctrl+H/L grid navigation in launcher |
-| **[lambdaclan](https://github.com/lambdaclan)** | [PR #2667](https://github.com/AvengeMedia/DankMaterialShell/pull/2667) - Toggleable color-picker entries in launcher |
-| **[hthienloc](https://github.com/hthienloc)** | [PR #2676](https://github.com/AvengeMedia/DankMaterialShell/pull/2676), [PR #2634](https://github.com/AvengeMedia/DankMaterialShell/pull/2634) - Hide package source badges; Battery Settings tab |
-| **[dionjoshualobo](https://github.com/dionjoshualobo)** | [PR #2640](https://github.com/AvengeMedia/DankMaterialShell/pull/2640) - Clipboard type filtering (Text / Image / Pinned) |
-| **[NihilDigit](https://github.com/NihilDigit)** | [PR #2684](https://github.com/AvengeMedia/DankMaterialShell/pull/2684) - WiFi connection progress indicators |
-| **[jbwfu](https://github.com/jbwfu)** | [PR #2648](https://github.com/AvengeMedia/DankMaterialShell/pull/2648) - Saved networks editor tab |
-| **[atimofeev](https://github.com/atimofeev)** | [PR #2428](https://github.com/AvengeMedia/DankMaterialShell/pull/2428) - Battery refresh rate reduction on battery power |
-| **[yechielw](https://github.com/yechielw)** | [PR #2662](https://github.com/AvengeMedia/DankMaterialShell/pull/2662) - Bluetooth signal bar indicator |
-| **[b0o](https://github.com/b0o)** | [PR #2687](https://github.com/AvengeMedia/DankMaterialShell/pull/2687) - Separate workspace appearance for unfocused displays |
-| **[awerty-noob](https://github.com/awerty-noob)** | [PR #2609](https://github.com/AvengeMedia/DankMaterialShell/pull/2609) - Lock screen IME bypass for keyboard layout mismatches |
+| **[0xdeafbeef](https://github.com/0xdeafbeef)** | Highlight active workspace app tiles ([PR #1957](https://github.com/AvengeMedia/DankMaterialShell/pull/1957)) |
+| **[Adarsh219](https://github.com/Adarsh219)** | Add Zed editor theming support ([PR #1954](https://github.com/AvengeMedia/DankMaterialShell/pull/1954)) |
+| **[andrhua](https://github.com/andrhua)** | Persist last active player ([PR #2184](https://github.com/AvengeMedia/DankMaterialShell/pull/2184)) |
+| **[arfan21](https://github.com/arfan21)** | Added Settings Tab Autostart App (XDG Autostart) ([PR #2535](https://github.com/AvengeMedia/DankMaterialShell/pull/2535)) |
+| **[arora-archit](https://github.com/arora-archit)** | Add icon tinting ([PR #2266](https://github.com/AvengeMedia/DankMaterialShell/pull/2266)) |
+| **[augustocdias](https://github.com/augustocdias)** | • Enable use of videos as screensaver in the lock screen ([PR #1819](https://github.com/AvengeMedia/DankMaterialShell/pull/1819))<br/>• Add toggle to enable/disable auto connecting ([PR #1925](https://github.com/AvengeMedia/DankMaterialShell/pull/1925))<br/>• Show notification only on current focused display ([PR #1923](https://github.com/AvengeMedia/DankMaterialShell/pull/1923)) |
+| **[b0o](https://github.com/b0o)** | • Add openColor IPC handler to set color on open ([PR #2017](https://github.com/AvengeMedia/DankMaterialShell/pull/2017))<br/>• Separate workspace appearance for unfocused displays ([PR #2687](https://github.com/AvengeMedia/DankMaterialShell/pull/2687)) |
+| **[Bodify](https://github.com/Bodify)** | Add search/filter to saved clipboard entries & animation states ([PR #2464](https://github.com/AvengeMedia/DankMaterialShell/pull/2464)) |
+| **[Bogdan-Torkhov](https://github.com/Bogdan-Torkhov)** | Updated dynamic width options for DiskUsage widget ([PR #2517](https://github.com/AvengeMedia/DankMaterialShell/pull/2517)) |
+| **[bogdan-velicu](https://github.com/bogdan-velicu)** | Add opt-in timeout progress bar on popups ([PR #2587](https://github.com/AvengeMedia/DankMaterialShell/pull/2587)) |
+| **[cwelsys](https://github.com/cwelsys)** | Add 'Hide When Fullscreen' opt-out toggles ([PR #2349](https://github.com/AvengeMedia/DankMaterialShell/pull/2349)) |
+| **[dionjoshualobo](https://github.com/dionjoshualobo)** | Add type filters to clipboard history ([PR #2640](https://github.com/AvengeMedia/DankMaterialShell/pull/2640)) |
+| **[DK0280705](https://github.com/DK0280705)** | Fix and implement display auto-switching with JSON profile storage ([PR #2275](https://github.com/AvengeMedia/DankMaterialShell/pull/2275)) |
+| **[domenkozar](https://github.com/domenkozar)** | Blink WiFi/Bluetooth icons while connecting ([PR #2448](https://github.com/AvengeMedia/DankMaterialShell/pull/2448)) |
+| **[dvjn](https://github.com/dvjn)** | • Add cycleProfile IPC command and default Mod+P keybind ([PR #2411](https://github.com/AvengeMedia/DankMaterialShell/pull/2411))<br/>• Add Display Profiles builtin control center widget ([PR #2410](https://github.com/AvengeMedia/DankMaterialShell/pull/2410)) |
+| **[gbPagano](https://github.com/gbPagano)** | Add DiskUsage widget config overlay with showMountPath toggle and standardized tile sizing ([PR #2507](https://github.com/AvengeMedia/DankMaterialShell/pull/2507)) |
+| **[Gdetrane](https://github.com/Gdetrane)** | • Add manual printer by IP/hostname ([PR #1868](https://github.com/AvengeMedia/DankMaterialShell/pull/1868))<br/>• Add Tailscale control center widget ([PR #1875](https://github.com/AvengeMedia/DankMaterialShell/pull/1875)) |
+| **[hthienloc](https://github.com/hthienloc)** | • Add expandable search bar to plugins settings tab ([PR #2377](https://github.com/AvengeMedia/DankMaterialShell/pull/2377))<br/>• Consolidate plugin directory management into a single dynamic button ([PR #2400](https://github.com/AvengeMedia/DankMaterialShell/pull/2400))<br/>• Implement interactive microphone volume OSD and IPC controls ([PR #2406](https://github.com/AvengeMedia/DankMaterialShell/pull/2406))<br/>• Unify media controls dropdown interactions, hover behavior and cycle controls ([PR #2470](https://github.com/AvengeMedia/DankMaterialShell/pull/2470))<br/>• Add native powerprofile target for power profiles management ([PR #2515](https://github.com/AvengeMedia/DankMaterialShell/pull/2515))<br/>• Support scroll and right-click on audio output devices in media popout ([PR #2615](https://github.com/AvengeMedia/DankMaterialShell/pull/2615))<br/>• Add battery settings tab and update battery widget interactions ([PR #2634](https://github.com/AvengeMedia/DankMaterialShell/pull/2634))<br/>• Port critical battery alert from DankBatteryAlerts plugin ([PR #2664](https://github.com/AvengeMedia/DankMaterialShell/pull/2664))<br/>• Add option to hide package source badges in launcher ([PR #2676](https://github.com/AvengeMedia/DankMaterialShell/pull/2676))<br/>• Support configurable background color ([PR #2671](https://github.com/AvengeMedia/DankMaterialShell/pull/2671))<br/>• Add options to toggle percentage and remaining time ([PR #2672](https://github.com/AvengeMedia/DankMaterialShell/pull/2672))<br/>• Allow excluding specific media players by identity ([PR #2712](https://github.com/AvengeMedia/DankMaterialShell/pull/2712))<br/>• Add update all CLI flag and settings updates dialog ([PR #2682](https://github.com/AvengeMedia/DankMaterialShell/pull/2682)) |
+| **[IrisHormoviti](https://github.com/IrisHormoviti)** | • Add login sound functionality and settings entry ([PR #2155](https://github.com/AvengeMedia/DankMaterialShell/pull/2155))<br/>• Added Default Apps page to settings ([PR #2416](https://github.com/AvengeMedia/DankMaterialShell/pull/2416)) |
+| **[JamesFromFL](https://github.com/JamesFromFL)** | Add default app IPC actions ([PR #2546](https://github.com/AvengeMedia/DankMaterialShell/pull/2546)) |
+| **[jbwfu](https://github.com/jbwfu)** | • Add clipboard entry action visibility controls ([PR #2621](https://github.com/AvengeMedia/DankMaterialShell/pull/2621))<br/>• Expose saved WiFi networks in settings ([PR #2648](https://github.com/AvengeMedia/DankMaterialShell/pull/2648)) |
+| **[kanghengliu](https://github.com/kanghengliu)** | • Animate dock apps on entry addition/deletion ([PR #2064](https://github.com/AvengeMedia/DankMaterialShell/pull/2064))<br/>• Add FullscreenToplevel detection ([PR #2069](https://github.com/AvengeMedia/DankMaterialShell/pull/2069))<br/>• FileBrowser video thumbnail ([PR #2077](https://github.com/AvengeMedia/DankMaterialShell/pull/2077))<br/>• Expose accept keyboard focus to desktop widgets ([PR #2285](https://github.com/AvengeMedia/DankMaterialShell/pull/2285))<br/>• Expose screen var to desktop plugins ([PR #2300](https://github.com/AvengeMedia/DankMaterialShell/pull/2300)) |
+| **[klesh](https://github.com/klesh)** | User-configurable font size for notification summary and body ([PR #2461](https://github.com/AvengeMedia/DankMaterialShell/pull/2461)) |
+| **[lakapple](https://github.com/lakapple)** | • Have selected item at dropdown beginning on launch ([PR #1968](https://github.com/AvengeMedia/DankMaterialShell/pull/1968))<br/>• Add show week number option ([PR #1990](https://github.com/AvengeMedia/DankMaterialShell/pull/1990))<br/>• Add launcher history ([PR #2086](https://github.com/AvengeMedia/DankMaterialShell/pull/2086))<br/>• Add --raw flag ([PR #2103](https://github.com/AvengeMedia/DankMaterialShell/pull/2103)) |
+| **[lambdaclan](https://github.com/lambdaclan)** | Make dms color picker entry toggleable ([PR #2667](https://github.com/AvengeMedia/DankMaterialShell/pull/2667)) |
+| **[lichie567](https://github.com/lichie567)** | Improve content width calculation and add size options ([PR #2444](https://github.com/AvengeMedia/DankMaterialShell/pull/2444)) |
+| **[louzt](https://github.com/louzt)** | Expose scan/rescan/reload IPC handlers for runtime plugin discovery ([PR #2611](https://github.com/AvengeMedia/DankMaterialShell/pull/2611)) |
+| **[lpv11](https://github.com/lpv11)** | Add --no-confirm and --reset flags ([PR #2059](https://github.com/AvengeMedia/DankMaterialShell/pull/2059)) |
+| **[LuckShiba](https://github.com/LuckShiba)** | Improve context keyboard navigation and mode persistence ([PR #2467](https://github.com/AvengeMedia/DankMaterialShell/pull/2467)) |
+| **[merdely](https://github.com/merdely)** | Better keybinds ([PR #2002](https://github.com/AvengeMedia/DankMaterialShell/pull/2002)) |
+| **[mihem](https://github.com/mihem)** | Stronger active app highlight ([PR #2190](https://github.com/AvengeMedia/DankMaterialShell/pull/2190)) |
+| **[Mikilio](https://github.com/Mikilio)** | Retrieve WiFi/VPN secrets from D-Bus Secret Service with unlock support ([PR #2402](https://github.com/AvengeMedia/DankMaterialShell/pull/2402)) |
+| **[nemu626](https://github.com/nemu626)** | Show power rate (W) in DankBar battery widget. ([PR #1814](https://github.com/AvengeMedia/DankMaterialShell/pull/1814)) |
+| **[NikSneMC](https://github.com/NikSneMC)** | Add new includes for dms 1.4 ([PR #1998](https://github.com/AvengeMedia/DankMaterialShell/pull/1998)) |
+| **[odtgit](https://github.com/odtgit)** | Support file path substitutions for PWA icons ([PR #1867](https://github.com/AvengeMedia/DankMaterialShell/pull/1867)) |
+| **[philjackson](https://github.com/philjackson)** | Rewind to track start on previous when past 8 seconds ([PR #2136](https://github.com/AvengeMedia/DankMaterialShell/pull/2136)) |
+| **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** | • Add connect/disconnect, exit-node and LAN-access controls ([PR #2644](https://github.com/AvengeMedia/DankMaterialShell/pull/2644))<br/>• Make muting sounds during media playback configurable ([PR #2652](https://github.com/AvengeMedia/DankMaterialShell/pull/2652)) |
+| **[rollecode](https://github.com/rollecode)** | Add optional monochrome icons setting ([PR #2241](https://github.com/AvengeMedia/DankMaterialShell/pull/2241)) |
+| **[ronharel02](https://github.com/ronharel02)** | • Add color picker to launcher ([PR #1999](https://github.com/AvengeMedia/DankMaterialShell/pull/1999))<br/>• Add configurable control center group ordering ([PR #2006](https://github.com/AvengeMedia/DankMaterialShell/pull/2006))<br/>• Add adaptive sizing for the media widget ([PR #2165](https://github.com/AvengeMedia/DankMaterialShell/pull/2165))<br/>• Add optional inline expansion for system tray overflow ([PR #2171](https://github.com/AvengeMedia/DankMaterialShell/pull/2171))<br/>• Improve media seekbar scrubbing feedback and wave preview behavior ([PR #2181](https://github.com/AvengeMedia/DankMaterialShell/pull/2181)) |
+| **[scottmckendry](https://github.com/scottmckendry)** | Lockscreen screen filter ([PR #2740](https://github.com/AvengeMedia/DankMaterialShell/pull/2740)) |
+| **[SHORiN-KiWATA](https://github.com/SHORiN-KiWATA)** | Allow CatOS to run DMS installer ([PR #1768](https://github.com/AvengeMedia/DankMaterialShell/pull/1768)) |
+| **[Silzinc](https://github.com/Silzinc)** | • Add support for animated gifs as profile pictures ([PR #1804](https://github.com/AvengeMedia/DankMaterialShell/pull/1804))<br/>• Add setting to change and hotreload locale ([PR #1817](https://github.com/AvengeMedia/DankMaterialShell/pull/1817))<br/>• Add setting for first day of the week ([PR #1854](https://github.com/AvengeMedia/DankMaterialShell/pull/1854)) |
+| **[TheSynt4x](https://github.com/TheSynt4x)** | • Improve icon resolution and align switcher fallback styling ([PR #1823](https://github.com/AvengeMedia/DankMaterialShell/pull/1823))<br/>• Show memory widget in gb ([PR #1825](https://github.com/AvengeMedia/DankMaterialShell/pull/1825))<br/>• Add more disk usage viewing options ([PR #1833](https://github.com/AvengeMedia/DankMaterialShell/pull/1833)) |
+| **[xPathin](https://github.com/xPathin)** | Add FIDO2/U2F security key support for lock screen ([PR #1842](https://github.com/AvengeMedia/DankMaterialShell/pull/1842)) |
+| **[yechielw](https://github.com/yechielw)** | Add visual indication for connected bluetooth ([PR #2662](https://github.com/AvengeMedia/DankMaterialShell/pull/2662)) |
 
 ### Bug Fix Contributors
 
 | Contributor | Contribution |
 |---|---|
-| **[jbwfu](https://github.com/jbwfu)** | [PR #2605](https://github.com/AvengeMedia/DankMaterialShell/pull/2605), [#2598](https://github.com/AvengeMedia/DankMaterialShell/pull/2598), [#2542](https://github.com/AvengeMedia/DankMaterialShell/pull/2542), [#2550](https://github.com/AvengeMedia/DankMaterialShell/pull/2550), [#2521](https://github.com/AvengeMedia/DankMaterialShell/pull/2521), [#1798](https://github.com/AvengeMedia/DankMaterialShell/pull/1798), [#1759](https://github.com/AvengeMedia/DankMaterialShell/pull/1759), [#1746](https://github.com/AvengeMedia/DankMaterialShell/pull/1746), [#1729](https://github.com/AvengeMedia/DankMaterialShell/pull/1729) - Clipboard, settings, wallpaper, i18n, and thumbnail fixes |
-| **[Silzinc](https://github.com/Silzinc)** | [PR #2586](https://github.com/AvengeMedia/DankMaterialShell/pull/2586), [#1823](https://github.com/AvengeMedia/DankMaterialShell/pull/1823) - Launcher text contrast; icon resolution and switcher fallback styling |
-| **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** | [PR #2669](https://github.com/AvengeMedia/DankMaterialShell/pull/2669), [#2661](https://github.com/AvengeMedia/DankMaterialShell/pull/2661), [#2658](https://github.com/AvengeMedia/DankMaterialShell/pull/2658), [#2654](https://github.com/AvengeMedia/DankMaterialShell/pull/2654), [#2652](https://github.com/AvengeMedia/DankMaterialShell/pull/2652) - Lockout feedback, bar/DPMS/media fixes |
-| **[awerty-noob](https://github.com/awerty-noob)** | [PR #2655](https://github.com/AvengeMedia/DankMaterialShell/pull/2655) - Hyprland window focus on popout close |
-| **[Stodtyy](https://github.com/Stodtyy)** | [PR #2506](https://github.com/AvengeMedia/DankMaterialShell/pull/2506) - Hyprland display configurator profiles |
-| **[miguelsaliba](https://github.com/miguelsaliba)** | [PR #2537](https://github.com/AvengeMedia/DankMaterialShell/pull/2537) - Matugen pywalfox light/dark transitions |
-| **[bogdan-velicu](https://github.com/bogdan-velicu)** | [PR #2587](https://github.com/AvengeMedia/DankMaterialShell/pull/2587) - Notification font sizes and progress bar |
-| **[nabaco](https://github.com/nabaco)** | [PR #2572](https://github.com/AvengeMedia/DankMaterialShell/pull/2572) - Wake monitors on input when lock screen powers them off |
-| **[ewtodd](https://github.com/ewtodd)** | [PR #2508](https://github.com/AvengeMedia/DankMaterialShell/pull/2508) - Greeter awk parser script fixes |
-| **[LuckShiba](https://github.com/LuckShiba)** | [PR #2528](https://github.com/AvengeMedia/DankMaterialShell/pull/2528) - Remove max bpc options from greeter |
-| **[hthienloc](https://github.com/hthienloc)** | [PR #2615](https://github.com/AvengeMedia/DankMaterialShell/pull/2615) - Media popout output device switching fix |
-| **[cwelsys](https://github.com/cwelsys)** | [PR #2509](https://github.com/AvengeMedia/DankMaterialShell/pull/2509) - Exclude MPRIS players with empty titles |
-| **[Qubes_Geek](https://github.com/Qubes-Geek)** | [PR #1980](https://github.com/AvengeMedia/DankMaterialShell/pull/1980), [#1726](https://github.com/AvengeMedia/DankMaterialShell/pull/1726), [#1725](https://github.com/AvengeMedia/DankMaterialShell/pull/1725) - Event dispatcher, Hyprland windowrule, Wayland object ID fixes |
+| **[0xdeafbeef](https://github.com/0xdeafbeef)** | Stabilize control center numeric widths ([PR #1943](https://github.com/AvengeMedia/DankMaterialShell/pull/1943)) |
+| **[abcfy2](https://github.com/abcfy2)** | Resolve tray freeze and wallpaper loss after DPMS resume ([PR #2457](https://github.com/AvengeMedia/DankMaterialShell/pull/2457)) |
+| **[Adarsh219](https://github.com/Adarsh219)** | Use single quotes for zed template paths ([PR #1972](https://github.com/AvengeMedia/DankMaterialShell/pull/1972)) |
+| **[Angerion](https://github.com/Angerion)** | Prevent 100% CPU EOF spin loop by using temp file ([PR #2471](https://github.com/AvengeMedia/DankMaterialShell/pull/2471)) |
+| **[arfan21](https://github.com/arfan21)** | Fix hyprland focus window ([PR #2426](https://github.com/AvengeMedia/DankMaterialShell/pull/2426)) |
+| **[awerty-noob](https://github.com/awerty-noob)** | • Bypass IME for password input ([PR #2609](https://github.com/AvengeMedia/DankMaterialShell/pull/2609))<br/>• Keep Hyprland focus during close ([PR #2655](https://github.com/AvengeMedia/DankMaterialShell/pull/2655))<br/>• Add complete bundled PAM services ([PR #2685](https://github.com/AvengeMedia/DankMaterialShell/pull/2685)) |
+| **[beckend](https://github.com/beckend)** | Fix multi-monitor cycling not working ([PR #2042](https://github.com/AvengeMedia/DankMaterialShell/pull/2042)) |
+| **[beluch-dev](https://github.com/beluch-dev)** | Correct parameter name in Hyprland windowrule (no_initial_focus) ([PR #1726](https://github.com/AvengeMedia/DankMaterialShell/pull/1726)) |
+| **[Bodify](https://github.com/Bodify)** | Fix list gaps and overlap when searching ([PR #2315](https://github.com/AvengeMedia/DankMaterialShell/pull/2315)) |
+| **[CaptainSpof](https://github.com/CaptainSpof)** | Follow symlinks when scanning wallpaper directory ([PR #1947](https://github.com/AvengeMedia/DankMaterialShell/pull/1947)) |
+| **[Cloud0310](https://github.com/Cloud0310)** | Avoid U2F PAM polling in OR mode ([PR #2459](https://github.com/AvengeMedia/DankMaterialShell/pull/2459)) |
+| **[CodeWithAlamin](https://github.com/CodeWithAlamin)** | • Add window rule for the new version of Gnome Calculator ([PR #2125](https://github.com/AvengeMedia/DankMaterialShell/pull/2125))<br/>• Update resizeactive binding to include height to make it work ([PR #2126](https://github.com/AvengeMedia/DankMaterialShell/pull/2126))<br/>• Add match rule for new version of Gnome Calculator app ID ([PR #2157](https://github.com/AvengeMedia/DankMaterialShell/pull/2157)) |
+| **[CongLuanTran](https://github.com/CongLuanTran)** | Make bluetoothBattery detection actually work ([PR #2486](https://github.com/AvengeMedia/DankMaterialShell/pull/2486)) |
+| **[cwelsys](https://github.com/cwelsys)** | • Add missing qs.Common import ([PR #1926](https://github.com/AvengeMedia/DankMaterialShell/pull/1926))<br/>• Exclude niri from fullscreen toplevel detection ([PR #2091](https://github.com/AvengeMedia/DankMaterialShell/pull/2091))<br/>• Size from PanelWindow.screen ([PR #2582](https://github.com/AvengeMedia/DankMaterialShell/pull/2582)) |
+| **[DavutHaxor](https://github.com/DavutHaxor)** | Fix ddc brightness not applying because process exits before debounce timer runs ([PR #2217](https://github.com/AvengeMedia/DankMaterialShell/pull/2217)) |
+| **[Desdaemon](https://github.com/Desdaemon)** | Pywalfox template light theme colors ([PR #2075](https://github.com/AvengeMedia/DankMaterialShell/pull/2075)) |
+| **[devnullvoid](https://github.com/devnullvoid)** | Honour _preScored for no-query when value exceeds typeBonus ([PR #2065](https://github.com/AvengeMedia/DankMaterialShell/pull/2065)) |
+| **[Dimariqe](https://github.com/Dimariqe)** | • Redraw wallpaper after DMS lock screen is dismissed ([PR #2037](https://github.com/AvengeMedia/DankMaterialShell/pull/2037))<br/>• Add TrayRecoveryService with bidirectional SNI dedup (Go server) ([PR #2137](https://github.com/AvengeMedia/DankMaterialShell/pull/2137))<br/>• Startup tray scan to prevent duplicate icons on boot ([PR #2225](https://github.com/AvengeMedia/DankMaterialShell/pull/2225)) |
+| **[domenkozar](https://github.com/domenkozar)** | • Open Wi-Fi password modal upfront for enterprise networks ([PR #2414](https://github.com/AvengeMedia/DankMaterialShell/pull/2414))<br/>• Bucket WiFi signal for stable list order ([PR #2449](https://github.com/AvengeMedia/DankMaterialShell/pull/2449)) |
+| **[euletheia](https://github.com/euletheia)** | Set TextInput 'fontFamily' ([PR #2399](https://github.com/AvengeMedia/DankMaterialShell/pull/2399)) |
+| **[ewtodd](https://github.com/ewtodd)** | Awk in new greeter ([PR #2508](https://github.com/AvengeMedia/DankMaterialShell/pull/2508)) |
+| **[gbPagano](https://github.com/gbPagano)** | • Align dimensions to whole pixels to avoid blurry rendering ([PR #2494](https://github.com/AvengeMedia/DankMaterialShell/pull/2494))<br/>• Honor plugin ccDetailHeight for detail section sizing ([PR #2559](https://github.com/AvengeMedia/DankMaterialShell/pull/2559)) |
+| **[GraemeF](https://github.com/GraemeF)** | • Coerce optional chain to bool in VolumeOSD enabled bindings ([PR #2101](https://github.com/AvengeMedia/DankMaterialShell/pull/2101))<br/>• Exclude virtual ether links and prune stale ones from networkd ([PR #2505](https://github.com/AvengeMedia/DankMaterialShell/pull/2505)) |
+| **[hthienloc](https://github.com/hthienloc)** | Fix action buttons hover cursor shape ([PR #2744](https://github.com/AvengeMedia/DankMaterialShell/pull/2744)) |
+| **[IrisHormoviti](https://github.com/IrisHormoviti)** | Fix charger plugged/unplugged sound playing while the battery is full ([PR #1859](https://github.com/AvengeMedia/DankMaterialShell/pull/1859)) |
+| **[jbwfu](https://github.com/jbwfu)** | • Make desktop widget group delete button clickable ([PR #2512](https://github.com/AvengeMedia/DankMaterialShell/pull/2512))<br/>• Support localized settings search ([PR #2521](https://github.com/AvengeMedia/DankMaterialShell/pull/2521))<br/>• Redraw wallpaper layers when fill mode changes ([PR #2542](https://github.com/AvengeMedia/DankMaterialShell/pull/2542))<br/>• Raise CLI IPC scanner limit for large entry payloads ([PR #2550](https://github.com/AvengeMedia/DankMaterialShell/pull/2550))<br/>• Prefer image MIME types over text fallbacks ([PR #2551](https://github.com/AvengeMedia/DankMaterialShell/pull/2551))<br/>• Close control center on lock and power actions ([PR #2598](https://github.com/AvengeMedia/DankMaterialShell/pull/2598))<br/>• Exit saved filter when pinned entries are empty ([PR #2604](https://github.com/AvengeMedia/DankMaterialShell/pull/2604))<br/>• Clipboard pinned recents dedupe ([PR #2605](https://github.com/AvengeMedia/DankMaterialShell/pull/2605))<br/>• Clipboard confirmation keyboard safety ([PR #2623](https://github.com/AvengeMedia/DankMaterialShell/pull/2623))<br/>• Keep first item selected when navigating upward ([PR #2622](https://github.com/AvengeMedia/DankMaterialShell/pull/2622))<br/>• Hide pin action while keeping saved indicator ([PR #2626](https://github.com/AvengeMedia/DankMaterialShell/pull/2626))<br/>• Dedupe search index tab entries ([PR #2643](https://github.com/AvengeMedia/DankMaterialShell/pull/2643))<br/>• Keep Wi-Fi when password prompt is canceled ([PR #2651](https://github.com/AvengeMedia/DankMaterialShell/pull/2651))<br/>• Paste selected history entry ([PR #2660](https://github.com/AvengeMedia/DankMaterialShell/pull/2660)) |
+| **[joshsymonds](https://github.com/joshsymonds)** | Fix fullscreen-detection race during cross-monitor focus moves ([PR #2373](https://github.com/AvengeMedia/DankMaterialShell/pull/2373)) |
+| **[kanghengliu](https://github.com/kanghengliu)** | • Fallback icon does not dim when not focused ([PR #2063](https://github.com/AvengeMedia/DankMaterialShell/pull/2063))<br/>• Show bar when scrolling away from fullscreen window ([PR #2089](https://github.com/AvengeMedia/DankMaterialShell/pull/2089))<br/>• Add missing vertical anchor for cava/music icon ([PR #2742](https://github.com/AvengeMedia/DankMaterialShell/pull/2742)) |
+| **[kevichi7](https://github.com/kevichi7)** | • Fix Hyprland scrolling overview geometry ([PR #2442](https://github.com/AvengeMedia/DankMaterialShell/pull/2442))<br/>• Fix Hyprland Lua dispatch helpers ([PR #2443](https://github.com/AvengeMedia/DankMaterialShell/pull/2443)) |
+| **[klesh](https://github.com/klesh)** | Ensure OSD appears on all monitors after resume ([PR #2453](https://github.com/AvengeMedia/DankMaterialShell/pull/2453)) |
+| **[kostiato](https://github.com/kostiato)** | Add middle mouse click to close running applications in vertical orientation ([PR #2386](https://github.com/AvengeMedia/DankMaterialShell/pull/2386)) |
+| **[kristijanribaric](https://github.com/kristijanribaric)** | Fix night mode and OSD recovery after suspend/resume ([PR #2254](https://github.com/AvengeMedia/DankMaterialShell/pull/2254)) |
+| **[ksp-apoc](https://github.com/ksp-apoc)** | Clean up orphaned idle inhibitor processes on startup ([PR #2324](https://github.com/AvengeMedia/DankMaterialShell/pull/2324)) |
+| **[lakapple](https://github.com/lakapple)** | • Fix dock visible when theres no app ([PR #1797](https://github.com/AvengeMedia/DankMaterialShell/pull/1797))<br/>• Fix html elements get parsed in clipboard entry ([PR #1798](https://github.com/AvengeMedia/DankMaterialShell/pull/1798))<br/>• Play/pause icon flipped in MediaPlaybackOSD ([PR #1889](https://github.com/AvengeMedia/DankMaterialShell/pull/1889))<br/>• Dock flickering when having cursor floating by the side ([PR #1897](https://github.com/AvengeMedia/DankMaterialShell/pull/1897))<br/>• Launcher launched via appdrawer doesnt respect size setting ([PR #1960](https://github.com/AvengeMedia/DankMaterialShell/pull/1960)) |
+| **[Legend-017](https://github.com/Legend-017)** | Select last query text on open; last-query persistence in connected frame mode ([PR #2726](https://github.com/AvengeMedia/DankMaterialShell/pull/2726)) |
+| **[lingdiansr](https://github.com/lingdiansr)** | • Apply stored icon theme at startup ([PR #2511](https://github.com/AvengeMedia/DankMaterialShell/pull/2511))<br/>• Robust location resolution with parallel fetch and multi-tier fallback ([PR #2638](https://github.com/AvengeMedia/DankMaterialShell/pull/2638)) |
+| **[louzt](https://github.com/louzt)** | • Fix VPN UI for active transient entries ([PR #2312](https://github.com/AvengeMedia/DankMaterialShell/pull/2312))<br/>• Dismiss popup reliably on user-initiated close paths ([PR #2761](https://github.com/AvengeMedia/DankMaterialShell/pull/2761)) |
+| **[LuckShiba](https://github.com/LuckShiba)** | Fix imageformats detection ([PR #1811](https://github.com/AvengeMedia/DankMaterialShell/pull/1811)) |
+| **[marcinjahn](https://github.com/marcinjahn)** | Cover edge cases of compact focused app widget ([PR #1918](https://github.com/AvengeMedia/DankMaterialShell/pull/1918)) |
+| **[miguelsaliba](https://github.com/miguelsaliba)** | Make matugen switch pywalfox dark/light mode ([PR #2537](https://github.com/AvengeMedia/DankMaterialShell/pull/2537)) |
+| **[nabaco](https://github.com/nabaco)** | Wake monitors on input when powered off by lock ([PR #2572](https://github.com/AvengeMedia/DankMaterialShell/pull/2572)) |
+| **[nekwebdev](https://github.com/nekwebdev)** | • Detect Zed Linux binary aliases ([PR #1982](https://github.com/AvengeMedia/DankMaterialShell/pull/1982))<br/>• Preserve per-monitor cycling when changing interval ([PR #1981](https://github.com/AvengeMedia/DankMaterialShell/pull/1981)) |
+| **[nficca](https://github.com/nficca)** | Close notification center after clicking action buttons ([PR #2276](https://github.com/AvengeMedia/DankMaterialShell/pull/2276)) |
+| **[NihilDigit](https://github.com/NihilDigit)** | Show WiFi connection progress ([PR #2684](https://github.com/AvengeMedia/DankMaterialShell/pull/2684)) |
+| **[odtgit](https://github.com/odtgit)** | Apply file path substitutions in launcher icon resolution ([PR #1877](https://github.com/AvengeMedia/DankMaterialShell/pull/1877)) |
+| **[pathmann](https://github.com/pathmann)** | Ignore keyboard shortcuts of disabled powermenu actions ([PR #2580](https://github.com/AvengeMedia/DankMaterialShell/pull/2580)) |
+| **[ramblingenzyme](https://github.com/ramblingenzyme)** | Fix greeter loading priority ([PR #2341](https://github.com/AvengeMedia/DankMaterialShell/pull/2341)) |
+| **[rochacbruno](https://github.com/rochacbruno)** | Dash and dankdash commands work without clock widget ([PR #2392](https://github.com/AvengeMedia/DankMaterialShell/pull/2392)) |
+| **[Rocho-EL-Locho](https://github.com/Rocho-EL-Locho)** | • Parse niri configs with leading-underscore identifiers ([PR #2646](https://github.com/AvengeMedia/DankMaterialShell/pull/2646))<br/>• Record numpad keys as KP_* keysyms ([PR #2645](https://github.com/AvengeMedia/DankMaterialShell/pull/2645))<br/>• Dismiss fade-to-lock overlay when using a custom lock command ([PR #2653](https://github.com/AvengeMedia/DankMaterialShell/pull/2653))<br/>• Don't treat DPMS off/on as a screen-reconnect recovery storm ([PR #2654](https://github.com/AvengeMedia/DankMaterialShell/pull/2654))<br/>• Respect Animation Duration setting for DankDropdown popups ([PR #2661](https://github.com/AvengeMedia/DankMaterialShell/pull/2661))<br/>• Clear blur region when the bar is hidden (auto-hide) ([PR #2658](https://github.com/AvengeMedia/DankMaterialShell/pull/2658))<br/>• Show the faillock lockout reason instead of "incorrect password" ([PR #2669](https://github.com/AvengeMedia/DankMaterialShell/pull/2669)) |
+| **[salah-walid](https://github.com/salah-walid)** | • Expand tilde from config paths ([PR #2242](https://github.com/AvengeMedia/DankMaterialShell/pull/2242))<br/>• Fix focused app when switching to empty workspace ([PR #2259](https://github.com/AvengeMedia/DankMaterialShell/pull/2259)) |
+| **[scottmckendry](https://github.com/scottmckendry)** | • Clock off-center with single hour digit ([PR #2745](https://github.com/AvengeMedia/DankMaterialShell/pull/2745))<br/>• Missing vpn confirm delete modal ([PR #2759](https://github.com/AvengeMedia/DankMaterialShell/pull/2759)) |
+| **[Silzinc](https://github.com/Silzinc)** | • Decode path URI when saving/creating a file ([PR #1805](https://github.com/AvengeMedia/DankMaterialShell/pull/1805))<br/>• Set default value for matugenTemplateNeovimSetBackground ([PR #2081](https://github.com/AvengeMedia/DankMaterialShell/pull/2081))<br/>• Use primaryText instead of primary for text and icons displayed on primaryContainer background in the launcher ([PR #2586](https://github.com/AvengeMedia/DankMaterialShell/pull/2586)) |
+| **[Stodtyy](https://github.com/Stodtyy)** | Display Configurator in Hyprland ([PR #2506](https://github.com/AvengeMedia/DankMaterialShell/pull/2506)) |
+| **[tkroll-ionos](https://github.com/tkroll-ionos)** | • Popout first-click and AUR package listing ([PR #2183](https://github.com/AvengeMedia/DankMaterialShell/pull/2183))<br/>• Detect screen casting on Niri ([PR #2185](https://github.com/AvengeMedia/DankMaterialShell/pull/2185)) |
+| **[Tobi-maru](https://github.com/Tobi-maru)** | • Use UnsetWorkspaceName to fix  empty input in workspace rename ([PR #2094](https://github.com/AvengeMedia/DankMaterialShell/pull/2094))<br/>• Fixed batterylevel shown zero in case of unknown state ([PR #2436](https://github.com/AvengeMedia/DankMaterialShell/pull/2436)) |
+| **[xPathin](https://github.com/xPathin)** | • Restore lock screen U2F/fingerprint auth to working state ([PR #2052](https://github.com/AvengeMedia/DankMaterialShell/pull/2052))<br/>• Patch U2F PAM config with full Nix store path ([PR #2071](https://github.com/AvengeMedia/DankMaterialShell/pull/2071)) |
+| **[Youseffo13](https://github.com/Youseffo13)** | • Fixed mux tab having same id as locale tab ([PR #2031](https://github.com/AvengeMedia/DankMaterialShell/pull/2031))<br/>• Fix text truncation in some section of settings and update icons ([PR #2618](https://github.com/AvengeMedia/DankMaterialShell/pull/2618))<br/>• UI polishes, uptime formatting, and missing i18n strings ([PR #2686](https://github.com/AvengeMedia/DankMaterialShell/pull/2686))<br/>• Resolve ui inconsistencies and missing i18n strings ([PR #2719](https://github.com/AvengeMedia/DankMaterialShell/pull/2719)) |
+| **[z1-0](https://github.com/z1-0)** | Skip invalid customThemeFile in preStart ([PR #1997](https://github.com/AvengeMedia/DankMaterialShell/pull/1997)) |
+| **[zgibberish](https://github.com/zgibberish)** | Fix emacs template constant line number size ([PR #2317](https://github.com/AvengeMedia/DankMaterialShell/pull/2317)) |
+
+### Other Contributors
+
+| Contributor | Contribution |
+|---|---|
+| **[01micko](https://github.com/01micko)** | Update deprecated syntax ([PR #1928](https://github.com/AvengeMedia/DankMaterialShell/pull/1928)) |
+| **[0xdeafbeef](https://github.com/0xdeafbeef)** | Run qmllint through Quickshell tooling VFS ([PR #1958](https://github.com/AvengeMedia/DankMaterialShell/pull/1958)) |
+| **[aaronjamt](https://github.com/aaronjamt)** | Change power profile by scrolling battery ([PR #2142](https://github.com/AvengeMedia/DankMaterialShell/pull/2142)) |
+| **[adienox](https://github.com/adienox)** | Add lexical-binding to emacs theme ([PR #2649](https://github.com/AvengeMedia/DankMaterialShell/pull/2649)) |
+| **[amaanq](https://github.com/amaanq)** | • Let module callers supply pkgs so overlays reach the build ([PR #2244](https://github.com/AvengeMedia/DankMaterialShell/pull/2244))<br/>• Expose `mkDmsShell` and `buildDmsPkgs` via lib output ([PR #2409](https://github.com/AvengeMedia/DankMaterialShell/pull/2409)) |
+| **[arora-archit](https://github.com/arora-archit)** | Generate theme for Vencord ([PR #2320](https://github.com/AvengeMedia/DankMaterialShell/pull/2320)) |
+| **[artrixdotdev](https://github.com/artrixdotdev)** | Add automatic overflow popup ([PR #2629](https://github.com/AvengeMedia/DankMaterialShell/pull/2629)) |
+| **[borisbabic](https://github.com/borisbabic)** | Support Hyprland lua dispatching ([PR #2419](https://github.com/AvengeMedia/DankMaterialShell/pull/2419)) |
+| **[corcoran](https://github.com/corcoran)** | Sort Dropdown's fuzzy search results by score and fix empty results on reopen ([PR #2051](https://github.com/AvengeMedia/DankMaterialShell/pull/2051)) |
+| **[cwelsys](https://github.com/cwelsys)** | • Add cups-pk-helper to recommended dependencies ([PR #1670](https://github.com/AvengeMedia/DankMaterialShell/pull/1670))<br/>• Hide MPRIS players that have nothing to play ([PR #2509](https://github.com/AvengeMedia/DankMaterialShell/pull/2509)) |
+| **[dev-dev-dev-dev-dev-dev-dev-dev](https://github.com/dev-dev-dev-dev-dev-dev-dev-dev)** | • CpuBaseline text as "100%" to reserve enough width - previously "88%" ([PR #2135](https://github.com/AvengeMedia/DankMaterialShell/pull/2135))<br/>• README.md - Update AUR badge to Arch ([PR #2228](https://github.com/AvengeMedia/DankMaterialShell/pull/2228)) |
+| **[euletheia](https://github.com/euletheia)** | Add DoNotDisturb & IdleInhibitor Indicators for the ControlCenterButton widget + Add optional icon to KeyboardLayoutName widget ([PR #2513](https://github.com/AvengeMedia/DankMaterialShell/pull/2513)) |
+| **[EvernightFedora](https://github.com/EvernightFedora)** | Add support for 'evernight' distribution in Fedora ([PR #1786](https://github.com/AvengeMedia/DankMaterialShell/pull/1786)) |
+| **[ezemtsov](https://github.com/ezemtsov)** | • Handle recycled server object IDs for workspace/group handles ([PR #1725](https://github.com/AvengeMedia/DankMaterialShell/pull/1725))<br/>• Support generic wlr-output-management-unstable-v1 ([PR #1840](https://github.com/AvengeMedia/DankMaterialShell/pull/1840)) |
+| **[goatnath](https://github.com/goatnath)** | Add local to-do planner / tasks to calendar overvie… ([PR #2583](https://github.com/AvengeMedia/DankMaterialShell/pull/2583)) |
+| **[GraemeF](https://github.com/GraemeF)** | Classify links by Type instead of name prefix ([PR #2447](https://github.com/AvengeMedia/DankMaterialShell/pull/2447)) |
+| **[greenm01](https://github.com/greenm01)** | Wait for location capability before requesting state ([PR #2476](https://github.com/AvengeMedia/DankMaterialShell/pull/2476)) |
+| **[hthienloc](https://github.com/hthienloc)** | • Sync toggle button between saved and recent tabs ([PR #2407](https://github.com/AvengeMedia/DankMaterialShell/pull/2407))<br/>• Ensure plugin browser install button resizes correctly ([PR #2431](https://github.com/AvengeMedia/DankMaterialShell/pull/2431))<br/>• Align status layout and add individual notification types ([PR #2743](https://github.com/AvengeMedia/DankMaterialShell/pull/2743)) |
+| **[ilkecan](https://github.com/ilkecan)** | Add `package` option for `dms-shell` ([PR #1864](https://github.com/AvengeMedia/DankMaterialShell/pull/1864)) |
+| **[jbwfu](https://github.com/jbwfu)** | • Split network page into subtabs ([PR #2633](https://github.com/AvengeMedia/DankMaterialShell/pull/2633))<br/>• Enhance/clipboard history interactions ([PR #2668](https://github.com/AvengeMedia/DankMaterialShell/pull/2668)) |
+| **[jgreimann-ionos](https://github.com/jgreimann-ionos)** | SystemUpdate widget: show terminal in case of failures ([PR #1845](https://github.com/AvengeMedia/DankMaterialShell/pull/1845)) |
+| **[joshsymonds](https://github.com/joshsymonds)** | • Expose tertiary on the singleton (was undefined in dynamic mode) ([PR #2375](https://github.com/AvengeMedia/DankMaterialShell/pull/2375))<br/>• Honor freedesktop suppress-sound hint ([PR #2440](https://github.com/AvengeMedia/DankMaterialShell/pull/2440)) |
+| **[joske](https://github.com/joske)** | Labwc service ([PR #2248](https://github.com/AvengeMedia/DankMaterialShell/pull/2248)) |
+| **[kanghengliu](https://github.com/kanghengliu)** | • Call context menu fallback for legacy protocol ([PR #1839](https://github.com/AvengeMedia/DankMaterialShell/pull/1839))<br/>• Add keybind to switch tabs and toggle pinned ([PR #2262](https://github.com/AvengeMedia/DankMaterialShell/pull/2262))<br/>• Add move workspace to monitor keybinds ([PR #2268](https://github.com/AvengeMedia/DankMaterialShell/pull/2268))<br/>• Add trash bin button ([PR #2277](https://github.com/AvengeMedia/DankMaterialShell/pull/2277))<br/>• Add ctrl+H/L navigation in grid mode ([PR #2688](https://github.com/AvengeMedia/DankMaterialShell/pull/2688)) |
+| **[khpark43](https://github.com/khpark43)** | Add missing XF86 key mappings ([PR #2500](https://github.com/AvengeMedia/DankMaterialShell/pull/2500)) |
+| **[lakapple](https://github.com/lakapple)** | • Improve image thumbnail ([PR #1759](https://github.com/AvengeMedia/DankMaterialShell/pull/1759))<br/>• Parity(danktoggle): follow m3 disabled state color specs ([PR #1973](https://github.com/AvengeMedia/DankMaterialShell/pull/1973)) |
+| **[lpv11](https://github.com/lpv11)** | Restore Hyprland special workspace windows on click ([PR #1924](https://github.com/AvengeMedia/DankMaterialShell/pull/1924)) |
+| **[LuckShiba](https://github.com/LuckShiba)** | • Add more commands to detection ([PR #1792](https://github.com/AvengeMedia/DankMaterialShell/pull/1792))<br/>• Update flake.lock ([PR #1809](https://github.com/AvengeMedia/DankMaterialShell/pull/1809))<br/>• Update DankBar selection ([PR #1894](https://github.com/AvengeMedia/DankMaterialShell/pull/1894))<br/>• Allow extra QT packages in dms-shell package ([PR #1903](https://github.com/AvengeMedia/DankMaterialShell/pull/1903))<br/>• Update flake.lock ([PR #2237](https://github.com/AvengeMedia/DankMaterialShell/pull/2237))<br/>• Add blur support ([PR #2236](https://github.com/AvengeMedia/DankMaterialShell/pull/2236))<br/>• Update quickshell version ([PR #2263](https://github.com/AvengeMedia/DankMaterialShell/pull/2263))<br/>• Add VM tests for flake modules ([PR #2281](https://github.com/AvengeMedia/DankMaterialShell/pull/2281))<br/>• Use quickshell from nixpkgs-unstable pkgs ([PR #2417](https://github.com/AvengeMedia/DankMaterialShell/pull/2417))<br/>• Add descriptions for DankBar -> Settings menu ([PR #2490](https://github.com/AvengeMedia/DankMaterialShell/pull/2490))<br/>• Remove keep-max-bpc-unchanged option ([PR #2528](https://github.com/AvengeMedia/DankMaterialShell/pull/2528))<br/>• Add optional=true to niri configs ([PR #2776](https://github.com/AvengeMedia/DankMaterialShell/pull/2776)) |
+| **[marcusramberg](https://github.com/marcusramberg)** | Core(doctor): show all detected terminals ([PR #2163](https://github.com/AvengeMedia/DankMaterialShell/pull/2163)) |
+| **[merdely](https://github.com/merdely)** | • Not everyone uses paru or yay on Arch: Support pacman command ([PR #1900](https://github.com/AvengeMedia/DankMaterialShell/pull/1900))<br/>• Implement ability to cycle through launcher modes ([PR #2003](https://github.com/AvengeMedia/DankMaterialShell/pull/2003)) |
+| **[Mikilio](https://github.com/Mikilio)** | Automatic Display Profiles Enhancement & Disabled Output Support ([PR #2367](https://github.com/AvengeMedia/DankMaterialShell/pull/2367)) |
+| **[nick-linux8](https://github.com/nick-linux8)** | • Issue:(Settings)Switched Neovim Mutagen Theme To Default False ([PR #1964](https://github.com/AvengeMedia/DankMaterialShell/pull/1964))<br/>• Compositor Pause Hardening ([PR #1980](https://github.com/AvengeMedia/DankMaterialShell/pull/1980))<br/>• Change Greetd logic to pull accent color ([PR #2000](https://github.com/AvengeMedia/DankMaterialShell/pull/2000)) |
+| **[odtgit](https://github.com/odtgit)** | Centralize icon resolution into Paths.resolveIconPath/resolveIconUrl ([PR #1880](https://github.com/AvengeMedia/DankMaterialShell/pull/1880)) |
+| **[PandorasFox](https://github.com/PandorasFox)** | Shader-based scrolling wallpaper mode ([PR #1802](https://github.com/AvengeMedia/DankMaterialShell/pull/1802)) |
+| **[ParticleG](https://github.com/ParticleG)** | Add headless mode support with command-line flags ([PR #2182](https://github.com/AvengeMedia/DankMaterialShell/pull/2182)) |
+| **[rochacbruno](https://github.com/rochacbruno)** | • Add dms-plugin-dev agent skill ([PR #2394](https://github.com/AvengeMedia/DankMaterialShell/pull/2394))<br/>• Skill(dms-plugin-dev): update for composite plugins, startupCheck, IPC discovery ([PR #2699](https://github.com/AvengeMedia/DankMaterialShell/pull/2699)) |
+| **[rPlakama](https://github.com/rPlakama)** | Pasterizing neovim. ([PR #1828](https://github.com/AvengeMedia/DankMaterialShell/pull/1828)) |
+| **[salah-walid](https://github.com/salah-walid)** | • Add terminal multiplexer launcher ([PR #1687](https://github.com/AvengeMedia/DankMaterialShell/pull/1687))<br/>• Make focused app widget only show focused app on the current screen ([PR #2152](https://github.com/AvengeMedia/DankMaterialShell/pull/2152)) |
+| **[Silzinc](https://github.com/Silzinc)** | • Search keybinds fixes ([PR #1748](https://github.com/AvengeMedia/DankMaterialShell/pull/1748))<br/>• Wifi QR code generation (requires testing) ([PR #1794](https://github.com/AvengeMedia/DankMaterialShell/pull/1794))<br/>• New neovim theme engine ([PR #1985](https://github.com/AvengeMedia/DankMaterialShell/pull/1985))<br/>• Neovim template enhancements ([PR #2078](https://github.com/AvengeMedia/DankMaterialShell/pull/2078)) |
+| **[SuNNjek](https://github.com/SuNNjek)** | Add GeoClue2 integration as alternative to IP location ([PR #1856](https://github.com/AvengeMedia/DankMaterialShell/pull/1856)) |
+| **[sunworms](https://github.com/sunworms)** | Added non-flake nix compatibility with flake-compat ([PR #2009](https://github.com/AvengeMedia/DankMaterialShell/pull/2009)) |
+| **[supposede](https://github.com/supposede)** | • Update toolbar button styles with primary color on Zen browser ([PR #1879](https://github.com/AvengeMedia/DankMaterialShell/pull/1879))<br/>• Update color variables in zen-userchrome.css because it got broken again ([PR #2246](https://github.com/AvengeMedia/DankMaterialShell/pull/2246)) |
+| **[Tobi-maru](https://github.com/Tobi-maru)** | False error Fix ([PR #2109](https://github.com/AvengeMedia/DankMaterialShell/pull/2109)) |
+| **[tulilirockz](https://github.com/tulilirockz)** | Use satty screenshot tool as default ([PR #2105](https://github.com/AvengeMedia/DankMaterialShell/pull/2105)) |
+| **[xPathin](https://github.com/xPathin)** | Emit ActiveChanged on lock/unlock ([PR #1761](https://github.com/AvengeMedia/DankMaterialShell/pull/1761)) |
+| **[Youseffo13](https://github.com/Youseffo13)** | • Added Missing i18n strings ([PR #1729](https://github.com/AvengeMedia/DankMaterialShell/pull/1729))<br/>• Added missing i18n strings and changed reset button ([PR #1746](https://github.com/AvengeMedia/DankMaterialShell/pull/1746))<br/>• Added plural support ([PR #1750](https://github.com/AvengeMedia/DankMaterialShell/pull/1750))<br/>• Wrapped all missing i18n strings ([PR #2013](https://github.com/AvengeMedia/DankMaterialShell/pull/2013))<br/>• Added Missing i18n Strings ([PR #2398](https://github.com/AvengeMedia/DankMaterialShell/pull/2398))<br/>• Add context to font weight keys, wrap render settings, fix uptime prefix ([PR #2529](https://github.com/AvengeMedia/DankMaterialShell/pull/2529))<br/>• Revamp of 25% pill option ([PR #2568](https://github.com/AvengeMedia/DankMaterialShell/pull/2568)) |
+
+### First-time Contributors
+<details>
+<summary>View Details</summary>
+- @0xdeafbeef
+- @Angerion
+- @Bogdan-Torkhov
+- @Cloud0310
+- @CongLuanTran
+- @DK0280705
+- @Desdaemon
+- @Gdetrane
+- @JamesFromFL
+- @Legend-017
+- @Mikilio
+- @NihilDigit
+- @PandorasFox
+- @ParticleG
+- @Rocho-EL-Locho
+- @Stodtyy
+- @Tobi-maru
+- @abcfy2
+- @adienox
+- @andrhua
+- @artrixdotdev
+- @augustocdias
+- @awerty-noob
+- @b0o
+- @bogdan-velicu
+- @borisbabic
+- @corcoran
+- @dev-dev-dev-dev-dev-dev-dev-dev
+- @dionjoshualobo
+- @domenkozar
+- @euletheia
+- @goatnath
+- @greenm01
+- @hthienloc
+- @jbwfu
+- @joshsymonds
+- @khpark43
+- @klesh
+- @ksp-apoc
+- @lambdaclan
+- @lichie567
+- @lingdiansr
+- @louzt
+- @lpv11
+- @marcinjahn
+- @miguelsaliba
+- @nabaco
+- @pathmann
+- @ramblingenzyme
+- @ronharel02
+- @scottmckendry
+- @yechielw
+- @zgibberish
+</details>
 
 ## Resources
 
