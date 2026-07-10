@@ -1,6 +1,6 @@
 ---
 title: DankLinux Repository
-description: Pre-built packages for Fedora, CentOS, Debian, Ubuntu, and OpenSUSE
+description: Pre-built packages for Fedora, CentOS, Debian, Ubuntu, OpenSUSE, and Void Linux
 ---
 
 import Hero from '@site/src/components/Hero';
@@ -23,7 +23,7 @@ The **DankLinux Repository** provides pre-built packages for **DankMaterialShell
 DankMaterialShell is now available on more distributions than ever before!
 
 - [**Fedora**](https://fedoraproject.org/) | [**CentOS**](https://www.centos.org/) | [**OpenSUSE**](https://www.opensuse.org/) 
-- [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/)
+- [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/) | [**Void Linux**](https://voidlinux.org/)
 
 ### Desktop Environment
 - **DankMaterialShell (dms)**: The complete desktop shell with widgets and CLI tools
@@ -195,6 +195,36 @@ sudo apt install quickshell-git niri-git
 
 </TabItem>
 </Tabs>
+
+### Void Linux
+
+:::warning Repository migration
+
+If you already use the former GitHub Pages repository, replace its URL in
+place before it is retired:
+
+```bash
+sudo sed -i 's|https://avengemedia.github.io/DankLinux/current|https://void.danklinux.com/danklinux/current|' /etc/xbps.d/danklinux.conf
+```
+
+The frozen GitHub Pages repository no longer receives updates and will be
+retired after **July 24, 2026 at 22:27 UTC**.
+
+:::
+
+Add the DankLinux XBPS repository, synchronize it, and install whichever
+standalone packages you need:
+
+```bash
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -S
+sudo xbps-install -S dgop danksearch dankcalendar
+```
+
+The package names are `dgop`, `danksearch`, and `dankcalendar`; they install
+the `dgop`, `dsearch`, and `dcal` commands respectively. To install DMS itself,
+also configure the separate repository in the [Void Linux DMS installation
+guide](../dankmaterialshell/installation#void-linux).
 
 ### OpenSUSE
 
@@ -388,4 +418,3 @@ If you encounter issues with the repositories or packages:
 ## Contributing
 
 Interested in maintaining packages for other distributions? Contributions to the DankLinux repository are welcome! Check out the [Contributing Guide](../contributing) to get started.
-
