@@ -497,19 +497,19 @@ Install the `niri-session`, `sway-session`, or `labwc-session` packages for thos
 
 :::note
 
-Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories or build them from source.
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our R2-backed XBPS repositories or build them from source.
 
 :::
 
 <Tabs groupId="void-install-method">
-<TabItem value="repo" label="DMS-Hosted Repository" default>
+<TabItem value="repo" label="DankLinux Repositories" default>
 
 <Tabs>
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
-echo "repository=https://avengemedia.github.io/DankMaterialShell/current" | sudo tee /etc/xbps.d/dms.conf
-echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+echo "repository=https://void.danklinux.com/dms/current" | sudo tee /etc/xbps.d/dms.conf
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
 sudo xbps-install -Su
 sudo xbps-install -S dms
 ```
@@ -518,8 +518,8 @@ sudo xbps-install -S dms
 <TabItem value="git" label="Latest Development Build">
 
 ```bash
-echo "repository=https://avengemedia.github.io/DankMaterialShell/current" | sudo tee /etc/xbps.d/dms.conf
-echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+echo "repository=https://void.danklinux.com/dms/current" | sudo tee /etc/xbps.d/dms.conf
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
 sudo xbps-install -Su
 sudo xbps-install -S dms-git
 ```

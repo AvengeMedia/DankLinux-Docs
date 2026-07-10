@@ -180,15 +180,15 @@ sudo zypper install dms-greeter
 
 :::note
 
-Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our self-hosted custom XBPS repositories or build them from source.
+Void packages are pending submission to the official [void-packages](https://github.com/void-linux/void-packages) repository. Until they are merged upstream, you can install them from our R2-backed DMS XBPS repository or build them from source.
 
 :::
 
 <Tabs groupId="void-install-method">
-<TabItem value="repo" label="DMS-Hosted Repository" default>
+<TabItem value="repo" label="DMS Repository" default>
 
 ```bash
-echo "repository=https://avengemedia.github.io/DankLinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+echo "repository=https://void.danklinux.com/dms/current" | sudo tee /etc/xbps.d/dms.conf
 sudo xbps-install -Su
 sudo xbps-install -S dms-greeter
 ```
@@ -211,7 +211,7 @@ cd void-packages
 ./xbps-src binary-bootstrap
 
 # Copy in the templates (adjust paths as needed)
-cp -R ../DankLinux/distro/void/srcpkgs/dms-greeter* srcpkgs/
+cp -R ../DankMaterialShell/distro/void/srcpkgs/dms-greeter srcpkgs/
 
 # Build the package
 ./xbps-src pkg dms-greeter
