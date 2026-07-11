@@ -588,28 +588,19 @@ If you use **`dms-greeter`**, all seat management, D-Bus initialization, and run
 
 If you choose to launch your compositor (like `niri`, `Hyprland`, or `sway`) directly from a TTY login prompt instead of using a display manager (like `greetd`), Void Linux requires some manual runtime configuration because it does not run systemd by default:
 
-#### 1. Configure Seat Management (`seatd`)
-Wayland compositors require permissions to access input and graphics hardware devices directly. Void uses `seatd` for this:
+#### 1. Configure Seat Management (`elogind`)
+Wayland compositors require permissions to access input and graphics hardware devices directly. The `dms` package already depends on `dbus` and `elogind`; enable their services:
 
 ```bash
-# Install and enable the seatd daemon
-sudo xbps-install -S seatd
-sudo ln -s /etc/sv/seatd /var/service/
-
-# Add your user to the seatd group to allow hardware access
-sudo usermod -a -G _seatd $(whoami)
-```
-*Note: You must log out of the TTY and log back in (or reboot) for your user group changes to take effect.*
-
-#### 2. Start D-Bus and Launch the Session
-A D-Bus session bus is required for desktop utilities (including the DMS daemon and panels) to communicate. Install and enable the system bus, then launch your compositor wrapped inside a D-Bus session:
-
-```bash
-# Install and enable the system-wide D-Bus service
-sudo xbps-install -S dbus
 sudo ln -s /etc/sv/dbus /var/service/
+sudo ln -s /etc/sv/elogind /var/service/
+```
+*Note: Log out of the TTY and log back in (or reboot) so your login gets an elogind session, which grants seat access and sets `XDG_RUNTIME_DIR`. If you prefer `seatd` instead, enable it and add your user to the `_seatd` group, but do not run both seat managers at once.*
 
-# Launch your compositor from the TTY command line:
+#### 2. Launch the Session
+A D-Bus session bus is required for desktop utilities (including the DMS daemon and panels) to communicate. Launch your compositor wrapped inside a D-Bus session:
+
+```bash
 dbus-run-session niri
 # or
 dbus-run-session Hyprland
