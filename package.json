@@ -21,7 +21,7 @@
     "@acid-info/docusaurus-og": "^1.0.3",
     "@actinc/docusaurus-plugin-panzoom": "^1.0.1",
     "@dipakparmar/docusaurus-plugin-umami": "^2.4.0",
-    "@docusaurus/core": "^3.10.1",
+    "@docusaurus/core": "^3.10.2",
     "@docusaurus/faster": "^3.10.1",
     "@docusaurus/plugin-client-redirects": "^3.10.1",
     "@docusaurus/preset-classic": "^3.10.1",
