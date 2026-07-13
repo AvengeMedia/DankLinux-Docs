@@ -42,6 +42,7 @@ dms system update --dry                # simulation only (no persistent changes)
 dms system update --check --json       # machine-readable listing
 dms system update --no-flatpak         # skip Flatpak overlay
 dms system update --no-aur             # skip AUR targets when using Paru/Yay
+dms system update --ignore nvidia,docker  # skip specific packages for this run
 dms system update --interval 3600      # set server poll interval to 3600 seconds (needs running server)
 ```
 
@@ -55,7 +56,22 @@ dms system update --interval 3600      # set server poll interval to 3600 second
 | `--json` | With `--check`, print JSON (`backends`, `packages`, `count`, `error`). |
 | `--no-flatpak` | Omit Flatpak from both discovery and upgrades. |
 | `--no-aur` | When using Paru or Yay, drop AUR-only packages from the plan (repo updates still apply). |
+| `--ignore <names>` | Skip specific packages by name (repeatable, or comma-separated). Excluded from both the listing and the upgrade. |
 | `--interval <seconds>` | Call the running server’s `sysupdate.setInterval` RPC and exit; does not upgrade locally by itself. |
+
+## Ignoring packages
+
+Use `--ignore` (or the **Ignored packages** list in the shell's System Updater settings) to keep specific packages pinned. Ignored packages are dropped from the update listing and excluded when upgrades run, using each backend's native mechanism so nothing is upgraded behind your back:
+
+| Backend | How the exclusion is applied |
+|---------|------------------------------|
+| Pacman / Paru / Yay | `--ignore name1,name2` on the upgrade command |
+| DNF / DNF5 | `--exclude=name1,name2` on the upgrade command |
+| APT | The packages are placed on a transient `apt-mark hold` for the duration of the upgrade and released afterward (holds you set yourself are left untouched) |
+| Zypper | A transient package lock (`zypper al`) is added for the upgrade and removed afterward (locks you set yourself are left untouched) |
+| Flatpak | Only the remaining refs are passed to `flatpak update` explicitly |
+
+Package names entered in the shell settings are validated as letters, digits, and `@._+:-`. CLI values are passed as command arguments where possible; backends that require shell command construction discard unsafe names.
 
 ## Interactive vs scripted runs
 
@@ -70,3 +86,16 @@ If standard input is **not** a TTY (for example in CI or a pipe), DMS **refuses*
 ## Relationship to the DMS server
 
 When the compositor-side server is running, it exposes IPC such as `sysupdate.getState`, `sysupdate.refresh`, `sysupdate.upgrade`, and `sysupdate.setInterval` so the shell UI can show update status and coordinate upgrades. The **`dms system update`** CLI is a separate entry point aimed at terminals and scripts; **`--interval`** is the bridge that adjusts the server’s polling schedule while it is online.
+
+`sysupdate.upgrade` accepts these optional params, mirroring the CLI flags:
+
+| Param | Type | Effect |
+|-------|------|--------|
+| `includeFlatpak` | bool (default `true`) | Include the Flatpak overlay in the upgrade. |
+| `includeAUR` | bool (default `true`) | Include AUR targets when using Paru/Yay. |
+| `ignored` | string array | Package names to skip; excluded from the plan and from each backend's upgrade command using its native mechanism (see [Ignoring packages](#ignoring-packages)). |
+| `dry` | bool (default `false`) | Run a non-destructive dry run where supported. |
+| `terminal` | string | Terminal override for backends that upgrade interactively (AUR helpers). |
+| `customCommand` | string | Run a custom command in a terminal instead of the built-in upgrade flow. |
+
+When using the built-in updater, the shell populates `ignored` from the **Ignored packages** list in System Updater settings, so those packages are also skipped by `Update All`. Custom update commands control their own exclusions.
