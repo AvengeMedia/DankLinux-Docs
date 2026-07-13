@@ -213,6 +213,7 @@ const sidebars: SidebarsConfig = {
         'dankcalendar/installation',
         'dankcalendar/accounts',
         'dankcalendar/usage',
+        'dankcalendar/navigation',
         'dankcalendar/ipc',
       ],
     },

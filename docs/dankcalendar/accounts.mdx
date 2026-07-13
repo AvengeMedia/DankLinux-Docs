@@ -37,13 +37,16 @@ dcal account providers
 | `microsoft` | OAuth (your own client app)   |
 | `caldav`    | URL + username/password       |
 | `icloud`    | Apple ID + app-specific password |
+| `ical`      | A read-only iCal/webcal feed URL |
+| `evolution` | Calendars already managed by Evolution Data Server |
 
 ## Managing Accounts
 
 ```bash
-dcal account list                 # list connected accounts and their status
-dcal account remove <account-id>  # remove an account and its synced data
-dcal account reauth <account-id>  # re-authorize an account that needs it
+dcal account list                     # list connected accounts and their status
+dcal account remove <account-id>      # remove an account and its synced data
+dcal account remove <account-id> -y   # skip the confirmation prompt
+dcal account reauth <account-id>      # re-authorize a Google/Microsoft login that expired
 ```
 
 ## Local Calendars
@@ -56,11 +59,20 @@ dcal account add local ~/.calendars
 
 ## CalDAV
 
-Works with any CalDAV-compatible server. You'll be prompted for the URL, username, and password.
+Works with any CalDAV-compatible server. You'll be prompted for the URL, username, and password, or you can pass them as flags:
 
 ```bash
 dcal account add caldav
+dcal account add caldav --url https://dav.example.com --username me --name "Work"
 ```
+
+For servers using a self-signed certificate, add `--insecure` to skip TLS certificate verification. Only do this for servers you control:
+
+```bash
+dcal account add caldav --url https://dav.homelab.lan --insecure
+```
+
+In the GUI, the same option appears as **Skip certificate verification** in the CalDAV add-account form.
 
 ## iCloud
 
@@ -93,6 +105,29 @@ dcal account add google
 ```bash
 dcal account setup microsoft
 dcal account add microsoft
+```
+
+## iCal / webcal Subscriptions
+
+Subscribe to a read-only external feed, such as a university timetable or a published Google/Outlook calendar. Both `https://` and `webcal://` URLs are accepted, and the feed refreshes in the background.
+
+```bash
+dcal account add ical https://example.com/schedule.ics
+dcal account add ical webcal://example.com/team.ics --name "Team"
+```
+
+If the feed is behind HTTP basic auth, pass `--username` (you'll be prompted for the password). You can also hand a `webcal://` link straight to the app, which opens the subscribe dialog:
+
+```bash
+dcal open webcal://example.com/team.ics
+```
+
+## Evolution
+
+Reuse the calendars that [Evolution Data Server](https://gitlab.gnome.org/GNOME/evolution-data-server) already manages on this machine (from Evolution, GNOME Online Accounts, and similar). EDS owns the credentials and remote sync, so there's nothing else to configure.
+
+```bash
+dcal account add evolution
 ```
 
 ## Syncing

@@ -23,20 +23,24 @@ Built with [Quickshell](https://quickshell.org/) and [Go](https://go.dev/).
 
 ## Features
 
-- **Multiple Providers**: Connect Local, Google, Microsoft, CalDAV, and iCloud accounts and view every calendar in a single unified agenda.
+- **Multiple Providers**: Connect Local, Google, Microsoft, CalDAV, iCloud, Evolution, and read-only iCal/webcal subscriptions, and view every calendar in a single unified agenda.
+- **Month, Week, Day, Agenda & Tasks**: Switch between five views, with recurring-event support and full recurrence editing.
+- **Tasks**: View, create, and complete VTODO tasks from calendars that provide task lists.
+- **Meeting Invitations**: Accept, decline, or tentatively respond to invitations, with attendee status pushed back to your provider.
 - **Background Sync**: A lightweight daemon keeps your accounts in sync and serves the UI over IPC. Closing the window only hides it. Sync and reminders keep running.
 - **Event Reminders**: Native desktop notifications for upcoming events, with per-event and per-calendar reminder configuration.
 - **Tray Integration**: A system tray icon to show, hide, and quit the app, plus quick access to upcoming events.
 - **Secure Credentials**: OAuth tokens and account secrets are stored in your system keyring, not in plaintext config files.
-- **Keyboard Navigation**: Full keyboard-driven navigation with a shortcuts overlay, plus spotlight-style search across your events.
+- **Keyboard Navigation**: Full keyboard-driven navigation with a shortcuts overlay, a go-to-date jump, and spotlight-style search across your events.
 - **Scriptable IPC**: A scriptable IPC surface for keybinds and automation.
-- **Localized**: User-facing strings are translatable and managed through POEditor.
+- **Localized**: User-facing strings are translatable and managed through POEditor, with automatic right-to-left layout mirroring.
 
 ## Documentation
 
 - [Installation](installation) - Install dcal and set up the background daemon
-- [Accounts](accounts) - Connect Local, Google, Microsoft, CalDAV, and iCloud calendars
-- [Usage](usage) - CLI commands for the window, sync, and reminders
+- [Accounts](accounts) - Connect Local, Google, Microsoft, CalDAV, iCloud, Evolution, and iCal calendars
+- [Usage](usage) - CLI commands for the window, sync, reminders, and invitations
+- [Keyboard & Navigation](navigation) - Views, shortcuts, and jumping around quickly
 - [IPC](ipc) - Scriptable IPC surface for keybinds and automation
 
 ## Contributing

@@ -1,7 +1,7 @@
 ---
 title: IPC
 description: Scriptable IPC surface for keybinds and automation
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 import Hero from '@site/src/components/Hero';
@@ -40,9 +40,10 @@ Results are printed as JSON, so they pipe cleanly into `jq` and friends.
 
 | Method         | Description                                                       |
 | -------------- | ----------------------------------------------------------------- |
-| `ui.show`      | Show the calendar window                                          |
+| `ui.show`      | Show the calendar window — `view` (`month\|week\|day\|agenda`)     |
 | `ui.hide`      | Hide the calendar window                                          |
-| `ui.toggle`    | Toggle the calendar window                                        |
+| `ui.toggle`    | Toggle the calendar window — `view` (`month\|week\|day\|agenda`)   |
+| `ui.open`      | Open a `webcal://` or https ICS subscription link — `url*`         |
 | `ui.openEvent` | Open a specific event's details window — `uid*`, `start` (RFC3339) |
 | `ui.quit`      | Quit the running daemon                                           |
 
@@ -61,17 +62,32 @@ If the calendar window isn't open yet, it launches and navigates once loaded.
 | --------------- | ------------------------------------------------------------------------- |
 | `events.list`   | `query`, `from` (RFC3339), `to` (RFC3339), `limit`, `offset` (all optional) |
 | `events.get`    | `uid*`, `calendarId`, `start` (occurrence start RFC3339 for recurring events) |
-| `events.create` | `calendarId*`, `summary*`, `start*`, `end*`, `description`, `location`, `allDay`, `status`, `reminders` |
-| `events.update` | `id*`, plus any of the create fields                                       |
+| `events.create` | `calendarId*`, `summary*`, `start*`, `end*`, `description`, `location`, `allDay`, `status` (`confirmed\|tentative\|cancelled`), `reminders`, `recurrence` (RRULE list) |
+| `events.update` | `id*`, plus any of the create fields, plus `occurrenceStart` (RFC3339 — shift a single occurrence of a recurring series) |
 | `events.delete` | `id*`                                                                      |
+| `events.rsvp`   | `id*`, `response*` (`accept\|decline\|tentative`) — reply to a meeting invitation |
+
+### Tasks
+
+| Method           | Params                                                                     |
+| ---------------- | -------------------------------------------------------------------------- |
+| `tasks.list`     | `query`, `calendarId`, `includeCompleted` (`true\|false`, default true), `limit`, `offset` (all optional) |
+| `tasks.get`      | `id*`                                                                       |
+| `tasks.create`   | `calendarId*`, `summary*`, `description`, `location`, `due` (RFC3339), `start` (RFC3339), `allDay`, `priority` (`0-9`), `status` (`needs_action\|in_process\|completed\|cancelled`), `parentUid`, `reminders`, `recurrence` |
+| `tasks.update`   | `id*`, plus any of the create fields, plus `percentComplete` (`0-100`)      |
+| `tasks.complete` | `id*`, `completed` (`true\|false`, default true)                            |
+| `tasks.delete`   | `id*`                                                                       |
 
 ### Calendars
 
-| Method               | Params                                |
-| -------------------- | ------------------------------------- |
-| `calendars.list`     | —                                     |
-| `calendars.setHidden`| `calendarId*`, `hidden*` (`true\|false`) |
-| `calendars.rename`   | `calendarId*`, `name` (empty clears)  |
+| Method                 | Params                                                        |
+| ---------------------- | ------------------------------------------------------------- |
+| `calendars.list`       | —                                                             |
+| `calendars.create`     | `accountId*`, `name*` (create a calendar in a local account)  |
+| `calendars.setHidden`  | `calendarId*`, `hidden*` (`true\|false`)                      |
+| `calendars.rename`     | `calendarId*`, `name` (empty clears the override)             |
+| `calendars.setReminders`| `calendarId*`, `overrides` (omit to inherit global settings) |
+| `calendars.delete`     | `calendarId*`                                                 |
 
 ### Accounts
 
@@ -89,10 +105,24 @@ If the calendar window isn't open yet, it launches and navigates once loaded.
 
 ### System
 
-| Method                  | Params                       |
-| ----------------------- | ---------------------------- |
-| `system.autostart.get`  | Report autostart status      |
-| `system.autostart.set`  | `enabled*` (`true\|false`)   |
+| Method                  | Params                                                        |
+| ----------------------- | ------------------------------------------------------------- |
+| `system.autostart.get`  | Report autostart status                                       |
+| `system.autostart.set`  | `enabled*` (`true\|false`)                                    |
+| `system.colorScheme.get`| Current portal color scheme (`0` no preference, `1` dark, `2` light) |
+| `system.openUri`        | `uri*` — open a URI with the desktop portal's default handler |
+
+### Live Updates
+
+Subscribe to push events instead of polling. Handy for bar widgets that mirror calendar state:
+
+| Method        | Params                                                        |
+| ------------- | ------------------------------------------------------------- |
+| `subscribe`   | `topics` — comma list of `accounts,calendars,events,tasks,sync,ui` (all if omitted) |
+| `unsubscribe` | `topics` — topics to stop receiving                           |
+| `ping`        | Liveness check                                                |
+| `version`     | Daemon and API version                                        |
+| `describe`    | List every method and its params (same data as `ipc list`)    |
 
 :::tip
 `*` marks a required param. Run `dcal ipc list` for the complete, always-up-to-date set of methods on your installed version.

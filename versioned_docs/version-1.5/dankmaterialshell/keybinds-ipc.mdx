@@ -511,17 +511,25 @@ Spotlight Bar — a compact inline search bar that drops down from the top cente
 
 **Default keybind:** `Alt + Space`
 
-| Function | Description |
-| --- | --- |
-| `open` | Show the Spotlight Bar |
-| `close` | Hide the Spotlight Bar |
-| `toggle` | Toggle the Spotlight Bar |
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show the Spotlight Bar | - |
+| `close` | Hide the Spotlight Bar | - |
+| `toggle` | Toggle the Spotlight Bar | - |
+| `openWith <mode>` | Open the Spotlight Bar in a specific mode | `all`, `apps`, `files`, `plugins` |
+| `toggleWith <mode>` | Toggle the Spotlight Bar in a specific mode | `all`, `apps`, `files`, `plugins` |
+| `openQuery <query>` | Show the Spotlight Bar with search | search text |
+| `toggleQuery <query>` | Toggle the Spotlight Bar with search | search text |
 
 **Examples:**
 ```bash
 dms ipc call spotlight-bar toggle
 dms ipc call spotlight-bar open
 dms ipc call spotlight-bar close
+dms ipc call spotlight-bar openQuery browser
+dms ipc call spotlight-bar toggleQuery "!"
+dms ipc call spotlight-bar openWith apps
+dms ipc call spotlight-bar toggleWith files
 ```
 
 ### Other Modals
