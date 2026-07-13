@@ -34,8 +34,8 @@ DankMaterialShell is now available on more distributions than ever before!
 - [**Niri-git**](https://github.com/niri-wm/niri): Development build of niri
 
 ### Core Framework
-- [**Quickshell**](https://github.com/quickshell-mirror/quickshell): QtQuick-based Wayland desktop shell framework
-- [**Quickshell-git**](https://github.com/quickshell-mirror/quickshell): Development build of Quickshell
+- [**Quickshell**](https://github.com/quickshell-mirror/quickshell): QtQuick-based Wayland desktop shell framework — on **Debian**, use the native package (see below); DankLinux builds remain for other distros
+- [**Quickshell-git**](https://github.com/quickshell-mirror/quickshell): Development build of Quickshell (DankLinux repositories)
 
 ### Utilities
 - [**cliphist**](https://github.com/sentriz/cliphist): Wayland clipboard manager with history support
@@ -73,6 +73,8 @@ All packages in the DankLinux repository can be installed independently. First, 
 
 ### Debian
 
+Stable **quickshell** should come from Debian (trixie-backports on Debian 13; main on testing/sid). The DankLinux OBS `quickshell` package for Debian is **deprecated** and will be removed in the future — migrate with `sudo apt remove quickshell` then install the Debian package below. DankLinux OBS remains for **niri**, **quickshell-git**, and other companions.
+
 Select your release, then choose stable or development packages.
 
 <Tabs groupId="debian-release">
@@ -82,12 +84,19 @@ Select your release, then choose stable or development packages.
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
+# Native quickshell from Debian backports
+echo "deb http://deb.debian.org/debian trixie-backports main" | \
+  sudo tee /etc/apt/sources.list.d/trixie-backports.list
+sudo apt update
+sudo apt install -t trixie-backports quickshell
+
+# DankLinux OBS for niri and other companions
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install quickshell niri
+sudo apt install niri
 ```
 
 </TabItem>
@@ -112,12 +121,17 @@ sudo apt install quickshell-git niri-git
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
+# Native quickshell from Debian
+sudo apt update
+sudo apt install quickshell
+
+# DankLinux OBS for niri and other companions
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install quickshell niri
+sudo apt install niri
 ```
 
 </TabItem>
@@ -142,12 +156,17 @@ sudo apt install quickshell-git niri-git
 <TabItem value="stable" label="Stable Release" default>
 
 ```bash
+# Native quickshell from Debian
+sudo apt update
+sudo apt install quickshell
+
+# DankLinux OBS for niri and other companions
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install quickshell niri
+sudo apt install niri
 ```
 
 </TabItem>
