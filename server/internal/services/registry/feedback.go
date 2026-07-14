@@ -74,6 +74,27 @@ func mergeFeedback(plugins []models.Plugin, feedback map[string]Feedback) {
 	}
 }
 
+// carryFeedback preserves moderation state across registry refreshes, which would
+// otherwise reset it until the next feedback cycle and churn the preview cards.
+func carryFeedback(fresh, prev []models.Plugin) {
+	byID := make(map[string]*models.Plugin, len(prev))
+	for i := range prev {
+		byID[prev[i].ID] = &prev[i]
+	}
+	for i := range fresh {
+		old, ok := byID[fresh[i].ID]
+		if !ok {
+			continue
+		}
+		fresh[i].Upvotes = old.Upvotes
+		fresh[i].IssueURL = old.IssueURL
+		fresh[i].IssueNumber = old.IssueNumber
+		fresh[i].CreatedAt = old.CreatedAt
+		fresh[i].Status = old.Status
+		fresh[i].Similar = old.Similar
+	}
+}
+
 // extractSimilar reads the moderator-managed `dms-similar` marker, whose payload is a
 // comma-separated list of `id=issueNumber` pairs, and returns the related plugin ids.
 func extractSimilar(body string) []string {

@@ -47,6 +47,7 @@ type Plugin struct {
 	Compositors  []string  `json:"compositors"`
 	Distro       []string  `json:"distro"`
 	Screenshot   string    `json:"screenshot"`
+	PreviewURL   string    `json:"previewUrl,omitempty"`
 	RequiresDMS  string    `json:"requires_dms,omitempty"`
 	Version      string    `json:"version"`
 	Icon         string    `json:"icon,omitempty"`

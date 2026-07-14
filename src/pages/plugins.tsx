@@ -17,6 +17,7 @@ interface Plugin {
   compositors: string[];
   distro: string[];
   screenshot?: string;
+  previewUrl?: string;
   version?: string;
   icon?: string;
   permissions?: string[];
@@ -256,6 +257,7 @@ export default function Plugins() {
   const [hideBroken, setHideBroken] = useState(false);
   const [sortBy, setSortBy] = useState('upvotes');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [lightboxPlugin, setLightboxPlugin] = useState<Plugin | null>(null);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
   const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
@@ -310,14 +312,17 @@ export default function Plugins() {
     try {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
-      const baseUrl = isDev ? 'http://localhost:8337/plugins' : 'https://api.danklinux.com/plugins';
-      const apiUrl = `${baseUrl}?sortBy=${sortBy}&order=${sortOrder}`;
+      const apiOrigin = isDev ? 'http://localhost:8337' : 'https://api.danklinux.com';
+      const apiUrl = `${apiOrigin}/plugins?sortBy=${sortBy}&order=${sortOrder}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch plugins');
       }
       const data: PluginsResponse = await response.json();
-      const pluginList = data.plugins ?? [];
+      const pluginList = (data.plugins ?? []).map(p => ({
+        ...p,
+        previewUrl: p.previewUrl ? `${apiOrigin}/previews/${p.id}` : p.previewUrl,
+      }));
       setPlugins(pluginList);
       setFilteredPlugins(pluginList);
     } catch (err) {
@@ -423,6 +428,15 @@ export default function Plugins() {
     document.addEventListener('mousemove', handleGlobalMouseMove);
     return () => document.removeEventListener('mousemove', handleGlobalMouseMove);
   }, []);
+
+  useEffect(() => {
+    if (!lightboxPlugin) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxPlugin(null);
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [lightboxPlugin]);
 
   const getPluginIcon = (plugin: Plugin) => {
     if (plugin.icon) {
@@ -748,9 +762,14 @@ export default function Plugins() {
             <section className={viewMode === 'grid' ? styles.pluginsGrid : styles.pluginsList}>
               {filteredPlugins.map(plugin => (
                 <div key={plugin.id} className={`${styles.pluginCard} ${viewMode === 'list' ? styles.listCard : ''}`}>
-                  {plugin.screenshot && viewMode === 'grid' && (
-                    <div className={styles.pluginImage}>
-                      <img src={plugin.screenshot} alt={plugin.name} loading="lazy" />
+                  {(plugin.previewUrl || plugin.screenshot) && viewMode === 'grid' && (
+                    <div
+                      className={styles.pluginImage}
+                      onClick={() => setLightboxPlugin(plugin)}
+                      role="button"
+                      title="Click to expand"
+                    >
+                      <img src={plugin.previewUrl || plugin.screenshot} alt={plugin.name} loading="lazy" />
                     </div>
                   )}
                   <div className={styles.pluginContent}>
@@ -1078,6 +1097,28 @@ export default function Plugins() {
           )}
         </div>
       </div>
+      {lightboxPlugin && (
+        <div className={styles.lightboxOverlay} onClick={() => setLightboxPlugin(null)}>
+          <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
+            <img
+              src={lightboxPlugin.previewUrl || lightboxPlugin.screenshot}
+              alt={lightboxPlugin.name}
+              className={styles.lightboxImage}
+            />
+            <div className={styles.lightboxCaption}>
+              <span>{lightboxPlugin.name}</span>
+              {lightboxPlugin.screenshot && (
+                <a href={lightboxPlugin.screenshot} target="_blank" rel="noopener noreferrer">
+                  Open raw screenshot
+                </a>
+              )}
+              <button onClick={() => setLightboxPlugin(null)} aria-label="Close">
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

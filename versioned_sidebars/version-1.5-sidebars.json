@@ -81,7 +81,12 @@
               "id": "dankmaterialshell/cli-clipboard",
               "label": "Clipboard Manager"
             },
-            "dankmaterialshell/cli-screenshot"
+            "dankmaterialshell/cli-screenshot",
+            {
+              "type": "doc",
+              "id": "dankmaterialshell/cli-qr",
+              "label": "QR Codes"
+            }
           ]
         },
         {

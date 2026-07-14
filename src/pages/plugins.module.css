@@ -1521,3 +1521,62 @@
   background: linear-gradient(135deg, #805AD5, #9F7AEA);
   color: #ffffff;
 }
+
+.pluginImage {
+  cursor: zoom-in;
+}
+
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 8, 14, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 2rem;
+}
+
+.lightboxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: min(1200px, 92vw);
+}
+
+.lightboxImage {
+  width: 100%;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+}
+
+.lightboxCaption {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #e6e0e9;
+  font-weight: 600;
+}
+
+.lightboxCaption a {
+  color: #d0bcff;
+  font-weight: 400;
+}
+
+.lightboxCaption button {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #e6e0e9;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.lightboxCaption button:hover {
+  background: rgba(255, 255, 255, 0.16);
+}

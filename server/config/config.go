@@ -22,6 +22,7 @@ type Config struct {
 	UploadToken            string
 	UploadDir              string
 	CacheDir               string
+	PublicBaseURL          string
 }
 
 func NewConfig() *Config {
@@ -68,6 +69,11 @@ func NewConfig() *Config {
 
 	cacheDir := os.Getenv("CACHE_DIR")
 
+	publicBaseURL := os.Getenv("PUBLIC_BASE_URL")
+	if publicBaseURL == "" {
+		publicBaseURL = "https://api.danklinux.com"
+	}
+
 	return &Config{
 		Port:                   port,
 		Environment:            env,
@@ -85,5 +91,6 @@ func NewConfig() *Config {
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,
 		CacheDir:               cacheDir,
+		PublicBaseURL:          publicBaseURL,
 	}
 }

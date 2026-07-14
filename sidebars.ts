@@ -96,6 +96,11 @@ const sidebars: SidebarsConfig = {
               label: 'Clipboard Manager',
             },
             'dankmaterialshell/cli-screenshot',
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-qr',
+              label: 'QR Codes',
+            },
           ],
         },
         {

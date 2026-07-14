@@ -14,6 +14,10 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
 )
 
+type PreviewSyncer interface {
+	Sync(ctx context.Context, plugins []models.Plugin) []models.Plugin
+}
+
 type Cache struct {
 	mu          sync.RWMutex
 	plugins     []models.Plugin
@@ -21,6 +25,7 @@ type Cache struct {
 	lastUpdate  time.Time
 	ready       bool
 	persistPath string
+	previews    PreviewSyncer
 }
 
 type pluginSnapshot struct {
@@ -34,6 +39,10 @@ func NewCache(githubToken, persistPath string) *Cache {
 		parser:      NewParser(githubToken),
 		persistPath: persistPath,
 	}
+}
+
+func (c *Cache) SetPreviewSyncer(s PreviewSyncer) {
+	c.previews = s
 }
 
 func (c *Cache) Initialize(ctx context.Context) error {
@@ -59,6 +68,14 @@ func (c *Cache) Refresh(ctx context.Context) error {
 	}
 
 	c.mu.Lock()
+	carryFeedback(plugins, c.plugins)
+	c.mu.Unlock()
+
+	if c.previews != nil {
+		plugins = c.previews.Sync(ctx, plugins)
+	}
+
+	c.mu.Lock()
 	c.plugins = plugins
 	c.lastUpdate = time.Now()
 	c.ready = true
@@ -80,7 +97,16 @@ func (c *Cache) RefreshFeedback(ctx context.Context) error {
 
 	c.mu.Lock()
 	mergeFeedback(c.plugins, feedback)
+	plugins := make([]models.Plugin, len(c.plugins))
+	copy(plugins, c.plugins)
 	c.mu.Unlock()
+
+	if c.previews != nil {
+		plugins = c.previews.Sync(ctx, plugins)
+		c.mu.Lock()
+		c.plugins = plugins
+		c.mu.Unlock()
+	}
 
 	if err := c.saveToDisk(); err != nil {
 		log.Warn("Failed to persist plugin cache", "err", err)
