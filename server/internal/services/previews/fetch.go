@@ -9,12 +9,15 @@ import (
 	_ "image/jpeg"
 	_ "image/png"
 	"io"
+	"math"
 	"net"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
 
+	"github.com/srwiley/oksvg"
+	"github.com/srwiley/rasterx"
 	_ "golang.org/x/image/webp"
 )
 
@@ -138,6 +141,10 @@ func (f *imageFetcher) fetch(ctx context.Context, rawURL string) (image.Image, e
 		return nil, fmt.Errorf("image exceeds %d byte limit", maxImageBytes)
 	}
 
+	if isSVG(contentType, data) {
+		return rasterizeSVG(data)
+	}
+
 	cfg, _, err := image.DecodeConfig(bytes.NewReader(data))
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode image config: %w", err)
@@ -150,5 +157,42 @@ func (f *imageFetcher) fetch(ctx context.Context, rawURL string) (image.Image, e
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode image: %w", err)
 	}
+	return img, nil
+}
+
+func isSVG(contentType string, data []byte) bool {
+	if strings.HasPrefix(contentType, "image/svg") {
+		return true
+	}
+	head := strings.TrimSpace(string(data[:min(len(data), 512)]))
+	return strings.HasPrefix(head, "<svg") || (strings.HasPrefix(head, "<?xml") && strings.Contains(head, "<svg"))
+}
+
+func rasterizeSVG(data []byte) (image.Image, error) {
+	if bytes.Contains(data, []byte("<text")) {
+		return nil, fmt.Errorf("svg uses text elements the rasterizer cannot render")
+	}
+
+	icon, err := oksvg.ReadIconStream(bytes.NewReader(data))
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse svg: %w", err)
+	}
+
+	w, h := icon.ViewBox.W, icon.ViewBox.H
+	if w <= 0 || h <= 0 {
+		return nil, fmt.Errorf("svg has no usable dimensions")
+	}
+
+	const targetWidth = 1200.0
+	scale := targetWidth / w
+	dw := int(math.Round(w * scale))
+	dh := int(math.Round(h * scale))
+	if dw < 1 || dh < 1 || dw > maxDimension || dh > maxDimension {
+		return nil, fmt.Errorf("svg raster size %dx%d out of bounds", dw, dh)
+	}
+
+	img := image.NewRGBA(image.Rect(0, 0, dw, dh))
+	icon.SetTarget(0, 0, float64(dw), float64(dh))
+	icon.Draw(rasterx.NewDasher(dw, dh, rasterx.NewScannerGV(dw, dh, img, img.Bounds())), 1.0)
 	return img, nil
 }

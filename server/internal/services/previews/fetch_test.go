@@ -165,6 +165,39 @@ func TestFetchRejectsNonImageContentType(t *testing.T) {
 	}
 }
 
+func TestFetchRasterizesSVG(t *testing.T) {
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><rect width="100" height="50" fill="#ff0000"/></svg>`
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "image/svg+xml")
+		fmt.Fprint(w, svg)
+	}))
+	defer server.Close()
+
+	img, err := allowAllFetcher().fetch(context.Background(), server.URL)
+	if err != nil {
+		t.Fatalf("fetch: %v", err)
+	}
+	b := img.Bounds()
+	if b.Dx() != 1200 || b.Dy() != 600 {
+		t.Fatalf("raster size %dx%d, want 1200x600", b.Dx(), b.Dy())
+	}
+	r, g, _, _ := img.At(600, 300).RGBA()
+	if r>>8 < 0xF0 || g>>8 > 0x10 {
+		t.Fatalf("expected red center pixel, got r=%d g=%d", r>>8, g>>8)
+	}
+}
+
+func TestRasterizeSVGRejectsTextElements(t *testing.T) {
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><text x="10" y="20">hi</text></svg>`
+	_, err := rasterizeSVG([]byte(svg))
+	if err == nil {
+		t.Fatal("expected error for svg with text elements")
+	}
+	if !strings.Contains(err.Error(), "text elements") {
+		t.Fatalf("expected text-element error, got: %v", err)
+	}
+}
+
 func TestFetchRejectsUnsupportedScheme(t *testing.T) {
 	_, err := allowAllFetcher().fetch(context.Background(), "file:///etc/passwd")
 	if err == nil {

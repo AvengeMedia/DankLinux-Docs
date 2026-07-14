@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DMS Plugin Thumbnail Generator</title>
+<style>
+@font-face {
+  font-family: 'Adwaita Sans';
+  src: url('./fonts/AdwaitaSans-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Adwaita Sans';
+  src: url('./fonts/AdwaitaSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Adwaita Sans';
+  src: url('./fonts/AdwaitaSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+:root {
+  --primary: #D0BCFF;
+  --primary-container: #4F378B;
+  --surface: #141218;
+  --surface-text: #e6e0e9;
+  --surface-container: #211f24;
+  --surface-container-high: #2b292f;
+  --outline: #948f99;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Adwaita Sans', sans-serif;
+  background: var(--surface);
+  color: var(--surface-text);
+  min-height: 100vh;
+  padding: 32px 24px;
+}
+.wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.subtitle {
+  color: var(--outline);
+  font-size: 15px;
+  margin-bottom: 28px;
+}
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+.controls {
+  flex: 1 1 300px;
+  max-width: 420px;
+  background: var(--surface-container);
+  border: 1px solid rgba(148, 143, 153, 0.25);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.preview {
+  flex: 2 1 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+label {
+  display: block;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--outline);
+  margin-bottom: 6px;
+}
+input[type="text"], textarea, select {
+  width: 100%;
+  background: var(--surface-container-high);
+  color: var(--surface-text);
+  border: 1px solid rgba(148, 143, 153, 0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 15px;
+}
+textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+.accent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+input[type="color"] {
+  width: 48px;
+  height: 36px;
+  border: 1px solid rgba(148, 143, 153, 0.35);
+  border-radius: 8px;
+  background: var(--surface-container-high);
+  padding: 4px;
+  cursor: pointer;
+}
+.accent-value {
+  font-size: 14px;
+  color: var(--outline);
+}
+.dropzone {
+  border: 2px dashed rgba(148, 143, 153, 0.5);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  color: var(--outline);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.dropzone.dragover {
+  border-color: var(--primary);
+  background: rgba(208, 188, 255, 0.08);
+}
+.dropzone strong {
+  color: var(--surface-text);
+}
+#file-input {
+  display: none;
+}
+canvas {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(148, 143, 153, 0.25);
+  background: var(--surface-container);
+}
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+button {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 24px;
+  cursor: pointer;
+  background: var(--primary);
+  color: #1c1035;
+}
+button.secondary {
+  background: var(--primary-container);
+  color: var(--surface-text);
+}
+button.ghost {
+  background: transparent;
+  color: var(--outline);
+  border: 1px solid rgba(148, 143, 153, 0.35);
+}
+button:hover {
+  filter: brightness(1.1);
+}
+.hint {
+  font-size: 13px;
+  color: var(--outline);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>DMS Plugin Thumbnail Generator</h1>
+  <p class="subtitle">Create a standardized 960×540 preview card for your DankMaterialShell plugin. See docs/PREVIEWS.md in the plugin registry for the composition spec.</p>
+  <div class="layout">
+    <div class="controls">
+      <div>
+        <label for="in-name">Plugin name</label>
+        <input type="text" id="in-name" value="My Plugin" maxlength="80">
+      </div>
+      <div>
+        <label for="in-category">Category</label>
+        <select id="in-category">
+          <option value="utilities" selected>utilities</option>
+          <option value="monitoring">monitoring</option>
+          <option value="system">system</option>
+          <option value="appearance">appearance</option>
+          <option value="productivity">productivity</option>
+          <option value="media">media</option>
+          <option value="network">network</option>
+          <option value="social">social</option>
+          <option value="weather">weather</option>
+          <option value="finance">finance</option>
+        </select>
+      </div>
+      <div>
+        <label for="in-description">Description</label>
+        <textarea id="in-description" maxlength="300">A short description of what this plugin does.</textarea>
+      </div>
+      <div>
+        <label for="in-author">Author</label>
+        <input type="text" id="in-author" value="" placeholder="Your name" maxlength="80">
+      </div>
+      <div>
+        <label for="in-version">Version</label>
+        <input type="text" id="in-version" value="" placeholder="1.0.0" maxlength="20">
+      </div>
+      <div>
+        <label for="in-accent">Accent color</label>
+        <div class="accent-row">
+          <input type="color" id="in-accent" value="#D0BCFF">
+          <span class="accent-value" id="accent-value">#D0BCFF</span>
+        </div>
+      </div>
+      <div>
+        <label>Screenshot</label>
+        <div class="dropzone" id="dropzone" tabindex="0">
+          <strong>Click, drop, or paste</strong><br>an image here
+        </div>
+        <input type="file" id="file-input" accept="image/*">
+      </div>
+      <button class="ghost" id="btn-clear" type="button">Remove screenshot</button>
+    </div>
+    <div class="preview">
+      <canvas id="card" width="960" height="540"></canvas>
+      <div class="buttons">
+        <button id="btn-webp" type="button">Download WebP</button>
+        <button class="secondary" id="btn-png" type="button">Download PNG</button>
+      </div>
+      <p class="hint">Without a screenshot, a metadata-only card is rendered. With a screenshot, the image is framed above the footer band.</p>
+    </div>
+  </div>
+</div>
+<script>
+'use strict';
+(function () {
+  var TOKENS = {
+    primary: '#D0BCFF',
+    primaryContainer: '#4F378B',
+    surface: '#141218',
+    surfaceText: '#e6e0e9',
+    surfaceContainer: '#211f24',
+    surfaceContainerHigh: '#2b292f',
+    outline: '#948f99'
+  };
+  var FONT = "'Adwaita Sans', sans-serif";
+  var W = 960;
+  var H = 540;
+  var FOOTER_H = 108;
+  var REGION = { x: 16, y: 16, w: 928, h: 392, r: 16 };
+
+  var canvas = document.getElementById('card');
+  var ctx = canvas.getContext('2d');
+  var inputs = {
+    name: document.getElementById('in-name'),
+    category: document.getElementById('in-category'),
+    description: document.getElementById('in-description'),
+    author: document.getElementById('in-author'),
+    version: document.getElementById('in-version'),
+    accent: document.getElementById('in-accent')
+  };
+  var accentValue = document.getElementById('accent-value');
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('file-input');
+  var screenshot = null;
+
+  function hexToRgb(hex) {
+    var m = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+    if (!m) return { r: 208, g: 188, b: 255 };
+    var n = parseInt(m[1], 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+
+  function rgba(hex, a) {
+    var c = hexToRgb(hex);
+    return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + a + ')';
+  }
+
+  function lighten(hex, amt) {
+    var c = hexToRgb(hex);
+    var r = Math.round(c.r + (255 - c.r) * amt);
+    var g = Math.round(c.g + (255 - c.g) * amt);
+    var b = Math.round(c.b + (255 - c.b) * amt);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  function roundRectPath(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function ellipsize(text, maxWidth) {
+    if (ctx.measureText(text).width <= maxWidth) return text;
+    var t = text;
+    while (t.length > 0 && ctx.measureText(t + '…').width > maxWidth) {
+      t = t.slice(0, -1);
+    }
+    return t + '…';
+  }
+
+  function wrapLines(text, maxWidth, maxLines) {
+    var words = text.split(/\s+/).filter(Boolean);
+    var lines = [];
+    var current = '';
+    for (var i = 0; i < words.length; i++) {
+      var candidate = current ? current + ' ' + words[i] : words[i];
+      if (ctx.measureText(candidate).width <= maxWidth) {
+        current = candidate;
+        continue;
+      }
+      if (current) lines.push(current);
+      current = words[i];
+      if (lines.length === maxLines - 1) {
+        var rest = words.slice(i).join(' ');
+        lines.push(ellipsize(rest, maxWidth));
+        return lines;
+      }
+    }
+    if (current) lines.push(current);
+    return lines;
+  }
+
+  function kebab(name) {
+    var k = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return k || 'plugin';
+  }
+
+  function drawBackground() {
+    var grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, TOKENS.surface);
+    grad.addColorStop(1, lighten(TOKENS.surface, 0.06));
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  function drawFooter(state) {
+    ctx.fillStyle = state.accent;
+    ctx.fillRect(0, H - 4, W, 4);
+
+    ctx.textBaseline = 'alphabetic';
+    ctx.textAlign = 'left';
+
+    var chips = [];
+    if (state.version) {
+      var vLabel = state.version.charAt(0) === 'v' ? state.version : 'v' + state.version;
+      chips.push({ label: vLabel, text: TOKENS.surfaceText, fill: rgba(TOKENS.surfaceText, 0.10) });
+    }
+    if (state.category) {
+      chips.push({ label: state.category.toUpperCase(), text: state.accent, fill: rgba(state.accent, 0.15) });
+    }
+
+    ctx.font = '700 14px ' + FONT;
+    var chipH = 28;
+    var chipY = 427;
+    var x = W - 16;
+    for (var i = chips.length - 1; i >= 0; i--) {
+      var chip = chips[i];
+      var chipW = ctx.measureText(chip.label).width + 24;
+      x -= chipW;
+      ctx.fillStyle = chip.fill;
+      roundRectPath(x, chipY, chipW, chipH, chipH / 2);
+      ctx.fill();
+      ctx.fillStyle = chip.text;
+      ctx.fillText(chip.label, x + 12, chipY + 19);
+      x -= 8;
+    }
+    var chipLeft = x + 8;
+
+    ctx.font = '600 40px ' + FONT;
+    ctx.fillStyle = TOKENS.surfaceText;
+    var nameMaxW = chipLeft - 16 - 16;
+    ctx.fillText(ellipsize(state.name, nameMaxW), 16, 456);
+
+    ctx.font = '22px ' + FONT;
+    ctx.fillStyle = '#C4C7C5';
+    ctx.fillText(ellipsize(state.description, W - 32), 16, 496);
+  }
+
+  function drawScreenshotRegion() {
+    ctx.save();
+    roundRectPath(REGION.x, REGION.y, REGION.w, REGION.h, REGION.r);
+    ctx.clip();
+    ctx.fillStyle = TOKENS.surfaceContainer;
+    ctx.fillRect(REGION.x, REGION.y, REGION.w, REGION.h);
+
+    var regionAR = REGION.w / REGION.h;
+    var srcAR = screenshot.naturalWidth / screenshot.naturalHeight;
+    var useCover = Math.abs(srcAR / regionAR - 1) <= 0.04;
+    var scale = useCover
+      ? Math.max(REGION.w / screenshot.naturalWidth, REGION.h / screenshot.naturalHeight)
+      : Math.min(REGION.w / screenshot.naturalWidth, REGION.h / screenshot.naturalHeight);
+    scale = Math.min(scale, 2);
+    var dw = screenshot.naturalWidth * scale;
+    var dh = screenshot.naturalHeight * scale;
+    var dx = REGION.x + (REGION.w - dw) / 2;
+    var dy = REGION.y + (REGION.h - dh) / 2;
+    if (dw < REGION.w - 1 || dh < REGION.h - 1) {
+      ctx.filter = 'blur(18px)';
+      ctx.drawImage(screenshot, REGION.x - 24, REGION.y - 24, REGION.w + 48, REGION.h + 48);
+      ctx.filter = 'none';
+      ctx.fillStyle = rgba(TOKENS.surface, 0.55);
+      ctx.fillRect(REGION.x, REGION.y, REGION.w, REGION.h);
+    }
+    ctx.drawImage(screenshot, dx, dy, dw, dh);
+    ctx.restore();
+  }
+
+  function drawMetadataRegion(state) {
+    var cx = W / 2;
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = rgba(state.accent, 0.2);
+    ctx.beginPath();
+    ctx.arc(cx, 128, 64, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.font = '600 96px ' + FONT;
+    ctx.fillStyle = state.accent;
+    ctx.textBaseline = 'middle';
+    var letter = state.name.trim().charAt(0).toUpperCase() || '?';
+    ctx.fillText(letter, cx, 136);
+
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = '600 44px ' + FONT;
+    ctx.fillStyle = TOKENS.surfaceText;
+    ctx.fillText(ellipsize(state.name, REGION.w - 96), cx, 254);
+
+    ctx.font = '20px ' + FONT;
+    var lines = wrapLines(state.description, 680, 3);
+    for (var i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], cx, 292 + i * 28);
+    }
+
+    if (state.author) {
+      ctx.font = '16px ' + FONT;
+      ctx.fillStyle = TOKENS.outline;
+      ctx.fillText('by ' + ellipsize(state.author, 500), cx, 292 + lines.length * 28 + 16);
+    }
+
+    ctx.textAlign = 'right';
+    ctx.font = '600 14px ' + FONT;
+    ctx.fillStyle = rgba(state.accent, 0.7);
+    ctx.fillText('DMS', REGION.x + REGION.w, REGION.y + REGION.h - 8);
+    ctx.textAlign = 'left';
+  }
+
+  function readState() {
+    return {
+      name: inputs.name.value.trim() || 'Untitled Plugin',
+      category: inputs.category.value,
+      description: inputs.description.value.trim(),
+      author: inputs.author.value.trim(),
+      version: inputs.version.value.trim(),
+      accent: inputs.accent.value
+    };
+  }
+
+  function render() {
+    var state = readState();
+    accentValue.textContent = state.accent.toUpperCase();
+    ctx.clearRect(0, 0, W, H);
+    drawBackground();
+    if (screenshot) {
+      drawScreenshotRegion();
+    } else {
+      drawMetadataRegion(state);
+    }
+    drawFooter(state);
+  }
+
+  function download(blob, filename) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function exportPng() {
+    canvas.toBlob(function (blob) {
+      if (!blob) return;
+      download(blob, kebab(readState().name) + '-preview.png');
+    }, 'image/png');
+  }
+
+  function exportWebp() {
+    canvas.toBlob(function (blob) {
+      if (!blob || blob.type !== 'image/webp') {
+        exportPng();
+        return;
+      }
+      download(blob, kebab(readState().name) + '-preview.webp');
+    }, 'image/webp', 0.9);
+  }
+
+  function loadImageFile(file) {
+    if (!file || !file.type || file.type.indexOf('image/') !== 0) return;
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      screenshot = img;
+      render();
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = function () {
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
+  Object.keys(inputs).forEach(function (key) {
+    inputs[key].addEventListener('input', render);
+  });
+
+  dropzone.addEventListener('click', function () { fileInput.click(); });
+  dropzone.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault();
+    fileInput.click();
+  });
+  fileInput.addEventListener('change', function () {
+    loadImageFile(fileInput.files[0]);
+    fileInput.value = '';
+  });
+  dropzone.addEventListener('dragover', function (e) {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+  dropzone.addEventListener('dragleave', function () {
+    dropzone.classList.remove('dragover');
+  });
+  dropzone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    if (!e.dataTransfer || !e.dataTransfer.files.length) return;
+    loadImageFile(e.dataTransfer.files[0]);
+  });
+  window.addEventListener('paste', function (e) {
+    if (!e.clipboardData) return;
+    var items = e.clipboardData.items;
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image/') !== 0) continue;
+      loadImageFile(items[i].getAsFile());
+      return;
+    }
+  });
+  document.getElementById('btn-clear').addEventListener('click', function () {
+    screenshot = null;
+    render();
+  });
+  document.getElementById('btn-webp').addEventListener('click', exportWebp);
+  document.getElementById('btn-png').addEventListener('click', exportPng);
+
+  Promise.all([
+    document.fonts.load('400 22px "Adwaita Sans"'),
+    document.fonts.load('600 40px "Adwaita Sans"'),
+    document.fonts.load('700 14px "Adwaita Sans"')
+  ]).then(render);
+})();
+</script>
+</body>
+</html>
