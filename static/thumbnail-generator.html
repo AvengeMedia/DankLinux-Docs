@@ -358,12 +358,20 @@ button:hover {
     ctx.fillRect(0, 0, W, H);
   }
 
-  function drawFooter(state) {
+  function descriptionLines(state) {
+    if (!state.description) return [];
+    ctx.font = '22px ' + FONT;
+    return wrapLines(state.description, W - 32, 4);
+  }
+
+  function drawFooter(state, descLines) {
     ctx.fillStyle = state.accent;
     ctx.fillRect(0, H - 4, W, 4);
 
     ctx.textBaseline = 'alphabetic';
     ctx.textAlign = 'left';
+
+    var regionBottom = REGION.y + REGION.h;
 
     var chips = [];
     if (state.version) {
@@ -376,7 +384,7 @@ button:hover {
 
     ctx.font = '700 14px ' + FONT;
     var chipH = 28;
-    var chipY = 427;
+    var chipY = regionBottom + 19;
     var x = W - 16;
     for (var i = chips.length - 1; i >= 0; i--) {
       var chip = chips[i];
@@ -394,11 +402,13 @@ button:hover {
     ctx.font = '600 40px ' + FONT;
     ctx.fillStyle = TOKENS.surfaceText;
     var nameMaxW = chipLeft - 16 - 16;
-    ctx.fillText(ellipsize(state.name, nameMaxW), 16, 456);
+    ctx.fillText(ellipsize(state.name, nameMaxW), 16, regionBottom + 48);
 
     ctx.font = '22px ' + FONT;
     ctx.fillStyle = '#C4C7C5';
-    ctx.fillText(ellipsize(state.description, W - 32), 16, 496);
+    for (var j = 0; j < descLines.length; j++) {
+      ctx.fillText(descLines[j], 16, regionBottom + 88 + j * 30);
+    }
   }
 
   function drawScreenshotRegion() {
@@ -432,34 +442,30 @@ button:hover {
 
   function drawMetadataRegion(state) {
     var cx = W / 2;
+    var circleY = REGION.y + REGION.h * 0.36;
+    var nameY = REGION.y + REGION.h * 0.72;
     ctx.textAlign = 'center';
 
     ctx.fillStyle = rgba(state.accent, 0.2);
     ctx.beginPath();
-    ctx.arc(cx, 128, 64, 0, Math.PI * 2);
+    ctx.arc(cx, circleY, 64, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.font = '600 96px ' + FONT;
     ctx.fillStyle = state.accent;
     ctx.textBaseline = 'middle';
     var letter = state.name.trim().charAt(0).toUpperCase() || '?';
-    ctx.fillText(letter, cx, 136);
+    ctx.fillText(letter, cx, circleY + 8);
 
     ctx.textBaseline = 'alphabetic';
     ctx.font = '600 44px ' + FONT;
     ctx.fillStyle = TOKENS.surfaceText;
-    ctx.fillText(ellipsize(state.name, REGION.w - 96), cx, 254);
-
-    ctx.font = '20px ' + FONT;
-    var lines = wrapLines(state.description, 680, 3);
-    for (var i = 0; i < lines.length; i++) {
-      ctx.fillText(lines[i], cx, 292 + i * 28);
-    }
+    ctx.fillText(ellipsize(state.name, REGION.w - 96), cx, nameY);
 
     if (state.author) {
       ctx.font = '16px ' + FONT;
       ctx.fillStyle = TOKENS.outline;
-      ctx.fillText('by ' + ellipsize(state.author, 500), cx, 292 + lines.length * 28 + 16);
+      ctx.fillText('by ' + ellipsize(state.author, 500), cx, nameY + 40);
     }
 
     ctx.textAlign = 'right';
@@ -484,13 +490,15 @@ button:hover {
     var state = readState();
     accentValue.textContent = state.accent.toUpperCase();
     ctx.clearRect(0, 0, W, H);
+    var descLines = descriptionLines(state);
+    REGION.h = 392 - Math.max(descLines.length - 1, 0) * 30;
     drawBackground();
     if (screenshot) {
       drawScreenshotRegion();
     } else {
       drawMetadataRegion(state);
     }
-    drawFooter(state);
+    drawFooter(state, descLines);
   }
 
   function download(blob, filename) {

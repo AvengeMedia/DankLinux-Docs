@@ -44,10 +44,12 @@ func NewStore(cacheDir string) (*Store, error) {
 	return s, nil
 }
 
+const composeVersion = "v3"
+
 func SourceKey(sourceURL string, p models.Plugin) string {
 	statuses := slices.Clone(p.Status)
 	slices.Sort(statuses)
-	parts := []string{sourceURL, p.Name, p.Category, p.Description, p.Author, p.Version, strings.Join(statuses, ",")}
+	parts := []string{composeVersion, sourceURL, p.Name, p.Category, p.Description, p.Author, p.Version, strings.Join(statuses, ",")}
 	h := sha256.Sum256([]byte(strings.Join(parts, "\x00")))
 	return hex.EncodeToString(h[:])
 }

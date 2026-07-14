@@ -16,6 +16,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fogleman/gg"
 	"github.com/srwiley/oksvg"
 	"github.com/srwiley/rasterx"
 	_ "golang.org/x/image/webp"
@@ -169,8 +170,9 @@ func isSVG(contentType string, data []byte) bool {
 }
 
 func rasterizeSVG(data []byte) (image.Image, error) {
-	if bytes.Contains(data, []byte("<text")) {
-		return nil, fmt.Errorf("svg uses text elements the rasterizer cannot render")
+	texts, err := parseSVGTexts(data)
+	if err != nil {
+		return nil, err
 	}
 
 	icon, err := oksvg.ReadIconStream(bytes.NewReader(data))
@@ -194,5 +196,13 @@ func rasterizeSVG(data []byte) (image.Image, error) {
 	img := image.NewRGBA(image.Rect(0, 0, dw, dh))
 	icon.SetTarget(0, 0, float64(dw), float64(dh))
 	icon.Draw(rasterx.NewDasher(dw, dh, rasterx.NewScannerGV(dw, dh, img, img.Bounds())), 1.0)
-	return img, nil
+
+	if len(texts) == 0 {
+		return img, nil
+	}
+	dc := gg.NewContextForRGBA(img)
+	if err := drawSVGTexts(dc, texts, icon.ViewBox.X, icon.ViewBox.Y, scale); err != nil {
+		return nil, err
+	}
+	return dc.Image(), nil
 }

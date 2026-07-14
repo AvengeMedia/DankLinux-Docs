@@ -22,7 +22,9 @@ const (
 	cardHeight       = 540
 	regionInset      = 16.0
 	regionWidth      = 928.0
-	regionHeight     = 392.0
+	baseRegionHeight = 392.0
+	descLineHeight   = 30.0
+	maxDescLines     = 4
 	regionRadius     = 16.0
 	accentHeight     = 4.0
 	coverTolerance   = 0.04
@@ -170,6 +172,31 @@ func footerChips(p models.Plugin) []chipSpec {
 	return chips
 }
 
+func wrapLines(dc *gg.Context, s string, maxW float64, maxLines int) []string {
+	if s == "" {
+		return nil
+	}
+	lines := dc.WordWrap(s, maxW)
+	if len(lines) <= maxLines {
+		return lines
+	}
+	lines = lines[:maxLines]
+	lines[maxLines-1] = ellipsize(dc, lines[maxLines-1]+"…", maxW)
+	return lines
+}
+
+func footerLayout(dc *gg.Context, p models.Plugin) ([]string, float64, error) {
+	descFace, err := newFace(regularFont, 22)
+	if err != nil {
+		return nil, 0, err
+	}
+	dc.SetFontFace(descFace)
+
+	lines := wrapLines(dc, p.Description, cardWidth-2*regionInset, maxDescLines)
+	extra := max(len(lines), 1) - 1
+	return lines, baseRegionHeight - float64(extra)*descLineHeight, nil
+}
+
 func drawStatusChips(dc *gg.Context, statuses []string) error {
 	var chips []chipSpec
 	for _, status := range statuses {
@@ -186,15 +213,16 @@ func drawStatusChips(dc *gg.Context, statuses []string) error {
 	return err
 }
 
-func drawFooter(dc *gg.Context, p models.Plugin) error {
+func drawFooter(dc *gg.Context, p models.Plugin, descLines []string, regionHeight float64) error {
 	dc.SetColor(colPrimary)
 	dc.DrawRectangle(0, cardHeight-accentHeight, cardWidth, accentHeight)
 	dc.Fill()
 
+	regionBottom := regionInset + regionHeight
 	chipLeft := float64(cardWidth - regionInset)
 	chips := footerChips(p)
 	if len(chips) > 0 {
-		left, err := drawChipRow(dc, chips, cardWidth-regionInset, 427)
+		left, err := drawChipRow(dc, chips, cardWidth-regionInset, regionBottom+19)
 		if err != nil {
 			return err
 		}
@@ -208,9 +236,9 @@ func drawFooter(dc *gg.Context, p models.Plugin) error {
 	dc.SetFontFace(nameFace)
 	dc.SetColor(colSurfaceText)
 	nameMax := chipLeft - 16 - regionInset
-	dc.DrawString(ellipsize(dc, p.Name, nameMax), regionInset, 456)
+	dc.DrawString(ellipsize(dc, p.Name, nameMax), regionInset, regionBottom+48)
 
-	if p.Description == "" {
+	if len(descLines) == 0 {
 		return nil
 	}
 
@@ -220,7 +248,9 @@ func drawFooter(dc *gg.Context, p models.Plugin) error {
 	}
 	dc.SetFontFace(descFace)
 	dc.SetColor(colDescription)
-	dc.DrawString(ellipsize(dc, p.Description, cardWidth-2*regionInset), regionInset, 496)
+	for i, line := range descLines {
+		dc.DrawString(line, regionInset, regionBottom+88+float64(i)*descLineHeight)
+	}
 	return nil
 }
 
@@ -230,15 +260,20 @@ func ComposeScreenshot(src image.Image, p models.Plugin) (image.Image, error) {
 	}
 
 	dc := newCanvas()
+	descLines, regionHeight, err := footerLayout(dc, p)
+	if err != nil {
+		return nil, err
+	}
+
 	dc.SetColor(colSurfaceContainer)
 	dc.DrawRoundedRectangle(regionInset, regionInset, regionWidth, regionHeight, regionRadius)
 	dc.Fill()
 
-	scaled, x, y := fitRegionImage(src)
+	scaled, x, y := fitRegionImage(src, regionHeight)
 	dc.DrawRoundedRectangle(regionInset, regionInset, regionWidth, regionHeight, regionRadius)
 	dc.Clip()
 	if scaled.Bounds().Dx() < int(regionWidth) || scaled.Bounds().Dy() < int(regionHeight) {
-		dc.DrawImage(blurFill(src), int(regionInset), int(regionInset))
+		dc.DrawImage(blurFill(src, regionHeight), int(regionInset), int(regionInset))
 		dc.SetColor(withAlpha(colSurface, blurOverlayAlpha))
 		dc.DrawRectangle(regionInset, regionInset, regionWidth, regionHeight)
 		dc.Fill()
@@ -249,13 +284,13 @@ func ComposeScreenshot(src image.Image, p models.Plugin) (image.Image, error) {
 	if err := drawStatusChips(dc, p.Status); err != nil {
 		return nil, err
 	}
-	if err := drawFooter(dc, p); err != nil {
+	if err := drawFooter(dc, p, descLines, regionHeight); err != nil {
 		return nil, err
 	}
 	return dc.Image(), nil
 }
 
-func blurFill(src image.Image) image.Image {
+func blurFill(src image.Image, regionHeight float64) image.Image {
 	small := image.NewRGBA(image.Rect(0, 0, blurSampleWidth, blurSampleHeight))
 	draw.ApproxBiLinear.Scale(small, small.Bounds(), src, src.Bounds(), draw.Src, nil)
 	full := image.NewRGBA(image.Rect(0, 0, int(regionWidth), int(regionHeight)))
@@ -263,7 +298,7 @@ func blurFill(src image.Image) image.Image {
 	return full
 }
 
-func fitRegionImage(src image.Image) (image.Image, int, int) {
+func fitRegionImage(src image.Image, regionHeight float64) (image.Image, int, int) {
 	b := src.Bounds()
 	sw, sh := float64(b.Dx()), float64(b.Dy())
 	regionAR := regionWidth / regionHeight

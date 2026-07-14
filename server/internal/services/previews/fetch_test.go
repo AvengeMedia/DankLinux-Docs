@@ -187,14 +187,34 @@ func TestFetchRasterizesSVG(t *testing.T) {
 	}
 }
 
-func TestRasterizeSVGRejectsTextElements(t *testing.T) {
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><text x="10" y="20">hi</text></svg>`
+func TestRasterizeSVGRendersText(t *testing.T) {
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><rect width="100" height="50" fill="#141218"/><g transform="translate(10 10)"><text x="0" y="20" font-size="14" font-weight="700" fill="#ffffff">HELLO WORLD</text></g></svg>`
+	img, err := rasterizeSVG([]byte(svg))
+	if err != nil {
+		t.Fatalf("rasterizeSVG: %v", err)
+	}
+	b := img.Bounds()
+	lit := 0
+	for y := b.Min.Y; y < b.Max.Y; y++ {
+		for x := b.Min.X; x < b.Max.X; x++ {
+			if r, _, _, _ := img.At(x, y).RGBA(); r>>8 > 0xC0 {
+				lit++
+			}
+		}
+	}
+	if lit < 500 {
+		t.Fatalf("expected rendered text pixels, got %d bright pixels", lit)
+	}
+}
+
+func TestRasterizeSVGRejectsUnsupportedTextTransform(t *testing.T) {
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50"><g transform="rotate(45)"><text x="10" y="20">hi</text></g></svg>`
 	_, err := rasterizeSVG([]byte(svg))
 	if err == nil {
-		t.Fatal("expected error for svg with text elements")
+		t.Fatal("expected error for text under unsupported transform")
 	}
-	if !strings.Contains(err.Error(), "text elements") {
-		t.Fatalf("expected text-element error, got: %v", err)
+	if !strings.Contains(err.Error(), "unsupported transform") {
+		t.Fatalf("expected unsupported-transform error, got: %v", err)
 	}
 }
 

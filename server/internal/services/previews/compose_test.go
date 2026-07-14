@@ -3,6 +3,7 @@ package previews
 import (
 	"image"
 	"image/color"
+	"strings"
 	"testing"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
@@ -120,6 +121,30 @@ func TestComposeScreenshotUpscaleCapped(t *testing.T) {
 	assertPixel(t, img, 480, 220, sourceRed)
 	assertPixelNear(t, img, 480-160, 220, letterboxRed, 8)
 	assertPixelNear(t, img, 480+160, 220, letterboxRed, 8)
+}
+
+func TestFooterLayoutShowsFullDescription(t *testing.T) {
+	if err := loadFonts(); err != nil {
+		t.Fatal(err)
+	}
+	dc := newCanvas()
+	p := testPlugin
+	p.Description = strings.TrimSpace(strings.Repeat("wide words flow across the card footer band ", 4))
+
+	lines, regionH, err := footerLayout(dc, p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(lines) < 2 {
+		t.Fatalf("expected description to wrap, got %d line(s)", len(lines))
+	}
+	if got := strings.Join(lines, " "); got != p.Description {
+		t.Fatalf("description altered by wrapping:\n%q\nwant\n%q", got, p.Description)
+	}
+	want := baseRegionHeight - float64(len(lines)-1)*descLineHeight
+	if regionH != want {
+		t.Fatalf("region height %v, want %v", regionH, want)
+	}
 }
 
 func TestComposeCardDimensions(t *testing.T) {
