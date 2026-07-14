@@ -39,7 +39,7 @@
     "@docusaurus/tsconfig": "^3.10.1",
     "@docusaurus/types": "^3.10.1",
     "patch-package": "^8.0.1",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "browserslist": {
     "production": [
