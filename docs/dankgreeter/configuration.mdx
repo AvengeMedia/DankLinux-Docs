@@ -305,6 +305,79 @@ You will have to logout or reboot for group change to take effect.
 
 :::
 
+## Login authentication
+
+DankGreeter can use fingerprint readers and security keys through the system
+PAM stack. DMS configures the PAM entries when you enable the corresponding
+toggle in **Settings → Greeter**; it does not install the driver, enroll a
+fingerprint, or register a security key for you.
+
+### Fingerprints
+
+Install your distribution's fingerprint service/client and PAM integration,
+then enroll at least one finger. Package names vary by distribution. For
+example, Fedora's native stack is:
+
+```bash
+sudo dnf install fprintd fprintd-pam
+fprintd-enroll
+```
+
+The distro `fprintd` package normally pulls in `libfprint` automatically; you
+do not usually need to install `libfprint` separately.
+
+Confirm that enrollment succeeded with:
+
+```bash
+fprintd-list "$USER"
+```
+
+To choose a specific finger instead of the default, pass its token, for
+example `fprintd-enroll -f right-thumb`.
+
+Then enable **Fingerprint at login** in **Settings → Greeter**. The toggle
+applies the shared PAM configuration automatically; you do not need to run a
+separate sync after enrollment.
+
+If `fprintd-enroll` reports **No devices available**, the reader may not be
+supported by the installed `libfprint` driver. Check the [libfprint supported
+devices list](https://fprint.freedesktop.org/supported-devices.html) first.
+
+:::note[Unsupported Validity/Synaptics readers]
+
+Some laptops have a compatible Validity/Synaptics sensor that is not
+supported by the native `libfprint` stack, regardless of distribution. In
+that case, the [open-fprintd](https://github.com/uunicorn/open-fprintd)
+service with the [python-validity](https://github.com/uunicorn/python-validity)
+driver may work instead. Follow that project's installation and firmware
+instructions; package names and setup steps vary by distribution and release.
+
+An alternate driver replaces the stock `fprintd` service, so do not run both
+daemon implementations at the same time.
+
+:::
+
+Vendor-specific drivers may require firmware extraction and additional system
+services. Install only the driver stack intended for your reader.
+
+### Security keys
+
+Install and configure `pam_u2f`, register the key with your distribution's
+PAM tooling, then enable **Security key at login** in **Settings → Greeter**.
+The key must be registered before it can authenticate.
+
+### Repairing authentication configuration
+
+Use `dms auth sync` only when you need to repair or manually re-apply the
+DMS-managed PAM configuration (for example, after editing PAM files or
+restoring a backup):
+
+```bash
+dms auth sync
+```
+
+Normal toggle changes apply automatically and do not require this command.
+
 ## Checking Sync Status
 
 To verify that your greeter is properly configured and syncing with your user settings, run:
@@ -588,4 +661,3 @@ The `session.json` file controls wallpaper settings.
   }
 }
 ```
-
