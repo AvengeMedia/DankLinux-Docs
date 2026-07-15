@@ -25,7 +25,7 @@ div[class*='announcementBar'] {
 }
 
 /* Remove any inner borders/dividers */
-div[class*='announcementBar'] > div,
+div[class*='announcementBar']>div,
 div[class*='announcementBar'] [class*='content'] {
   border: none !important;
 }
@@ -214,6 +214,7 @@ html[data-theme='light'] .navbar-kofi-link {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -328,7 +329,7 @@ body.landing-page * {
 body.landing-page #__docusaurus,
 body.landing-page .main-wrapper,
 body.landing-page main,
-body.landing-page > div {
+body.landing-page>div {
   background: transparent !important;
   background-color: transparent !important;
 }
@@ -412,7 +413,7 @@ pre[class*='language-'] {
 }
 
 /* Inline code styling */
-:not(pre) > code {
+:not(pre)>code {
   background-color: rgba(208, 188, 255, 0.1);
   border: 1px solid rgba(208, 188, 255, 0.2);
   color: var(--dank-purple-dark);
@@ -421,7 +422,7 @@ pre[class*='language-'] {
   font-size: 0.9em;
 }
 
-[data-theme='dark'] :not(pre) > code {
+[data-theme='dark'] :not(pre)>code {
   background-color: rgba(208, 188, 255, 0.15);
   border-color: rgba(208, 188, 255, 0.25);
   color: var(--dank-purple-light);
@@ -649,6 +650,7 @@ body.docs-page .footer {
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+
   /* Tighten footer padding on mobile */
   .footer {
     padding: 1rem 0 0.75rem !important;
@@ -704,12 +706,13 @@ body.blog-page main {
 }
 
 @media (max-width: 996px) {
+
   /* BlogSidebar hides its nav here; drop the empty left column on post/list pages */
   body.blog-page aside.col--3 {
     display: none;
   }
 
-  body.blog-page .container.margin-vert--lg > .row > main {
+  body.blog-page .container.margin-vert--lg>.row>main {
     --ifm-col-width: 100%;
     flex: 0 0 100%;
     max-width: 100%;
@@ -884,7 +887,7 @@ body.docs-page .navbar__items--right .navbarSearchContainer_Bca1 {
   }
 
   /* Make primary menu a flex container so search can be ordered first */
-  .navbar-sidebar__items > .navbar-sidebar__item:first-child .menu {
+  .navbar-sidebar__items>.navbar-sidebar__item:first-child .menu {
     display: flex !important;
     flex-direction: column !important;
   }
@@ -914,6 +917,7 @@ body.docs-page .navbar__items--right .navbarSearchContainer_Bca1 {
 
 /* Additional mobile navbar adjustments for all pages */
 @media (max-width: 996px) {
+
   /* Ensure backdrop filters work on mobile navbar */
   body.landing-page .navbar,
   body.docs-page .navbar {
@@ -1057,7 +1061,7 @@ details[open] {
 }
 
 /* Summary (clickable header) */
-details > summary {
+details>summary {
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
@@ -1075,22 +1079,22 @@ details > summary {
 }
 
 /* Hide all default markers/arrows */
-details > summary::-webkit-details-marker {
+details>summary::-webkit-details-marker {
   display: none !important;
 }
 
-details > summary::marker {
+details>summary::marker {
   display: none !important;
   content: '' !important;
 }
 
 /* Hide Docusaurus's built-in toggle arrow */
-details > summary::before {
+details>summary::before {
   display: none !important;
 }
 
 /* Arrow indicator */
-details > summary::after {
+details>summary::after {
   content: '▸';
   display: inline-block;
   font-size: 0.875rem;
@@ -1098,22 +1102,22 @@ details > summary::after {
   color: #a1a1aa;
 }
 
-details[open] > summary::after {
+details[open]>summary::after {
   transform: rotate(90deg);
 }
 
-details > summary:hover {
+details>summary:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
 }
 
 /* Content area */
-details > summary ~ * {
+details>summary~* {
   padding: 0 1.25rem;
 }
 
-details > summary + div,
-details > .collapsibleContent_i85q {
+details>summary+div,
+details>.collapsibleContent_i85q {
   padding: 1.25rem !important;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -1143,22 +1147,22 @@ details.alert--info {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-[data-theme='light'] details > summary {
+[data-theme='light'] details>summary {
   background: rgba(0, 0, 0, 0.02);
   color: #18181b;
 }
 
-[data-theme='light'] details > summary:hover {
+[data-theme='light'] details>summary:hover {
   background: rgba(0, 0, 0, 0.04);
   color: #000000;
 }
 
-[data-theme='light'] details > summary::after {
+[data-theme='light'] details>summary::after {
   color: #71717a;
 }
 
-[data-theme='light'] details > summary + div,
-[data-theme='light'] details > .collapsibleContent_i85q {
+[data-theme='light'] details>summary+div,
+[data-theme='light'] details>.collapsibleContent_i85q {
   border-top-color: rgba(0, 0, 0, 0.06);
 }
 
@@ -1176,7 +1180,7 @@ details a:hover {
 }
 
 /* Category headers are bold paragraphs */
-details p > strong {
+details p>strong {
   color: var(--ifm-color-primary) !important;
   font-size: 1.1rem;
 }
@@ -1211,7 +1215,7 @@ details p:last-child {
 
 /* Panzoom wrapper styling - only for Mermaid diagrams */
 .mermaid[style*="overflow"],
-.docusaurus-mermaid-container > div[style*="overflow: hidden"] {
+.docusaurus-mermaid-container>div[style*="overflow: hidden"] {
   border-radius: 0.5rem;
   border: 1px solid rgba(208, 188, 255, 0.2);
   background: rgba(0, 0, 0, 0.2);
@@ -1220,13 +1224,13 @@ details p:last-child {
 }
 
 [data-theme='light'] .mermaid[style*="overflow"],
-[data-theme='light'] .docusaurus-mermaid-container > div[style*="overflow: hidden"] {
+[data-theme='light'] .docusaurus-mermaid-container>div[style*="overflow: hidden"] {
   border-color: rgba(128, 90, 213, 0.2);
   background: rgba(248, 247, 251, 0.5);
 }
 
 /* Hint text for panzoom interaction on Mermaid only */
-.docusaurus-mermaid-container > div[style*="overflow: hidden"]::before {
+.docusaurus-mermaid-container>div[style*="overflow: hidden"]::before {
   content: "Scroll to zoom • Drag to pan • Double-click to reset";
   position: absolute;
   bottom: 0.5rem;
@@ -1242,11 +1246,11 @@ details p:last-child {
   z-index: 10;
 }
 
-.docusaurus-mermaid-container > div[style*="overflow: hidden"]:hover::before {
+.docusaurus-mermaid-container>div[style*="overflow: hidden"]:hover::before {
   opacity: 1;
 }
 
-[data-theme='light'] .docusaurus-mermaid-container > div[style*="overflow: hidden"]::before {
+[data-theme='light'] .docusaurus-mermaid-container>div[style*="overflow: hidden"]::before {
   color: rgba(128, 90, 213, 0.8);
   background: rgba(248, 247, 251, 0.9);
   border: 1px solid rgba(128, 90, 213, 0.2);
@@ -1297,35 +1301,84 @@ a.navbar-version-dropdown.navbar__link::after {
    BLOG CONTAINER & LAYOUT EXPANSION
    ======================================== */
 
-/* Expand outer container width on blog pages for spacious layout on wide screens */
-body.blog-page .container {
-  max-width: 1440px !important;
-}
-
+/* On Blog Pages: 22% / 60% / 18% Grid Split */
 @media (min-width: 997px) {
-  /* On Blog Landing / Index Page (when no right TOC sidebar is present) */
-  body.blog-page .container.margin-vert--lg > .row > main.col--7:last-child {
-    flex: 0 0 calc(9 / 12 * 100%) !important;
-    max-width: calc(9 / 12 * 100%) !important;
-  }
 
-  /* On Individual Blog Posts (when right TOC sidebar div.col--2 IS present) */
-  body.blog-page .container.margin-vert--lg > .row > aside.col--3 {
-    flex: 0 0 20% !important;
-    max-width: 20% !important;
-  }
-
-  body.blog-page .container.margin-vert--lg > .row > main.col--7 {
-    flex: 0 0 58% !important;
-    max-width: 58% !important;
-  }
-
-  body.blog-page .container.margin-vert--lg > .row > div.col--2 {
+  /* Index Page: 22% Left Sidebar / 78% Main Content */
+  body.blog-page .container.margin-vert--lg>.row>aside.col--3:first-child {
     flex: 0 0 22% !important;
     max-width: 22% !important;
   }
+
+  body.blog-page .container.margin-vert--lg>.row>main.col--7:last-child {
+    flex: 0 0 78% !important;
+    max-width: 78% !important;
+  }
+
+  /* Single Post Page: 22% Left Sidebar / 60% Main Post / 18% Right TOC */
+  body.blog-page .container.margin-vert--lg>.row>aside.col--3 {
+    flex: 0 0 22% !important;
+    max-width: 22% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg>.row>main.col--7 {
+    flex: 0 0 60% !important;
+    max-width: 60% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg>.row>div.col--2 {
+    flex: 0 0 18% !important;
+    max-width: 18% !important;
+  }
 }
 
+/* ========================================
+   CLEAN OVERLAY SCROLLBARS FOR TOC & SIDEBARS
+   ======================================== */
 
+/* Hide clunky default browser scrollbars; display subtle overlay scrollbar on scroll/hover */
+body.blog-page .container .col--2,
+body.blog-page aside.col--3,
+.table-of-contents,
+.theme-doc-sidebar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
 
+body.blog-page .container .col--2:hover,
+body.blog-page aside.col--3:hover,
+.table-of-contents:hover,
+.theme-doc-sidebar-container:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
 
+body.blog-page .container .col--2::-webkit-scrollbar,
+body.blog-page aside.col--3::-webkit-scrollbar,
+.table-of-contents::-webkit-scrollbar,
+.theme-doc-sidebar-container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+body.blog-page .container .col--2::-webkit-scrollbar-track,
+body.blog-page aside.col--3::-webkit-scrollbar-track,
+.table-of-contents::-webkit-scrollbar-track,
+.theme-doc-sidebar-container::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+body.blog-page .container .col--2::-webkit-scrollbar-thumb,
+body.blog-page aside.col--3::-webkit-scrollbar-thumb,
+.table-of-contents::-webkit-scrollbar-thumb,
+.theme-doc-sidebar-container::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+body.blog-page .container .col--2:hover::-webkit-scrollbar-thumb,
+body.blog-page aside.col--3:hover::-webkit-scrollbar-thumb,
+.table-of-contents:hover::-webkit-scrollbar-thumb,
+.theme-doc-sidebar-container:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+}
