@@ -1293,3 +1293,39 @@ a.navbar-version-dropdown.navbar__link::after {
   color: var(--ifm-color-primary);
 }
 
+/* ========================================
+   BLOG CONTAINER & LAYOUT EXPANSION
+   ======================================== */
+
+/* Expand outer container width on blog pages for spacious layout on wide screens */
+body.blog-page .container {
+  max-width: 1440px !important;
+}
+
+@media (min-width: 997px) {
+  /* On Blog Landing / Index Page (when no right TOC sidebar is present) */
+  body.blog-page .container.margin-vert--lg > .row > main.col--7:last-child {
+    flex: 0 0 calc(9 / 12 * 100%) !important;
+    max-width: calc(9 / 12 * 100%) !important;
+  }
+
+  /* On Individual Blog Posts (when right TOC sidebar div.col--2 IS present) */
+  body.blog-page .container.margin-vert--lg > .row > aside.col--3 {
+    flex: 0 0 20% !important;
+    max-width: 20% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg > .row > main.col--7 {
+    flex: 0 0 58% !important;
+    max-width: 58% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg > .row > div.col--2 {
+    flex: 0 0 22% !important;
+    max-width: 22% !important;
+  }
+}
+
+
+
+

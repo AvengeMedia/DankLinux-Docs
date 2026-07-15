@@ -1,0 +1,108 @@
+---
+title: Changelog
+description: Release notes for every DankMaterialShell release, including point releases.
+---
+
+# Changelog
+
+Release notes for DankMaterialShell (DMS) v1.5.0. See the full release notes [blog](/blog).
+
+## What's Changed
+
+### Features
+- feat(void): switch package repositories to R2 by @Purian23 (b1beecb)
+- feat(media): add toggle for album art accent colors (#2831) by @hthienloc in #2832
+- feat(release): add issue notification script for retesting on new releases by @Purian23 (b5908f4)
+- feat(ipc): add settings dump to print full live config as JSON by @sweenu in #2817
+- feat(dms updater): add support for ignoring specific packages during system updates by @Purian23 (e9d958b)
+- Feature/split move size hyprland windowrules by @Mikilio in #2824
+
+### Fixes
+- fix(notifications): handle sound-name hint by @bbedward (6d08b91)
+- fix(workflow): void stable packages by @Purian23 (b8f216d)
+- fix(media): resolve monochrome album art accents by @bbedward (302cfda)
+- fix(ListViewTransitions): null transitions when duration truncates to 0ms by @14Do in #2791
+- fix(settings): battery tab items not in search by @scottmckendry in #2794
+- qs/common: fix path decoding fixes #2802 port 1.5 by @bbedward (bf64451)
+- widgets: fix dropdown/icon picker referencing a dead window port 1.5 by @bbedward (375afaa)
+- fix(player): combine trackid with text identity by @kanghengliu in #2808
+- fix(notifications): dismiss popups when senders close notifications by @atimofeev in #2815
+- fix(void): updated dms-greeter stability support by @Purian23 (ee84489)
+- fix(printers): fix add by address with manually entered host by @bbedward (c7b58e5)
+- fix(process-list): defer IPC actions until modal is loaded by @AiraNadih in #2829
+- fix: use sleep_monitor/wakeup_monitor for DPMS to preserve monitor layout by @A0-42 in #2842
+- fix(dash-tabs): update visibility logic for dash tab elements by @Purian23 (e29b974)
+- fix(port-audit): update git fetch command to include prune opt by @Purian23 (c0134c2)
+- fix(dash): resolve pointer cursor hover issue in connected mode by @hthienloc in #2845
+- core: fix security and concurrency issues found in a backend audit by @asteroidzman in #2805
+- Fixed bluetooth UI bug mentioned in #2627 by @Salio24 in #2850
+- dock: fix dock s howing with no apps port 1.5 by @bbedward (bd70a62)
+- fix(Modal): respect targetScreen property instead of always using focused screen by @hthienloc in #2861
+- chore: fix indentation in niri media key bindings. by @Alexis12119 in #2858
+- media: fix track art flash from chrome changing media art sizes on track change by @bbedward (deb0138)
+- fix(greeter): reimplement regression to hide debug logs during login by @Purian23 (6b70491)
+- gamma: fix scheduler losing track during suspend by @bbedward (1105047)
+
+### Internationalization
+- i18n: sync by @bbedward (acda199)
+- i18n: add arabic by @bbedward (7c6ad65)
+- i18n: sync by @bbedward (536ebf7)
+
+### Other Changes
+- default apps: add configuration for geo: URIs by @bbedward (e84e63f)
+- Add GitHub workflows for release management by @Purian23 (95c8cc8)
+- workflow: update porting logic by @Purian23 (067d01f)
+- workflows: update deps by @Purian23 (fa26dbb)
+- auth: add some more intelligent pam config resolution for lock screen and greeter related #2789 by @bbedward (c86676d)
+- network/iwd: improve bad credential handling by @bbedward (b834e82)
+- settings: restore lost geometric centering option port 1.5 by @bbedward (b95f4cd)
+- build: Add support for DESTDIR by @EbonJaeger in #2783
+- calendar: add action button to events for opening links fixes #2799 port 1.5 by @bbedward (c02a24f)
+- workflow: updated target extraction regex options by @Purian23 (1d4572a)
+- workflow: enhance porting logic to support inline verbiage & audits by @Purian23 (f7d8e2b)
+- audio: only show mic volume OSD through DMS IPCs, not external source changes fixes #2790 port 1.5 by @bbedward (554e55c)
+- osd/media playback: delay showing until album art is ready and avoid re-showing when duplicate metadata comes from mpris related #2787 port 1.5 by @bbedward (fce1a09)
+- theme: prevent failed portal writes from reverting theme mode by @bbedward (fe0214d)
+- ci(void): publish XBPS repository to R2 by @Purian23 (ffd3840)
+- refactor(workflows): update release refs to stable in CI configurations by @Purian23 (ee6c91e)
+- add(workflows): update notify_issues input to release flows by @Purian23 (e0fb817)
+- dms doctor: detect missing XDG_MENU_PREFIX when KDE apps are installed by @Mati7235 in #2840
+- refactor(settings): allow search settings to remain on sidebar until dismissed by @Purian23 (6791c20)
+- refactor(debian): prefer native Debian Quickshell stable package support in dankinstall by @Purian23 (f7157f0)
+- time: add follow-locale option and squash separate greeter time options by @bbedward (58530ae)
+- launcher: don't select pre-filled queries, exclude from memory port 1.5 by @bbedward (28c25d4)
+- launcher: add IPC feature-parity to spotlight-bar and improve list view transitions by @bbedward (dd9edd8)
+- listview: workaround delegates overlapping and make spotlight launcher have a stable anchor by @bbedward (b3a129a)
+- refactor(dms-updater): remove hidden updates display in popout view by @Purian23 (4b05e7a)
+- launcher: add option to choose spotlight style on niri overview by @bbedward (fcda17f)
+- dash: allow hiding all tabs by @bbedward (35e35a1)
+- workspace switcher: fix apps icon won't re focus by @arfan21 in #2830
+- launcher/spotlight: improve height-change animation by @bbedward (781ed16)
+- config/hyprland: set empty kb layout string by default fixes #2851 port 1.5 by @bbedward (928b272)
+- clipboard: store text alongside image when both are offered by @bbedward (d87e2fc)
+- core/cli: expose QR code CLI by @bbedward (c91cb5d)
+- plugins: use grid-style plugin browser by @bbedward (724ee94)
+- Smooth battery time remaining estimate by @wongcallum in #2854
+- plugins: prevent churn of daemon plugins by not re-creating the entire map by @bbedward (bd159be)
+- cava: optimize CPU burn related #631 by @bbedward (b5b0833)
+- cava: more optimizations for visualizer related #2863 by @bbedward (82d5081)
+- dbar: missing show on overview from search index by @bbedward (45cafc6)
+- mango: add separate dispatch socket by @bbedward (2e0587c)
+- greeter: update success message by @Purian23 (8b46397)
+- qs: use asynchronous loaders to load shell core by @bbedward (93120fd)
+- network: avoid dropping to legacy service when loading by @bbedward (9e2d493)
+
+**Full Changelog**: https://github.com/AvengeMedia/DankMaterialShell/compare/v1.5.0...origin/stable-1.5
+
+
+## v1.5.x — "The Wolverine"
+
+### v1.5.0 — 2026-06-23
+
+The fourth major release. Frame Mode, DankCalendar integration, Hyprland Lua
+config, and hundreds of fixes. Read the [full announcement](/blog/v1-5-release).
+
+---
+
+Looking for something older? Every release, including full binaries and
+checksums, is on [GitHub Releases](https://github.com/AvengeMedia/DankMaterialShell/releases).

@@ -1,7 +1,7 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import type {PrismTheme} from 'prism-react-renderer';
+import type { PrismTheme } from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -305,7 +305,7 @@ const config: Config = {
         },
         blog: {
           showReadingTime: true,
-          blogTitle: 'Dank Linux Blog',
+          blogTitle: 'Dank Linux Updates',
           blogDescription: 'News, releases, and updates from the Dank Linux project.',
           blogSidebarTitle: 'Recent Posts',
           blogSidebarCount: 5,
@@ -429,7 +429,7 @@ const config: Config = {
         },
         {
           to: '/blog',
-          label: 'Blog',
+          label: 'Updates',
           position: 'right',
         },
         {
@@ -481,7 +481,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} Dank Linux • Free Forever • MIT License`,
+      copyright: `© ${new Date().getFullYear()} Dank Linux • MIT License`,
     },
     prism: {
       theme: dankPurpleLight,

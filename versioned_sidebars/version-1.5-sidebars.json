@@ -214,6 +214,7 @@
       "id": "contributing-registry",
       "label": "Contributing Plugins & Themes"
     },
-    "support"
+    "support",
+    "dankmaterialshell/changelog"
   ]
 }

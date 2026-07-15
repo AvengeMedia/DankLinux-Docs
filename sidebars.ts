@@ -228,7 +228,8 @@ const sidebars: SidebarsConfig = {
       id: 'contributing-registry',
       label: 'Contributing Plugins & Themes',
     },
-    'support'
+    'support',
+    'dankmaterialshell/changelog',
   ],
 };
 
