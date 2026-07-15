@@ -366,6 +366,55 @@ Install and configure `pam_u2f`, register the key with your distribution's
 PAM tooling, then enable **Security key at login** in **Settings → Greeter**.
 The key must be registered before it can authenticate.
 
+### Externally managed greetd PAM
+
+If you manage `/etc/pam.d/greetd` on your own with `authselect`,
+`pam-auth-update`, NixOS modules, or a hand-written stack turn off
+**Manage greetd PAM automatically** in **Settings → Greeter**. With the
+toggle off, DMS never writes to `/etc/pam.d/greetd`: the next sync removes
+any existing DMS-managed block and then leaves the file untouched. The
+fingerprint and security-key toggles are disabled in this mode, since your
+own PAM configuration decides which authentication methods the greeter
+offers.
+
+### Lock screen authentication source
+
+The lock screen resolves the system PAM auth stack automatically by default.
+If your setup needs a specific PAM service (LDAP, Kerberos, `systemd-homed`,
+or any custom stack), pin one in **Settings → Lock Screen →
+Authentication Source**: choose a detected service such as `system-auth`, or
+select **Custom…** and enter an absolute path to a PAM service file. Every
+selection is validated before it is applied, and an invalid file is never
+applied. If the pinned file later disappears, the lock screen automatically
+falls back to **Auto**.
+
+When the pinned stack already includes `pam_fprintd` or `pam_u2f`, DMS
+suppresses its own separate fingerprint and security-key prompts so you are
+not prompted twice.
+
+### Inspecting PAM services
+
+Two read-only commands back the lock screen source picker and are useful for
+troubleshooting. Neither writes any file or requires root.
+
+List the candidate PAM services found on the system:
+
+```bash
+dms auth list-services --json
+```
+
+Validate a PAM service file for lock screen use, it reports whether the
+resolved stack contains `auth` directives, whether `pam_fprintd`/`pam_u2f`
+appear inline, and any modules referenced but not installed:
+
+```bash
+dms auth validate --path /etc/pam.d/system-auth
+dms auth validate --service system-auth
+```
+
+`validate` exits `0` when the file is usable and `1` otherwise (with `--json`
+the result is printed either way).
+
 ### Repairing authentication configuration
 
 Use `dms auth sync` only when you need to repair or manually re-apply the
