@@ -68,7 +68,7 @@ function BlogSidebarDesktop({ sidebar }: any): React.JSX.Element {
             }}
           >
             <span>📋</span>
-            <span>DMS v{versionLabel} Updates</span>
+            <span>DMS v{versionLabel} Series</span>
           </a>
         </div>
 

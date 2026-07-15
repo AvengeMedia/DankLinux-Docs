@@ -5,9 +5,7 @@ description: Release notes for every DankMaterialShell release, including point 
 
 # Changelog
 
-Release notes for DankMaterialShell (DMS) v1.5.0. See the full release notes [blog](/blog).
-
-## What's Changed
+Latest release notes for DankMaterialShell (DMS) v1.5 Series. See the original release announcement in [updates](/blog).
 
 ### Features
 - feat(void): switch package repositories to R2 by @Purian23 (b1beecb)
@@ -16,6 +14,7 @@ Release notes for DankMaterialShell (DMS) v1.5.0. See the full release notes [bl
 - feat(ipc): add settings dump to print full live config as JSON by @sweenu in #2817
 - feat(dms updater): add support for ignoring specific packages during system updates by @Purian23 (e9d958b)
 - Feature/split move size hyprland windowrules by @Mikilio in #2824
+- feat: new PAM auth management & settings in greeter/lockscreen by @Purian23 (9967db0)
 
 ### Fixes
 - fix(notifications): handle sound-name hint by @bbedward (6d08b91)
@@ -42,11 +41,13 @@ Release notes for DankMaterialShell (DMS) v1.5.0. See the full release notes [bl
 - media: fix track art flash from chrome changing media art sizes on track change by @bbedward (deb0138)
 - fix(greeter): reimplement regression to hide debug logs during login by @Purian23 (6b70491)
 - gamma: fix scheduler losing track during suspend by @bbedward (1105047)
+- tailscale: fix inconsistency in styling of control center widget port 1.5 by @bbedward (3b1a3c1)
 
 ### Internationalization
 - i18n: sync by @bbedward (acda199)
 - i18n: add arabic by @bbedward (7c6ad65)
 - i18n: sync by @bbedward (536ebf7)
+- i18n: cut down terms and sync by @bbedward (01c0ed2)
 
 ### Other Changes
 - default apps: add configuration for geo: URIs by @bbedward (e84e63f)
@@ -91,13 +92,21 @@ Release notes for DankMaterialShell (DMS) v1.5.0. See the full release notes [bl
 - greeter: update success message by @Purian23 (8b46397)
 - qs: use asynchronous loaders to load shell core by @bbedward (93120fd)
 - network: avoid dropping to legacy service when loading by @bbedward (9e2d493)
+- update release & changelog docs formatting by @Purian23 (9e7fc83)
+- screenshot: add --json flag to capture metadata by @bbedward (c4bca6f)
+- qs: improve initial load of wallpaper, dock, and desktop plugins by @bbedward (e94fc7f)
+- compositor: improve compositor detection by @bbedward (b708e97)
+- hyprland: scale overview displays relative to their actual scale by @bbedward (970262f)
+- battery: dont scale values and skew the actual battery values fixes #2867 by @bbedward (883a787)
+- media: throttle frame rate of media-related animations by @bbedward (815820a)
+- system tray: fix overflow of menus by @bbedward (db9fb0b)
+- refactor: unify media control calls to MprisController sync by @Purian23 (eca9289)
 
-**Full Changelog**: https://github.com/AvengeMedia/DankMaterialShell/compare/v1.5.0...origin/stable-1.5
+**Full Changelog & Assets**: https://github.com/AvengeMedia/DankMaterialShell/compare/v1.5.0...v1.5.1
 
+## DMS v1.5 "The Wolverine"
 
-## v1.5.x — "The Wolverine"
-
-### v1.5.0 — 2026-06-23
+#### ~ Released: 2026-06-23
 
 The fourth major release. Frame Mode, DankCalendar integration, Hyprland Lua
 config, and hundreds of fixes. Read the [full announcement](/blog/v1-5-release).
