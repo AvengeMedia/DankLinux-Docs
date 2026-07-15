@@ -385,6 +385,12 @@ const config: Config = {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
+    docs: {
+      sidebar: {
+        hideable: true,
+        autoCollapseCategories: true,
+      },
+    },
     // Panzoom configuration for Mermaid diagrams only (images use fullscreen zoom)
     zoom: {
       selectors: [
