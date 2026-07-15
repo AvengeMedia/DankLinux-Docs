@@ -233,9 +233,9 @@ dms ipc call inhibit enable
 
 ### powerprofile
 
-Power profile control via `power-profiles-daemon`. Changes stay in sync with DMS UI and trigger the power profile OSD when enabled in Settings → OSD.
+Power profile control via the PowerProfiles D-Bus interface. Changes stay in sync with DMS UI and trigger the power profile OSD when enabled in Settings → OSD.
 
-Requires `power-profiles-daemon` to be installed and running. Works on all compositors.
+Requires either `power-profiles-daemon`, or `tuned` with `tuned-ppd`, to be installed and running. Works on all compositors.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
@@ -267,7 +267,7 @@ dms ipc call powerprofile toggle
 **Notes:**
 - `list` returns only profiles available on your system (performance is omitted when unsupported)
 - `status` returns the current slug: `power-saver`, `balanced`, or `performance`
-- Returns `ERROR: power-profiles-daemon not available` when the daemon is missing
+- Returns `ERROR: power-profiles-daemon not available` when no PowerProfiles daemon (`power-profiles-daemon` or `tuned-ppd`) is running
 - Returns `ERROR: Failed to set power profile` if the profile change could not be applied
 
 ## Wallpaper & Profile

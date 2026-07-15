@@ -146,6 +146,8 @@ Required to persist user profile changes, such as profile picture.
 
 Required to manage power profiles. (e.g. performance, balanced, power-saver)
 
+Either `power-profiles-daemon` or `tuned` together with `tuned-ppd` satisfies this check. `tuned-ppd` exposes the same D-Bus interface that `power-profiles-daemon` does, so DMS works with either. The two conflict, so install only one of them.
+
 ### cups-pk-helper
 
 Required for printer management (adding, deleting, and configuring printers). Provides the `org.opensuse.CupsPkHelper.Mechanism` D-Bus interface.
