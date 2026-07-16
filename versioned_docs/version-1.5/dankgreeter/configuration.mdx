@@ -307,6 +307,15 @@ You will have to logout or reboot for group change to take effect.
 
 ## Login authentication
 
+:::tip
+
+For the complete setup and policy-owner guide, see
+[DankGreeter authentication](./authentication). Lock-screen factors are
+configured separately in
+[Lock Screen authentication](../dankmaterialshell/lock-screen-authentication).
+
+:::
+
 DankGreeter can use fingerprint readers and security keys through the system
 PAM stack. DMS configures the PAM entries when you enable the corresponding
 toggle in **Settings → Greeter**; it does not install the driver, enroll a
@@ -370,8 +379,8 @@ The key must be registered before it can authenticate.
 
 If you manage `/etc/pam.d/greetd` on your own with `authselect`,
 `pam-auth-update`, NixOS modules, or a hand-written stack turn off
-**Manage greetd PAM automatically** in **Settings → Greeter**. With the
-toggle off, DMS never writes to `/etc/pam.d/greetd`: the next sync removes
+**greetd PAM is externally managed** in **Settings → Greeter**. With the
+toggle on, DMS never writes to `/etc/pam.d/greetd`: the next sync removes
 any existing DMS-managed block and then leaves the file untouched. The
 fingerprint and security-key toggles are disabled in this mode, since your
 own PAM configuration decides which authentication methods the greeter
@@ -379,18 +388,10 @@ offers.
 
 ### Lock screen authentication source
 
-The lock screen resolves the system PAM auth stack automatically by default.
-If your setup needs a specific PAM service (LDAP, Kerberos, `systemd-homed`,
-or any custom stack), pin one in **Settings → Lock Screen →
-Authentication Source**: choose a detected service such as `system-auth`, or
-select **Custom…** and enter an absolute path to a PAM service file. Every
-selection is validated before it is applied, and an invalid file is never
-applied. If the pinned file later disappears, the lock screen automatically
-falls back to **Auto**.
-
-When the pinned stack already includes `pam_fprintd` or `pam_u2f`, DMS
-suppresses its own separate fingerprint and security-key prompts so you are
-not prompted twice.
+The lock screen has separate primary and security-key PAM sources, plus a
+choice between DMS-managed factors and system-PAM policy. See
+[Lock Screen authentication](../dankmaterialshell/lock-screen-authentication)
+for the complete setup.
 
 ### Inspecting PAM services
 

@@ -46,6 +46,7 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'dankmaterialshell/calendar-integration',
+        'dankmaterialshell/lock-screen-authentication',
         {
           type: 'doc',
           id: 'dankmaterialshell/managing',
@@ -156,6 +157,7 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'dankgreeter/configuration',
+        'dankgreeter/authentication',
       ],
     },
     {

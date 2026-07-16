@@ -32,6 +32,7 @@
           ]
         },
         "dankmaterialshell/calendar-integration",
+        "dankmaterialshell/lock-screen-authentication",
         {
           "type": "doc",
           "id": "dankmaterialshell/managing",
@@ -141,7 +142,8 @@
             }
           ]
         },
-        "dankgreeter/configuration"
+        "dankgreeter/configuration",
+        "dankgreeter/authentication"
       ]
     },
     {
