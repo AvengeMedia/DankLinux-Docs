@@ -40,7 +40,9 @@ Press **Escape** to cancel region selection at any time.
 | `full` | `dms screenshot full` | Capture the focused output |
 | `all` | `dms screenshot all` | Capture all outputs combined |
 | `output` | `dms screenshot output -o NAME` | Capture a specific output by name |
+| `window` | `dms screenshot window` | Capture the focused window (Hyprland, Mango, niri) |
 | `last` | `dms screenshot last` | Capture the last selected region |
+| `scroll` | `dms screenshot scroll` | Select a region, then scroll to capture a stitched tall image |
 
 ### List Available Outputs
 
@@ -74,6 +76,7 @@ dms screenshot -f jpg -q 85
 | `--format` | `-f` | Output format: png, jpg, ppm (default: png) |
 | `--quality` | `-q` | JPEG quality 1-100 (default: 90) |
 | `--output` | `-o` | Output name for 'output' mode |
+| `--interval` | | Scroll mode capture interval in ms, 30-1000 (default: 45) |
 | `--no-clipboard` | | Don't copy to clipboard |
 | `--no-file` | | Don't save to file |
 | `--no-notify` | | Don't show notification |
@@ -107,6 +110,28 @@ dms screenshot all
 # Specific output
 dms screenshot output -o DP-1
 ```
+
+### Focused Window
+
+```bash
+dms screenshot window
+```
+
+Supported on Hyprland, Mango, and niri. On niri the capture is also placed in the clipboard by the compositor itself.
+
+### Scrolling Capture
+
+```bash
+# Select a region, then scroll the content beneath it
+dms screenshot scroll
+
+# Slower capture cadence
+dms screenshot scroll --interval 250
+```
+
+Select a region, then scroll the content beneath with the mouse wheel or touchpad. Frames are stitched into one tall image continuously while you scroll — revisited content is never duplicated, and scrolling up past the starting point extends the image upward. Finish with the on-screen **done** button or **Enter**; cancel with **cancel** or **Escape**.
+
+Content jumped past faster than capture can follow is skipped rather than stitched incorrectly. The cursor is never included in frames, and rotated outputs are not supported. On Hyprland the keyboard stays with the application during capture, so keyboard scrolling (Page Down, arrow keys) works there too.
 
 ### Repeat Last Capture
 
