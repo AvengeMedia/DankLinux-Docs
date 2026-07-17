@@ -14,7 +14,7 @@ Configure this in **Settings → Greeter → Authentication**.
 
 ## Choose who manages greetd PAM
 
-Leave **greetd PAM is externally managed** off for the normal DMS-managed
+Leave **Use system PAM authentication** off for the normal DMS-managed
 setup. The fingerprint and security-key toggles update the shared greetd PAM
 configuration automatically.
 
@@ -29,6 +29,18 @@ Keep a root terminal or another login method available while changing PAM.
 An invalid greetd stack can prevent graphical login.
 
 :::
+
+## Login interaction
+
+DankGreeter always follows `/etc/pam.d/greetd`; the lock screen's **Auto** and
+**Custom** sources and its **OR**/**AND** modes do not apply at login. With
+DMS-managed greetd PAM, selecting a user automatically starts any enabled and
+available fingerprint or security-key factor, and the factor button can start
+it again.
+
+With **Use system PAM authentication**, the system stack owns the factor
+ordering, prompts, and required interaction. Press Enter on an empty password
+field only if that stack waits for an explicit login attempt.
 
 ## Fingerprint login
 

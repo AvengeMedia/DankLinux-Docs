@@ -321,6 +321,17 @@ PAM stack. DMS configures the PAM entries when you enable the corresponding
 toggle in **Settings → Greeter**; it does not install the driver, enroll a
 fingerprint, or register a security key for you.
 
+:::info[Authentication interaction]
+
+DankGreeter follows greetd PAM independently of the lock screen's **Auto**,
+**Custom**, and **OR**/**AND** choices. With DMS-managed greetd PAM, selecting
+a user automatically starts an enabled and available fingerprint or
+security-key factor. With **Use system PAM authentication**, the system stack
+controls the prompts and may require Enter on an empty password field to begin
+the login attempt.
+
+:::
+
 ### Fingerprints
 
 Install your distribution's fingerprint service/client and PAM integration,
@@ -378,8 +389,8 @@ The key must be registered before it can authenticate.
 ### Externally managed greetd PAM
 
 If you manage `/etc/pam.d/greetd` on your own with `authselect`,
-`pam-auth-update`, NixOS modules, or a hand-written stack turn off
-**greetd PAM is externally managed** in **Settings → Greeter**. With the
+`pam-auth-update`, NixOS modules, or a hand-written stack, turn on **Use system
+PAM authentication** in **Settings → Greeter**. With the
 toggle on, DMS never writes to `/etc/pam.d/greetd`: the next sync removes
 any existing DMS-managed block and then leaves the file untouched. The
 fingerprint and security-key toggles are disabled in this mode, since your
