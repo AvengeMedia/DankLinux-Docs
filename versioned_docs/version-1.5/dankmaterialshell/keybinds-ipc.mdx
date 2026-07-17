@@ -173,12 +173,14 @@ Screen lock control and status.
 | Function | Description |
 | --- | --- |
 | `lock` | Lock the screen immediately |
+| `lockAndOutputsOff` | Lock the screen, fade to black, then power off the monitors (GNOME Super+L style). Any input cancels the fade or wakes the monitors; the fade duration follows the fade-to-DPMS grace period setting. |
 | `demo` | Show lock screen demo (doesn't lock) |
 | `isLocked` | Check if screen is locked |
 
 **Examples:**
 ```bash
 dms ipc call lock lock
+dms ipc call lock lockAndOutputsOff
 dms ipc call lock isLocked
 ```
 
