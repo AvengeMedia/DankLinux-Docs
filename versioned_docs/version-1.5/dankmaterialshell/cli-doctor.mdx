@@ -247,6 +247,35 @@ Used to set the Qt platform theme - usually one of `gtk3`, `qt6ct`, or `kde`. Th
 
 Optional environment variable to set the icon theme for DMS only. Will not effect other applications.
 
+### XDG_MENU_PREFIX {/* #xdg-menu-prefix */}
+
+Required by KDE applications under a non-Plasma compositor. Without it, `KService` cannot build the XDG menu tree and Dolphin's "Open with…" dialog appears empty; double-clicking files also don't open them, and if they do, is with the wrong application.
+
+Set `plasma-` in your compositor's environment. The matching `/etc/xdg/menus/plasma-applications.menu` is provided by `plasma-workspace`.
+
+Example in niri's `config.kdl`:
+
+```kdl
+environment {
+  XDG_MENU_PREFIX "plasma-"
+}
+```
+
+Or globally via `~/.config/environment.d/`:
+
+```ini
+XDG_MENU_PREFIX=plasma-
+```
+
+After changing it, re-login to apply the changes.
+
+:::tip
+To verify without re-login, force a cache rebuild:`XDG_MENU_PREFIX=plasma- kbuildsycoca6 --noincremental`.
+:::
+
+:::note
+`kde-cli-tools` (which provides `keditfiletype`) must also be installed, as Dolphin's "Open with…" dialog depends on it. Plasma sessions already export this variable automatically, so this only applies to non-Plasma compositors.
+:::
 ---
 
 ## JSON Output
