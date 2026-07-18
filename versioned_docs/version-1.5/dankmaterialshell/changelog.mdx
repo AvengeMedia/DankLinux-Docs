@@ -1,11 +1,63 @@
 ---
 title: Changelog
-description: Release notes for every DankMaterialShell release, including point releases.
+description: Release notes for the latest DankMaterialShell stable and point releases.
 ---
 
 # Changelog
 
 Latest release notes for DankMaterialShell (DMS) v1.5 Series. See the original release announcement in [updates](/blog).
+
+## v1.5.2
+
+**Released**: 2026-07-17
+
+### What's Changed
+
+#### Features
+- feat(auth): expand shared PAM support for custom policies by @Purian23 (c2a6a7a)
+- feat(settings): add explicit border toggle and updated layouts by @Purian23 (dac08b3)
+- feat(notifications): introduce notification foreground layers settings override by @Purian23 (63ffd7c)
+- feat(nix): opt-in dankshell-u2f PAM service for lock screen security keys by @Purian23 (85ebb40)
+
+### Fixes
+- fix(media-player): update Mpris stable metadata handling by @Purian23 (a55177f)
+- fix(qml): resolve lint regressions from async shell loading by @Purian23 (b17ef80)
+- launcher: fix usage history loading by adding guards by @bbedward (841167a)
+- core: fix log file deadlock by @bbedward (7ab1f6a)
+- dash/weather: fix X wheel scroll by @bbedward (65f4a9a)
+- launcher: fix sticky header appearance without blur by @bbedward (64ba1fb)
+- fix(DankSlideout): update textureSize for improved rendering by @Purian23 (986a6e0)
+- bar: fix bar order-creation regression caused by async loading by @bbedward (7d6a7ba)
+- fix(network): cancel in-flight connection when setting autoconnect by @bbedward (26d429f)
+- fix(frame): restore frame edge inset states regression in framemode by @Purian23 (9853e14)
+- widgets: fix hidden widgets disrupting index when arranging widgets by @bbedward (f1f528b)
+
+### Internationalization
+- i18n: preserve terms for 1.5 point releases by @bbedward (e7b8196)
+
+### Other Changes
+- refactor: update workfows & issue notes by @Purian23 (3d0ce17)
+- popout: guard against bad state and reset input method on close port 1.5 by @bbedward (59164cb)
+- launcher: transparent sticky  header when blur is enabled by @bbedward (ab9df79)
+- sysupdate: pass custom command to daemon instead of fire and forget from QML by @bbedward (8ba5e1a)
+- sysupdate: disallow partial updates on arch, add ignored to popout by @bbedward (ad5a96d)
+- sysupdate: tweak styling of ignored banner by @bbedward (fd20cce)
+- wallpaper: optimize blurred wallpaper layer by @bbedward (840a448)
+- screenshot: initial support for scroll capture mode by @bbedward (4ff93bf)
+- lock: add lockAndOutputsOff IPC function by @bbedward (89895da)
+- systemlogo: Add Zirconium by @hecknt in #2881
+- media: further optimizations for bar widget animations by @bbedward (fc11dfb)
+- refactor(auth): relay on distro system auth over DMS managed sessions by @Purian23 (f37f4a1)
+
+**GitHub Release**: https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.5.2
+
+---
+
+## v1.5.1
+
+**Released**: 2026-07-14
+
+### What's Changed
 
 ### Features
 - feat(void): switch package repositories to R2 by @Purian23 (b1beecb)
@@ -106,7 +158,7 @@ Latest release notes for DankMaterialShell (DMS) v1.5 Series. See the original r
 
 ## DMS v1.5 "The Wolverine"
 
-#### ~ Released: 2026-06-23
+**Released**: 2026-06-23
 
 The fourth major release. Frame Mode, DankCalendar integration, Hyprland Lua
 config, and hundreds of fixes. Read the [full announcement](/blog/v1-5-release).
