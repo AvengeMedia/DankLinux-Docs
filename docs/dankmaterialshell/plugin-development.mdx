@@ -24,7 +24,7 @@ For IDE support (autocomplete, type checking, etc.), clone the DMS repo and deve
 
 ```bash
 mkdir -p ~/repos && cd ~/repos
-git clone https://github.com/AvengeMedia/DankMaterialShell.git
+git clone --recurse-submodules https://github.com/AvengeMedia/DankMaterialShell.git
 cd DankMaterialShell/quickshell
 
 # Generate QML language server config
@@ -34,6 +34,8 @@ qs -p .  # Press Ctrl+C after it starts
 # Create your plugins here
 mkdir -p dms-plugins/MyPlugin
 ```
+
+Core widget sources under `quickshell/DankCommon` come from the shared [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) submodule — plugin imports are unchanged (`qs.Widgets`, `qs.Common`, ...), but the submodule must be present for the QML language server to resolve them.
 
 ### VSCode Setup
 

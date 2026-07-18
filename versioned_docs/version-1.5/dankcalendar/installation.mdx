@@ -224,22 +224,23 @@ sudo xbps-install --repository=hostdir/binpkgs dankcalendar
 
 Distribution packages install:
 
-- `dcal` to `/usr/bin/dcal`
-- Quickshell UI to `/usr/share/quickshell/dankcal`
+- `dcal` to `/usr/bin/dcal` (the Quickshell UI is embedded in the binary)
 - Desktop entry, icon, shell completions, and `dcal.service` under `/usr/lib/systemd/user/`
 
 ### From Source
 
+The Quickshell UI is embedded into the `dcal` binary at build time, and part of it lives in the [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) submodule — clone with `--recurse-submodules` (or run `git submodule update --init` in an existing clone):
+
 ```bash
-git clone https://github.com/AvengeMedia/dankcalendar
+git clone --recurse-submodules https://github.com/AvengeMedia/dankcalendar
 cd dankcalendar
+make
 sudo make install
 ```
 
 This installs:
 
-- `dcal` binary to `/usr/local/bin`
-- Quickshell config to `/usr/local/share/quickshell/dankcal`
+- `dcal` binary to `/usr/local/bin` (UI embedded)
 - Desktop entry + icon
 
 Override the prefix with `PREFIX=/usr sudo make install`.

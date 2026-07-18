@@ -687,8 +687,10 @@ sudo emerge --ask sys-apps/accountsservice
 ### 2. Clone the DMS Repository
 
 ```bash
-git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/dms
+git clone --recurse-submodules https://github.com/AvengeMedia/DankMaterialShell.git ~/dms
 ```
+
+In an existing clone, run `git submodule update --init` to pull the shared [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) widgets.
 
 ### 3. Compile & Install the DMS Backend
 

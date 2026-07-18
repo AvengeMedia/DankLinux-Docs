@@ -348,7 +348,7 @@ For non-dankinstall users without DMS, install `greetd`, `quickshell`, and then 
 
 ```bash
 sudo mkdir -p /etc/xdg/quickshell
-sudo git clone https://github.com/AvengeMedia/DankMaterialShell.git /etc/xdg/quickshell/dms-greeter
+sudo git clone --recurse-submodules https://github.com/AvengeMedia/DankMaterialShell.git /etc/xdg/quickshell/dms-greeter
 sudo mkdir /var/cache/dms-greeter
 sudo chown greeter:greeter /var/cache/dms-greeter
 ```
