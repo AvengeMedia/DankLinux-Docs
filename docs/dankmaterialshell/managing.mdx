@@ -132,6 +132,29 @@ dms kill
 2. Add `dms run` to your compositor's autostart
 3. Restart your compositor or log out/in
 
+## UI Configuration Directory
+
+The Quickshell UI is embedded in the `dms` binary and extracted at runtime, so no separate shell installation is required. The config directory resolves in order:
+
+1. `-c <dir>` on any `dms` command
+2. `DMS_SHELL_DIR` environment variable
+3. The directory a running instance is already using
+4. The embedded UI
+
+Each candidate must contain `shell.qml`. To run a custom or development copy of the shell:
+
+```bash
+dms run -c ~/path/to/quickshell
+# or
+DMS_SHELL_DIR=~/path/to/quickshell dms run
+```
+
+:::note
+
+Configs at `~/.config/quickshell/dms` or in system XDG paths are no longer discovered automatically. Point at them explicitly with `-c` or `DMS_SHELL_DIR`.
+
+:::
+
 ## Environment Variables
 
 DMS and its themed applications need certain environment variables set. Where these live depends on your setup.

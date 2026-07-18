@@ -681,12 +681,14 @@ In an existing clone, run `git submodule update --init` instead — `make instal
 
 ### 3. Compile & Install the DMS Backend
 
-*Requires GO 1.24+*
+*Requires GO 1.26+*
 
 ```bash
 cd ~/dms
 sudo make install
 ```
+
+The Quickshell UI is embedded into the `dms` binary at build time. The shell files installed to `/usr/local/share/quickshell/dms` are used by the [greeter](../dankgreeter); the shell itself runs from the embedded UI unless `-c` or `DMS_SHELL_DIR` points elsewhere.
 
 :::note
 
