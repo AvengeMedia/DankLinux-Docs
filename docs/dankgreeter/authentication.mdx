@@ -6,22 +6,23 @@ sidebar_position: 5
 
 # DankGreeter authentication
 
-DankGreeter authenticates logins through greetd's PAM service. DMS can manage
-the fingerprint and security-key entries in `/etc/pam.d/greetd`, or you can
-make your distribution or system configuration the policy owner.
+DankGreeter authenticates logins through greetd's PAM service. `dms-greeter`
+can manage the fingerprint and security-key entries in `/etc/pam.d/greetd`,
+or you can make your distribution or system configuration the policy owner.
 
-Configure this in **Settings → Greeter → Authentication**.
+Configure this in **Settings → Greeter → Authentication** in DMS, then apply
+with the Sync button (or `dms-greeter sync`).
 
 ## Choose who manages greetd PAM
 
-Leave **Use system PAM authentication** off for the normal DMS-managed
-setup. The fingerprint and security-key toggles update the shared greetd PAM
-configuration automatically.
+Leave **Use system PAM authentication** off for the normal managed setup.
+The fingerprint and security-key toggles update the greetd PAM configuration
+on the next greeter sync.
 
 Turn it on when greetd PAM is managed by `authselect`, `pam-auth-update`,
-NixOS, or your own PAM files. DMS then removes its managed block and stops
-writing `/etc/pam.d/greetd`; the factor toggles are disabled because the
-system PAM configuration decides what the greeter offers.
+NixOS, or your own PAM files. The next greeter sync then removes the managed
+block and stops writing `/etc/pam.d/greetd`; the factor toggles are disabled
+because the system PAM configuration decides what the greeter offers.
 
 :::caution
 
@@ -47,7 +48,7 @@ field only if that stack waits for an explicit login attempt.
 1. Install your distribution's `fprintd` service and PAM integration.
 2. Enroll at least one finger with `fprintd-enroll`.
 3. Confirm it with `fprintd-list "$USER"`.
-4. Enable **Fingerprint at login** in the Greeter Authentication card.
+4. Enable **Fingerprint at login** in the Greeter Authentication card and run Sync.
 
 For example, Fedora uses:
 
@@ -74,15 +75,15 @@ greeter follows the ordering and control flags in its own greetd PAM stack.
 
 ## Repair and troubleshooting
 
-Normal setting changes apply automatically. Use the following only to
-manually repair or reapply DMS-managed configuration:
+Normal setting changes apply on the next greeter sync. Use the following only
+to manually repair or reapply the managed configuration:
 
 ```bash
-dms auth sync
+dms-greeter sync --auth
 ```
 
-The command may open a terminal for sudo and rewrites only the DMS-managed PAM
-block.
+The command may prompt for sudo and rewrites only the managed PAM block.
+Lock screen PAM is separate and repaired with `dms auth sync`.
 
 See [DankGreeter configuration](./configuration) for the rest of the greeter
 setup, and [Lock Screen authentication](../dankmaterialshell/lock-screen-authentication)

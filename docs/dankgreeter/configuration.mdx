@@ -146,19 +146,16 @@ You can automatically sync the system greeter with the logged in user's wallpape
 
 ### Automatic Sync
 
-You can use `dms greeter sync` to automatically set up theme syncing. This command is available for:
-- dankinstall users
-- Arch AUR users
-- Fedora COPR users
+You can use `dms-greeter sync` to automatically set up theme syncing. This command is available anywhere the `dms-greeter` package is installed.
 
 :::note
 
-**NixOS users:** The `dms greeter sync` command is not available on NixOS. Please follow the manual sync steps below.
+**NixOS users:** The `dms-greeter sync` command is not available on NixOS. Please follow the manual sync steps below.
 
 :::
 
 ```bash
-dms greeter sync
+dms-greeter sync
 ```
 
 This will:
@@ -170,7 +167,7 @@ This will:
 
 :::note
 
-After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect. After logging back in, your greeter will automatically reflect your current DMS theme, wallpaper, and settings.
+After running `dms-greeter sync`, you will need to log out and log back in for group membership changes to take effect. After logging back in, your greeter will automatically reflect your current DMS theme, wallpaper, and settings.
 
 :::
 
@@ -178,17 +175,17 @@ After running `dms greeter sync`, you will need to log out and log back in for g
 
 On a shared PC, each account can have its own greeter theme and profile photo on the login screen. DMS shows a **user picker** (avatar + inline list) when more than one local account exists.
 
-**Recommended workflow:** One main admin runs **`dms greeter sync`** once (system setup). Every other account—including other sudo admins—uses **`dms greeter sync --profile`** only. Full sync from multiple accounts repoints root cache symlinks and greetd; `--profile` updates only that user's login-screen slot.
+**Recommended workflow:** One main admin runs **`dms-greeter sync`** once (system setup). Every other account - including other sudo admins - uses **`dms-greeter sync --profile`** only. Full sync from multiple accounts repoints root cache symlinks and greetd; `--profile` updates only that user's login-screen slot.
 
 #### Roles
 
 | Who | Command | Needs sudo? |
 |-----|---------|-------------|
-| Main admin (first setup) | `dms greeter sync` | Yes |
-| All other users (including other admins) | `dms greeter sync --profile` | No |
+| Main admin (first setup) | `dms-greeter sync` | Yes |
+| All other users (including other admins) | `dms-greeter sync --profile` | No |
 | Add users to greeter group | **Settings → Users** (toggle) or `sudo usermod -aG greeter <user>` | Yes (Polkit or sudo) |
 
-Full `dms greeter sync` only adds **the user running the command** to the `greeter` group. You must add other accounts explicitly.
+Full `dms-greeter sync` only adds **the user running the command** to the `greeter` group. You must add other accounts explicitly.
 
 #### Adding users to the greeter group (admin)
 
@@ -196,7 +193,7 @@ Full `dms greeter sync` only adds **the user running the command** to the `greet
 
 :::note
 
-After you add someone to the greeter group, they must **log out and back in** before group membership applies, then run `dms greeter sync --profile` on their account.
+After you add someone to the greeter group, they must **log out and back in** before group membership applies, then run `dms-greeter sync --profile` on their account.
 
 :::
 
@@ -209,17 +206,17 @@ sudo usermod -aG greeter otheruser1 otheruser2
 Each added user must **log out and back in**, then sync their own slot:
 
 ```bash
-dms greeter sync --profile
+dms-greeter sync --profile
 ```
 
 #### One-time setup (main admin)
 
 ```bash
 # Configure greetd, ACLs, and your own theme slot
-dms greeter sync
+dms-greeter sync
 ```
 
-Then add every other account—either in **Settings → Users** (greeter toggle) or from a terminal:
+Then add every other account - either in **Settings → Users** (greeter toggle) or from a terminal:
 
 ```bash
 sudo usermod -aG greeter alice bob charlie
@@ -230,32 +227,32 @@ sudo usermod -aG greeter alice bob charlie
 After logging out and back in (so the `greeter` group applies):
 
 ```bash
-dms greeter sync --profile
+dms-greeter sync --profile
 ```
 
-This writes only to `/var/cache/dms-greeter/users/<your-username>/` — settings, colors, wallpapers, and profile photo — without changing greetd or system configuration. Re-run after theme changes.
+This writes only to `/var/cache/dms-greeter/users/<your-username>/` - settings, colors, wallpapers, and profile photo - without changing greetd or system configuration. Re-run after theme changes.
 
 #### What gets stored per user
 
 Under `/var/cache/dms-greeter/users/<username>/`:
 
-- `settings.json` — theme, clock, weather, fonts
-- `session.json` — wallpaper configuration (paths localized into the slot)
-- `colors.json` — color scheme
-- `profile.jpg` (or `.png`) — profile photo for the user picker
+- `settings.json` - theme, clock, weather, fonts
+- `session.json` - wallpaper configuration (paths localized into the slot)
+- `colors.json` - color scheme
+- `profile.jpg` (or `.png`) - profile photo for the user picker
 - Wallpaper image copies as needed
 
 The root cache (`/var/cache/dms-greeter/settings.json`, etc.) remains the **default fallback** when no per-user slot exists or no user is selected yet.
 
 #### Developer note: `--local`
 
-When developing from a DMS checkout, only the **primary admin** should use:
+When developing from a dank-greeter checkout, only the **primary admin** should use:
 
 ```bash
-dms greeter sync --local
+dms-greeter sync --local
 ```
 
-All other accounts use `dms greeter sync --profile`. If greetd is already configured with a `-p` path to a shared checkout, the main admin can refresh that path with `--local`; other users should not need it.
+All other accounts use `dms-greeter sync --profile`. If greetd is already configured with a `-p` path to a shared checkout, the main admin can refresh that path with `--local`; other users should not need it.
 
 #### Not the same as Switch User
 
@@ -317,9 +314,9 @@ configured separately in
 :::
 
 DankGreeter can use fingerprint readers and security keys through the system
-PAM stack. DMS configures the PAM entries when you enable the corresponding
-toggle in **Settings → Greeter**; it does not install the driver, enroll a
-fingerprint, or register a security key for you.
+PAM stack. Enable the corresponding toggle in **Settings → Greeter** and run
+Sync to apply the PAM entries; nothing installs the driver, enrolls a
+fingerprint, or registers a security key for you.
 
 :::info[Authentication interaction]
 
@@ -355,9 +352,8 @@ fprintd-list "$USER"
 To choose a specific finger instead of the default, pass its token, for
 example `fprintd-enroll -f right-thumb`.
 
-Then enable **Fingerprint at login** in **Settings → Greeter**. The toggle
-applies the shared PAM configuration automatically; you do not need to run a
-separate sync after enrollment.
+Then enable **Fingerprint at login** in **Settings → Greeter** and hit the
+Sync button (or run `dms-greeter sync`) to apply the PAM configuration.
 
 If `fprintd-enroll` reports **No devices available**, the reader may not be
 supported by the installed `libfprint` driver. Check the [libfprint supported
@@ -391,8 +387,8 @@ The key must be registered before it can authenticate.
 If you manage `/etc/pam.d/greetd` on your own with `authselect`,
 `pam-auth-update`, NixOS modules, or a hand-written stack, turn on **Use system
 PAM authentication** in **Settings → Greeter**. With the
-toggle on, DMS never writes to `/etc/pam.d/greetd`: the next sync removes
-any existing DMS-managed block and then leaves the file untouched. The
+toggle on, `/etc/pam.d/greetd` is never written: the next greeter sync removes
+any existing managed block and then leaves the file untouched. The
 fingerprint and security-key toggles are disabled in this mode, since your
 own PAM configuration decides which authentication methods the greeter
 offers.
@@ -429,22 +425,22 @@ the result is printed either way).
 
 ### Repairing authentication configuration
 
-Use `dms auth sync` only when you need to repair or manually re-apply the
-DMS-managed PAM configuration (for example, after editing PAM files or
+Use `dms-greeter sync --auth` when you need to repair or manually re-apply the
+managed greetd PAM configuration (for example, after editing PAM files or
 restoring a backup):
 
 ```bash
-dms auth sync
+dms-greeter sync --auth
 ```
 
-Normal toggle changes apply automatically and do not require this command.
+Lock screen PAM is separate and repaired with `dms auth sync`.
 
 ## Checking Sync Status
 
 To verify that your greeter is properly configured and syncing with your user settings, run:
 
 ```bash
-dms greeter status
+dms-greeter status
 ```
 
 This command is available for all users and will check:
@@ -470,25 +466,25 @@ Configuration Symlinks:
   ✓ Color theme: synced correctly
 
 Per-user slots (multi-account):
-  ✓ users/alice/ — synced
-  ✓ users/bob/ — not synced (run: dms greeter sync --profile)
+  ✓ users/alice/ - synced
+  ✓ users/bob/ - not synced (run: dms-greeter sync --profile)
 
 ✓ All checks passed! Greeter is properly configured.
 ```
 
 ### Troubleshooting
 
-If `dms greeter status` shows issues:
+If `dms-greeter status` shows issues:
 
 **User not in greeter group:**
 ```bash
-dms greeter sync
+dms-greeter sync
 # Then log out and log back in
 ```
 
 **Symlinks missing or broken:**
 ```bash
-dms greeter sync
+dms-greeter sync
 ```
 
 **Secondary user cannot run full sync (not in sudoers):**
@@ -496,13 +492,13 @@ dms greeter sync
 # Admin: Settings → Users → enable greeter access for that account
 # Or: sudo usermod -aG greeter <username>
 # User logs out/in, then:
-dms greeter sync --profile
+dms-greeter sync --profile
 ```
 
 **Per-user theme not showing in picker:**
 ```bash
 # Run on that user's account after group membership is active:
-dms greeter sync --profile
+dms-greeter sync --profile
 # Log out to see the updated theme on the login screen
 ```
 
@@ -512,16 +508,16 @@ dms greeter sync --profile
 getfacl ~ ~/.config ~/.local ~/.cache ~/.local/state | grep "user:greeter"
 
 # If not, run sync again
-dms greeter sync
+dms-greeter sync
 ```
 
 ## Auto-login on startup
 
-Auto-login skips the greeter password after boot — similar to the auto-login option in SDDM or GDM — until you sign out. It uses greetd's native `[initial_session]`, so:
+Auto-login skips the greeter password after boot - similar to the auto-login option in SDDM or GDM - until you sign out. It uses greetd's native `[initial_session]`, so:
 
 - After a reboot you land straight in your session without entering a password at the greeter.
 - **Signing out** returns you to the normal greeter, where a password is required.
-- Your **lock screen** is unaffected — unlocking always requires your password.
+- Your **lock screen** is unaffected - unlocking always requires your password.
 
 :::warning
 
@@ -531,7 +527,7 @@ Auto-login reduces physical security: anyone who powers on or reboots the machin
 
 ### Requirements
 
-Auto-login needs to know **which user and session** to start, so it requires **Remember last user** and **Remember last session** (both enabled by default). The first login is always interactive — DMS remembers the user and session you pick, then auto-logs in on subsequent boots.
+Auto-login needs to know **which user and session** to start, so it requires **Remember last user** and **Remember last session** (both enabled by default). The first login is always interactive - DMS remembers the user and session you pick, then auto-logs in on subsequent boots.
 
 ### Enabling and disabling
 
@@ -546,10 +542,10 @@ If administrator access is needed and passwordless sudo isn't configured, DMS op
 The toggles run a focused sync under the hood. You can also apply just the auto-login state from a terminal:
 
 ```bash
-dms greeter sync --autologin
+dms-greeter sync --autologin
 ```
 
-Unlike a full `dms greeter sync`, this updates **only** greetd's `[initial_session]` block — adding it (with your remembered user and session) when enabled, or removing it when disabled — and skips the theme, ACL, and permission steps. It reads the `greeterAutoLogin` setting from your DMS configuration, so run it after changing that setting if you ever need to re-apply greetd manually.
+Unlike a full `dms-greeter sync`, this updates **only** greetd's `[initial_session]` block - adding it (with your remembered user and session) when enabled, or removing it when disabled - and skips the theme, ACL, and permission steps. It reads the `greeterAutoLogin` setting from your DMS configuration, so run it after changing that setting if you ever need to re-apply greetd manually.
 
 ## Manual Configuration
 

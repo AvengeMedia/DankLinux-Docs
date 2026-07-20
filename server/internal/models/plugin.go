@@ -95,6 +95,19 @@ type ThemeVariants struct {
 	Accents  []map[string]interface{}      `json:"accents,omitempty"`
 }
 
+type ThemeWCAGMode struct {
+	Level     string            `json:"level"`
+	MinRatio  float64           `json:"minRatio"`
+	WorstPair []string          `json:"worstPair,omitempty"`
+	Variants  map[string]string `json:"variants,omitempty"`
+}
+
+type ThemeWCAG struct {
+	Level string         `json:"level"`
+	Dark  *ThemeWCAGMode `json:"dark,omitempty"`
+	Light *ThemeWCAGMode `json:"light,omitempty"`
+}
+
 type Theme struct {
 	ID          string                 `json:"id"`
 	Name        string                 `json:"name"`
@@ -104,6 +117,7 @@ type Theme struct {
 	Dark        map[string]interface{} `json:"dark"`
 	Light       map[string]interface{} `json:"light"`
 	Variants    *ThemeVariants         `json:"variants,omitempty"`
+	WCAG        *ThemeWCAG             `json:"wcag,omitempty"`
 	PreviewURL  string                 `json:"previewUrl"`
 	UpdatedAt   time.Time              `json:"updated_at"`
 }

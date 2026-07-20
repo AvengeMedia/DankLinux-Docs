@@ -63,6 +63,19 @@ interface ThemeVariants {
   accents?: ThemeAccent[];
 }
 
+interface ThemeWCAGMode {
+  level: string;
+  minRatio: number;
+  worstPair?: string[];
+  variants?: Record<string, string>;
+}
+
+interface ThemeWCAG {
+  level: string;
+  dark?: ThemeWCAGMode;
+  light?: ThemeWCAGMode;
+}
+
 interface Theme {
   id: string;
   name: string;
@@ -72,6 +85,7 @@ interface Theme {
   dark: Record<string, string>;
   light: Record<string, string>;
   variants?: ThemeVariants;
+  wcag?: ThemeWCAG;
   previewUrl: string;
   updated_at: string;
 }
@@ -136,6 +150,33 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_TOOLTIPS: Record<string, string> = {
   reviewed: 'Reviewed by catalog moderators for basic quality, ownership, and policy compliance. This is not a security guarantee.',
 };
+
+function wcagBadgeClass(level: string): string {
+  switch (level) {
+    case 'AAA':
+      return styles.wcagAAA;
+    case 'AA':
+      return styles.wcagAA;
+    default:
+      return styles.wcagFail;
+  }
+}
+
+function wcagBadgeLabel(level: string): string {
+  return level === 'fail' ? 'Below WCAG AA' : `WCAG ${level}`;
+}
+
+function wcagTooltip(wcag: ThemeWCAG): string {
+  const modes: string[] = [];
+  for (const mode of ['dark', 'light'] as const) {
+    const result = wcag[mode];
+    if (!result) {
+      continue;
+    }
+    modes.push(`${mode} ${result.level} (min ${result.minRatio}:1)`);
+  }
+  return `Minimum text contrast per WCAG 2.2 — ${modes.join(', ')}`;
+}
 
 function statusBadgeClass(status: string): string {
   switch (status) {
@@ -1035,6 +1076,14 @@ export default function Plugins() {
                     </div>
 
                     <div className={styles.pluginTags}>
+                      {theme.wcag && (
+                        <span
+                          className={`${styles.statusBadge} ${wcagBadgeClass(theme.wcag.level)}`}
+                          title={wcagTooltip(theme.wcag)}
+                        >
+                          {wcagBadgeLabel(theme.wcag.level)}
+                        </span>
+                      )}
                       {theme.version && (
                         <span className={styles.tag}>v{theme.version}</span>
                       )}

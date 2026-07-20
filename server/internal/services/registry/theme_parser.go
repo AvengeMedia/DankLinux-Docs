@@ -76,6 +76,7 @@ func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme
 
 	theme.PreviewURL = fmt.Sprintf("https://raw.githubusercontent.com/AvengeMedia/dms-plugin-registry/main/themes/%s/preview.svg", themeName)
 	theme.UpdatedAt = lastCommit.Commit.Committer.Date
+	theme.WCAG = computeThemeWCAG(&theme)
 
 	return theme, nil
 }

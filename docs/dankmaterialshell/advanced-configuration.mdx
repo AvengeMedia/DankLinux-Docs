@@ -20,22 +20,6 @@ DankMaterialShell supports several advanced configuration options through enviro
 
 ## Core Configuration
 
-### DMS_RUN_GREETER
-
-Enables greeter/login screen mode instead of regular shell mode. Used for display manager integration with greetd.
-
-```bash
-DMS_RUN_GREETER=1 dms run
-```
-
-### DMS_GREET_CFG_DIR
-
-Specifies custom configuration directory for greeter mode (defaults to `/etc/greetd/.dms`). Useful for isolating greeter settings from user settings.
-
-```bash
-DMS_GREET_CFG_DIR=/custom/path dms run
-```
-
 ### DMS_SOCKET
 
 Custom Unix socket path for DMS internal services communication. Used by DMSService, NetworkService, SessionService, and PortalService for IPC.

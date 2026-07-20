@@ -22,17 +22,19 @@ import TabItem from '@theme/TabItem';
 
 ## Installation Methods
 
-:::note[Already have the DankLinux repository?]
+:::note[How installation works]
 
-If DMS or another DankLinux package is already installed, the repository is already configured. The simplest option is:
+Install the `dms-greeter` package for your distro (sections below), then run:
 
 ```bash
-dms greeter install
+dms-greeter install
 ```
 
-This installs the package and handles all configuration automatically.
+This installs greetd if needed and handles all configuration automatically.
 
 > ⚠️ **[This replaces your current display manager.](#dankinstall-users)**
+
+The old `dms greeter <command>` form still works as a deprecated alias that forwards to `dms-greeter`.
 
 :::
 
@@ -63,7 +65,7 @@ paru -S greetd-dms-greeter-git
 </TabItem>
 </Tabs>
 
-Both packages ship the `dms-greeter` wrapper along with the `/usr/lib/sysusers.d/dms-greeter.conf` and `/usr/lib/tmpfiles.d/dms-greeter.conf` declarations described in [Greeter system user](#greeter-system-user-rpm-deb-and-immutable-systems). After installing, either run `dms greeter install` (see the note at the top) or continue with [Completing Setup](#completing-setup).
+Both packages ship the `dms-greeter` binary along with the `/usr/lib/sysusers.d/dms-greeter.conf` and `/usr/lib/tmpfiles.d/dms-greeter.conf` declarations described in [Greeter system user](#greeter-system-user-rpm-deb-and-immutable-systems). After installing, either run `dms-greeter install` (see the note at the top) or continue with [Completing Setup](#completing-setup).
 
 ### Fedora & CentOS
 
@@ -211,7 +213,7 @@ cd void-packages
 ./xbps-src binary-bootstrap
 
 # Copy in the templates (adjust paths as needed)
-cp -R ../DankMaterialShell/distro/void/srcpkgs/dms-greeter srcpkgs/
+cp -R ../dank-greeter/distro/void/srcpkgs/dms-greeter srcpkgs/
 
 # Build the package
 ./xbps-src pkg dms-greeter
@@ -240,9 +242,9 @@ Official `dms-greeter` packages (Arch AUR, Fedora, Debian, Ubuntu, openSUSE) shi
 
 On Fedora Atomic, Universal Blue, bootc, [Zirconium](https://github.com/zirconium-dev/zirconium/), and similar systems:
 
-- Install **`dms-greeter` from your distro repo** (layered package or image build). Do **not** rely on `dms greeter install`, `dms greeter enable`, or `dms greeter uninstall` — those commands are disabled on immutable systems by DMS CLI policy.
+- Install **`dms-greeter` from your distro repo** (layered package or image build). Do **not** rely on `dms-greeter install`, `dms-greeter enable`, or `dms-greeter uninstall` - those commands are disabled on immutable systems by CLI policy.
 - After installing or upgrading `dms-greeter`, **reboot once** if `getent passwd greeter` is empty (sysusers runs early in boot).
-- Configure `/etc/greetd/config.toml`, enable `greetd`, and set up theme sync using your distro or image documentation. `dms greeter sync` may still work for theme files if not blocked by your image policy.
+- Configure `/etc/greetd/config.toml`, enable `greetd`, and set up theme sync using your distro or image documentation. `dms-greeter sync` may still work for theme files if not blocked by your image policy.
 
 Verify the account:
 
@@ -257,17 +259,20 @@ If you previously added a manual `/usr/lib/sysusers.d/dms-greeter.conf` workarou
 
 ### Gentoo
 
-:::note
-
-DMS must already be installed on your system before running this command. The greeter wrapper is sourced from your local DMS installation.
-
-:::
+There is no Gentoo package yet. Install the prebuilt binary from the latest release:
 
 ```bash
-dms greeter install
+curl -fsSL https://github.com/AvengeMedia/dank-greeter/releases/latest/download/dms-greeter-linux-amd64.tar.gz | tar -xz
+sudo install -Dm755 dms-greeter-linux-amd64 /usr/local/bin/dms-greeter
 ```
 
-This will automatically install `greetd` via Portage, copy the greeter wrapper from your local DMS installation, configure permissions, and set up greetd to use DMS. To start the greeter immediately without rebooting, run `sudo systemctl start greetd`.
+Then run:
+
+```bash
+dms-greeter install
+```
+
+This will automatically install `greetd` via Portage, configure permissions, and set up greetd to use dms-greeter. To start the greeter immediately without rebooting, run `sudo systemctl start greetd`.
 
 ### NixOS
 
@@ -285,14 +290,14 @@ Install the `dms-greeter` package (see the [DMS installation guide](../dankmater
 
 ```bash
 sudo xbps-install -S dms-greeter
-dms greeter enable
-dms greeter sync     # optional: share theming with the shell
+dms-greeter enable
+dms-greeter sync     # optional: share theming with the shell
 ```
 
 
-On Void, `dms greeter enable` sets up everything logind provides automatically on systemd distros: it enables the `dbus` and `elogind` services, configures greetd for elogind (`LIBSEAT_BACKEND=logind`), rewrites `/etc/sv/greetd/run` to wait for those services at boot, adds the `_greeter` user to the `video`/`input` groups, and adds `pam_rundir` to `/etc/pam.d/greetd` so the post-login session gets an `XDG_RUNTIME_DIR`. If `seatd` is enabled it is disabled, elogind manages the seat instead.
+On Void, `dms-greeter enable` sets up everything logind provides automatically on systemd distros: it enables the `dbus` and `elogind` services, configures greetd for elogind (`LIBSEAT_BACKEND=logind`), rewrites `/etc/sv/greetd/run` to wait for those services at boot, adds the `_greeter` user to the `video`/`input` groups, and adds `pam_rundir` to `/etc/pam.d/greetd` so the post-login session gets an `XDG_RUNTIME_DIR`. If `seatd` is enabled it is disabled, elogind manages the seat instead.
 
-On runit, enabling greetd starts it within a few seconds, no separate start command is needed. greetd package updates restore the stock run script, re-run `dms greeter enable` afterwards.
+On runit, enabling greetd starts it within a few seconds, no separate start command is needed. greetd package updates restore the stock run script, re-run `dms-greeter enable` afterwards.
 
 A Wayland compositor (`niri`, `hyprland`, `sway`, …) is required and is not pulled in automatically.
 
@@ -314,31 +319,32 @@ Enabling `dms-greeter` will replace your current display manager.
 
 :::
 
-### Manual installation (DMS already installed)
+### Manual installation (no package)
 
-If you already have DMS installed but need to set up the greeter manually, install `greetd` and then the greeter wrapper:
-
-```bash
-sudo wget https://raw.githubusercontent.com/AvengeMedia/DankMaterialShell/refs/heads/master/quickshell/Modules/Greetd/assets/dms-greeter -O /usr/local/bin/dms-greeter
-sudo chmod +x /usr/local/bin/dms-greeter
-```
-
-Then proceed to [Completing Setup](#completing-setup) below, using the following command in `/etc/greetd/config.toml`:
-
-```toml
-command = "dms-greeter --command niri -p /usr/share/quickshell/dms"
-```
-
-### Manual installation (without DMS)
-
-For non-dankinstall users without DMS, install `greetd`, `quickshell`, and then the greeter:
+If your distro has no `dms-greeter` package, install `greetd` and `quickshell`, then grab the prebuilt binary from the latest release:
 
 ```bash
-sudo mkdir -p /etc/xdg/quickshell
-sudo git clone --recurse-submodules https://github.com/AvengeMedia/DankMaterialShell.git /etc/xdg/quickshell/dms-greeter
-sudo mkdir /var/cache/dms-greeter
+curl -fsSL https://github.com/AvengeMedia/dank-greeter/releases/latest/download/dms-greeter-linux-amd64.tar.gz | tar -xz
+sudo install -Dm755 dms-greeter-linux-amd64 /usr/local/bin/dms-greeter
+```
+
+Or build it from source (requires go and make):
+
+```bash
+git clone --recurse-submodules https://github.com/AvengeMedia/dank-greeter.git
+cd dank-greeter/core
+make build
+sudo install -Dm755 bin/dms-greeter /usr/local/bin/dms-greeter
+```
+
+The UI is embedded in the binary, there is no quickshell config tree to install. Create the cache directory:
+
+```bash
+sudo mkdir -p /var/cache/dms-greeter
 sudo chown greeter:greeter /var/cache/dms-greeter
 ```
+
+Then proceed to [Completing Setup](#completing-setup) below.
 
 :::note
 
@@ -348,13 +354,13 @@ Some distributions may have different user/group names for the greetd user.
 
 #### Prerequisites for Theme Syncing
 
-ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files. The `acl` package is installed automatically when you run `dms greeter sync` or `dms greeter install`, so no manual action is needed on supported distributions.
+ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files. The `acl` package is installed automatically when you run `dms-greeter sync` or `dms-greeter install`, so no manual action is needed on supported distributions.
 
 ## Completing Setup
 
-### If you used `dms greeter install`
+### If you used `dms-greeter install`
 
-This applies to any distro where you ran `dms greeter install`, including **Arch Linux** (requires paru or yay), **Ubuntu**, **Fedora**, **Debian**, **openSUSE**, and **Gentoo**.
+This applies to any distro where you ran `dms-greeter install`, including **Arch Linux** (requires paru or yay), **Ubuntu**, **Fedora**, **Debian**, **openSUSE**, and **Gentoo**.
 
 Configuration, permissions, theme syncing, and greetd service enablement are all handled automatically. To start the greeter immediately without rebooting:
 
@@ -362,7 +368,7 @@ Configuration, permissions, theme syncing, and greetd service enablement are all
 sudo systemctl start greetd
 ```
 
-You can verify your setup at any time with `dms greeter status`. `dms greeter sync` can be re-run after theme changes.
+You can verify your setup at any time with `dms-greeter status`. `dms-greeter sync` can be re-run after theme changes.
 
 ### If you installed the package manually
 
@@ -373,7 +379,7 @@ After installing the package, run these two commands to complete setup:
 #### 1. Enable the Greeter
 
 ```bash
-dms greeter enable
+dms-greeter enable
 ```
 
 This will:
@@ -384,7 +390,7 @@ This will:
 #### 2. Sync with Your User Theme
 
 ```bash
-dms greeter sync
+dms-greeter sync
 ```
 
 This will:
@@ -397,19 +403,19 @@ This will:
 
 :::note
 
-After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect.
+After running `dms-greeter sync`, you will need to log out and log back in for group membership changes to take effect.
 
 :::
 
 :::tip[Multi-user systems]
 
-One **main admin** runs `dms greeter sync` once for system setup. Add every other user to the `greeter` group in **Settings → Users** (greeter access toggle), or with `sudo usermod -aG greeter <username>`. Each of those accounts should then run **`dms greeter sync --profile`** after logging out and back in—not full sync. See [Configuration → Multi-user systems](./configuration#multi-user-systems).
+One **main admin** runs `dms-greeter sync` once for system setup. Add every other user to the `greeter` group in **Settings → Users** (greeter access toggle), or with `sudo usermod -aG greeter <username>`. Each of those accounts should then run **`dms-greeter sync --profile`** after logging out and back in - not full sync. See [Configuration → Multi-user systems](./configuration#multi-user-systems).
 
 :::
 
 :::note
 
-**NixOS users:** The `dms greeter enable` and `dms greeter sync` commands are not available on NixOS. Please follow the manual steps below or see the [NixOS installation guides](./nixos).
+**NixOS users:** The `dms-greeter enable` and `dms-greeter sync` commands are not available on NixOS. Please follow the manual steps below or see the [NixOS installation guides](./nixos).
 
 :::
 
@@ -418,7 +424,7 @@ One **main admin** runs `dms greeter sync` once for system setup. Add every othe
 You can check your greeter configuration at any time:
 
 ```bash
-dms greeter status
+dms-greeter status
 ```
 
 This verifies your greeter setup and sync status. See the [Configuration guide](./configuration#checking-sync-status) for detailed information.
@@ -433,7 +439,7 @@ If you prefer to set up the greeter manually, follow these steps:
 
 :::tip
 
-**All users:** You can use `dms greeter enable` to automate this process instead of following the manual steps below.
+**All users:** You can use `dms-greeter enable` to automate this process instead of following the manual steps below.
 
 :::
 

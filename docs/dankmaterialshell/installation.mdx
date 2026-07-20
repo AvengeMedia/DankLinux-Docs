@@ -568,7 +568,6 @@ cp -R ../DankMaterialShell/distro/void/srcpkgs/* srcpkgs/
 ./xbps-src pkg dgop
 ./xbps-src pkg danksearch
 ./xbps-src pkg dms
-./xbps-src pkg dms-greeter        # optional greetd greeter
 
 # Install the results
 sudo xbps-install --repository=hostdir/binpkgs dms dgop
@@ -577,7 +576,7 @@ sudo xbps-install --repository=hostdir/binpkgs dms dgop
 </TabItem>
 </Tabs>
 
-Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `dankcalendar` (calendar), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list and greeter setup.
+Only `quickshell` is strictly required. Install optional features as desired — `matugen` (theming), `cava` (audio visualiser), `danksearch` (search), `dankcalendar` (calendar), `qt6-multimedia` (sounds) — and a compositor such as `niri`, `hyprland`, or `sway`. See the [Void README](https://github.com/AvengeMedia/DankMaterialShell/tree/master/distro/void) for the full optional-dependency list.
 
 ### Running Wayland from TTY (Without a Display Manager)
 
@@ -688,7 +687,7 @@ cd ~/dms
 sudo make install
 ```
 
-The Quickshell UI is embedded into the `dms` binary at build time. The shell files installed to `/usr/local/share/quickshell/dms` are used by the [greeter](../dankgreeter); the shell itself runs from the embedded UI unless `-c` or `DMS_SHELL_DIR` points elsewhere.
+The Quickshell UI is embedded into the `dms` binary at build time. The shell runs from the embedded UI unless `-c` or `DMS_SHELL_DIR` points elsewhere. The login screen is a separate binary from [dank-greeter](https://github.com/AvengeMedia/dank-greeter) with its own embedded UI.
 
 :::note
 

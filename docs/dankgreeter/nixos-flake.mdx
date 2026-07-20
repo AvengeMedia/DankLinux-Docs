@@ -36,21 +36,13 @@ Add the required flake inputs to your `flake.nix` if you haven't yet:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    dms = {
-      url = "github:AvengeMedia/DankMaterialShell/stable";
+    dank-greeter = {
+      url = "github:AvengeMedia/dank-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 }
 ```
-
-:::tip[Using unstable Version]
-If you want to use the unstable (-git) version from the master branch, you can use:
-```nix
-dms.url = "github:AvengeMedia/DankMaterialShell";
-```
-However, be aware that the documentation may not be updated for the latest changes. You're advised to check the nix source code in the repository directly, and note that it may not work properly.
-:::
 
 ### 2. Import the NixOS Module
 
@@ -58,7 +50,7 @@ Add the DankGreeter module to your NixOS configuration imports:
 
 ```nix
 imports = [
-  inputs.dms.nixosModules.greeter
+  inputs.dank-greeter.nixosModules.dank-greeter
 ];
 ```
 
@@ -73,7 +65,7 @@ DankGreeter is only available as a NixOS module (not as a home-manager module), 
 Enable and configure the greeter in your NixOS configuration:
 
 ```nix
-programs.dank-material-shell.greeter = {
+programs.dms-greeter = {
   enable = true;
   compositor.name = "niri";  # Or "hyprland" or "sway"
 };
@@ -94,7 +86,7 @@ Compositors must be installed via NixOS configuration to appear in DankGreeter, 
 ## Configuration Options
 
 ```nix
-programs.dank-material-shell.greeter = {
+programs.dms-greeter = {
   compositor = {
     name = "niri"; # Required. Can be also "hyprland" or "sway"
     customConfig = ''
