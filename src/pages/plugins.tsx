@@ -63,10 +63,19 @@ interface ThemeVariants {
   accents?: ThemeAccent[];
 }
 
+interface ThemeWCAGGroup {
+  level: string;
+  minRatio: number;
+  worstPair?: string[];
+}
+
 interface ThemeWCAGMode {
   level: string;
   minRatio: number;
   worstPair?: string[];
+  body?: ThemeWCAGGroup;
+  accent?: ThemeWCAGGroup;
+  nonText?: ThemeWCAGGroup;
   variants?: Record<string, string>;
 }
 
@@ -162,20 +171,60 @@ function wcagBadgeClass(level: string): string {
   }
 }
 
-function wcagBadgeLabel(level: string): string {
-  return level === 'fail' ? 'Below WCAG AA' : `WCAG ${level}`;
+// A theme often passes in one mode only, or passes for everything except the
+// accent color, so credit what does pass instead of flattening it all to a
+// single failure.
+const MODES = ['dark', 'light'] as const;
+
+function wcagBadge(wcag: ThemeWCAG): { label: string; level: string } {
+  const tiers: Array<[(m: ThemeWCAGMode) => string | undefined, string]> = [
+    [m => m.level, ''],
+    [m => m.body?.level, ' body text'],
+  ];
+
+  for (const [pick, suffix] of tiers) {
+    const rated: Array<readonly [string, string | undefined]> = [];
+    for (const mode of MODES) {
+      const result = wcag[mode];
+      if (!result) {
+        continue;
+      }
+      rated.push([mode, pick(result)] as const);
+    }
+    const passing = rated.filter(([, level]) => level && level !== 'fail');
+    if (!passing.length) {
+      continue;
+    }
+
+    const level = passing.some(([, l]) => l === 'AA') ? 'AA' : 'AAA';
+    const scope = passing.length === rated.length ? '' : ` (${passing[0][0]})`;
+    return { label: `WCAG ${level}${suffix}${scope}`, level };
+  }
+
+  return { label: 'Below WCAG AA', level: 'fail' };
 }
 
 function wcagTooltip(wcag: ThemeWCAG): string {
-  const modes: string[] = [];
-  for (const mode of ['dark', 'light'] as const) {
+  const lines: string[] = ['Contrast measured per WCAG 2.2'];
+  for (const mode of MODES) {
     const result = wcag[mode];
     if (!result) {
       continue;
     }
-    modes.push(`${mode} ${result.level} (min ${result.minRatio}:1)`);
+    const groups: string[] = [];
+    for (const [key, label] of [
+      ['body', 'body text'],
+      ['accent', 'accent'],
+      ['nonText', 'status'],
+    ] as const) {
+      const group = result[key];
+      if (group) {
+        groups.push(`${label} ${group.level} (${group.minRatio}:1)`);
+      }
+    }
+    lines.push(`${mode}: ${groups.join(', ')}`);
   }
-  return `Minimum text contrast per WCAG 2.2 — ${modes.join(', ')}`;
+  return lines.join('\n');
 }
 
 function statusBadgeClass(status: string): string {
@@ -1078,10 +1127,10 @@ export default function Plugins() {
                     <div className={styles.pluginTags}>
                       {theme.wcag && (
                         <span
-                          className={`${styles.statusBadge} ${wcagBadgeClass(theme.wcag.level)}`}
+                          className={`${styles.statusBadge} ${wcagBadgeClass(wcagBadge(theme.wcag).level)}`}
                           title={wcagTooltip(theme.wcag)}
                         >
-                          {wcagBadgeLabel(theme.wcag.level)}
+                          {wcagBadge(theme.wcag).label}
                         </span>
                       )}
                       {theme.version && (

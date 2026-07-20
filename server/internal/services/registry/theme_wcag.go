@@ -14,17 +14,40 @@ const (
 	wcagAAARatio = 7.0
 )
 
-var wcagTextPairs = [][2]string{
-	{"backgroundText", "background"},
+// Pairs mirror what DMS/quickshell actually renders: bars, popouts, and modals
+// fill with surfaceContainer, nested cards with surfaceContainerHigh (see
+// DankMaterialShell Common/Theme.qml nestedSurface), window bases with surface.
+// Body covers the text read constantly; accent covers primary, which DMS draws
+// as bar text (Clock widget) and as filled button labels.
+var wcagBodyPairs = [][2]string{
 	{"surfaceText", "surface"},
-	{"surfaceText", "surfaceContainerLowest"},
-	{"surfaceText", "surfaceContainerLow"},
 	{"surfaceText", "surfaceContainer"},
 	{"surfaceText", "surfaceContainerHigh"},
 	{"surfaceText", "surfaceContainerHighest"},
-	{"surfaceVariantText", "surfaceVariant"},
-	{"primaryText", "primary"},
+	{"surfaceVariantText", "surface"},
+	{"surfaceVariantText", "surfaceContainer"},
+	{"surfaceVariantText", "surfaceContainerHigh"},
 }
+
+var wcagAccentPairs = [][2]string{
+	{"primaryText", "primary"},
+	{"primary", "surfaceContainer"},
+}
+
+var wcagTextPairs = append(append([][2]string{}, wcagBodyPairs...), wcagAccentPairs...)
+
+// Status colors render as standalone icons and badges, so they get the 3:1
+// non-text minimum from WCAG 2.2 SC 1.4.11
+// https://www.w3.org/TR/WCAG22/#non-text-contrast
+// Outline is excluded: it is a divider color that DMS draws at 12% alpha
+// (Theme.outlineMedium), which SC 1.4.11 exempts as decorative.
+var wcagNonTextPairs = [][2]string{
+	{"error", "surfaceContainer"},
+	{"warning", "surfaceContainer"},
+	{"info", "surfaceContainer"},
+}
+
+const wcagNonTextRatio = 3.0
 
 var wcagLevelRank = map[string]int{"fail": 0, "AA": 1, "AAA": 2}
 
@@ -84,10 +107,10 @@ func wcagLevel(ratio float64) string {
 	return "fail"
 }
 
-func schemeWCAG(scheme map[string]interface{}) *models.ThemeWCAGMode {
+func worstRatio(scheme map[string]interface{}, pairs [][2]string) (float64, []string) {
 	minRatio := math.Inf(1)
 	var worstPair []string
-	for _, pair := range wcagTextPairs {
+	for _, pair := range pairs {
 		fg, ok := parseHexColor(scheme[pair[0]])
 		if !ok {
 			continue
@@ -105,15 +128,49 @@ func schemeWCAG(scheme map[string]interface{}) *models.ThemeWCAGMode {
 		worstPair = []string{pair[0], pair[1]}
 	}
 
+	return minRatio, worstPair
+}
+
+func groupWCAG(scheme map[string]interface{}, pairs [][2]string, level func(float64) string) *models.ThemeWCAGGroup {
+	ratio, pair := worstRatio(scheme, pairs)
+	if pair == nil {
+		return nil
+	}
+
+	return &models.ThemeWCAGGroup{
+		Level:     level(ratio),
+		MinRatio:  math.Round(ratio*100) / 100,
+		WorstPair: pair,
+	}
+}
+
+func nonTextLevel(ratio float64) string {
+	if ratio >= wcagNonTextRatio {
+		return "AA"
+	}
+	return "fail"
+}
+
+func schemeWCAG(scheme map[string]interface{}) *models.ThemeWCAGMode {
+	minRatio, worstPair := worstRatio(scheme, wcagTextPairs)
 	if worstPair == nil {
 		return nil
 	}
 
-	return &models.ThemeWCAGMode{
+	report := &models.ThemeWCAGMode{
 		Level:     wcagLevel(minRatio),
 		MinRatio:  math.Round(minRatio*100) / 100,
 		WorstPair: worstPair,
+		Body:      groupWCAG(scheme, wcagBodyPairs, wcagLevel),
+		Accent:    groupWCAG(scheme, wcagAccentPairs, wcagLevel),
+		NonText:   groupWCAG(scheme, wcagNonTextPairs, nonTextLevel),
 	}
+
+	// SC 1.4.11 is itself a Level AA criterion, so failing it fails AA outright.
+	if report.NonText != nil && report.NonText.Level == "fail" {
+		report.Level = "fail"
+	}
+	return report
 }
 
 func mergeSchemes(layers ...map[string]interface{}) map[string]interface{} {

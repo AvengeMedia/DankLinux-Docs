@@ -95,10 +95,19 @@ type ThemeVariants struct {
 	Accents  []map[string]interface{}      `json:"accents,omitempty"`
 }
 
+type ThemeWCAGGroup struct {
+	Level     string   `json:"level"`
+	MinRatio  float64  `json:"minRatio"`
+	WorstPair []string `json:"worstPair,omitempty"`
+}
+
 type ThemeWCAGMode struct {
 	Level     string            `json:"level"`
 	MinRatio  float64           `json:"minRatio"`
 	WorstPair []string          `json:"worstPair,omitempty"`
+	Body      *ThemeWCAGGroup   `json:"body,omitempty"`
+	Accent    *ThemeWCAGGroup   `json:"accent,omitempty"`
+	NonText   *ThemeWCAGGroup   `json:"nonText,omitempty"`
 	Variants  map[string]string `json:"variants,omitempty"`
 }
 

@@ -49,12 +49,12 @@ func TestWCAGLevelThresholds(t *testing.T) {
 func TestComputeThemeWCAGSimple(t *testing.T) {
 	theme := &models.Theme{
 		Dark: map[string]interface{}{
-			"backgroundText": "#FFFFFF",
-			"background":     "#000000",
+			"surfaceText": "#FFFFFF",
+			"surface":     "#000000",
 		},
 		Light: map[string]interface{}{
-			"backgroundText": "#767676",
-			"background":     "#FFFFFF",
+			"surfaceText": "#767676",
+			"surface":     "#FFFFFF",
 		},
 	}
 
@@ -79,12 +79,12 @@ func TestComputeThemeWCAGSimple(t *testing.T) {
 func TestComputeThemeWCAGVariantsUseDefault(t *testing.T) {
 	theme := &models.Theme{
 		Dark: map[string]interface{}{
-			"backgroundText": "#FFFFFF",
-			"background":     "#000000",
+			"surfaceText": "#FFFFFF",
+			"surface":     "#000000",
 		},
 		Light: map[string]interface{}{
-			"backgroundText": "#FFFFFF",
-			"background":     "#000000",
+			"surfaceText": "#FFFFFF",
+			"surface":     "#000000",
 		},
 		Variants: &models.ThemeVariants{
 			Default: "good",
@@ -92,8 +92,8 @@ func TestComputeThemeWCAGVariantsUseDefault(t *testing.T) {
 				{ID: "good"},
 				{
 					ID:    "bad",
-					Dark:  map[string]interface{}{"backgroundText": "#777777", "background": "#888888"},
-					Light: map[string]interface{}{"backgroundText": "#777777", "background": "#888888"},
+					Dark:  map[string]interface{}{"surfaceText": "#777777", "surface": "#888888"},
+					Light: map[string]interface{}{"surfaceText": "#777777", "surface": "#888888"},
 				},
 			},
 		},
@@ -117,12 +117,12 @@ func TestComputeThemeWCAGVariantsUseDefault(t *testing.T) {
 func TestComputeThemeWCAGMultiVariants(t *testing.T) {
 	theme := &models.Theme{
 		Dark: map[string]interface{}{
-			"backgroundText": "#FFFFFF",
-			"background":     "#000000",
+			"surfaceText": "#FFFFFF",
+			"surface":     "#000000",
 		},
 		Light: map[string]interface{}{
-			"backgroundText": "#000000",
-			"background":     "#FFFFFF",
+			"surfaceText": "#000000",
+			"surface":     "#FFFFFF",
 		},
 		Variants: &models.ThemeVariants{
 			Type: "multi",
@@ -153,6 +153,55 @@ func TestComputeThemeWCAGMultiVariants(t *testing.T) {
 	}
 	if wcag.Dark.Level != "AAA" {
 		t.Fatalf("expected dark AAA, got %s", wcag.Dark.Level)
+	}
+}
+
+func TestComputeThemeWCAGNonTextGate(t *testing.T) {
+	scheme := map[string]interface{}{
+		"surfaceText":      "#FFFFFF",
+		"surface":          "#000000",
+		"surfaceContainer": "#000000",
+		"error":            "#1a1a1a",
+	}
+
+	report := schemeWCAG(scheme)
+	if report == nil {
+		t.Fatal("expected report, got nil")
+	}
+	if report.Level != "fail" {
+		t.Fatalf("expected non-text failure to fail the scheme, got %s", report.Level)
+	}
+	if report.NonText == nil || report.NonText.WorstPair[0] != "error" {
+		t.Fatalf("expected error to be the worst non-text pair, got %+v", report.NonText)
+	}
+	if report.MinRatio != 21 {
+		t.Fatalf("expected text ratio to stay 21, got %f", report.MinRatio)
+	}
+}
+
+func TestSchemeWCAGSplitsBodyFromAccent(t *testing.T) {
+	// Readable body text with an accent too light to read on the bar.
+	scheme := map[string]interface{}{
+		"surfaceText":      "#FFFFFF",
+		"surface":          "#000000",
+		"surfaceContainer": "#000000",
+		"primary":          "#3A3A3A",
+		"primaryText":      "#FFFFFF",
+		"error":            "#FF5555",
+	}
+
+	report := schemeWCAG(scheme)
+	if report == nil {
+		t.Fatal("expected report, got nil")
+	}
+	if report.Body == nil || report.Body.Level != "AAA" {
+		t.Fatalf("expected body AAA, got %+v", report.Body)
+	}
+	if report.Accent == nil || report.Accent.Level != "fail" {
+		t.Fatalf("expected accent fail, got %+v", report.Accent)
+	}
+	if report.Level != "fail" {
+		t.Fatalf("expected combined level to follow the accent failure, got %s", report.Level)
 	}
 }
 
