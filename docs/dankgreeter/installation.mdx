@@ -91,6 +91,18 @@ sudo dnf install dms-greeter-git
 
 Builds from the tip of `master` in dank-greeter. Conflicts with the stable `dms-greeter` package (both provide `/usr/bin/dms-greeter`).
 
+To switch from stable:
+
+```bash
+sudo dnf swap dms-greeter dms-greeter-git
+```
+
+To switch back:
+
+```bash
+sudo dnf swap dms-greeter-git dms-greeter
+```
+
 </TabItem>
 </Tabs>
 
@@ -160,7 +172,14 @@ Tagged releases. Recommended for most users.
 sudo apt install dms-greeter-git
 ```
 
-Builds from the tip of `master` in dank-greeter. Conflicts with the stable `dms-greeter` package.
+Builds from the tip of `master` in dank-greeter. Conflicts with stable `dms-greeter`; both install `/usr/bin/dms-greeter`.
+
+To switch from stable → git or git → stable, install the package you want:
+
+```bash
+sudo apt install dms-greeter-git   # replaces dms-greeter
+sudo apt install dms-greeter       # replaces dms-greeter-git
+```
 
 </TabItem>
 </Tabs>
@@ -190,7 +209,14 @@ Tagged releases. Recommended for most users.
 sudo apt install dms-greeter-git
 ```
 
-Builds from the tip of `master` in dank-greeter. Conflicts with the stable `dms-greeter` package.
+Builds from the tip of `master` in dank-greeter. Conflicts with stable `dms-greeter`; both install `/usr/bin/dms-greeter`.
+
+To switch from stable → git or git → stable, install the package you want:
+
+```bash
+sudo apt install dms-greeter-git   # replaces dms-greeter
+sudo apt install dms-greeter       # replaces dms-greeter-git
+```
 
 </TabItem>
 </Tabs>
@@ -254,7 +280,14 @@ Tagged releases. Recommended for most users.
 sudo zypper install dms-greeter-git
 ```
 
-Builds from the tip of `master` in dank-greeter. Conflicts with the stable `dms-greeter` package.
+Builds from the tip of `master` in dank-greeter. Conflicts with stable `dms-greeter`
+
+To switch:
+
+```bash
+sudo zypper remove dms-greeter && sudo zypper install dms-greeter-git
+sudo zypper remove dms-greeter-git && sudo zypper install dms-greeter
+```
 
 </TabItem>
 </Tabs>
@@ -297,7 +330,14 @@ Tagged releases. Recommended for most users.
 sudo xbps-install -S dms-greeter-git
 ```
 
-Builds from the tip of `master` in dank-greeter. Conflicts with the stable `dms-greeter` package.
+Builds from the `master` branch in dank-greeter. Conflicts with stable `dms-greeter`.
+
+To switch:
+
+```bash
+sudo xbps-remove dms-greeter && sudo xbps-install -S dms-greeter-git
+sudo xbps-remove dms-greeter-git && sudo xbps-install -S dms-greeter
+```
 
 </TabItem>
 </Tabs>
