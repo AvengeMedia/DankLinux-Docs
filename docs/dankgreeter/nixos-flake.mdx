@@ -50,7 +50,7 @@ Add the DankGreeter module to your NixOS configuration imports:
 
 ```nix
 imports = [
-  inputs.dank-greeter.nixosModules.dank-greeter
+  inputs.dank-greeter.nixosModules.default
 ];
 ```
 
@@ -104,11 +104,11 @@ programs.dms-greeter = {
 
   # Save the logs to a file
   logs = {
-    save = true; 
+    save = true;
     path = "/tmp/dms-greeter.log";
   };
 
-  # Custom Quickshell Package    
+  # Custom Quickshell Package
   quickshell.package = pkgs.quickshell;
 };
 ```
