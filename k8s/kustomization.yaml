@@ -10,3 +10,4 @@ resources:
 - server-svc.yaml
 - server-ingress.yaml
 - dankinstall-ingress.yaml
+- flathub-verify-ingress.yaml
