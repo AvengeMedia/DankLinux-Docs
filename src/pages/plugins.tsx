@@ -69,6 +69,13 @@ interface ThemeWCAGGroup {
   worstPair?: string[];
 }
 
+interface ThemeWCAGBreakdown {
+  name: string;
+  mode: string;
+  level: string;
+  bodyLevel: string;
+}
+
 interface ThemeWCAGMode {
   level: string;
   minRatio: number;
@@ -77,6 +84,7 @@ interface ThemeWCAGMode {
   accent?: ThemeWCAGGroup;
   nonText?: ThemeWCAGGroup;
   variants?: Record<string, string>;
+  breakdown?: ThemeWCAGBreakdown[];
 }
 
 interface ThemeWCAG {
@@ -171,58 +179,53 @@ function wcagBadgeClass(level: string): string {
   }
 }
 
-// A theme often passes in one mode only, or passes for everything except the
-// accent color, so credit what does pass instead of flattening it all to a
-// single failure.
 const MODES = ['dark', 'light'] as const;
 
+function wcagBreakdownRows(wcag: ThemeWCAG): ThemeWCAGBreakdown[] {
+  const rows: ThemeWCAGBreakdown[] = [];
+  for (const mode of MODES) {
+    const result = wcag[mode];
+    if (result?.breakdown) {
+      rows.push(...result.breakdown);
+    }
+  }
+  return rows;
+}
+
+// Rate every selectable config, not just the default, then advertise the level
+// they all reach. "Partial" flags that some configs fall short, so the badge
+// never over-promises for a theme whose flavors differ. Themes that only miss
+// on accent colors still get credit for readable body text.
 function wcagBadge(wcag: ThemeWCAG): { label: string; level: string } {
-  const tiers: Array<[(m: ThemeWCAGMode) => string | undefined, string]> = [
-    [m => m.level, ''],
-    [m => m.body?.level, ' body text'],
+  const rows = wcagBreakdownRows(wcag);
+  const tiers: Array<[keyof ThemeWCAGBreakdown, string]> = [
+    ['level', ''],
+    ['bodyLevel', ' body text'],
   ];
 
-  for (const [pick, suffix] of tiers) {
-    const rated: Array<readonly [string, string | undefined]> = [];
-    for (const mode of MODES) {
-      const result = wcag[mode];
-      if (!result) {
-        continue;
-      }
-      rated.push([mode, pick(result)] as const);
-    }
-    const passing = rated.filter(([, level]) => level && level !== 'fail');
+  for (const [key, suffix] of tiers) {
+    const levels = rows.map(row => row[key] as string).filter(Boolean);
+    const passing = levels.filter(level => level !== 'fail');
     if (!passing.length) {
       continue;
     }
 
-    const level = passing.some(([, l]) => l === 'AA') ? 'AA' : 'AAA';
-    const scope = passing.length === rated.length ? '' : ` (${passing[0][0]})`;
+    const level = passing.some(l => l === 'AA') ? 'AA' : 'AAA';
+    const scope = passing.length === levels.length ? '' : ' (Partial)';
     return { label: `WCAG ${level}${suffix}${scope}`, level };
   }
 
   return { label: 'Below WCAG AA', level: 'fail' };
 }
 
+function wcagRowLabel(level: string): string {
+  return level === 'fail' ? 'below AA' : `WCAG ${level}`;
+}
+
 function wcagTooltip(wcag: ThemeWCAG): string {
   const lines: string[] = ['Contrast measured per WCAG 2.2'];
-  for (const mode of MODES) {
-    const result = wcag[mode];
-    if (!result) {
-      continue;
-    }
-    const groups: string[] = [];
-    for (const [key, label] of [
-      ['body', 'body text'],
-      ['accent', 'accent'],
-      ['nonText', 'status'],
-    ] as const) {
-      const group = result[key];
-      if (group) {
-        groups.push(`${label} ${group.level} (${group.minRatio}:1)`);
-      }
-    }
-    lines.push(`${mode}: ${groups.join(', ')}`);
+  for (const row of wcagBreakdownRows(wcag)) {
+    lines.push(`${row.name} (${row.mode}): ${wcagRowLabel(row.level)}`);
   }
   return lines.join('\n');
 }

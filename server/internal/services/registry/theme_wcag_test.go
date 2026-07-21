@@ -205,6 +205,58 @@ func TestSchemeWCAGSplitsBodyFromAccent(t *testing.T) {
 	}
 }
 
+func TestBreakdownRollsAccentsIntoFlavors(t *testing.T) {
+	// Two accents on one flavor collapse to a single row carrying the worse level.
+	theme := &models.Theme{
+		Dark: map[string]interface{}{"surfaceText": "#FFFFFF", "surface": "#000000"},
+		Variants: &models.ThemeVariants{
+			Type:     "multi",
+			Defaults: map[string]*models.ThemeModeDefaults{"dark": {Flavor: "mocha", Accent: "good"}},
+			Flavors: []models.ThemeFlavor{
+				{ID: "mocha", Name: "Mocha", Dark: map[string]interface{}{"surfaceContainer": "#000000"}},
+			},
+			Accents: []map[string]interface{}{
+				{"id": "good", "mocha": map[string]interface{}{"primary": "#FFFFFF", "primaryText": "#000000"}},
+				{"id": "bad", "mocha": map[string]interface{}{"primary": "#111111", "primaryText": "#000000"}},
+			},
+		},
+	}
+
+	wcag := computeThemeWCAG(theme)
+	if wcag == nil || wcag.Dark == nil {
+		t.Fatal("expected a dark report")
+	}
+	if len(wcag.Dark.Breakdown) != 1 {
+		t.Fatalf("expected accents to roll into one flavor row, got %+v", wcag.Dark.Breakdown)
+	}
+
+	row := wcag.Dark.Breakdown[0]
+	if row.Name != "Mocha" || row.Mode != "dark" {
+		t.Fatalf("expected the flavor display name, got %+v", row)
+	}
+	if row.Level != "fail" {
+		t.Fatalf("expected the worst accent to drive the row, got %s", row.Level)
+	}
+	if row.BodyLevel != "AAA" {
+		t.Fatalf("expected body text to stay AAA despite the accent, got %s", row.BodyLevel)
+	}
+}
+
+func TestBreakdownUsesModeNameWithoutVariants(t *testing.T) {
+	theme := &models.Theme{
+		Dark:  map[string]interface{}{"surfaceText": "#FFFFFF", "surface": "#000000"},
+		Light: map[string]interface{}{"surfaceText": "#000000", "surface": "#FFFFFF"},
+	}
+
+	wcag := computeThemeWCAG(theme)
+	if wcag.Dark.Breakdown[0].Name != "Dark" {
+		t.Fatalf("expected row named Dark, got %+v", wcag.Dark.Breakdown)
+	}
+	if wcag.Light.Breakdown[0].Name != "Light" {
+		t.Fatalf("expected row named Light, got %+v", wcag.Light.Breakdown)
+	}
+}
+
 func TestComputeThemeWCAGNoColors(t *testing.T) {
 	if wcag := computeThemeWCAG(&models.Theme{}); wcag != nil {
 		t.Fatalf("expected nil for theme without colors, got %+v", wcag)

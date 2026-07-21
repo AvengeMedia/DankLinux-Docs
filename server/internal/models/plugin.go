@@ -101,6 +101,13 @@ type ThemeWCAGGroup struct {
 	WorstPair []string `json:"worstPair,omitempty"`
 }
 
+type ThemeWCAGBreakdown struct {
+	Name      string `json:"name"`
+	Mode      string `json:"mode"`
+	Level     string `json:"level"`
+	BodyLevel string `json:"bodyLevel"`
+}
+
 type ThemeWCAGMode struct {
 	Level     string            `json:"level"`
 	MinRatio  float64           `json:"minRatio"`
@@ -109,6 +116,8 @@ type ThemeWCAGMode struct {
 	Accent    *ThemeWCAGGroup   `json:"accent,omitempty"`
 	NonText   *ThemeWCAGGroup   `json:"nonText,omitempty"`
 	Variants  map[string]string `json:"variants,omitempty"`
+
+	Breakdown []ThemeWCAGBreakdown `json:"breakdown,omitempty"`
 }
 
 type ThemeWCAG struct {

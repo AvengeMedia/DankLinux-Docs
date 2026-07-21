@@ -51,6 +51,8 @@ const wcagNonTextRatio = 3.0
 
 var wcagLevelRank = map[string]int{"fail": 0, "AA": 1, "AAA": 2}
 
+var wcagModeLabels = map[string]string{"dark": "Dark", "light": "Light"}
+
 type wcagRGB struct {
 	r, g, b float64
 }
@@ -183,24 +185,35 @@ func mergeSchemes(layers ...map[string]interface{}) map[string]interface{} {
 	return merged
 }
 
-func modeSchemes(theme *models.Theme, mode string) (map[string]map[string]interface{}, string) {
+// wcagConfig is one thing a user can actually select. Themes without variants
+// offer just the mode itself; flavor themes offer every flavor/accent combo.
+// Group is the unit the breakdown rolls up to.
+type wcagConfig struct {
+	key    string
+	group  string
+	label  string
+	scheme map[string]interface{}
+}
+
+func modeConfigs(theme *models.Theme, mode string) ([]wcagConfig, string) {
 	base := theme.Dark
 	if mode == "light" {
 		base = theme.Light
 	}
 
+	plain := []wcagConfig{{label: wcagModeLabels[mode], scheme: base}}
 	variants := theme.Variants
 	if variants == nil {
-		return map[string]map[string]interface{}{"": base}, ""
+		return plain, ""
 	}
 	if variants.Type == "multi" {
-		return multiVariantSchemes(variants, base, mode)
+		return multiVariantConfigs(variants, base, mode)
 	}
 	if len(variants.Options) == 0 {
-		return map[string]map[string]interface{}{"": base}, ""
+		return plain, ""
 	}
 
-	schemes := map[string]map[string]interface{}{}
+	configs := make([]wcagConfig, 0, len(variants.Options))
 	for _, option := range variants.Options {
 		if option.ID == "" {
 			continue
@@ -209,13 +222,20 @@ func modeSchemes(theme *models.Theme, mode string) (map[string]map[string]interf
 		if mode == "light" {
 			override = option.Light
 		}
-		schemes[option.ID] = mergeSchemes(base, override)
+		configs = append(configs, wcagConfig{
+			key:    option.ID,
+			group:  option.ID,
+			label:  wcagLabel(option.Name, option.ID),
+			scheme: mergeSchemes(base, override),
+		})
 	}
-	return schemes, variants.Default
+	return configs, variants.Default
 }
 
-func multiVariantSchemes(variants *models.ThemeVariants, base map[string]interface{}, mode string) (map[string]map[string]interface{}, string) {
-	schemes := map[string]map[string]interface{}{}
+// Accents roll up into their flavor: authors document flavors as the unit a
+// user picks, and listing every combo would run to dozens of rows.
+func multiVariantConfigs(variants *models.ThemeVariants, base map[string]interface{}, mode string) ([]wcagConfig, string) {
+	configs := []wcagConfig{}
 	for _, flavor := range variants.Flavors {
 		flavorColors := flavor.Dark
 		if mode == "light" {
@@ -231,15 +251,27 @@ func multiVariantSchemes(variants *models.ThemeVariants, base map[string]interfa
 				continue
 			}
 			accentColors, _ := accent[flavor.ID].(map[string]interface{})
-			schemes[flavor.ID+"-"+aid] = mergeSchemes(base, flavorColors, accentColors)
+			configs = append(configs, wcagConfig{
+				key:    flavor.ID + "-" + aid,
+				group:  flavor.ID,
+				label:  wcagLabel(flavor.Name, flavor.ID),
+				scheme: mergeSchemes(base, flavorColors, accentColors),
+			})
 		}
 	}
 
 	defaults := variants.Defaults[mode]
 	if defaults == nil {
-		return schemes, ""
+		return configs, ""
 	}
-	return schemes, defaults.Flavor + "-" + defaults.Accent
+	return configs, defaults.Flavor + "-" + defaults.Accent
+}
+
+func wcagLabel(name, id string) string {
+	if name != "" {
+		return name
+	}
+	return id
 }
 
 func worstModeWCAG(reports map[string]*models.ThemeWCAGMode) *models.ThemeWCAGMode {
@@ -260,21 +292,54 @@ func worstModeWCAG(reports map[string]*models.ThemeWCAGMode) *models.ThemeWCAGMo
 	return worst
 }
 
+type wcagGroupLevels struct {
+	name      string
+	level     string
+	bodyLevel string
+}
+
 func modeWCAG(theme *models.Theme, mode string) *models.ThemeWCAGMode {
-	schemes, defaultKey := modeSchemes(theme, mode)
+	configs, defaultKey := modeConfigs(theme, mode)
 	reports := map[string]*models.ThemeWCAGMode{}
-	for key, scheme := range schemes {
-		report := schemeWCAG(scheme)
+	order := []string{}
+	groups := map[string]*wcagGroupLevels{}
+
+	for _, config := range configs {
+		report := schemeWCAG(config.scheme)
 		if report == nil {
 			continue
 		}
-		reports[key] = report
+		reports[config.key] = report
+
+		bodyLevel := "fail"
+		if report.Body != nil {
+			bodyLevel = report.Body.Level
+		}
+
+		group, seen := groups[config.group]
+		if !seen {
+			groups[config.group] = &wcagGroupLevels{
+				name:      config.label,
+				level:     report.Level,
+				bodyLevel: bodyLevel,
+			}
+			order = append(order, config.group)
+			continue
+		}
+		if wcagLevelRank[report.Level] < wcagLevelRank[group.level] {
+			group.level = report.Level
+		}
+		if wcagLevelRank[bodyLevel] < wcagLevelRank[group.bodyLevel] {
+			group.bodyLevel = bodyLevel
+		}
 	}
 
 	if len(reports) == 0 {
 		return nil
 	}
 
+	// The headline stays the default config, which is what a user gets on first
+	// apply; breakdown carries every other config so nothing is over-promised.
 	primary := reports[defaultKey]
 	if primary == nil {
 		primary = worstModeWCAG(reports)
@@ -286,6 +351,17 @@ func modeWCAG(theme *models.Theme, mode string) *models.ThemeWCAGMode {
 		for key, report := range reports {
 			result.Variants[key] = report.Level
 		}
+	}
+
+	result.Breakdown = make([]models.ThemeWCAGBreakdown, 0, len(order))
+	for _, key := range order {
+		group := groups[key]
+		result.Breakdown = append(result.Breakdown, models.ThemeWCAGBreakdown{
+			Name:      group.name,
+			Mode:      mode,
+			Level:     group.level,
+			BodyLevel: group.bodyLevel,
+		})
 	}
 	return &result
 }
