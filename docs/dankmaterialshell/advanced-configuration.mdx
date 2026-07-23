@@ -103,10 +103,13 @@ Launcher. These toggles map directly to `top` when off and `overlay` when on.
 Environment variables are stronger overrides: if a matching `DMS_*_LAYER`
 variable is set, that value wins over the UI toggle.
 
-Frame mode is separate from fullscreen policy. When a visible Frame is enabled,
-bar and dock surfaces may internally use `overlay` so their icons stack above
-the frame in both Separate and Connected modes. Fullscreen windows are still
-handled by the compositor and by the per-surface layer choices above.
+Frame mode is separate from fullscreen policy. A visible Frame renders on the
+`top` layer by default. In Connected mode the bar and dock are merged into the
+frame window itself, so they share that layer rather than opening as separate
+surfaces. A bar or dock with **Use Overlay Layer** enabled is the exception: it
+is not merged into the frame and instead renders as a standalone `overlay`
+surface stacked above it. Fullscreen windows are still handled by the compositor
+and by the per-surface layer choices above.
 
 ### DMS_DANKBAR_LAYER
 
