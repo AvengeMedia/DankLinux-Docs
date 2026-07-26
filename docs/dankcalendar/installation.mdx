@@ -32,6 +32,29 @@ DankCalendar installs a single `dcal` binary, the Quickshell UI config, and a de
 
 Choose the installation method that best fits your system.
 
+### Flatpak
+
+DankCalendar is available on [Flathub](https://flathub.org/apps/com.danklinux.dankcalendar) as `com.danklinux.dankcalendar`. The Flatpak bundles its runtime dependencies, so you do not need a separate Quickshell install on the host.
+
+```bash
+flatpak install flathub com.danklinux.dankcalendar
+flatpak run com.danklinux.dankcalendar
+```
+
+:::note
+
+Notifications and credentials use XDG desktop portals. To sync [DankMaterialShell](../dankmaterialshell/) theme colors from the host, grant read access to the cache:
+
+```bash
+flatpak override --user \
+  --filesystem=xdg-cache/DankMaterialShell:ro \
+  com.danklinux.dankcalendar
+```
+
+Local ICS calendar directories also need an explicit filesystem grant (or the equivalent in Flatseal).
+
+:::
+
 ### Distribution Packages
 
 ### Arch & Derivatives
