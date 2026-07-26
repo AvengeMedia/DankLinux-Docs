@@ -606,9 +606,13 @@ Dashboard popup with multiple tabs.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
-| `open [tab]` | Show dashboard | tab: "", "overview", "media", "weather" |
+| `open [tab]` | Show dashboard | tab: "", "overview", "media", "wallpaper", "weather" |
 | `close` | Hide dashboard | - |
 | `toggle [tab]` | Toggle dashboard | tab |
+| `openAt <tab> <position>` | Show dashboard anchored to a bar section | tab, position: "left", "center", "right" |
+| `toggleAt <tab> <position>` | Toggle dashboard anchored to a bar section | tab, position |
+
+Without a position, the dashboard anchors to the clock widget. `openAt`/`toggleAt` anchor it to the given bar section instead — useful when triggering the dash from a custom widget or script.
 
 **Examples:**
 ```bash
@@ -616,6 +620,8 @@ dms ipc call dash toggle ""
 dms ipc call dash open overview
 dms ipc call dash toggle media
 dms ipc call dash open weather
+dms ipc call dash toggleAt wallpaper center
+dms ipc call dash openAt overview right
 ```
 
 ### file
