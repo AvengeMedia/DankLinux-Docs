@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/configuration-snippet: |
       more_set_headers "Content-Type: text/plain";
-      return 200 "";
+      return 200 "# com.danklinux.dankcalendar\na5f12fcb-9ca2-4bda-9689-5b7bd597111b\n";
 spec:
   ingressClassName: nginx
   tls:
