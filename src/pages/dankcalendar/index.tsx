@@ -100,7 +100,7 @@ export default function DankCalendarHome(): React.ReactNode {
         <footer className={styles.footer}>
           <p>
             © 2026 AvengeMedia · <a href="/dankcalendar/privacy">Privacy Policy</a> ·{' '}
-            <a href="/dankcalendar/terms">Terms of Service</a> · Contact: avengemediallc at gmail dot com
+            <a href="/dankcalendar/terms">Terms of Service</a> · Contact: avengemedia dot us at gmail dot com
           </p>
         </footer>
       </main>
