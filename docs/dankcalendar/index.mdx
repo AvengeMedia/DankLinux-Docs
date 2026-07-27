@@ -5,6 +5,7 @@ sidebar_position: 1
 ---
 
 import Hero from '@site/src/components/Hero';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 <Hero
   asciiArt={`██████╗  ██████╗ █████╗ ██╗     
@@ -13,13 +14,23 @@ import Hero from '@site/src/components/Hero';
 ██║  ██║██║     ██╔══██║██║     
 ██████╔╝╚██████╗██║  ██║███████╗
 ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={false}
 />
 
 # DankCalendar
 
-`dcal` is a standalone calendar app that brings your Local, [Google](https://calendar.google.com/), [Microsoft](https://outlook.com/), [CalDAV](https://en.wikipedia.org/wiki/CalDAV), and [iCloud](https://www.icloud.com/calendar/) calendars together in one place. It runs as a lightweight daemon with a tray icon, keeps your accounts in sync in the background, and reminds you about events, all with the look and feel of [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell).
+DankCalendar is a free, open-source desktop calendar app for Linux. Its purpose is to bring your Local, [Google](https://calendar.google.com/), [Microsoft](https://outlook.com/), [CalDAV](https://en.wikipedia.org/wiki/CalDAV), and [iCloud](https://www.icloud.com/calendar/) calendars together in one place, so you can view and manage events, respond to meeting invitations, track tasks, and get reminders across all your accounts — while your data stays on your device. It runs as a lightweight daemon with a tray icon, keeps your accounts in sync in the background, and has the look and feel of [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell). `dcal` is DankCalendar's command-line name.
 
 Built with [Quickshell](https://quickshell.org/) and [Go](https://go.dev/).
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/dankcalendar/preview.png')}
+    alt="DankCalendar month view with the settings and add-account dialogs open"
+    style={{ maxWidth: '640px', width: '100%', borderRadius: '12px' }}
+  />
+  <figcaption>DankCalendar's month view, settings, and account setup.</figcaption>
+</figure>
 
 ## Features
 
