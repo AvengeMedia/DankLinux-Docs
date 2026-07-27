@@ -7,13 +7,74 @@ description: Release notes for the latest DankMaterialShell stable and point rel
 
 Latest release notes for DankMaterialShell (DMS) v1.5 Series. See the original release announcement in [updates](/blog).
 
+## v1.5.3
+
+**Released**: 2026-07-26
+
+### Features
+- DankCalendar has been released as a Flatpak on [Flathub](https://flathub.org/apps/com.danklinux.dankcalendar)!
+
+```bash
+flatpak install flathub com.danklinux.dankcalendar
+flatpak run com.danklinux.dankcalendar
+```
+
+### Fixes
+- dash: fix color tokens for placeholder in calendar, and weather failed by @bbedward (ad936bf)
+- systray: fix menu positioning on vbars by @bbedward (95b120b)
+- lock: fix dpms fade surface getting stuck after unlock by @bbedward (8477184)
+- polkit: fix DMS_DISABLE_POLKIT regression from qs 0.2 deprecation commit by @bbedward (0381a11)
+- popout: fix lifecycle of blur with various popouts by @bbedward (accdd09)
+- calendar/dcal: fix flatpak socket detection by @bbedward (f457e04)
+- settings: fix close IPC by @bbedward (f89fb67)
+- fix(lock): hold sleep inhibitor until compositor confirms lock by @tkroll-ionos in #2907
+- Fix(spotlight): improve file search query restoration and mode switching by @Legend-017 in #2887
+- fix: include Hyprland in minimal install logic by @NeoDarkness in #2872
+- network: fix networkPreference reverting from eth to wifi by @bbedward (5a80a32)
+- cups: fix initialization race by @bbedward (3927886)
+- fix(settings): reset AppBrowserPopup model on close to avoid crash by @feng-yifan in #2925
+- dbar/notifications: fix right click context menu position and add middle click to DnD by @bbedward (6c27b92)
+- dbar: fix click-through mask of center section by @bbedward (d2b61b9)
+- cups: fix sub/unsub race by @bbedward (7058b00)
+- sysupdate: fix gnome-terminal title by @bbedward (45cf6ec)
+
+### Other Changes
+- lock: add resilience for when the lock surface is rejected by @bbedward (876ead6)
+- matugen/neovim: respect terminalsAlwaysDark by @bbedward (7b08e61)
+- powermenu: don't require key release for actions other than suspend and hibernate by @bbedward (110396c)
+- theme: put full theme catalog in neovim dropdown by @bbedward (6061157)
+- matugen: remove padding 0 from gtk light by @bbedward (e5eff91)
+- mango: suppress excessive reload messages by @bbedward (bf5faf7)
+- matugen: add config dirs to detection of presence by @bbedward (4dd2f1d)
+- audio: revert wpctl workaround by @bbedward (ed5e2a2)
+- compositor/toplevels: filter on screen for generic compositors, without workspace distinction by @bbedward (4975960)
+- lock: avoid lock surface churn by @bbedward (2e0337b)
+- wallpaper: use filter chips for rando transitions by @bbedward (00c28f6)
+- location: prevent calls when weather auto-locate is disabled by @bbedward (23daca0)
+- lock/pam: attempt to fix fprintd retry spam after resume by @bbedward (b72b276)
+- dock: limit input mask to body, disable hover headroom unless enabled by @bbedward (f455456)
+- greeter: don't override manually selected session with saved/defaul by @bbedward (8321d28)
+- lock: guard dpms window by @bbedward (9b55383)
+- notification: clip region on animation exit by @bbedward (c2a5397)
+- display config: preserve config when turning off on niri by @bbedward (3d5a6fb)
+- window-rules/niri: make floating a tri-state by @bbedward (a64bd80)
+- battery: auto-apply power profile at startup when DMS managed by @bbedward (906eba5)
+- cc: migrate some settings to cache by @bbedward (e15db00)
+- bluetooth: add soft rfkill unblock, wait for adapter to become available instead of forfeiting subscription by @bbedward (c58d55d)
+- dock: use required properties in dock item delegate, fixes context injection on Qt 6.8 by @bbedward in #2926
+- port: record hand-ported master equivalents by @bbedward (6ba4b79)
+
+**GitHub Release**: https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.5.3
+
+---
+
 ## v1.5.2
 
 **Released**: 2026-07-17
 
 ### What's Changed
 
-#### Features
+### Features
 - feat(auth): expand shared PAM support for custom policies by @Purian23 (c2a6a7a)
 - feat(settings): add explicit border toggle and updated layouts by @Purian23 (dac08b3)
 - feat(notifications): introduce notification foreground layers settings override by @Purian23 (63ffd7c)
