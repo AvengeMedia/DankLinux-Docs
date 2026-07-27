@@ -11,3 +11,4 @@ resources:
 - server-ingress.yaml
 - dankinstall-ingress.yaml
 - flathub-verify-ingress.yaml
+- microsoft-verify-ingress.yaml
