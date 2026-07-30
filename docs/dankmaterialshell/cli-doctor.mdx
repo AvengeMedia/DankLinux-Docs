@@ -193,11 +193,16 @@ Required for GlobalProtect VPN connections that use SAML (browser-based) authent
 
 ### openconnect
 
-Required alongside `gp-saml-gui` for GlobalProtect SAML VPN connections. After `gp-saml-gui` captures the SAML prelogin cookie, [openconnect](https://gitlab.com/openconnect/openconnect) converts it into a full authentication cookie that NetworkManager can use.
+Required for GlobalProtect SAML VPN connections and Fortinet VPN profiles that use password authentication.
+
+- For GlobalProtect SAML, [openconnect](https://gitlab.com/openconnect/openconnect) converts the prelogin cookie from `gp-saml-gui` into an authentication cookie that NetworkManager can use.
+- For Fortinet password profiles started from the DMS VPN widget, DMS uses `openconnect --authenticate` directly and passes the short-lived cookie to NetworkManager. If the VPN server certificate is not trusted, DMS displays its fingerprint for confirmation and saves the approved fingerprint only after the tunnel connects successfully.
 
 :::note
-Both `gp-saml-gui` and `openconnect` are only needed for GlobalProtect VPNs with SAML authentication. Standard VPN connections that use username/password work without them.
+Native Fortinet authentication currently applies to profiles with `protocol=fortinet` and `authtype=password`. OTP/MFA challenge forms and other OpenConnect protocols are not included in this flow.
 :::
+
+![Fortinet VPN server certificate confirmation in DMS](/img/fortinet-certificate-prompt.png)
 
 ### danksearch
 
