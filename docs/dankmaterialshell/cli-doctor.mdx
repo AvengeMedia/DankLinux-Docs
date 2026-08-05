@@ -156,6 +156,30 @@ Required for printer management (adding, deleting, and configuring printers). Pr
 
 Required for external monitor brightness control, on most distributions requires `i2c-tools` and the user to be in the `i2c` group.
 
+### qt6-imageformats
+
+Qt image format plugins adding WebP, TIFF, GIF, JP2, and ICNS support — used for wallpapers, notification images, and previews.
+
+| Distribution | Package |
+|------|---------|
+| Arch | `qt6-imageformats` |
+| Fedora | `qt6-qtimageformats` |
+| Debian/Ubuntu | `qt6-image-formats-plugins` |
+| openSUSE | `qt6-imageformats` |
+| NixOS | `qt6.qtimageformats` |
+
+### kimageformats
+
+KDE image format plugins adding AVIF, HEIF, JXL, and EXR support.
+
+| Distribution | Package |
+|------|---------|
+| Arch | `kimageformats` |
+| Fedora | `kf6-kimageformats` |
+| Debian/Ubuntu | `kimageformat6-plugins` |
+| openSUSE | `kf6-kimageformats` |
+| NixOS | `kdePackages.kimageformats` |
+
 ### Terminal
 
 Detected terminals (in priority order): `ghostty`, `kitty`, `alacritty`, `foot`, `wezterm`

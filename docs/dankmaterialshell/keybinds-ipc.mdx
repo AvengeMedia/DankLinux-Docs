@@ -539,7 +539,7 @@ dms ipc call spotlight-bar toggleWith files
 All these modals support `open`, `close`, and `toggle` functions:
 
 - **clipboard** - Clipboard history manager
-- **notifications** - Notification center (also supports `clearAll`, `dismissAllPopups`, `toggleDoNotDisturb`, `getDoNotDisturb`, `enableDoNotDisturbIndefinitely`, `enableDoNotDisturbUntilTomorrowMorning`, and `enableDoNotDisturbUntil <timestampMs>`)
+- **notifications** - Notification center (also supports `clearAll`, `dismiss`, `dismissAllPopups`, `toggleDoNotDisturb`, `getDoNotDisturb`, `enableDoNotDisturbIndefinitely`, `enableDoNotDisturbUntilTomorrowMorning`, and `enableDoNotDisturbUntil <timestampMs>`)
 - **processlist** - System process list and performance monitor (also supports `focusOrToggle`)
 - **powermenu** - Power menu for system actions
 - **control-center** - Quick settings (network, bluetooth, audio, etc.)
@@ -550,6 +550,7 @@ All these modals support `open`, `close`, and `toggle` functions:
 dms ipc call clipboard toggle
 dms ipc call notifications open
 dms ipc call notifications clearAll
+dms ipc call notifications dismiss
 dms ipc call notifications dismissAllPopups
 dms ipc call notifications toggleDoNotDisturb
 dms ipc call notifications getDoNotDisturb
