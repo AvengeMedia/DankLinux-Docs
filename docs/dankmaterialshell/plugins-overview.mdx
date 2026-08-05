@@ -116,6 +116,24 @@ dms restart
 
 Browse [plugins.danklinux.com](https://plugins.danklinux.com) for installation links and documentation.
 
+### Reproduce Managed Plugins
+
+DMS keeps `~/.config/DankMaterialShell/plugins.lock.json` synchronized when registry plugins are installed, updated, or removed. The lockfile records each Git repository, optional monorepo path, and exact commit.
+
+```bash
+# Refresh the lockfile and optionally export a copy
+dms plugins lock
+dms plugins lock --output ~/plugins.lock.json
+
+# Install or reset plugins to the exact locked commits
+dms plugins restore ~/plugins.lock.json
+
+# Also remove managed plugins that are absent from the lockfile
+dms plugins restore ~/plugins.lock.json --prune
+```
+
+The lockfile covers DMS-managed Git plugins. It does not include system plugins, plugin settings, enablement state, or local plugin directories without Git provenance.
+
 ### Enable Plugin
 
 1. Open **Settings → Plugins**
