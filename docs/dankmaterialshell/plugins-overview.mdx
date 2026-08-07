@@ -142,6 +142,46 @@ The lockfile covers DMS-managed Git plugins. It does not include system plugins,
 4. Add to DankBar layout if applicable
 5. Restart shell: `dms restart`
 
+## Custom Registries
+
+DMS fetches installable plugins and themes from registries — Git repositories containing `plugins/` and/or `themes/` directories in the [registry format](https://github.com/AvengeMedia/dms-plugin-registry). The official registry is always active; additional registries can be added alongside it.
+
+> Requires DMS &ge; 1.6.0.
+
+### Managing Registries
+
+**GUI:** Settings → Plugins → Registries — add a registry by name and Git URL, or remove one. The official registry cannot be removed.
+
+**CLI:**
+
+```bash
+# Show configured registries
+dms registry list
+
+# Add a registry by name and Git URL
+dms registry add myregistry https://github.com/user/my-registry.git
+
+# Remove a registry
+dms registry remove myregistry
+```
+
+Additional registries are stored in `~/.config/DankMaterialShell/registries.json`. Names are short lowercase identifiers (letters, digits, hyphens) and become the local cache directory for that registry.
+
+### Resolution Order
+
+Registries are consulted in declaration order, official first. When two registries provide the same plugin or theme ID, the first occurrence wins — a custom registry cannot override an official entry. An unreachable registry is skipped so the remaining registries keep working.
+
+### Registry Format
+
+A registry is a Git repository with either or both of:
+
+- `plugins/*.json` — one plugin manifest per file
+- `themes/<theme-id>/theme.json` — one directory per theme
+
+A registry can provide only plugins, only themes, or both. See [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) for the manifest schema.
+
+> Plugins run with full desktop session permissions. Only add registries you trust.
+
 ## Official Plugins
 
 Maintained by the DankMaterialShell team at [dms-plugins](https://github.com/AvengeMedia/dms-plugins):
