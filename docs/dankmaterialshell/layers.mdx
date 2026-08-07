@@ -88,6 +88,15 @@ Namespaces for other component that aren't modals or popouts.
 > - **Niri**: Run `niri msg layers` to list active layer surfaces
 
 If you're a plugin dev, see the [plugin development](./plugin-development.mdx#widget-with-popout) page to add your layer namespace.
+
+## Floating Windows
+
+DMS application windows — Settings, Notepad, Polkit, Process List, the greeter, and the app/widget browsers — are regular XDG toplevel windows, not layer-shell surfaces. They share app ID `com.danklinux.dms`, so compositor **window rules** (not layer rules) apply to them.
+
+- **Floating vs. tiled**: **Theme & Colors** → **Floating Windows** → **Open Windows Floating** manages a compositor window rule that opens DMS windows floating (niri, Hyprland, MangoWC). The rule lives in a managed fragment (`~/.config/niri/dms/windowrules.kdl`, `~/.config/hypr/dms/windowrules.lua`, `~/.config/mango/dms/windowrules.conf`); if the fragment isn't included in your compositor config yet, a **First Time Setup** banner on the same page adds it when you click **Setup**.
+- **Transparency & blur**: floating windows have their own **Window Opacity** and foreground controls under **Theme & Colors** → **Floating Windows**, independent of layer surfaces (which use **Surface Styling**). Enable **Sync with Global Settings** to have floating windows follow Surface Styling.
+- **niri xray**: the `background-effect` xray behavior of DMS windows follows **Settings → Compositor → Layout → Xray Blur Effect** and is managed in `dms/layout.kdl` — a hand-written `background-effect` block for DMS in your main niri config is redundant and can be removed.
+
 ## Compositor Examples
 
 Each compositor has its own syntax for layer rules.
@@ -99,7 +108,7 @@ Each compositor has its own syntax for layer rules.
 In order for some layer rules (such as `animation`, `blur` and `dimaround`), you will have to disable the shell's animations and dim effect.
 
 - You can disable animations in **Settings**>**Personalization**>**Animation Speed** and set to **None**.
-- You can disable the dim in **Theme & Colors**>**Widget Styling** and untoggle **Darken Modal Background**.
+- You can disable the dim in **Settings**>**Launcher** and untoggle **Darken Modal Background**.
 
 :::
 
@@ -166,7 +175,7 @@ hl.layer_rule({
 <summary>Examples</summary>
 ##### Add a blur effect on the shell's Components
 
-Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
+Lower the shell's components' opacity in **Theme & Colors**>**Surface Styling** (**Surface Opacity**).
 ```lua
 -- Modals
 hl.layer_rule({

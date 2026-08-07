@@ -184,12 +184,16 @@ window-rule {
     clip-to-geometry true
 }
 
-// Open DMS windows as floating by default
+// Open DMS windows as floating by default (optional - DMS can manage this for you, see tip below)
 window-rule {
-    match app-id=r#"org.quickshell$"#
+    match app-id=r#"^com\.danklinux\.dms$"#
     open-floating true
 }
 ```
+
+:::tip[DMS-managed floating rule]
+DMS can manage this rule itself via **Settings → Theme & Colors → Floating Windows → Open Windows Floating** (on by default). The rule lives in a managed fragment at `~/.config/niri/dms/windowrules.kdl`; if that fragment isn't included in your config yet, a **First Time Setup** banner on the same page creates it and adds the include when you click **Setup**. DMS floating windows use app ID `com.danklinux.dms` — remove any hand-written rules targeting the old `org.quickshell` ID.
+:::
 
 ## Hyprland Configuration
 
@@ -350,9 +354,11 @@ hl.window_rule({ match = { class = "^(blueman-manager)$" }, floating = true })
 
 hl.window_rule({ match = { class = "^(org\\.gnome\\.Nautilus)$" }, floating = true })
 
--- Open DMS windows as floating by default
-hl.window_rule({ match = { class = "^(org.quickshell)$" }, floating = true })
+-- Open DMS windows as floating by default (optional — DMS can manage this for you)
+hl.window_rule({ match = { class = "^(com.danklinux.dms)$" }, floating = true })
 ```
+
+As on niri, **Settings → Theme & Colors → Floating Windows → Open Windows Floating** can manage this rule in `~/.config/hypr/dms/windowrules.lua` (click **Setup** on the banner if the fragment isn't included yet). DMS floating windows use app ID `com.danklinux.dms`.
 
 ## MangoWC Configuration
 
