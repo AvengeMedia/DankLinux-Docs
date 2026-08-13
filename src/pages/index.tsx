@@ -405,7 +405,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                     className={styles.preconfiguredCard}
                   >
-                    <img src="/img/distros/fedora.svg" alt="Fedora" className={styles.preconfiguredLogo} />
+                    <img src="/img/fedora-mark.svg" alt="Fedora" className={styles.preconfiguredLogo} />
                     <div className={styles.preconfiguredInfo}>
                       <span className={styles.preconfiguredName}>Fedora Miracle Spin</span>
                       <span className={styles.preconfiguredDesc}>Official Fedora Spin with MiracleWM + DMS</span>
