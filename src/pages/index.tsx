@@ -383,21 +383,38 @@ export default function Home() {
               {/* Pre-configured flavors */}
               <div className={styles.preconfiguredRow}>
                 <span className={styles.preconfiguredLabel}>Pre-configured flavors</span>
-                <a
-                  href="https://github.com/zirconium-dev/zirconium/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.preconfiguredCard}
-                >
-                  <img src="/img/z.svg" alt="Zirconium" className={styles.preconfiguredLogo} />
-                  <div className={styles.preconfiguredInfo}>
-                    <span className={styles.preconfiguredName}>Zirconium</span>
-                    <span className={styles.preconfiguredDesc}>Fedora-based immutable OS with niri + DMS</span>
-                  </div>
-                  <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className={styles.preconfiguredArrow}>
-                    <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </a>
+                <div className={styles.preconfiguredCards}>
+                  <a
+                    href="https://github.com/zirconium-dev/zirconium/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.preconfiguredCard}
+                  >
+                    <img src="/img/z.svg" alt="Zirconium" className={styles.preconfiguredLogo} />
+                    <div className={styles.preconfiguredInfo}>
+                      <span className={styles.preconfiguredName}>Zirconium</span>
+                      <span className={styles.preconfiguredDesc}>Fedora-based immutable OS with niri + DMS</span>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className={styles.preconfiguredArrow}>
+                      <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+                  <a
+                    href="https://fedoraproject.org/spins/miraclewm/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.preconfiguredCard}
+                  >
+                    <img src="/img/distros/fedora.svg" alt="Fedora" className={styles.preconfiguredLogo} />
+                    <div className={styles.preconfiguredInfo}>
+                      <span className={styles.preconfiguredName}>Fedora Miracle Spin</span>
+                      <span className={styles.preconfiguredDesc}>Official Fedora Spin with MiracleWM + DMS</span>
+                    </div>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" className={styles.preconfiguredArrow}>
+                      <path d="M7 4L13 10L7 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+                </div>
               </div>
             </div>
           </section>
