@@ -1,0 +1,157 @@
+---
+title: NixOS安装
+description: 使用本机 nixpkgs 在 NixOS 上安装和配置 DankGreeter
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║  ███╗██████╔╝█████╗  █████╗     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══╝     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗╚██████╔╝██║  ██║███████╗███████╗   ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+                                                                            `}
+  hideTitle={true}
+/>
+
+DankGreeter 可以使用本机 nixpkgs 模块安装在 NixOS 上。这是 NixOS 26.05+ 用户的推荐安装方法。
+
+## 安装 {#installation}
+
+### 1.启用 DankGreeter {#1-enable-dankgreeter}
+
+在 NixOS 配置中启用并配置欢迎程序：
+
+```nix
+services.displayManager.dms-greeter = {
+  enable = true;
+  compositor.name = "niri";  # Or "hyprland" or "sway"
+};
+```
+
+:::warning
+
+合成器必须通过 NixOS 配置安装才能出现在 DankGreeter 中，而不是通过 home-manager。
+
+:::
+
+## 配置选项 {#configuration-options}
+
+```nix
+services.displayManager.dms-greeter = {
+  compositor = {
+    name = "niri"; # Required. Can be also "hyprland" or "sway"
+    customConfig = ''
+      # Optional custom compositor configuration
+    '';
+  };
+
+  # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
+  configHome = "/home/yourusername";
+
+  # Custom config files for non-standard config locations
+  configFiles = [
+    "/home/yourusername/.config/DankMaterialShell/settings.json"
+  ];
+
+  # Save the logs to a file
+  logs = {
+    save = true;
+    path = "/tmp/dms-greeter.log";
+  };
+
+  # Custom Quickshell Package
+  quickshell.package = pkgs.quickshell;
+};
+```
+
+### 将 Flake 包与 NixOS 模块结合使用 {#using-flake-package-with-nixos-module}
+
+您可以使用 DankMaterialShell flake 中的包，同时仍然使用本机 NixOS 模块。这使您可以在保留模块配置的同时获得更快的更新：
+
+首先，将 flake 输入添加到 `flake.nix`：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+:::tip[使用不稳定版本]
+如果您想使用 master 分支中的不稳定 (-git) 版本来加快更新速度，请从 URL 中删除 `/stable`：
+```nix
+dms.url = "github:AvengeMedia/DankMaterialShell";
+```
+但是，请注意，不稳定版本可能无法正常工作，并且可能包含重大更改。该文档可能无法反映不稳定版本中的最新更改。
+:::
+
+然后将 flake 包与本机模块一起使用：
+
+```nix
+services.displayManager.dms-greeter = {
+  enable = true;
+  compositor.name = "niri";
+  package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+};
+```
+
+:::warning
+
+当将 flake 包与本机 nixpkgs 模块一起使用时，默认情况下某些依赖项可能不会自动启用，并且某些配置可能会丢失。您可能需要手动安装可选依赖项或调整设置以满足您的需求。
+
+:::
+
+## 自动登录 {#auto-login}
+
+DankGreeter 可以跳过登录屏幕并自动启动会话
+使用标准 NixOS 显示管理器选项启动：
+
+```nix
+services.displayManager = {
+  autoLogin = {
+    enable = true;
+    user = "yourusername";
+  };
+
+  # Required for auto-login: identifies which session to launch.
+  # Use the .desktop basename without the extension (e.g. "niri", "hyprland").
+  defaultSession = "niri";
+};
+```
+
+`defaultSession`（或至少一项
+`services.displayManager.sessionPackages`) 是必需的 — 模块需要
+知道要启动哪个会话，否则将无法构建。
+
+## 身份验证（PAM） {#authentication-pam}
+
+在 NixOS 上，`/etc/pam.d/greetd` 是由模块系统生成的，因此 DMS 的自动 PAM 管理不适用。您的系统 PAM 策略对于迎宾员始终具有权威性。这相当于“设置”→“问候语”中的“**使用系统 PAM 身份验证**”模式。
+
+要向greeter添加指纹或安全密钥身份验证，请在NixOS配置中扩展greeted服务：
+
+```nix
+security.pam.services.greetd = {
+  fprintAuth = true;  # Fingerprint via pam_fprintd
+  u2fAuth = true;     # Security key via pam_u2f (configure security.pam.u2f options)
+};
+```
+
+DankGreeter 检测已解析的greetd 堆栈中存在的模块并自动调整其提示。
+
+## 重建 {#rebuilding}
+
+进行配置更改后，不要忘记重建配置：
+
+```bash
+sudo nixos-rebuild switch
+```

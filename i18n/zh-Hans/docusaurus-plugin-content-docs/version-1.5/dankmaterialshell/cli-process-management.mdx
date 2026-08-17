@@ -1,0 +1,327 @@
+---
+title: 进程管理
+description: 使用运行、重新启动和终止命令管理 DankMaterialShell 进程
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ██████╗  ██████╗  ██████╗███████╗███████╗███████╗
+██╔══██╗██╔══██╗██╔═══██╗██╔════╝██╔════╝██╔════╝██╔════╝
+██████╔╝██████╔╝██║   ██║██║     █████╗  ███████╗███████╗
+██╔═══╝ ██╔══██╗██║   ██║██║     ██╔══╝  ╚════██║╚════██║
+██║     ██║  ██║╚██████╔╝╚██████╗███████╗███████║███████║
+╚═╝     ╚═╝  ╚═╝ ╚═════╝  ╚═════╝╚══════╝╚══════╝╚══════╝`}
+  hideTitle={true}
+/>
+
+`dms` 命令提供用于运行、重新启动和终止 DankMaterialShell 实例的进程管理功能。这些命令管理 DMS 后端服务器，后者又作为子进程生成并管理 Quickshell UI 进程，配置它们之间的 IPC 通信。
+
+## 概述 {#overview}
+
+DankMaterialShell 由一个 Go 后端服务器组成，该服务器作为子进程生成并管理 Quickshell UI 前端。进程管理命令协调这两个组件：
+- 启动DMS后端服务器
+- 使用 DMS 配置生成 Quickshell 作为子进程
+- 配置后端和前端之间的IPC通信
+- 重新启动两个进程以应用配置更改
+- 管理守护进程和会话模式
+
+## 快速入门 {#quick-start}
+
+启动 DMS：
+
+```bash
+dms run
+```
+
+重新启动 DMS（终止现有实例并重新启动）：
+
+```bash
+dms restart
+```
+
+终止所有正在运行的 DMS 实例：
+
+```bash
+dms kill
+```
+
+## 命令 {#commands}
+
+### `dms run` {#dms-run}
+
+通过启动后端服务器和 Quickshell UI 进程来启动 DankMaterialShell，然后通过 Unix 套接字在它们之间建立 IPC 通信。
+
+```bash
+dms run [flags]
+```
+
+**标志**：
+- `-d, --daemon`：以守护进程模式运行（与终端分离）
+- `--session`：会话管理模式（与 systemd 或其他会话管理器一起使用）
+- `-h, --help`：显示帮助
+
+**示例**：
+
+```bash
+# Run DMS normally (attached to terminal)
+dms run
+
+# Run DMS in daemon mode (detached)
+dms run --daemon
+
+# Run DMS as a session-managed process
+dms run --session
+```
+
+**何时使用每种模式**：
+- **普通模式**：用于测试、调试或手动 shell 管理
+- **守护进程模式**：用于无需终端连接的后台操作
+- **会话模式**：通过 systemd 用户单元或类似会话管理器管理 DMS 时
+
+### `dms restart` {#dms-restart}
+
+终止 DMS 后端服务器（及其 Quickshell 子进程）并重新启动它们。当您更改配置并想要重新加载 shell 时，这非常有用。
+
+```bash
+dms restart [flags]
+```
+
+**标志**：
+- `-h, --help`：显示帮助
+
+**示例**：
+
+```bash
+# Restart DMS
+dms restart
+```
+
+**它的作用**：
+1. 终止 DMS 后端服务器（同时终止其 Quickshell 子进程）
+2. 如果需要，清理任何孤立的 Quickshell 进程
+3. 重新启动后端，这会生成一个新的 Quickshell 实例
+4. 重新建立IPC通信
+
+**用例**：
+- 修改DMS配置文件后
+- 更新主题或插件后
+- 当外壳变得无响应时
+- 应用影响 DMS 的合成器更改后
+
+### `dms kill` {#dms-kill}
+
+终止 DMS 后端服务器（它会自动终止其 Quickshell 子进程）而不重新启动。
+
+```bash
+dms kill [flags]
+```
+
+**标志**：
+- `-h, --help`：显示帮助
+
+**示例**：
+
+```bash
+# Kill all DMS instances
+dms kill
+```
+
+**用例**：
+- 注销前停止 DMS
+- 清理卡住的进程
+- 切换到不同的桌面环境
+- 解决流程问题
+
+## 登录时运行 DMS {#running-dms-at-login}
+
+:::tip[DankInstall 用户]
+
+如果您使用 [dankinstall](../dankinstall)，DMS 已配置为 systemd 服务并自动启动。您无需在此处配置任何内容。
+
+:::
+
+### Systemd 用户服务（推荐） {#systemd-user-service-recommended}
+
+Systemd 通过journalctl 提供自动启动、会话集成和日志记录。这是 dankinstall 设置的默认设置。
+
+```bash
+# Enable and start
+systemctl --user enable --now dms
+
+# Check status
+systemctl --user status dms
+
+# View logs
+journalctl --user -u dms -f
+```
+
+无论您使用 systemd 还是手动启动，`dms restart` 和 `dms kill` 命令都可以工作。
+
+:::warning
+
+如果使用 systemd，请勿将 `dms run` 添加到您的合成器配置中 - 您最终会得到两个实例。
+
+:::
+
+### 手动启动 {#manual-launch}
+
+添加到合成器的自动启动配置：
+
+**海普拉兰** (`~/.config/hypr/hyprland.lua`):
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("dms run")
+end)
+```
+
+**摇摆**（`~/.config/sway/config`）：
+```conf
+exec dms run
+```
+
+**尼里**（`~/.config/niri/config.kdl`）：
+```kdl
+spawn-at-startup "dms" "run"
+```
+
+### 自定义 Systemd 单元（高级） {#custom-systemd-unit-advanced}
+
+软件包安装和 dankinstall 会附带一个 systemd 单元文件。如果您需要自定义单位（例如，对于没有 `make install` 的源构建），请创建 `~/.config/systemd/user/dms.service`：
+
+```ini
+[Unit]
+Description=Dank Material Shell (DMS)
+PartOf=graphical-session.target
+After=graphical-session.target
+Requisite=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/dms run --session
+Restart=always
+RestartSec=2
+TimeoutStopSec=10
+
+[Install]
+WantedBy=graphical-session.target
+```
+
+然后重新加载并启用：
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now dms
+```
+
+## 流程架构 {#process-architecture}
+
+DMS 作为具有 IPC 通信的多进程系统运行：
+
+1. **DMS后端服务器**（Go）：处理IPC请求、插件管理、系统监控和CLI操作
+2. **Quickshell UI Process**：呈现 shell 界面的 Qt/QML 运行时（作为后端的子进程生成）
+3. **IPC层**：后端和前端之间的Unix套接字通信
+4. **插件**：扩展功能的可选流程
+
+**进程层次结构**：
+```
+compositor (hyprland/sway/niri/etc)
+└── dms backend server
+    ├── IPC server (Unix socket)
+    ├── Plugin manager
+    └── quickshell (child process)
+        └── Connects to parent via IPC
+```
+
+当您运行 `dms run` 时，后端服务器首先启动，创建 IPC 套接字，然后生成 Quickshell 作为子进程。 Quickshell 通过 Unix 套接字连接回其父级，以执行亮度控制、按键绑定显示和其他系统操作等命令。
+
+## 故障排除 {#troubleshooting}
+
+### DMS 无法启动 {#dms-wont-start}
+
+检查 Quickshell 是否已安装：
+```bash
+which qs
+```
+
+检查冲突的进程：
+```bash
+ps aux | grep quickshell
+```
+
+尝试在没有守护进程模式的情况下运行以查看错误：
+```bash
+dms run
+```
+
+### 多个实例运行 {#multiple-instances-running}
+
+杀死所有实例并重新启动：
+```bash
+dms kill
+sleep 1
+dms run --daemon
+```
+
+### 配置未重新加载 {#configuration-not-reloading}
+
+使用 `dms restart` 而不是手动终止进程：
+```bash
+dms restart
+```
+
+### Systemd 服务失败 {#systemd-service-fails}
+
+检查日志是否有错误：
+```bash
+journalctl --user -u dms.service -n 50
+```
+
+验证服务文件具有正确的路径：
+```bash
+systemctl --user cat dms.service
+```
+
+## 与合成器集成 {#integration-with-compositor}
+
+DMS 旨在与 Wayland 合成器配合使用。进程管理命令确保 DMS 在合成器会话中干净地运行：
+
+- **Hyprland**：使用 `exec-once` 进行自动启动
+- **Sway**：使用 `exec` 进行自动启动
+- **Niri**：使用 `spawn-at-startup` 进行自动启动
+- **MangoWC**：使用特定于合成器的自动启动机制
+
+当合成器退出时，DMS 后端应自动终止，这也将终止其 Quickshell 子进程。如果进程未正确清理，请在注销之前运行 `dms kill`。
+
+## 命令参考 {#command-reference}
+
+```bash
+dms [command] [flags]
+```
+
+**进程管理命令**：
+- `run [flags]`：使用 DMS 配置启动 Quickshell
+- `restart`：终止并重新启动 DMS
+- `kill`：终止所有正在运行的 DMS 实例
+
+**全局选项**：
+- `-c, --config <path>`：指定自定义DMS配置目录
+- `-h, --help`：显示帮助
+
+**运行命令标志**：
+- `-d, --daemon`：以守护进程模式运行
+- `--session`：会话管理模式
+
+## 其他 CLI 命令 {#other-cli-commands}
+
+`dms` 命令还提供其他功能：
+
+- **IPC**：`dms ipc` - 向正在运行的 DMS 实例发送命令（请参阅[按键绑定和 IPC](/docs/dankmaterialshell/keybinds-ipc)）
+- **按键绑定**：`dms keybinds` - 管理按键绑定备忘单（请参阅[按键绑定和备忘单](/docs/dankmaterialshell/cli-keybinds-cheatsheets)）
+- **亮度**：`dms brightness` - 控制设备亮度（参见[亮度控制](/docs/dankmaterialshell/cli-brightness)）
+- **Dank16**：`dms dank16` - 生成调色板（请参阅 [Dank16](/docs/dankmaterialshell/cli-dank16)）
+- **插件**：`dms plugins` - 管理 DMS 插件（请参阅[插件概述](/docs/dankmaterialshell/plugins-overview)）
+- **更新**：`dms update` - 更新 DankMaterialShell
+- **版本**：`dms version` - 显示版本信息
+
+运行 `dms --help` 以获得可用命令的完整列表。

@@ -48,7 +48,11 @@ function BlogSidebarDesktop({ sidebar }: any): React.JSX.Element {
         })}>
         <div style={{ paddingBottom: '1rem', borderBottom: '1px solid rgba(208, 188, 255, 0.15)', marginBottom: '1.25rem' }}>
           <div style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>
-            Latest Release Notes
+            {translate({
+              id: 'custom.blog.latestReleaseNotes',
+              message: 'Latest Release Notes',
+              description: 'Heading above the latest release link in the blog sidebar',
+            })}
           </div>
           <a
             href={changelogUrl}
@@ -68,7 +72,13 @@ function BlogSidebarDesktop({ sidebar }: any): React.JSX.Element {
             }}
           >
             <span>📋</span>
-            <span>DMS v{versionLabel} Series</span>
+            <span>
+              {translate({
+                id: 'custom.blog.releaseSeries',
+                message: 'DMS v{versionLabel} Series',
+                description: 'Link to the changelog for the latest DMS release series',
+              }, {versionLabel})}
+            </span>
           </a>
         </div>
 

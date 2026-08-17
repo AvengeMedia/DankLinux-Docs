@@ -1,0 +1,319 @@
+---
+title: 安装
+description: 安装 DankSearch 应用程序启动器
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
+# DankSearch 安装 {#danksearch-installation}
+
+`dsearch` 具有零依赖性并编译为单个静态二进制文件。
+
+:::tip[NixOS 用户]
+如果您使用 NixOS，请参阅专用的 [NixOS 安装指南](nixos-flake)，了解使用 flakes 或本机 nixpkgs 模块的声明式安装。
+:::
+
+## 安装方法 {#installation-methods}
+
+选择最适合您系统的安装方法：
+
+### 尼克斯操作系统 {#nixos}
+
+对于 NixOS 用户，我们建议使用声明式安装方法：
+
+- **[NixOS 模块](nixos)** - **推荐** 用于使用 nixpkgs stable 的 NixOS 26.05+
+- **[Flake 安装（主管理器）](nixos-flake)** - 用于每用户安装或更快更新
+
+### 分发包 {#distribution-packages}
+
+### Arch Linux 及其衍生版 {#arch--derivatives}
+
+<Tabs>
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+paru -S dsearch-bin
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+paru -S dsearch-git
+```
+
+</TabItem>
+</Tabs>
+
+### Fedora 和 CentOS {#fedora--centos}
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dsearch
+```
+
+### Debian 和 Ubuntu {#debian--ubuntu}
+
+#### Debian {#debian}
+
+软件包已发布在 OBS 上，用于 **Debian 13 (Trixie)**、**Debian 测试** 和 **Debian Sid**。
+
+选择您的版本：
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dsearch
+```
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dsearch
+```
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dsearch
+```
+
+</TabItem>
+</Tabs>
+
+#### Ubuntu {#ubuntu}
+
+Ubuntu 26.04 LTS+ (Resolute Raccoon) 通过 Launchpad PPA 支持。
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+sudo apt install dsearch
+```
+
+### openSUSE 和衍生产品 {#opensuse--derivatives}
+
+DankSearch 可通过 OpenSUSE Tumbleweed、Leap 16/16.1 和 Slowroll 的开放构建服务 (OBS) 获得。
+
+选择您的发行版：
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dsearch
+```
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dsearch
+```
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dsearch
+```
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dsearch
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux {#void-linux}
+
+:::note
+
+从我们的 R2 支持的 XBPS 存储库安装 DankSearch 或从源代码构建它。
+
+:::
+
+:::warning[存储库迁移]
+
+替换现有存储库文件中的旧 URL：
+
+```bash
+sudo sed -i 's|https://avengemedia.github.io/DankLinux/current|https://void.danklinux.com/danklinux/current|' /etc/xbps.d/danklinux.conf
+```
+
+冻结的 GitHub Pages 存储库不再接收更新，并将被
+**2026 年 7 月 24 日 22:27 UTC** 后退休。
+
+:::
+
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DankLinux Repository" default>
+
+```bash
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S danksearch
+```
+
+:::note
+
+第一次同步时，`xbps-install` 将输出我们的签名密钥指纹，并要求您输入 `y` 以信任并导入它。验证密钥是否与我们的官方签名指纹匹配。
+
+:::
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
+
+如果您更喜欢使用 `xbps-src` 从源代码构建：
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the templates (adjust paths as needed)
+cp -R ../DankLinux/distro/void/srcpkgs/danksearch* srcpkgs/
+
+# Build the package
+./xbps-src pkg danksearch
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs danksearch
+```
+
+</TabItem>
+</Tabs>
+
+### Gentoo {#gentoo}
+
+`gui-apps/danksearch` 可在官方 [guru](https://wiki.gentoo.org/wiki/Project:GURU) 社区界面中找到。
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/danksearch
+```
+
+:::note
+
+guru 覆盖包的关键字为 `~amd64`，因此您可能需要接受测试关键字：
+
+```bash
+echo "gui-apps/danksearch ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/danksearch
+```
+
+:::
+
+分发包包括 systemd 用户服务。启用它以进行自动索引更新：
+
+```bash
+systemctl --user enable --now dsearch
+```
+
+### 预构建的二进制文件 {#pre-built-binaries}
+
+下载适合您的架构的最新版本：
+
+```bash
+# Download and install
+wget https://github.com/AvengeMedia/danksearch/releases/latest/download/dsearch-linux-amd64.gz
+gunzip dsearch-linux-amd64.gz
+chmod +x dsearch-linux-amd64
+sudo mv dsearch-linux-amd64 /usr/local/bin/dsearch
+```
+
+安装并启用 systemd 用户服务以进行自动索引更新：
+
+```bash
+mkdir -p ~/.config/systemd/user
+wget https://raw.githubusercontent.com/AvengeMedia/danksearch/refs/heads/master/assets/dsearch.service -O ~/.config/systemd/user/dsearch.service
+systemctl --user enable --now dsearch
+```
+
+该服务运行具有文件监视功能的 API 服务器，当文件更改时自动更新索引。
+
+### 从源代码构建 {#from-source}
+
+要求：Go 1.24+
+
+```bash
+git clone https://github.com/AvengeMedia/danksearch
+cd danksearch
+make
+sudo make install
+make install-service
+systemctl --user enable --now dsearch
+```
+
+## 验证 {#verification}
+
+测试安装：
+
+```bash
+# Check version
+dsearch version
+
+# Build initial index
+dsearch index generate
+```
+
+## 系统要求 {#system-requirements}
+
+- **操作系统**：基于Unix，兼容大多数基于Unix的操作系统（Linux、MacOS、BSD）
+- **Go 版本**：1.24+（用于从源代码构建）
+
+## 与 DMS 集成 {#integration-with-dms}
+
+:::tip
+
+安装 dsearch 后，DankMaterialShell 用户可以通过在启动器中键入 `/` 来启动文件系统搜索。
+
+:::
+
+## 后续步骤 {#next-steps}
+
+- [配置](configuration) - 配置 dsearch
+- [用法](usage) - 学习 CLI 命令和 API 用法

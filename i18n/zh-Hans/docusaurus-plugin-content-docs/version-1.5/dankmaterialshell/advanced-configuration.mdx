@@ -1,0 +1,364 @@
+---
+title: 高级配置
+description: 高级设置和自定义选项
+sidebar_position: 9
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 通过前缀为 `DMS_` 的环境变量支持多种高级配置选项。
+
+## 核心配置 {#core-configuration}
+
+### DMS_RUN_GREETER {#dmsrungreeter}
+
+启用欢迎/登录屏幕模式而不是常规 shell 模式。用于显示管理器与greetd的集成。
+
+```bash
+DMS_RUN_GREETER=1 dms run
+```
+
+### DMS_GREET_CFG_DIR {#dmsgreetcfgdir}
+
+指定迎宾模式的自定义配置目录（默认为 `/etc/greetd/.dms`）。对于将问候语设置与用户设置隔离很有用。
+
+```bash
+DMS_GREET_CFG_DIR=/custom/path dms run
+```
+
+### DMS_SOCKET {#dmssocket}
+
+用于 DMS 内部服务通信的自定义 Unix 套接字路径。由 DMSService、NetworkService、SessionService 和 PortalService 用于 IPC。
+
+```bash
+DMS_SOCKET=/tmp/custom-dms.sock dms run
+```
+
+## 显示与渲染 {#display--rendering}
+
+### DMS_DISABLE_MATUGEN {#dmsdisablematugen}
+
+禁用 matugen 动态主题系统以进行故障排除或使用静态主题时。设置为 `1` 或 `true` 禁用。
+
+```bash
+DMS_DISABLE_MATUGEN=1 dms run
+```
+
+### DMS_ENABLE_GTK4_REFRESH {#dmsenablegtk4refresh}
+
+每次 matugen 重建后启用 GTK4 实时主题刷新。运行 GTK4/libadwaita 应用程序仅在系统颜色方案更改时重新加载 `~/.config/gtk-4.0` 颜色，因此 DMS 通过相反的值短暂往返 `color-scheme` 来强制它。一些遵循门户颜色方案（尤其是 Chromium/Chrome）的应用程序可能会错过恢复信号并陷入错误的模式，因此默认情况下会禁用此功能 - 如果没有它，GTK4 应用程序将在下次启动时选择新的颜色。设置为 `1` 启用。
+
+```bash
+DMS_ENABLE_GTK4_REFRESH=1 dms run
+```
+
+### DMS_DISABLE_CAVA {#dmsdisablecava}
+
+禁用内置 Cava 音频可视化工具。设置为 `1` 禁用。
+
+```bash
+DMS_DISABLE_CAVA=1 dms run
+```
+
+### DMS_DISABLE_LAYER {#dmsdisablelayer}
+
+出于性能或兼容性原因，禁用弹出窗口小部件上的图层效果。设置为 `true` 以禁用图层渲染。
+
+```bash
+DMS_DISABLE_LAYER=true dms run
+```
+
+### 阴影和高程迁移注释（高级用户） {#shadow--elevation-migration-notes-power-users}
+
+如果您手动编辑 `settings.json`，请使用：
+
+```text
+~/.config/DankMaterialShell/settings.json
+```
+
+重要按键和兼容性说明：
+
+- 全局阴影方向（`m3ElevationLightDirection`）支持：`autoBar`、`top`、`topLeft`、`topRight`、`bottom`。
+- 旧/手动 `left` 或 `right` 值现在回落到 `top`。
+- 每条覆盖仍然使用 `barConfigs[].shadowIntensity`（以及相关的颜色/不透明度键）来激活特定于条的阴影。
+- 每条方向覆盖键：
+- `barConfigs[].shadowDirectionMode`：`inherit` | `autoBar` | `manual`
+- `barConfigs[].shadowDirection`：`top` | `topLeft` | `topRight` | `bottom`
+- 较旧/手动的每条 `shadowDirection: left/right` 现在回落到 `top`。
+
+避免重复或意外的阴影行为：
+
+- `barElevationEnabled: false` 本身不会禁用活动的每条覆盖。
+- 如果某个条仍然显示阴影，则将该条的 `shadowIntensity` 设置为 `0`。
+- `m3ElevationEnabled: false` 禁用全局标高，但活动的每条覆盖仍然可以为该条呈现。
+
+迁移行为：
+
+- 对于较旧的配置，旧的栏阴影状态已迁移到 `barElevationEnabled`。
+- 如果 `settings.json` 是只读的，则在文件可写之前迁移/回写可能不会持续。
+
+### 图层变量和全屏切换 {#layer-variables-and-fullscreen-toggles}
+
+DMS 使用合成器的层壳协议进行全屏堆叠。由
+default、bar、dock、launcher、popout、modal 和通知界面使用它们的
+记录了 `top` 行为。仅对应出现的曲面使用 `overlay`
+在全屏窗口上方。
+
+设置 UI 为 DankBar、Dock 和 Dock 提供 **使用覆盖层** 切换
+发射器。这些切换在关闭时直接映射到 `top`，在打开时直接映射到 `overlay`。
+环境变量有更强的覆盖：如果匹配 `DMS_*_LAYER`
+设置变量后，该值会优先于 UI 切换。
+
+框架模式与全屏策略是分开的。当启用可见框架时，
+栏和停靠表面可能在内部使用 `overlay`，因此它们的图标堆叠在上面
+分离模式和连接模式下的框架。全屏窗口仍然
+由合成器和上面的每个表面层选择处理。
+
+### DMS_DANKBAR_LAYER {#dmsdankbarlayer}
+
+控制 DankBar 面板的 Wayland 层。有效值：`bottom`、`overlay`、`background` 或 `top`（默认）。对于窗口堆叠问题很有用。
+
+设置 UI 还具有每栏 **使用覆盖层** 切换功能。如果这个
+设置了环境变量，它优先于栏的 UI 切换
+层。
+
+```bash
+DMS_DANKBAR_LAYER=overlay dms run
+```
+
+
+### DMS_POPOUT_LAYER {#dmspopoutlayer}
+
+控制 DankBar 弹出窗口小部件的 Wayland 层。有效值：`bottom`、`overlay`、`background` 或 `top`（默认）。对于窗口堆叠问题很有用。
+
+未设置时，栏启动的弹出窗口将继承触发栏的有效
+层。例如，启用**使用覆盖层**的栏将打开其
+`overlay` 上的弹出窗口。设置 `DMS_POPOUT_LAYER` 显式覆盖
+继承。
+
+```bash
+DMS_POPOUT_LAYER=overlay dms run
+```
+
+### DMS_MODAL_LAYER {#dmsmodallayer}
+
+控制模式窗口（如启动器、设置面板和其他弹出窗口）的 Wayland 图层。有效值：`bottom`、`overlay`、`background` 或 `top`（默认）。
+
+启动器设置页面还有**使用覆盖层**。如果
+`DMS_MODAL_LAYER` 已设置，环境变量胜出模式和启动器
+分层。取消设置后，启动器仍然可以通过其 UI 使用 `overlay`
+切换或从 Dock 启动器按钮继承覆盖触发器。
+
+```bash
+DMS_MODAL_LAYER=overlay dms run
+```
+
+### DMS_OSD_LAYER {#dmsosdlayer}
+
+控制屏幕显示的 Wayland 图层（音量、亮度等）。有效值：`bottom`、`overlay`（默认）、`background` 或 `top`。
+
+```bash
+DMS_OSD_LAYER=top dms run
+```
+
+### DMS_NOTIFICATION_LAYER {#dmsnotificationlayer}
+
+控制通知弹出窗口的 Wayland 层。有效值：`bottom`、`overlay`、`background` 或 `top`（默认）。
+
+这仍然是通知弹出窗口的仅环境层覆盖。
+
+```bash
+DMS_NOTIFICATION_LAYER=overlay dms run
+```
+
+## 系统集成 {#system-integration}
+
+### DMS_DISABLE_POLKIT {#dmsdisablepolkit}
+
+如果您希望使用不同的 polkit 代理，请禁用本机 polkit 集成。
+
+```bash
+DMS_DISABLE_POLKIT=1 dms run
+```
+
+### DMS_PREFERRED_BATTERY {#dmspreferredbattery}
+
+当检测到多个电池时强制使用特定的电池设备（例如双电池笔记本电脑）。提供 UPower 设备名称/路径。
+
+```bash
+DMS_PREFERRED_BATTERY=/org/freedesktop/UPower/devices/battery_BAT0 dms run
+```
+
+### DMS_HIDE_TRAYIDS {#dmshidetrayids}
+
+要从系统托盘栏隐藏的系统托盘图标 ID 的逗号分隔列表。
+
+```bash
+DMS_HIDE_TRAYIDS=discord,spotify,steam dms run
+```
+
+```bash
+DMS_DWL_TAG_COUNT=5 dms run
+```
+
+### DMS_FORCE_EXTWS {#dmsforceextws}
+
+即使在提供替代实现的合成器上也强制使用 `ext-workspace-v1` 协议。当您更喜欢标准化协议而不是特定于合成器的协议时，这很有用。
+
+```bash
+DMS_FORCE_EXTWS=1 dms run
+```
+
+## 打印配置 {#printing-configuration}
+
+### DMS_IPP_HOST {#dmsipphost}
+
+指定 IPP/CUPS 打印服务器的主机名或 IP 地址。如果未设置，则默认为 `localhost`。
+
+```bash
+DMS_IPP_HOST=printserver.local dms run
+```
+
+### DMS_IPP_PORT {#dmsippport}
+
+指定 IPP/CUPS 打印服务器的端口号。如果未设置，则默认为 `631`（标准 IPP 端口）。
+
+```bash
+DMS_IPP_PORT=631 dms run
+```
+
+### DMS_IPP_用户名 {#dmsippusername}
+
+用于通过 IPP/CUPS 打印服务器进行身份验证的用户名。如果不需要身份验证，请保留未设置。
+
+```bash
+DMS_IPP_USERNAME=printuser dms run
+```
+
+### DMS_IPP_PASSWORD {#dmsipppassword}
+
+用于验证 IPP/CUPS 打印服务器的密码。如果不需要身份验证，请保留未设置。
+
+```bash
+DMS_IPP_PASSWORD=secret dms run
+```
+
+## 设置环境变量 {#setting-environment-variables}
+
+:::tip[Systemd / DankInstall 用户]
+
+如果您使用systemd（包括dankinstall用户）管理DMS，请在`~/.config/environment.d/90-dms.conf`中设置环境变量：
+
+```ini
+TERMINAL=ghostty
+DMS_DISABLE_MATUGEN=1
+DMS_DANKBAR_LAYER=overlay
+DMS_HIDE_TRAYIDS=discord,spotify
+```
+如果您想使用 `System Updates` 小部件，至少应该存在 TERMINAL 变量。
+注销并重新登录以使更改生效。
+
+您还可以运行 `systemctl --user edit dms` 并在 `[Service]` 下添加 `Environment=` 行：
+
+```ini
+[Service]
+Environment=TERMINAL=ghostty
+Environment=DMS_DISABLE_MATUGEN=1
+```
+
+这仅影响 DMS 及其启动的应用程序，而 `90-dms.conf` 适用于所有用户会话。
+
+:::
+
+### 尼里 {#niri}
+
+添加到您的 niri 配置中：
+
+```kdl
+environment {
+  DMS_DISABLE_MATUGEN "1"
+  DMS_DANKBAR_LAYER "overlay"
+  DMS_HIDE_TRAYIDS "discord,spotify"
+}
+```
+
+### 海普拉兰 {#hyprland}
+
+添加到您的 Hyprland 配置：
+
+```lua
+hl.env("DMS_DISABLE_MATUGEN", "1")
+hl.env("DMS_DANKBAR_LAYER", "overlay")
+hl.env("DMS_HIDE_TRAYIDS", "discord,spotify")
+```
+
+### 摇摆 {#sway}
+
+添加到您的 Sway 配置：
+
+```conf
+set $DMS_DISABLE_MATUGEN 1
+set $DMS_DANKBAR_LAYER overlay
+set $DMS_HIDE_TRAYIDS discord,spotify
+```
+
+### 手动启动 {#manual-launch}
+
+启动前设置变量：
+
+```bash
+export DMS_DISABLE_MATUGEN=1
+export DMS_DANKBAR_LAYER=overlay
+dms run
+```
+
+## 用例 {#use-cases}
+
+**禁用动态主题：**
+```bash
+DMS_DISABLE_MATUGEN=1
+```
+对于性能测试或仅使用静态主题时很有用。
+
+**隐藏系统托盘图标：**
+```bash
+DMS_HIDE_TRAYIDS=discord,slack,teams
+```
+通过隐藏不需要的应用程序图标来清理系统托盘。
+
+**修复栏分层问题：**
+```bash
+DMS_DANKBAR_LAYER=overlay
+```
+如果 DankBar 出现在窗口后面或其他问题，请调整 Wayland 图层。
+
+**双电池笔记本电脑：**
+```bash
+DMS_PREFERRED_BATTERY=/org/freedesktop/UPower/devices/battery_BAT0
+```
+当检测到多个电池时，强制 DMS 使用特定电池。
+
+**性能调整：**
+```bash
+DMS_DISABLE_LAYER=true
+```
+禁用图层效果以提高低端硬件的性能。
+
+**远程打印服务器：**
+```bash
+DMS_IPP_HOST=printserver.local
+DMS_IPP_PORT=631
+DMS_IPP_USERNAME=printuser
+DMS_IPP_PASSWORD=secret
+```
+通过身份验证连接到远程 CUPS/IPP 打印服务器。

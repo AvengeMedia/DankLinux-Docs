@@ -1,0 +1,78 @@
+---
+title: 身份验证
+description: 为 DankGreeter 配置指纹和安全密钥登录
+sidebar_position: 5
+---
+
+# DankGreeter 身份验证 {#dankgreeter-authentication}
+
+DankGreeter 通过greetd 的PAM 服务验证登录。将其配置在
+**设置 → 问候语 → 身份验证**。
+
+## 选择谁管理问候 PAM {#choose-who-manages-greetd-pam}
+
+对于正常的 DMS 管理，将 **使用系统 PAM 身份验证** 关闭
+设置。指纹和安全密钥切换更新共享
+`/etc/pam.d/greetd` 自动配置。
+
+当greetd PAM由`authselect`、`pam-auth-update`管理时打开它，
+NixOS，或您自己的 PAM 文件。然后 DMS 删除其托管块并停止
+写入文件。它的因子切换被禁用，因为系统 PAM
+配置现在是策略所有者。
+
+:::caution
+
+更改 PAM 时，保持根终端或其他登录方法可用。
+无效的greetd堆栈可能会阻止图形登录。
+
+:::
+
+## 登录交互 {#login-interaction}
+
+DankGreeter 始终遵循 `/etc/pam.d/greetd`；锁定屏幕的 **自动** 和
+**自定义**源及其**OR**/**AND**模式在登录时不适用。与
+DMS 管理的问候 PAM，选择用户会自动启动任何已启用和
+可用指纹或安全密钥因素，并且因素按钮可以启动
+再来一次。
+
+通过 **使用系统 PAM 身份验证**，系统堆栈拥有该因素
+排序、提示和所需的交互。在空密码上按 Enter
+仅当该堆栈等待显式登录尝试时才显示该字段。
+
+## 指纹登录 {#fingerprint-login}
+
+安装您的发行版的 `fprintd` 服务和 PAM 集成，注册
+手指与`fprintd-enroll`，并用`fprintd-list "$USER"`进行验证。
+然后启用**登录时指纹**。
+
+例如，Fedora 使用：
+
+```bash
+sudo dnf install fprintd fprintd-pam
+fprintd-enroll
+```
+
+如果注册报告**没有可用的设备**，请检查
+[libfprint 支持的设备列表](https://fprint.freedesktop.org/supported-devices.html)。
+一些 Validity/Synaptics 读者需要
+[open-fprintd](https://github.com/uunicorn/open-fprintd) 和
+[python 有效性](https://github.com/uunicorn/python-validity)。不要跑
+两个守护进程同时实现。
+
+## 安全密钥登录 {#security-key-login}
+
+安装 `pam_u2f`，在您的发行版使用的映射中注册密钥，
+并在启用**登录时的安全密钥**之前测试该映射。锁
+screen 的 **OR** 和 **AND** 模式不会影响greetd PAM 策略。
+
+## 修复和故障排除 {#repair-and-troubleshooting}
+
+正常设置更改会自动应用。使用此命令修复或
+重新应用 DMS 管理的 PAM 配置：
+
+```bash
+dms auth sync
+```
+
+请参阅 [DankGreeter 配置](./configuration) 和
+[锁屏认证](../dankmaterialshell/lock-screen-authentication)。

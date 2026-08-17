@@ -1,0 +1,90 @@
+---
+title: DankCalendar
+description: 一个独立应用程序中的本地、Google、Microsoft、CalDAV 和 iCloud 日历
+sidebar_position: 1
+---
+
+import Hero from '@site/src/components/Hero';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import Head from '@docusaurus/Head';
+
+<Head>
+  <title>DankCalendar — 适用于 Linux 和 FreeBSD 的桌面日历应用程序</title>
+<meta property="og:title" content="DankCalendar" />
+<meta property="og:site_name" content="DankCalendar" />
+<meta name="application-name" content="DankCalendar" />
+<meta name="description" content="DankCalendar is a free, open-source desktop calendar app for Linux and FreeBSD that brings your Local, Google, Microsoft, CalDAV, and iCloud calendars together in one place." />
+  <script type="application/ld+json">{JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: 'DankCalendar',
+    operatingSystem: 'Linux, FreeBSD',
+    applicationCategory: 'Productivity',
+    url: 'https://danklinux.com/docs/dankcalendar/',
+    description: 'DankCalendar is a free, open-source desktop calendar app for Linux and FreeBSD. It brings Local, Google, Microsoft, CalDAV, and iCloud calendars together in one place so users can view and manage events, respond to meeting invitations, track tasks, and get reminders.',
+    offers: {'@type': 'Offer', price: '0', priceCurrency: 'USD'},
+  })}</script>
+</Head>
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗
+██╔══██╗██╔════╝██╔══██╗██║
+██║  ██║██║     ███████║██║
+██║  ██║██║     ██╔══██║██║
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={false}
+/>
+
+# DankCalendar {#dankcalendar}
+
+DankCalendar 是一款适用于 Linux 和 FreeBSD 的免费开源桌面日历应用程序。其目的是将您的本地日历、[Google](https://calendar.google.com/)、[Microsoft](https://outlook.com/)、[CalDAV](https://en.wikipedia.org/wiki/CalDAV) 和 [iCloud](https://www.icloud.com/calendar/) 日历集中在一处，以便您可以查看和管理活动、回复会议邀请、跟踪任务以及获取提醒您的所有账户 - 而您的数据保留在您的设备上。它作为带有托盘图标的轻量级守护程序运行，使您的账户在后台保持同步，并具有 [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) 的外观和感觉。 `dcal` 是 DankCalendar 的命令行名称。
+
+使用 [Quickshell](https://quickshell.org/) 和 [Go](https://go.dev/) 构建。
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/dankcalendar/preview.png')}
+    alt="DankCalendar month view with the settings and add-account dialogs open"
+    style={{ maxWidth: '640px', width: '100%', borderRadius: '12px' }}
+  />
+<figcaption>DankCalendar 的月视图、设置和账户设置。</figcaption>
+</figure>
+
+## 特点 {#features}
+
+- **多个提供商**：连接本地、Google、Microsoft、CalDAV、iCloud、Evolution 和只读 iCal/webcal 订阅，并在单个统一议程中查看每个日历。
+- **月、周、日、议程和任务**：在五个视图之间切换，支持重复事件和完整的重复编辑。
+- **任务**：从提供任务列表的日历中查看、创建和完成 VTODO 任务。
+- **会议邀请**：接受、拒绝或暂时回复邀请，并将与会者状态推送回您的提供商。
+- **后台同步**：轻量级守护进程使您的账户保持同步并通过 IPC 提供 UI。关闭窗口只会隐藏它。同步和提醒继续运行。
+- **事件提醒**：即将发生的事件的本机桌面通知，具有每个事件和每个日历提醒配置。
+- **托盘集成**：用于显示、隐藏和退出应用程序的系统托盘图标，以及快速访问即将发生的事件。
+- **安全凭证**：OAuth 令牌和账户机密存储在您的系统密钥环中，而不是存储在纯文本配置文件中。
+- **键盘导航**：完全键盘驱动的导航，具有快捷方式覆盖、最新跳转以及跨事件的聚光灯式搜索。
+- **可编写脚本的 IPC**：用于按键绑定和自动化的可编写脚本的 IPC 界面。
+- **本地化**：面向用户的字符串可通过 POEditor 进行翻译和管理，并具有自动从右到左的布局镜像。
+
+## 文档 {#documentation}
+
+- [安装](installation) - 安装 dcal 并设置后台守护进程
+- [账户](accounts) - 连接本地、Google、Microsoft、CalDAV、iCloud、Evolution 和 iCal 日历
+- [用法](usage) - 用于窗口、同步、提醒和邀请的 CLI 命令
+- [键盘和导航](navigation) - 视图、快捷键和快速跳转
+- [IPC](ipc) - 用于按键绑定和自动化的可编写脚本的 IPC 界面
+
+## 贡献 {#contributing}
+
+`dcal` 是开源的，欢迎贡献。错误修复、小部件、功能、提供程序和翻译都有帮助：
+
+- **源代码**：[GitHub 存储库](https://github.com/AvengeMedia/dankcalendar)
+- **问题**：在 GitHub 上报告错误并请求功能
+- **翻译**：字符串通过 POEditor 管理。请参阅 [CONTRIBUTING.md](https://github.com/AvengeMedia/dankcalendar/blob/master/CONTRIBUTING.md)
+
+## 许可证 {#license}
+
+`dcal` 在 MIT 许可证下发布。有关详细信息，请参阅 [许可证](https://github.com/AvengeMedia/dankcalendar/blob/master/LICENSE) 文件。
+
+## 隐私和条款 {#privacy--terms}
+
+DankCalendar 是一个本地应用程序 - 您的日历数据和凭据保留在您的设备上。请参阅[隐私政策](/dankcalendar/privacy)和[服务条款](/dankcalendar/terms)。

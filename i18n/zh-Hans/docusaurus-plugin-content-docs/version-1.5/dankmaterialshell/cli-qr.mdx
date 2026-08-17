@@ -1,0 +1,182 @@
+---
+title: 二维码
+description: 使用终端、PNG 和剪贴板输出从文本、标准输入或保存的 WiFi 网络生成 QR 码
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={` ██████╗ ██████╗    ██████╗ ██████╗ ██████╗ ███████╗
+██╔═══██╗██╔══██╗  ██╔════╝██╔═══██╗██╔══██╗██╔════╝
+██║   ██║██████╔╝  ██║     ██║   ██║██║  ██║█████╗
+██║▄▄ ██║██╔══██╗  ██║     ██║   ██║██║  ██║██╔══╝
+╚██████╔╝██║  ██║  ╚██████╗╚██████╔╝██████╔╝███████╗
+ ╚══▀▀═╝ ╚═╝  ╚═╝   ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝`}
+  hideTitle={true}
+/>
+
+`dms qr` 命令从文本、标准输入或保存的 WiFi 网络生成 QR 码。代码直接在终端中渲染、导出为 PNG 文件或直接复制到剪贴板 - 使其在交互方式以及脚本或插件中都非常有用。
+
+## 快速入门 {#quick-start}
+
+```bash
+# Render in the terminal
+dms qr "https://example.com"
+
+# Save a PNG
+dms qr "https://example.com" -o code.png
+
+# Pipe PNG bytes anywhere
+dms qr "https://example.com" > code.png
+
+# Share your WiFi
+dms qr wifi MyNetwork
+```
+
+## 输入源 {#input-sources}
+
+|来源 |命令 |
+|--------|---------|
+|论证| `dms qr "some text"` |
+|标准输入（管道）| `echo -n "data" \| dms qr` |
+|标准输入（显式）| `dms qr -` |
+|已保存的 WiFi 网络 | `dms qr wifi <ssid>` |
+
+## 输出目的地 {#output-destinations}
+
+默认情况下输出是自动的：当 stdout 是 TTY 时终端渲染，管道传输时原始 PNG 字节。目的地可以自由组合。
+
+|选项|描述 |
+|------|-------------|
+| `--output` / `-o` |将 PNG 保存到文件 |
+| `--stdout` |将 PNG 字节写入标准输出 |
+| `--clipboard` |将 PNG 图像复制到剪贴板 |
+| `--copy-text` |将源文本复制到剪贴板 |
+| `--render` |强制终端渲染 |
+| `--no-render` |永远不要渲染到终端 |
+
+当 PNG 字节转到 stdout 并且 `--render` 也被设置时，终端渲染将转到 stderr，因此流保持独立：
+
+```bash
+dms qr "text" --stdout --render > code.png   # PNG in file, preview on screen
+```
+
+## 编码选项 {#encoding-options}
+
+|选项|描述 |
+|------|-------------|
+| `--ecc` |纠错级别：`L`、`M`、`Q`、`H`（默认 `M` 或 `H` 与 `--logo`）|
+| `--qr-version` |强制 QR 符号版本 1-40（默认值：自动）|
+
+更高的纠错率使代码更密集，但更耐损坏。 `H` 能够承受约 30% 的阻碍，这就是为什么当徽标被覆盖时它成为默认值。
+
+## 样式选项 {#styling-options}
+
+### PNG {#png}
+
+|选项|描述 |
+|------|-------------|
+| `--module-size` |每个模块的像素，1-255（默认值：自动）|
+| `--fg` |深色模块颜色（`#RGB` 或 `#RRGGBB`）|
+| `--bg` |光模块颜色（`#RGB` 或 `#RRGGBB`）|
+| `--transparent` |透明背景（覆盖`--bg`）|
+| `--border` |边框宽度（以像素为单位）（默认值：自动）|
+| `--shape` |模块形状：`square`（默认）或`circle` |
+| `--logo` |将 PNG/JPEG 徽标置于代码中央 |
+| `--logo-scale` |最大徽标大小为代码的 1/N（默认值：5）|
+
+```bash
+# Themed, rounded modules with a logo
+dms qr "https://danklinux.com" \
+  --shape circle \
+  --fg '#1a1b26' --bg '#c0caf5' \
+  --logo ~/Pictures/logo.png \
+  -o branded.png
+```
+
+:::tip
+渲染器会跳过大于最终图像 1/N 的徽标。如果您的徽标未出现，请提出 `--module-size` 或 `--logo-scale`。
+:::
+
+:::note
+圆形模块是一种美观的选择——现代手机扫描仪可以很好地读取它们，但一些较旧的解码器只能处理方形模块。
+:::
+
+### 终端 {#terminal}
+
+|选项|描述 |
+|------|-------------|
+| `--invert` |交换颜色（用于灯终端）|
+| `--quiet-zone` |模块中代码周围的边距（默认值：2）|
+| `--fg` / `--bg` |覆盖渲染颜色 |
+
+终端渲染明确地绘制了两种极性，因此代码可以在深色和浅色终端主题上正确扫描。如果扫描仪仍然出现问题，请尝试 `--invert`。
+
+## WiFi 二维码 {#wifi-qr-codes}
+
+`dms qr wifi` 构建一个扫描后即可加入网络的代码。
+
+```bash
+# Pull the saved password from the running DMS shell
+dms qr wifi MyNetwork
+
+# Fully offline with an explicit password
+dms qr wifi MyNetwork -p 'hunter2'
+
+# Open network
+dms qr wifi CoffeeShop --security nopass
+```
+
+|选项|短|描述 |
+|------|-------|-------------|
+| `--password` | `-p` | WiFi密码（离线构建，无需shell）|
+| `--security` | |安全类型：`WPA`（默认）、`WEP`、`nopass` |
+| `--hidden` | |将网络标记为隐藏 |
+
+如果没有 `--password`，保存的凭据将从正在运行的 DMS shell 中获取 - 与网络面板使用的机制相同。 SSID 和密码中的特殊字符会自动转义。
+
+所有输出和样式标志也在这里工作：
+
+```bash
+dms qr wifi MyNetwork --clipboard --no-render
+dms qr wifi MyNetwork -o guest-wifi.png --module-size 16
+```
+
+## 脚本和插件 {#scripting--plugins}
+
+由于管道输出是原始 PNG 并且错误会以非零退出代码发送到 stderr，因此 `dms qr` 可以干净地组合：
+
+```bash
+# QR of the current clipboard contents
+dms clipboard paste | dms qr
+
+# Show a file's contents as a code in a notification-sized PNG
+dms qr - < token.txt --module-size 8 -o /tmp/token.png
+
+# Feed another tool without touching disk
+dms qr "otpauth://totp/..." --stdout | imv -
+```
+
+## 所有选项 {#all-options}
+
+|选项|短|描述 |
+|------|-------|-------------|
+| `--ecc` | |纠错：L、M、Q、H（默认 M 或 H 带 `--logo`）|
+| `--qr-version` | |强制 QR 符号版本 1-40（0 = 自动）|
+| `--output` | `-o` |将 PNG 写入此文件 |
+| `--stdout` | |将 PNG 字节写入标准输出 |
+| `--clipboard` | |将 PNG 图像复制到剪贴板 |
+| `--copy-text` | |将源文本复制到剪贴板 |
+| `--render` | |强制终端渲染 |
+| `--no-render` | |永远不要渲染到终端 |
+| `--invert` | |交换颜色（用于灯终端）|
+| `--quiet-zone` | |模块中的端子边距（默认值：2）|
+| `--module-size` | |每个模块的 PNG 像素（0 = 自动）|
+| `--fg` | |深色模块颜色（#RGB 或 #RRGGBB）|
+| `--bg` | |灯模块颜色（#RGB 或 #RRGGBB）|
+| `--transparent` | |透明PNG背景
+| `--border` | | PNG 边框以像素为单位（-1 = 自动）|
+| `--shape` | | PNG模块形状：方形、圆形|
+| `--logo` | |将 PNG/JPEG 徽标置于 PNG 输出的中心 |
+| `--logo-scale` | |最大徽标大小为代码的 1/N（0 = 默认值 5）|
+| `--help` | `-h` |显示帮助 |

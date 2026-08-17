@@ -5,6 +5,11 @@ import type { PrismTheme } from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// English is the source language. Add new locales here before running
+// `npm run i18n:scaffold -- <locale>` to create their translation workspace.
+const defaultLocale = 'en';
+const locales = ['en', 'zh-Hans'];
+
 // Custom Dank Purple Prism Theme
 const dankPurple: PrismTheme = {
   plain: {
@@ -267,12 +272,19 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale,
+    locales,
+    localeConfigs: {
+      en: {
+        label: 'English',
+        htmlLang: 'en',
+      },
+      'zh-Hans': {
+        label: '简体中文',
+        htmlLang: 'zh-CN',
+      },
+    },
   },
 
   presets: [
@@ -323,6 +335,11 @@ const config: Config = {
 
   markdown: {
     mermaid: true,
+    // Keep translated headings addressable through the stable English anchors
+    // already used throughout the documentation.
+    mdx1Compat: {
+      headingIds: true,
+    },
   },
   themes: ['@docusaurus/theme-mermaid'],
 
@@ -331,7 +348,8 @@ const config: Config = {
       require.resolve('@easyops-cn/docusaurus-search-local'),
       {
         hashed: true,
-        language: ['en'],
+        // The search index is generated independently for each locale.
+        language: ['en', 'zh'],
         highlightSearchTermsOnTargetPage: true,
         explicitSearchResultPath: true,
       },
@@ -446,6 +464,10 @@ const config: Config = {
           type: 'docsVersionDropdown',
           position: 'right',
           className: 'navbar-version-dropdown',
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
         },
         {
           href: 'https://github.com/AvengeMedia/DankMaterialShell',

@@ -1,0 +1,22 @@
+{
+  "logo.alt": {
+    "message": "Dank Linux 标志",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Install": {
+    "message": "安装",
+    "description": "Navbar item with label Install"
+  },
+  "item.label.Docs": {
+    "message": "文档",
+    "description": "Navbar item with label Docs"
+  },
+  "item.label.Plugins & Themes": {
+    "message": "插件与主题",
+    "description": "Navbar item with label Plugins & Themes"
+  },
+  "item.label.Updates": {
+    "message": "动态",
+    "description": "Navbar item with label Updates"
+  }
+}

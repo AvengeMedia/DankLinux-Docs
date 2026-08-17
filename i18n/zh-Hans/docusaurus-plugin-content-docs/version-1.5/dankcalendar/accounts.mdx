@@ -1,0 +1,145 @@
+---
+title: 账户
+description: 连接本地、Google、Microsoft、CalDAV 和 iCloud 日历
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗
+██╔══██╗██╔════╝██╔══██╗██║
+██║  ██║██║     ███████║██║
+██║  ██║██║     ██╔══██║██║
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+# 账户 {#accounts}
+
+DankCalendar 将每个日历纳入一个统一的议程。您可以完全从 GUI（**设置 → 账户**）或 CLI 管理账户。
+
+:::info[安全和存储]
+`dcal` 直接连接到您的提供商。中间没有 DankLinux 服务器。凭证（OAuth 令牌和 CalDAV/iCloud 密码）存储在您的系统密钥环（通过 Secret Service API 的 GNOME Keyring / KWallet）中，而不是存储在您的配置文件中；在没有密钥环的系统上，`dcal` 回退到加密的磁盘存储。同步的日历和事件本地缓存在 `~/.local/share/dankcal/` 下的 SQLite 数据库中，因此一切都可以离线工作。
+:::
+
+随时列出支持的提供商：
+
+```bash
+dcal account providers
+```
+
+|供应商|授权 |
+| ----------- | ----------------------------- |
+| `local` | `.ics` 文件的目录 |
+| `google` | OAuth（您自己的客户端应用程序）|
+| `microsoft` | OAuth（您自己的客户端应用程序）|
+| `caldav` |网址 + 用户名/密码 |
+| `icloud` | Apple ID + 应用专用密码 |
+| `ical` |只读 iCal/webcal 源 URL |
+| `evolution` |日历已由 Evolution Data Server 管理 |
+
+## 管理账户 {#managing-accounts}
+
+```bash
+dcal account list                     # list connected accounts and their status
+dcal account remove <account-id>      # remove an account and its synced data
+dcal account remove <account-id> -y   # skip the confirmation prompt
+dcal account reauth <account-id>      # re-authorize a Google/Microsoft login that expired
+```
+
+## 本地日历 {#local-calendars}
+
+将 dcal 指向 `.ics` 文件的目录。每个子目录或 `.ics` 文件成为一个日历，与 `vdirsyncer`/`khal` 布局兼容。
+
+```bash
+dcal account add local ~/.calendars
+```
+
+## 卡尔达夫 {#caldav}
+
+适用于任何与 CalDAV 兼容的服务器。系统会提示您输入 URL、用户名和密码，或者您也可以将它们作为标志传递：
+
+```bash
+dcal account add caldav
+dcal account add caldav --url https://dav.example.com --username me --name "Work"
+```
+
+对于使用自签名证书的服务器，添加 `--insecure` 以跳过 TLS 证书验证。仅对您控制的服务器执行此操作：
+
+```bash
+dcal account add caldav --url https://dav.homelab.lan --insecure
+```
+
+在 GUI 中，相同的选项在 CalDAV 添加账户表单中显示为 **跳过证书验证**。
+
+## iCloud {#icloud}
+
+iCloud 在底层使用 CalDAV，但需要 **应用程序专用密码**。您的常规 Apple ID 密码将不起作用。
+
+```bash
+dcal account add icloud
+```
+
+:::tip
+在 [account.apple.com/account/manage](https://account.apple.com/account/manage) 创建应用程序专用密码。
+:::
+
+## 谷歌 {#google}
+
+Google 和 Microsoft 要求您创建自己的 OAuth 应用程序（一次性设置）。打印分步说明：
+
+```bash
+dcal account setup google
+```
+
+然后完成 OAuth 流程：
+
+```bash
+dcal account add google
+```
+
+## 微软 {#microsoft}
+
+```bash
+dcal account setup microsoft
+dcal account add microsoft
+```
+
+## iCal / webcal 订阅 {#ical--webcal-subscriptions}
+
+订阅只读外部源，例如大学时间表或已发布的 Google/Outlook 日历。 `https://` 和 `webcal://` URL 均被接受，并且 feed 在后台刷新。
+
+```bash
+dcal account add ical https://example.com/schedule.ics
+dcal account add ical webcal://example.com/team.ics --name "Team"
+```
+
+如果源支持 HTTP 基本身份验证，请传递 `--username`（系统将提示您输入密码）。您还可以直接向应用程序提供 `webcal://` 链接，这将打开订阅对话框：
+
+```bash
+dcal open webcal://example.com/team.ics
+```
+
+## 进化 {#evolution}
+
+重复使用 [Evolution 数据服务器](https://gitlab.gnome.org/GNOME/evolution-data-server) 已在此计算机上管理的日历（来自 Evolution、GNOME 在线账户等）。 EDS 拥有凭据和远程同步，因此无需配置其他任何内容。
+
+```bash
+dcal account add evolution
+```
+
+## 同步 {#syncing}
+
+该守护进程在后台自动同步账户。强制同步：
+
+```bash
+dcal sync             # sync all accounts
+dcal sync <account-id>  # sync one account
+```
+
+## 后续步骤 {#next-steps}
+
+- [使用方法](usage) - 窗口控制、同步和提醒
+- [IPC](ipc) - 通过按键绑定和脚本自动化 dcal

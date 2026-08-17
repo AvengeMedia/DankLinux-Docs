@@ -1,0 +1,72 @@
+---
+title: 入门
+description: Dank Linux 安装和配置入门
+sidebar_position: 2
+image: img/dankinstall.png
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗    ██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝    ██║     ██║████╗  ██║██║   ██║╚██╗██╔╝
+██║  ██║███████║██╔██╗ ██║█████╔╝     ██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗     ██║     ██║██║╚██╗██║██║   ██║ ██╔██╗
+██████╔╝██║  ██║██║ ╚████║██║  ██╗    ███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝`}
+  hideTitle={true}
+/>
+
+欢迎来到 Dank Linux！本指南将帮助您开始在系统上安装和配置 Dank Linux 套件。
+
+## 快速安装 {#quick-installation}
+
+最快的入门方法是使用我们的单行安装程序：
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DankInstall Installer"
+    sources={{
+      light: useBaseUrl('/img/dankinstalallight.png'),
+      dark: useBaseUrl('/img/dankinstall.png'),
+    }}
+    style={{ maxWidth: '800px', width: '100%' }}
+  />
+<figcaption>dankinstall 交互式安装程序</figcaption>
+</figure>
+
+这将：
+- 安装您的发行版的所有依赖项
+- 设置 DankMaterialShell、dgop、dsearch、matugen 和其他可选的丰富功能。
+- 配置您选择的合成器（niri、Hyprland）和终端（Ghostty、Kitty、Alacritty）
+
+:::tip
+
+安装程序会为您的发行版添加适当的存储库（AUR、COPR、OBS 或 PPA），之后更新将通过常规包管理器进行管理。如果直接从软件包安装 DMS，请运行 [`dms setup`](dankmaterialshell/cli-setup) 以生成入门合成器和终端配置（仅限 niri/Hyprland）。您还可以部署单独的配置，例如 `dms setup binds` 或 `dms setup colors`。支持其他合成器，如 sway、MangoWC、labwc 和 Miracle WM - 请参阅[手动配置](dankmaterialshell/installation#post-install)。
+
+:::
+
+## 手动安装 {#manual-installation}
+
+还支持手动安装，而且简单。请参阅每个组件的安装部分：
+
+- [DankMaterialShell安装](dankmaterialshell/installation/)
+- [dgop安装](dgop/installation/)
+- [dsearch安装]​​(danksearch/installation/)
+
+## 获取帮助 {#getting-help}
+
+- **文档**：浏览这些文档以获取详细指南
+- **GitHub**：在 [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell/issues) 报告问题
+- **Discord**：`DankMaterialShell` 在 niri Discord 服务器上有一个小节，请在相关 `#dms-*` 频道中保留相关讨论。
+- [niri Discord](https://discord.gg/ppWTpKmPgT)
+
+---
+
+<p style={{fontSize: '0.875rem', color: 'var(--ifm-color-emphasis-600)'}}>Looking for a pre-configured immutable OS? Check out <a href="https://github.com/zirconium-dev/zirconium/" style={{display: 'inline-flex', alignItems: 'center', gap: '0.25rem'}}><img src="/img/z.svg" alt="" style={{width: '1em', height: '1em', verticalAlign: 'middle'}} /> Zirconium</a>.</p>

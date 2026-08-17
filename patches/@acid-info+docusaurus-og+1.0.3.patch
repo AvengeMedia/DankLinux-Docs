@@ -1,5 +1,5 @@
 diff --git a/node_modules/@acid-info/docusaurus-og/lib/server/blog.plugin.js b/node_modules/@acid-info/docusaurus-og/lib/server/blog.plugin.js
-index 56d7746..e1b6bc4 100644
+index 56d7746..a7ee10a 100644
 --- a/node_modules/@acid-info/docusaurus-og/lib/server/blog.plugin.js
 +++ b/node_modules/@acid-info/docusaurus-og/lib/server/blog.plugin.js
 @@ -53,7 +53,7 @@ class BlogPlugin {
@@ -11,3 +11,74 @@ index 56d7746..e1b6bc4 100644
              this.pages.push({
                  data: value,
                  plugin: options,
+@@ -124,6 +124,19 @@ class BlogPlugin {
+             await document.write();
+         }
+     };
+-    getHtmlPath = (permalink, baseUrl) => path.join(this.context.outDir, permalink, 'index.html');
++    getHtmlPath = (permalink, baseUrl) => path.join(this.context.outDir, this.getLocaleRelativePermalink(permalink), 'index.html');
++    getLocaleRelativePermalink = (permalink) => {
++        const { currentLocale, defaultLocale } = this.context.i18n || {};
++        const localePrefix = currentLocale && currentLocale !== defaultLocale
++            ? `/${currentLocale}`
++            : '';
++        if (!localePrefix)
++            return permalink;
++        if (permalink === localePrefix)
++            return '/';
++        return permalink.startsWith(`${localePrefix}/`)
++            ? permalink.slice(localePrefix.length)
++            : permalink;
++    };
+ }
+ exports.BlogPlugin = BlogPlugin;
+diff --git a/node_modules/@acid-info/docusaurus-og/lib/server/docs.plugin.js b/node_modules/@acid-info/docusaurus-og/lib/server/docs.plugin.js
+index 90f705e..874b6d6 100644
+--- a/node_modules/@acid-info/docusaurus-og/lib/server/docs.plugin.js
++++ b/node_modules/@acid-info/docusaurus-og/lib/server/docs.plugin.js
+@@ -84,6 +84,19 @@ class DocsPlugin {
+         }
+     };
+     getHtmlPath = (doc) => doc.metadata?.permalink &&
+-        path.join(this.context.outDir, doc.metadata.permalink, 'index.html');
++        path.join(this.context.outDir, this.getLocaleRelativePermalink(doc.metadata.permalink), 'index.html');
++    getLocaleRelativePermalink = (permalink) => {
++        const { currentLocale, defaultLocale } = this.context.i18n || {};
++        const localePrefix = currentLocale && currentLocale !== defaultLocale
++            ? `/${currentLocale}`
++            : '';
++        if (!localePrefix)
++            return permalink;
++        if (permalink === localePrefix)
++            return '/';
++        return permalink.startsWith(`${localePrefix}/`)
++            ? permalink.slice(localePrefix.length)
++            : permalink;
++    };
+ }
+ exports.DocsPlugin = DocsPlugin;
+diff --git a/node_modules/@acid-info/docusaurus-og/lib/server/pages.plugin.js b/node_modules/@acid-info/docusaurus-og/lib/server/pages.plugin.js
+index 106fe9f..d1c2b17 100644
+--- a/node_modules/@acid-info/docusaurus-og/lib/server/pages.plugin.js
++++ b/node_modules/@acid-info/docusaurus-og/lib/server/pages.plugin.js
+@@ -91,6 +91,19 @@ class PagesPlugin {
+             await document.write();
+         }
+     };
+-    getHtmlPath = (permalink) => path.join(this.context.outDir, permalink, 'index.html');
++    getHtmlPath = (permalink) => path.join(this.context.outDir, this.getLocaleRelativePermalink(permalink), 'index.html');
++    getLocaleRelativePermalink = (permalink) => {
++        const { currentLocale, defaultLocale } = this.context.i18n || {};
++        const localePrefix = currentLocale && currentLocale !== defaultLocale
++            ? `/${currentLocale}`
++            : '';
++        if (!localePrefix)
++            return permalink;
++        if (permalink === localePrefix)
++            return '/';
++        return permalink.startsWith(`${localePrefix}/`)
++            ? permalink.slice(localePrefix.length)
++            : permalink;
++    };
+ }
+ exports.PagesPlugin = PagesPlugin;

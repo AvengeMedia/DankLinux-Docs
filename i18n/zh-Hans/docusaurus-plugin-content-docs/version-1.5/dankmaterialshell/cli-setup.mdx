@@ -1,0 +1,69 @@
+---
+title: 设置
+description: 为您的合成器部署默认的 DMS 配置文件
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`███████╗███████╗████████╗██╗   ██╗██████╗
+██╔════╝██╔════╝╚══██╔══╝██║   ██║██╔══██╗
+███████╗█████╗     ██║   ██║   ██║██████╔╝
+╚════██║██╔══╝     ██║   ██║   ██║██╔═══╝
+███████║███████╗   ██║   ╚██████╔╝██║
+╚══════╝╚══════╝   ╚═╝    ╚═════╝ ╚═╝`}
+  hideTitle={true}
+/>
+
+`dms setup` 命令为您的合成器（niri 或 Hyprland）生成默认配置文件。它只写入尚不存在或为空的文件，因此不会破坏您自定义的任何内容。
+
+不带参数运行 `dms setup` 会立即部署所有默认值。您还可以一次部署一个单独的配置。
+
+## 快速入门 {#quick-start}
+
+部署所有默认配置：
+
+```bash
+dms setup
+```
+
+仅部署按键绑定：
+
+```bash
+dms setup binds
+```
+
+## 子命令 {#subcommands}
+
+|子命令 |描述 |尼里 |海普拉兰 |
+|---|---|---|---|
+| `binds` |默认按键绑定配置 | `~/.config/niri/dms/binds.kdl` | `~/.config/hypr/dms/binds.conf` |
+| `colors` |默认颜色配置 | `~/.config/niri/dms/colors.kdl` | `~/.config/hypr/dms/colors.conf` |
+| `layout` |默认布局配置 | `~/.config/niri/dms/layout.kdl` | `~/.config/hypr/dms/layout.conf` |
+| `outputs` |默认输出配置 | `~/.config/niri/dms/outputs.kdl` | `~/.config/hypr/dms/outputs.conf` |
+| `cursor` |默认光标配置 | `~/.config/niri/dms/cursor.kdl` | `~/.config/hypr/dms/cursor.conf` |
+| `windowrules` |默认窗口规则配置 | `~/.config/niri/dms/windowrules.kdl` | `~/.config/hypr/dms/windowrules.conf` |
+| `alttab` |默认 alt-tab 配置（仅限 niri）| `~/.config/niri/dms/alttab.kdl` | — |
+
+运行 `dms setup` 而不使用子命令会部署上述所有内容。
+
+:::tip
+如果您从软件包安装了 DMS（不是通过交互式安装程序），请在安装后运行 `dms setup` 以立即获取工作合成器和终端配置。
+:::
+
+## NixOS Home-Manager 用户 {#nixos-home-manager-users}
+
+如果您通过 home-manager 管理您的 niri 或 Hyprland 配置，您可能不希望 `dms setup` 编写与您的声明性配置冲突的文件。相反，使用单独的子命令仅生成您需要的部分。
+
+例如，如果您通过 niri home-manager 模块处理按键绑定，但希望颜色和布局使用 DMS 默认值：
+
+```bash
+dms setup colors
+dms setup layout
+```
+
+niri home-manager 模块的 `niri.includes` 选项引用 `~/.config/niri/dms/` 下的这些相同文件。有关包含文件的完整列表，请参阅 [niri 集成文档](nixos-flake#config-includes)。
+
+:::info
+各个子命令可以随时安全运行 - 它们会跳过已经包含内容的文件。要强制重置，请先删除或清空该文件，然后再次运行该子命令。
+:::

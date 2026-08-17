@@ -1,0 +1,302 @@
+---
+title: 安装
+description: 安装DGOP电源菜单
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
+# DGOP安装 {#dgop-installation}
+
+:::note
+
+`dgop` 具有零依赖性并编译为单个静态二进制文件。
+
+:::
+
+### 分发包 {#distribution-packages}
+
+### Arch Linux 及其衍生版 {#arch--derivatives}
+
+<Tabs>
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo pacman -S dgop
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+paru -S dgop-git
+```
+
+</TabItem>
+</Tabs>
+
+### Fedora 和 CentOS {#fedora--centos}
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dgop
+```
+
+### Debian 和 Ubuntu {#debian--ubuntu}
+
+#### Debian {#debian}
+
+软件包已发布在 OBS 上，用于 **Debian 13 (Trixie)**、**Debian 测试** 和 **Debian Sid**。
+
+选择您的版本：
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dgop
+```
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dgop
+```
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dgop
+```
+
+</TabItem>
+</Tabs>
+
+#### Ubuntu {#ubuntu}
+
+Ubuntu 26.04 LTS+ (Resolute Raccoon) 通过 Launchpad PPA 支持。
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+sudo apt install dgop
+```
+
+### openSUSE 和衍生产品 {#opensuse--derivatives}
+
+DGOP 可通过 OpenSUSE Tumbleweed、Leap 16/16.1 和 Slowroll 的开放构建服务 (OBS) 获得。
+
+选择您的发行版：
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dgop
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux {#void-linux}
+
+:::note
+
+从我们的 R2 支持的 XBPS 存储库安装 dgop 或从源代码构建它。
+
+:::
+
+:::warning[存储库迁移]
+
+替换现有存储库文件中的旧 URL：
+
+```bash
+sudo sed -i 's|https://avengemedia.github.io/DankLinux/current|https://void.danklinux.com/danklinux/current|' /etc/xbps.d/danklinux.conf
+```
+
+冻结的 GitHub Pages 存储库不再接收更新，并将被
+**2026 年 7 月 24 日 22:27 UTC** 后退休。
+
+:::
+
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DankLinux Repository" default>
+
+```bash
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S dgop
+```
+
+:::note
+
+第一次同步时，`xbps-install` 将输出我们的签名密钥指纹，并要求您输入 `y` 以信任并导入它。验证密钥是否与我们的官方签名指纹匹配。
+
+:::
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
+
+如果您更喜欢使用 `xbps-src` 从源代码构建：
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the templates (adjust paths as needed)
+cp -R ../DankLinux/distro/void/srcpkgs/dgop* srcpkgs/
+
+# Build the package
+./xbps-src pkg dgop
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs dgop
+```
+
+</TabItem>
+</Tabs>
+
+#### Gentoo {#gentoo}
+
+`gui-apps/dgop` 可在官方 [guru](https://wiki.gentoo.org/wiki/Project:GURU) 社区界面中找到。
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/dgop
+```
+
+:::note
+
+guru 覆盖包的关键字为 `~amd64`，因此您可能需要接受测试关键字：
+
+```bash
+echo "gui-apps/dgop ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/dgop
+```
+
+:::
+
+### 预构建的二进制文件 {#pre-built-binaries}
+
+下载适合您的架构的最新版本：
+
+```bash
+# Download and install
+wget https://github.com/AvengeMedia/dgop/releases/latest/download/dgop-linux-amd64.gz
+gunzip dgop-linux-amd64.gz
+chmod +x dgop-linux-amd64
+sudo mv dgop-linux-amd64 /usr/local/bin/dgop
+```
+
+### 从源代码构建 {#from-source}
+
+要求：Go 1.24+
+
+```bash
+git clone https://github.com/AvengeMedia/dgop
+cd dgop
+make
+sudo make install
+```
+
+## 验证 {#verification}
+
+测试安装：
+
+```bash
+# Check version
+dgop version
+
+# Get system metrics
+dgop system
+
+# Run API server
+dgop server
+
+# See available commands
+dgop --help
+```
+
+## 系统要求 {#system-requirements}
+
+- **操作系统**：Linux（使用 `/proc` 和 `/sys` 文件系统）
+- **Go 版本**：1.24+（用于从源代码构建）
+
+### 可选依赖项 {#optional-dependencies}
+
+对于增强功能：
+
+- `nvidia-smi` - NVIDIA GPU 监控
+
+## 与 DMS 集成 {#integration-with-dms}
+
+:::tip
+
+安装 dgop 后，DankMaterialShell 用户可以访问系统小部件（CPU、RAM、GPU、磁盘、网络）和进程监控。
+
+:::
+
+## 后续步骤 {#next-steps}
+
+- [配置](configuration) - 配置 dgop
+- [用法](usage) - 学习 CLI 命令和 API 用法

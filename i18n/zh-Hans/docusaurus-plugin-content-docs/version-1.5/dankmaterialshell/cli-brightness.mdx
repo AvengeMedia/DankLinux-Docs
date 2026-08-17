@@ -1,0 +1,310 @@
+---
+title: 亮度控制
+description: 控制背光、LED 和 DDC/I2C 显示器亮度
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ██████╗ ██╗ ██████╗ ██╗  ██╗████████╗███╗   ██╗███████╗███████╗███████╗
+██╔══██╗██╔══██╗██║██╔════╝ ██║  ██║╚══██╔══╝████╗  ██║██╔════╝██╔════╝██╔════╝
+██████╔╝██████╔╝██║██║  ███╗███████║   ██║   ██╔██╗ ██║█████╗  ███████╗███████╗
+██╔══██╗██╔══██╗██║██║   ██║██╔══██║   ██║   ██║╚██╗██║██╔══╝  ╚════██║╚════██║
+██████╔╝██║  ██║██║╚██████╔╝██║  ██║   ██║   ██║ ╚████║███████╗███████║███████║
+╚═════╝ ╚═╝  ╚═╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚══════╝╚══════╝╚══════╝`}
+  hideTitle={true}
+/>
+
+`dms brightness` 命令提供了一个统一的接口，用于控制不同设备类型的亮度。它是 `brightnessctl` 和 `ddcutil` 等工具的替代品，支持背光设备、LED 和 DDC/I2C 监视器。
+
+## 概述 {#overview}
+
+**支持的设备类型**：
+- **背光设备**：笔记本电脑屏幕、集成显示器（例如，`amdgpu_bl1`、`intel_backlight`、`nvidia_0`）
+- **LED 设备**：键盘背光、LED 指示灯（例如 `asus::kbd_backlight`、`phy0-led`）
+- **DDC/I2C 监视器**：通过 DDC/CI 协议的外部监视器（需要 `--ddc` 标志）
+
+**主要特点**：
+- 列出所有亮度设备的当前值
+- 获取和设置特定设备的亮度
+- 支持指数亮度缩放以获得更自然的感知
+- 背光/LED 设备快速运行
+- 可选 DDC/I2C 支持外部显示器
+
+## 快速入门 {#quick-start}
+
+列出所有可用的亮度设备：
+
+```bash
+dms brightness list
+```
+
+**输出示例**：
+```
+Device                      Class         Name                   Brightness
+────────────────────────────────────────────────────────────────────────────────
+leds:phy0-led               leds          phy0-led               100%
+backlight:amdgpu_bl1        backlight     amdgpu_bl1              43%
+backlight:nvidia_0          backlight     nvidia_0               100%
+leds:asus::kbd_backlight    leds          asus::kbd_backlight      0%
+```
+
+设置特定设备的亮度：
+
+```bash
+# Set laptop backlight to 50%
+dms brightness set backlight:amdgpu_bl1 50
+
+# Set keyboard backlight to 25%
+dms brightness set leds:asus::kbd_backlight 25
+```
+
+获取设备的当前亮度：
+
+```bash
+dms brightness get backlight:amdgpu_bl1
+```
+
+## 设备识别 {#device-identification}
+
+设备使用 `<class>:<name>` 格式进行标识：
+
+- **类别**：设备类别（`backlight`、`leds` 或 `ddc`）
+- **名称**：列表输出中显示的设备名称
+
+**示例**：
+- `backlight:amdgpu_bl1` - AMD GPU 背光
+- `backlight:intel_backlight` - 英特尔集成显卡背光
+- `backlight:nvidia_0` - NVIDIA GPU 背光
+- `leds:asus::kbd_backlight` - 华硕键盘背光
+- `leds:phy0-led` - WiFi/网络活动 LED
+
+## 命令 {#commands}
+
+### `dms brightness list` {#dms-brightness-list}
+
+列出所有可用的亮度设备及其当前亮度值。
+
+```bash
+dms brightness list [flags]
+```
+
+**标志**：
+- `--ddc`：包括 DDC/I2C 监视器（速度较慢，需要额外扫描）
+- `-h, --help`：显示帮助
+
+**示例**：
+
+```bash
+# List backlight and LED devices (fast)
+dms brightness list
+
+# Include external DDC/I2C monitors (slower)
+dms brightness list --ddc
+```
+
+**注意**：`--ddc` 标志导致命令通过 DDC/I2C 扫描外部显示器，这比列出背光/LED 设备花费的时间更长。
+
+### `dms brightness get` {#dms-brightness-get}
+
+获取特定设备的当前亮度百分比。
+
+```bash
+dms brightness get <device_id> [flags]
+```
+
+**参数**：
+- `device_id`（必需）：设备标识符（例如，`backlight:amdgpu_bl1`）
+
+**标志**：
+- `--ddc`：启用DDC/I2C设备支持
+- `-h, --help`：显示帮助
+
+**示例**：
+
+```bash
+# Get laptop backlight brightness
+dms brightness get backlight:amdgpu_bl1
+
+# Get external monitor brightness
+dms brightness get ddc:monitor-name --ddc
+```
+
+### `dms brightness set` {#dms-brightness-set}
+
+设置特定设备的亮度百分比 (0-100)。
+
+```bash
+dms brightness set <device_id> <percent> [flags]
+```
+
+**参数**：
+- `device_id`（必填）：设备标识符
+- `percent`（必填）：亮度百分比（0-100）
+
+**标志**：
+- `--ddc`：启用DDC/I2C设备支持
+- `--exponential`：使用指数亮度缩放
+- `--exponent <value>`：指数缩放的指数（默认值：1.2）
+- `-h, --help`：显示帮助
+
+**示例**：
+
+```bash
+# Set brightness to 50%
+dms brightness set backlight:amdgpu_bl1 50
+
+# Set brightness with exponential scaling
+dms brightness set backlight:amdgpu_bl1 50 --exponential
+
+# Set brightness with custom exponent
+dms brightness set backlight:amdgpu_bl1 50 --exponential --exponent 1.5
+
+# Set external monitor brightness
+dms brightness set ddc:monitor-name 75 --ddc
+```
+
+## 指数亮度缩放 {#exponential-brightness-scaling}
+
+人类对亮度的感知是非线性的。 50% 的亮度值可能会比预期亮得多。指数缩放使亮度变化感觉更自然。
+
+**它是如何工作的**：
+- 在设置亮度值之前应用指数曲线
+- 默认指数：1.2
+- 指数越高，曲线越激进（中间范围较暗）
+- 较低的指数创造出更柔和的曲线
+
+**示例**：
+
+```bash
+# Without exponential scaling: 50% may feel like 70%
+dms brightness set backlight:amdgpu_bl1 50
+
+# With exponential scaling: 50% feels more like 50%
+dms brightness set backlight:amdgpu_bl1 50 --exponential
+
+# More aggressive curve
+dms brightness set backlight:amdgpu_bl1 50 --exponential --exponent 1.5
+```
+
+**提示**：如果您发现自己很少使用亮度范围的下半部分，请尝试指数缩放。
+
+## DDC/I2C 监视器支持 {#ddci2c-monitor-support}
+
+外部显示器可通过 I2C 上的 DDC/CI 协议进行控制。这需要 `--ddc` 标志，并且可能比背光/LED 控制慢。
+
+**要求**：
+- 显示器必须支持DDC/CI
+- I2C 权限（通常由 udev 规则或用户组处理）
+
+**用法**：
+
+```bash
+# List all devices including DDC/I2C monitors
+dms brightness list --ddc
+
+# Get external monitor brightness
+dms brightness get ddc:monitor-name --ddc
+
+# Set external monitor brightness
+dms brightness set ddc:monitor-name 60 --ddc
+```
+
+**注**：由于 I2C 通信协议，DDC 操作比背光操作慢。在外部显示器上设置亮度时预计会出现轻微延迟。
+
+## 与 DMS 集成 {#integration-with-dms}
+
+DMS 通过 Unix 套接字通过 IPC 与 shell 集成。要显示亮度 OSD 并使用 shell 集成的亮度控制，请使用 `dms ipc` 命令而不是直接 CLI 命令。
+
+`dms ipc call brightness` 目标提供附加功能：
+- 亮度变化时的屏幕显示 (OSD)
+- 逐步增加/减少亮度
+- 每设备指数模式切换
+- 状态查询
+
+有关亮度 IPC 目标的完整详细信息，请参阅 [按键绑定和 IPC](/docs/dankmaterialshell/keybinds-ipc#brightness) 文档。
+
+**按键绑定集成示例**：
+
+```lua
+-- Hyprland example - shows OSD overlay
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("dms ipc call brightness increment 5"))
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightness decrement 5"))
+hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightness toggleExponential"))
+```
+
+## 与其他工具的比较 {#comparison-with-other-tools}
+
+### 与亮度控制 {#vs-brightnessctl}
+
+- **背光和 LED 设备具有相同的功能**
+- **更简单的设备识别**（类：名称格式）
+- **内置指数缩放**
+- **DDC/I2C 支持** 在同一工具中
+
+### 与 ddcutil 对比 {#vs-ddcutil}
+
+- **DDC/I2C 监视器具有相同功能**
+- **更快**，可进行简单的亮度操作
+- **统一界面**，带背光装置
+
+## 故障排除 {#troubleshooting}
+
+### 权限被拒绝 {#permission-denied}
+
+如果您收到权限错误：
+
+1. 检查您的用户是否在 `video` 或 `input` 组中：
+   ```bash
+   groups
+   ```
+
+2. 将您自己添加到适当的组中：
+   ```bash
+   sudo usermod -a -G video $USER
+   sudo usermod -a -G input $USER
+   ```
+
+3. 注销并重新登录以使更改生效
+
+### 未找到设备 {#device-not-found}
+
+如果设备未列出：
+
+- 对于背光：检查 `/sys/class/backlight/`
+- 对于 LED：检查 `/sys/class/leds/`
+- 对于 DDC：确保使用 `--ddc` 标志并验证显示器支持 DDC/CI
+
+### DDC/I2C 不工作 {#ddci2c-not-working}
+
+如果外接显示器没有响应：
+
+1. 验证显示器的 OSD 设置中是否启用了 DDC/CI
+2. 检查I2C内核模块是否加载：
+   ```bash
+   lsmod | grep i2c
+   ```
+3.用`i2cdetect`测试：
+   ```bash
+   sudo i2cdetect -l
+   ```
+
+## 命令参考 {#command-reference}
+
+```bash
+dms brightness [command] [flags]
+```
+
+**可用命令**：
+- `list`：列出所有亮度设备
+- `get <device_id>`：获取设备的亮度
+- `set <device_id> <percent>`：设置设备的亮度
+
+**全局选项**：
+- `-c, --config <path>`：指定自定义DMS配置目录
+- `-h, --help`：显示帮助
+
+**特定于命令的标志**：
+- `--ddc`：包括 DDC/I2C 监视器（在所有命令上可用）
+- `--exponential`：使用指数缩放（仅设置命令）
+- `--exponent <value>`：自定义指数值（仅设置命令，默认值：1.2）

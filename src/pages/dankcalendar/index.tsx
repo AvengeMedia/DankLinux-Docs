@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from '@docusaurus/Head';
+import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './index.module.css';
 
@@ -51,18 +52,18 @@ export default function DankCalendarHome(): React.ReactNode {
         </p>
 
         <nav className={styles.links} aria-label="DankCalendar links">
-          <a className={`${styles.linkButton} ${styles.linkPrimary}`} href="/docs/dankcalendar/installation">
+          <Link className={`${styles.linkButton} ${styles.linkPrimary}`} to="/docs/dankcalendar/installation">
             Download DankCalendar
-          </a>
-          <a className={styles.linkButton} href="/docs/dankcalendar/">
+          </Link>
+          <Link className={styles.linkButton} to="/docs/dankcalendar/">
             Documentation
-          </a>
-          <a className={styles.linkButton} href="/dankcalendar/privacy">
+          </Link>
+          <Link className={styles.linkButton} to="/dankcalendar/privacy">
             Privacy Policy
-          </a>
-          <a className={styles.linkButton} href="/dankcalendar/terms">
+          </Link>
+          <Link className={styles.linkButton} to="/dankcalendar/terms">
             Terms of Service
-          </a>
+          </Link>
           <a className={styles.linkButton} href="https://github.com/AvengeMedia/dankcalendar">
             Source Code
           </a>
@@ -84,7 +85,7 @@ export default function DankCalendarHome(): React.ReactNode {
             synchronize them in the app, and the account&apos;s email address to identify the
             connected account. All data stays on the user&apos;s device: nothing is transmitted to
             the developer or any third party. See the{' '}
-            <a href="/dankcalendar/privacy">Privacy Policy</a> for details, including how to revoke
+            <Link to="/dankcalendar/privacy">Privacy Policy</Link> for details, including how to revoke
             access.
           </p>
         </section>
@@ -99,8 +100,8 @@ export default function DankCalendarHome(): React.ReactNode {
 
         <footer className={styles.footer}>
           <p>
-            © 2026 AvengeMedia · <a href="/dankcalendar/privacy">Privacy Policy</a> ·{' '}
-            <a href="/dankcalendar/terms">Terms of Service</a> · Contact: avengemedia dot us at gmail dot com
+            © 2026 AvengeMedia · <Link to="/dankcalendar/privacy">Privacy Policy</Link> ·{' '}
+            <Link to="/dankcalendar/terms">Terms of Service</Link> · Contact: avengemedia dot us at gmail dot com
           </p>
         </footer>
       </main>

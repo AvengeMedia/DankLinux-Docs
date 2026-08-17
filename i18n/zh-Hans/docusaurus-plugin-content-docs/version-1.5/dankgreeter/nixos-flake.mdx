@@ -1,0 +1,130 @@
+---
+title: NixOS安装（Flake）
+description: 使用 flake 在 NixOS 上安装和配置 DankGreeter
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║  ███╗██████╔╝█████╗  █████╗     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══╝     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗╚██████╔╝██║  ██║███████╗███████╗   ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+                                                                            `}
+  hideTitle={true}
+/>
+
+DankGreeter 可以使用 NixOS 模块安装在 NixOS 上。本指南介绍了基于薄片的安装方法。
+
+:::info[本机 NixOS 模块可用]
+DankGreeter 在 nixpkgs stable (26.05) 中可用。如果您使用的是 NixOS 26.05+，建议使用 [安装 - NixOS](nixos) 方法，并且不需要薄片。
+如果您想要更快的更新，请使用 Flake 选项。
+
+:::
+
+## 安装 {#installation}
+
+### 1. 添加 Flake 输入 {#1-add-flake-inputs}
+
+如果您还没有添加所需的薄片输入到您的 `flake.nix` 中：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+:::tip[使用不稳定版本]
+如果你想使用 master 分支的不稳定 (-git) 版本，你可以使用：
+```nix
+dms.url = "github:AvengeMedia/DankMaterialShell";
+```
+但是，请注意，文档可能不会更新以获取最新更改。建议您直接检查存储库中的nix源代码，并注意它可能无法正常工作。
+:::
+
+### 2.导入NixOS模块 {#2-import-the-nixos-module}
+
+将 DankGreeter 模块添加到 NixOS 配置导入中：
+
+```nix
+imports = [
+  inputs.dms.nixosModules.greeter
+];
+```
+
+:::note
+
+DankGreeter 仅可用作 NixOS 模块（而不是家庭管理器模块），因为它需要在系统级别运行以进行登录管理。
+
+:::
+
+### 3.启用 DankGreeter {#3-enable-dankgreeter}
+
+在 NixOS 配置中启用并配置欢迎程序：
+
+```nix
+programs.dank-material-shell.greeter = {
+  enable = true;
+  compositor.name = "niri";  # Or "hyprland" or "sway"
+};
+```
+
+:::info
+
+与可以通过 NixOS 模块或 home-manager 模块安装的 DankMaterialShell 不同，DankGreeter 必须在 NixOS 系统配置中进行配置（而不是在 home-manager 中）。
+
+:::
+
+:::warning
+
+合成器必须通过 NixOS 配置安装才能出现在 DankGreeter 中，而不是通过 home-manager。
+
+:::
+
+## 配置选项 {#configuration-options}
+
+```nix
+programs.dank-material-shell.greeter = {
+  compositor = {
+    name = "niri"; # Required. Can be also "hyprland" or "sway"
+    customConfig = ''
+      # Optional custom compositor configuration
+    '';
+  };
+
+  # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
+  configHome = "/home/yourusername";
+
+  # Custom config files for non-standard config locations
+  configFiles = [
+    "/home/yourusername/.config/DankMaterialShell/settings.json"
+  ];
+
+  # Save the logs to a file
+  logs = {
+    save = true;
+    path = "/tmp/dms-greeter.log";
+  };
+
+  # Custom Quickshell Package
+  quickshell.package = pkgs.quickshell;
+};
+```
+
+## 重建 {#rebuilding}
+
+进行配置更改后，不要忘记重建配置：
+
+```bash
+sudo nixos-rebuild switch
+```
