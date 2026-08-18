@@ -1,0 +1,283 @@
+---
+title: NixOS安装（Flake）
+description: 使用 flakes 和 home-manager 在 NixOS 上安装和配置 DankSearch
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+  hideTitle={true}
+/>
+
+DankSearch 可以使用带有 flake 的 home-manager 安装在 NixOS 上。本指南介绍了针对每用户安装的基于薄片的安装方法。
+
+:::info[本机 nixpkgs 可用]
+DankSearch 现已在 nixpkgs unstable 中可用！如果您使用 NixOS unstable，请参阅 [安装 - NixOS](nixos) 了解不需要薄片的本机 nixpkgs 安装方式。
+:::
+
+## 安装 {#installation}
+
+### 1. 添加 Flake 输入 {#1-add-flake-inputs}
+
+首先，将 DankSearch 薄片添加到您的 `flake.nix` 中：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    danksearch = {
+      url = "github:AvengeMedia/danksearch";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+### 2.导入家庭管理器模块 {#2-import-the-home-manager-module}
+
+将 DankSearch home-manager 模块添加到您的 home-manager 配置导入中：
+
+```nix
+imports = [
+  inputs.danksearch.homeModules.dsearch
+];
+```
+
+如果使用 home-manager 作为 NixOS 模块，您还可以使用 `default` 模块，它是一个别名：
+
+```nix
+imports = [
+  inputs.danksearch.homeModules.default
+];
+```
+
+### 3.启用 DankSearch {#3-enable-danksearch}
+
+在您的家庭管理器配置中，启用 DankSearch：
+
+```nix
+programs.dsearch.enable = true;
+```
+
+就是这样！重建您的系统（或独立的家庭管理器配置），DankSearch 将使用合理的默认值进行安装。
+
+## 配置选项 {#configuration-options}
+
+DankSearch 提供了多个配置选项来自定义您的安装：
+
+### 基本配置 {#basic-configuration}
+
+```nix
+programs.dsearch = {
+  enable = true;
+
+  # Use a custom package (optional)
+  package = pkgs.dsearch;
+
+  # Custom configuration (TOML format)
+  config = {
+    # Server configuration
+    listen_addr = ":43654";
+
+    # Index settings
+    index_path = "~/.cache/danksearch/index";
+    max_file_bytes = 2097152;  # 2MB
+    worker_count = 4;
+    index_all_files = true;
+
+    # Auto-reindex settings
+    auto_reindex = false;
+    reindex_interval_hours = 24;
+
+    # Text file extensions
+    text_extensions = [
+      ".txt" ".md" ".go" ".py" ".js" ".ts"
+      ".jsx" ".tsx" ".json" ".yaml" ".yml"
+      ".toml" ".html" ".css" ".rs"
+    ];
+
+    # Index paths configuration
+    index_paths = [
+      {
+        path = "~/Documents";
+        max_depth = 6;
+        exclude_hidden = true;
+        exclude_dirs = [ "node_modules" "venv" "target" ];
+      }
+      {
+        path = "~/Projects";
+        max_depth = 8;
+        exclude_hidden = true;
+        exclude_dirs = [ "node_modules" ".git" "target" "dist" ];
+      }
+    ];
+  };
+};
+```
+
+配置遵循TOML格式，将写入`~/.config/danksearch/config.toml`。该结构直接映射到 TOML 配置 - 请参阅[配置](configuration) 指南以了解所有可用选项。
+
+### 系统服务 {#systemd-service}
+
+home-manager 模块自动创建一个 systemd 用户服务：
+
+- 使用 `dsearch serve` 运行 DankSearch API 服务器
+- 登录时自动启动（当到达 `default.target` 时）
+- 失败时延迟 5 秒重新启动
+- 将输出记录到 systemd 日志
+
+检查服务状态和日志：
+
+```bash
+# Check service status
+systemctl --user status dsearch
+
+# View logs
+journalctl --user -u dsearch -f
+
+# Restart service
+systemctl --user restart dsearch
+```
+
+### 示例：自定义路径配置 {#example-custom-paths-configuration}
+
+```nix
+programs.dsearch = {
+  enable = true;
+
+  config = {
+    listen_addr = ":43654";
+    max_file_bytes = 5242880;  # 5MB
+    worker_count = 8;
+
+    index_paths = [
+      {
+        path = "~/Documents";
+        max_depth = 0;  # No limit
+        exclude_hidden = false;
+        exclude_dirs = [ ];
+      }
+      {
+        path = "~/Projects";
+        max_depth = 8;
+        exclude_hidden = true;
+        exclude_dirs = [ "node_modules" "venv" "target" ".git" "dist" "build" ];
+      }
+      {
+        path = "/mnt/shared";
+        max_depth = 5;
+        watch = false;  # Disable watchers for network mount
+        exclude_dirs = [ ".cache" ];
+      }
+    ];
+  };
+};
+```
+
+## 重建 {#rebuilding}
+
+进行配置更改后，重建系统：
+
+```bash
+# For home-manager standalone
+home-manager switch
+
+# For NixOS with home-manager as a module
+sudo nixos-rebuild switch
+```
+
+systemd 服务将使用新配置自动重新启动。
+
+## 故障排除 {#troubleshooting}
+
+### 服务不会自动启动 {#service-doesnt-start-automatically}
+
+该服务默认自动启用。检查服务是否正在运行：
+
+```bash
+systemctl --user status dsearch
+```
+
+如果服务启动失败，查看日志：
+
+```bash
+journalctl --user -u dsearch -f
+```
+
+### 端口已在使用中 {#port-already-in-use}
+
+如果端口 43654 已被使用，请在配置中自定义该端口：
+
+```nix
+programs.dsearch = {
+  enable = true;
+  config.listen_addr = ":9876";  # Use a different port
+};
+```
+
+### 索引未更新 {#index-not-updating}
+
+该服务自动监视文件系统更改。手动重建索引：
+
+```bash
+dsearch index generate
+```
+
+### 配置未应用 {#configuration-not-applied}
+
+确保您的配置是有效的 TOML 并重建您的家庭管理器配置：
+
+```bash
+home-manager switch --show-trace
+```
+
+如果存在问题，`--show-trace` 标志将显示详细的错误消息。
+
+## 高级配置 {#advanced-configuration}
+
+### 使用自定义包 {#using-a-custom-package}
+
+您可以使用 DankSearch 的特定版本或自定义版本：
+
+```nix
+programs.dsearch = {
+  enable = true;
+  package = pkgs.dsearch.overrideAttrs (oldAttrs: {
+    version = "0.2.0";
+    # Custom package attributes
+  });
+};
+```
+
+### 多个索引路径 {#multiple-index-paths}
+
+配置 DankSearch 来索引多个目录树：
+
+```nix
+programs.dsearch = {
+  enable = true;
+  config.index = {
+    paths = [
+      "~"
+      "/mnt/storage"
+      "/opt/projects"
+    ];
+    max_depth = 8;
+  };
+};
+```
+
+## 后续步骤 {#next-steps}
+
+- 了解有关[配置](configuration)选项的更多信息
+- 探索CLI和API使用的[使用](usage)指南
+- 查看 [DankMaterialShell 集成](../dankmaterialshell/overview)

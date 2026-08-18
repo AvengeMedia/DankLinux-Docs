@@ -1,0 +1,355 @@
+---
+title: 剪贴板管理器
+description: 具有历史记录、搜索和持久性的 Wayland 剪贴板管理器
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`
+ ██████╗██╗     ██╗██████╗ ██████╗  ██████╗  █████╗ ██████╗ ██████╗
+██╔════╝██║     ██║██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔══██╗██╔══██╗
+██║     ██║     ██║██████╔╝██████╔╝██║   ██║███████║██████╔╝██║  ██║
+██║     ██║     ██║██╔═══╝ ██╔══██╗██║   ██║██╔══██║██╔══██╗██║  ██║
+╚██████╗███████╗██║██║     ██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝
+ ╚═════╝╚══════╝╚═╝╚═╝     ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝`}
+  hideTitle={true}
+/>
+
+`dms cl` 命令为 Wayland 剪贴板管理器提供历史记录、搜索和其他可配置旋钮。它使用 `ext_data_control_v1` 协议进行剪贴板访问。
+
+## 概述 {#overview}
+
+|命令|需要服务器 |描述 |
+|-----------------------|-----------------|-----------------------------------------------------|
+| `dms cl copy [text]` |没有 |将文本复制到剪贴板（如果没有参数则读取标准输入）|
+| `dms cl paste` |没有 |将剪贴板内容粘贴到标准输出 |
+| `dms cl watch [cmd]` |没有 |观察剪贴板更改，可选择通过管道传输到命令 |
+| `dms cl history` |是的 |列出剪贴板历史记录和预览 |
+| `dms cl get <id>` |是的 |通过ID获取完整条目数据 |
+| `dms cl delete <id>` |是的 |按 ID 删除历史条目 |
+| `dms cl clear` |是的 |清除所有剪贴板历史记录 |
+| `dms cl search [query]` |是的 |带过滤器的搜索历史记录 |
+| `dms cl config get` |是的 |获取当前配置 |
+| `dms cl config set` |是的 |更新配置选项 |
+
+## 快速入门 {#quick-start}
+
+```bash
+# Copy text to clipboard
+echo "hello" | dms cl copy
+dms cl copy "hello world"
+
+# Paste clipboard contents
+dms cl paste
+
+# View clipboard history
+dms cl history
+
+# Search history
+dms cl search "password"
+```
+
+## 命令 {#commands}
+
+### `dms cl copy [text]` {#dms-cl-copy-text}
+
+将数据复制到 Wayland 剪贴板。默认情况下分叉一个后台进程来服务粘贴请求。
+
+```bash
+dms cl copy [text] [flags]
+```
+
+**参数**：
+- `text`（可选）：要复制的文本。如果省略，则从 stdin 读取。
+
+**标志**：
+- `-f, --foreground`：留在前台而不是分叉
+- `-o, --paste-once`：第一次粘贴后退出（一次性复制）
+- `-t, --type <mime>`：MIME类型（默认：`text/plain;charset=utf-8`）
+
+**示例**：
+
+```bash
+# Copy string directly
+dms cl copy "Hello, world!"
+
+# Copy from stdin
+echo "piped content" | dms cl copy
+
+# Copy file contents
+dms cl copy < file.txt
+
+# Copy image with MIME type
+dms cl copy -t image/png < screenshot.png
+
+# One-shot copy (clipboard cleared after first paste)
+dms cl copy -o "temporary secret"
+```
+
+### `dms cl paste` {#dms-cl-paste}
+
+读取当前剪贴板选择并写入标准输出。
+
+```bash
+dms cl paste
+```
+
+**示例**：
+
+```bash
+# Paste to terminal
+dms cl paste
+
+# Paste to file
+dms cl paste > output.txt
+
+# Pipe to another command
+dms cl paste | wc -l
+```
+
+### `dms cl watch [command]` {#dms-cl-watch-command}
+
+监视剪贴板更改。如果没有参数，则将更改打印到标准输出。
+
+```bash
+dms cl watch [command] [flags]
+```
+
+**参数**：
+- `command`（可选）：将剪贴板内容传送到的命令。
+
+**标志**：
+- `--json`：输出为 JSON 对象
+- `-s, --store`：将更改存储到历史数据库（无需服务器）
+
+**示例**：
+
+```bash
+# Print clipboard changes to stdout
+dms cl watch
+
+# Pipe each clipboard change to a command
+dms cl watch notify-send
+
+# Output as JSON
+dms cl watch --json
+
+# Store to history without running the server
+dms cl watch --store
+```
+
+**JSON 输出格式**：
+```json
+{"data": "clipboard content", "mimeType": "text/plain", "timestamp": 1699900000, "size": 17}
+```
+
+### `dms cl history` {#dms-cl-history}
+
+列出带有 ID、类型、时间戳和预览的历史条目。需要 DMS 服务器。
+
+```bash
+dms cl history [flags]
+```
+
+**标志**：
+- `--json`：输出为 JSON 数组
+
+**输出示例**：
+```
+ID       Type        Timestamp            Preview
+─────────────────────────────────────────────────────────────
+1        text/plain  2024-01-15 10:30:00  Hello, world!
+2        image/png   2024-01-15 10:31:00  [image 1920x1080]
+3        text/plain  2024-01-15 10:32:00  Some longer text that gets trunca...
+```
+
+### `dms cl get <id>` {#dms-cl-get}
+
+按 ID 检索完整条目数据。默认输出原始数据。
+
+```bash
+dms cl get <id> [flags]
+```
+
+**参数**：
+- `id`（必需）：历史记录中的条目 ID。
+
+**标志**：
+- `--json`：将完整条目输出为 JSON
+
+**示例**：
+
+```bash
+# Get raw data
+dms cl get 42
+
+# Get as JSON
+dms cl get 42 --json
+
+# Save image to file
+dms cl get 42 > image.png
+```
+
+### `dms cl delete <id>` {#dms-cl-delete}
+
+按ID删除历史记录。需要 DMS 服务器。
+
+```bash
+dms cl delete <id>
+```
+
+### `dms cl clear` {#dms-cl-clear}
+
+清除所有剪贴板历史记录。需要 DMS 服务器。
+
+```bash
+dms cl clear
+```
+
+### `dms cl search [query]` {#dms-cl-search-query}
+
+具有文本匹配和过滤器的搜索历史记录。需要 DMS 服务器。
+
+```bash
+dms cl search [query] [flags]
+```
+
+**参数**：
+- `query`（可选）：要搜索的文本。
+
+**标志**：
+- `-l, --limit <n>`：最大结果（默认：50，最大：500）
+- `-o, --offset <n>`：分页结果偏移量
+- `-m, --mime <type>`：按MIME类型子字符串过滤
+- `--images`：仅图像条目
+- `--text`：仅文本条目
+- `--json`：输出为 JSON
+
+**示例**：
+
+```bash
+# Search for text
+dms cl search "password"
+
+# Find all images
+dms cl search --images
+
+# Find text entries containing "http"
+dms cl search --text "http"
+
+# Paginate results
+dms cl search --limit 10 --offset 20
+
+# Filter by MIME type
+dms cl search -m "image/png"
+```
+
+## 配置 {#configuration}
+
+### `dms cl config get` {#dms-cl-config-get}
+
+获取 JSON 格式的当前剪贴板管理器配置。
+
+```bash
+dms cl config get
+```
+
+### `dms cl config set` {#dms-cl-config-set}
+
+更新配置选项。
+
+```bash
+dms cl config set [flags]
+```
+
+**标志**：
+- `--max-history <n>`：保留的最大历史记录条目
+- `--auto-clear-days <n>`：删除早于 N 天的条目（0 禁用）
+- `--clear-at-startup` / `--no-clear-at-startup`：清除服务器启动历史记录
+- `--disable` / `--enable`：完全禁用/启用剪贴板管理器
+- `--disable-history` / `--enable-history`：禁用/启用历史记录持久性
+
+**示例**：
+
+```bash
+# Set max history to 500 entries
+dms cl config set --max-history 500
+
+# Auto-clear entries older than 7 days
+dms cl config set --auto-clear-days 7
+
+# Disable history persistence
+dms cl config set --disable-history
+
+# Clear history on each startup
+dms cl config set --clear-at-startup
+```
+
+### 配置文件 {#configuration-file}
+
+设置存储在 `$XDG_CONFIG_HOME/DankMaterialShell/clsettings.json`（默认为 `~/.config/DankMaterialShell/clsettings.json`）。
+
+### 配置选项 {#configuration-options}
+
+|领域 |类型 |默认 |描述 |
+|------------------|------|------------|---------------------------------------------------------|
+| `disabled` |布尔 | `false` |完全禁用剪贴板管理器 |
+| `disableHistory` |布尔 | `false` |不要将剪贴板保存到数据库 |
+| `maxHistory` |整数 | `100` |历史记录中保留的最大条目数 |
+| `maxEntrySize` |整数 | `10485760` |最大单条目大小（以字节为单位）(10MB) |
+| `autoClearDays` |整数 | `0` |自动删除超过 N 天的条目（0 = 禁用）|
+| `clearAtStartup` |布尔 | `false` |服务器启动时清除历史记录 |
+
+**JSON 架构**：
+```json
+{
+  "disabled": false,
+  "disableHistory": false,
+  "maxHistory": 100,
+  "maxEntrySize": 10485760,
+  "autoClearDays": 0,
+  "clearAtStartup": false
+}
+```
+
+## IPC 方法 {#ipc-methods}
+
+对于编程访问，剪贴板管理器通过 DMS IPC 套接字公开 JSON-RPC 方法。
+
+|方法|参数|描述 |
+|--------------------------|--------------------------------------------------|-------------------------|
+| `clipboard.getHistory` |无 |获取所有历史条目 |
+| `clipboard.getEntry` | `{id: uint64}` |通过ID获取条目 |
+| `clipboard.deleteEntry` | `{id: uint64}` |按 ID 删除条目 |
+| `clipboard.clearHistory` |无 |清除所有历史记录 |
+| `clipboard.search` | `{query?, limit?, offset?, mimeType?, isImage?}` |搜索历史 |
+| `clipboard.getConfig` |无 |获取当前配置 |
+| `clipboard.setConfig` |配置字段 |更新配置|
+
+**IPC 调用示例**：
+```bash
+dms ipc call clipboard.search '{"query": "hello", "limit": 10}'
+```
+
+## 命令参考 {#command-reference}
+
+```bash
+dms cl [command] [flags]
+```
+
+**可用命令**：
+- `copy [text]`：复制到剪贴板
+- `paste`：从剪贴板粘贴
+- `watch [cmd]`：观察剪贴板更改
+- `history`：列出剪贴板历史记录
+- `get <id>`：通过ID获取条目
+- `delete <id>`：按ID删除条目
+- `clear`：清除所有历史记录
+- `search [query]`：搜索历史
+- `config get`：获取配置
+- `config set`：更新配置
+
+**全局选项**：
+- `-c, --config <path>`：指定自定义DMS配置目录
+- `-h, --help`：显示帮助

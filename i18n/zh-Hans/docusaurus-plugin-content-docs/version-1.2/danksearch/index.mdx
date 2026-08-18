@@ -1,0 +1,66 @@
+---
+title: DankSearch
+description: 具有模糊搜索功能的本机文件系统搜索
+sidebar_position: 1
+image: img/dsearch.png
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
+# DankSearch {#danksearch}
+
+`dsearch` 是一个本机文件系统搜索工具，具有可配置的索引和 CLI + REST API，用于使用各种参数搜索文件。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DankSearch"
+    sources={{
+      light: useBaseUrl('/img/dsearchlight.png'),
+      dark: useBaseUrl('/img/dsearch.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+<figcaption>DankSearch文件搜索界面</figcaption>
+</figure>
+
+## 概述 {#overview}
+
+DankSearch 与 DankMaterialShell 的 Spotlight 启动器无缝集成，提供：
+
+- **即时搜索**：极快的文件系统搜索
+- **模糊匹配**：智能搜索，即使有拼写错误也能找到文件
+= **内容搜索**：按内容搜索文件，而不仅仅是文件名。
+- **高效**：索引按需加载到内存中，而不是无限期地保存在那里。
+- **快速**：非常快，适用于数万个文件。
+- **零依赖**：零依赖，编译为单个可移植二进制文件。
+
+## 文档 {#documentation}
+
+- [安装](./installation.mdx) - 详细的安装说明和要求
+- [配置](./configuration.mdx) - 配置选项
+- [用法](./usage.mdx) - 学习 CLI 命令和 API 端点
+
+## 贡献 {#contributing}
+
+`dsearch` 是开源的，欢迎贡献：
+
+- **源代码**：[GitHub 存储库](https://github.com/AvengeMedia/danksearch)
+- **问题**：在 GitHub 上报告错误并请求功能
+- **文档**：帮助改进文档
+- **测试**：在不同的 Linux 发行版和硬件上进行测试
+
+## 许可证 {#license}
+
+`dsearch` 是根据 MIT 许可证发布的。有关详细信息，请参阅 [许可证](https://github.com/AvengeMedia/danksearch/blob/master/LICENSE) 文件。

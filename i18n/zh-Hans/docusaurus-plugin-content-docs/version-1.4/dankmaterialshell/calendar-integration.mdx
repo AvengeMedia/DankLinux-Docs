@@ -1,0 +1,122 @@
+---
+title: 日历集成
+description: 同步 CalDAV 日历以进行仪表板集成
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+同步与 CalDAV 兼容的日历（Google 日历、Office365 等）以实现仪表板集成。
+
+:::tip[尝试使用 DankCalendar]
+设置 khal 和 vdirsyncer 对用户来说非常不友好且复杂。 [DankCalendar](../dankcalendar/) (`dcal`) 是一款独立应用程序，可直接连接 Local、Google、Microsoft、CalDAV 和 iCloud 日历，无需 vdirsyncer/khal。本 khal 指南仍然适用于喜欢它的用户。
+:::
+
+:::tip
+更多详细信息，请直接查看[khal](https://khal.readthedocs.io/en/latest/)文档。配置后，DMS 将自动拾取 khal 事件。
+:::
+
+## 安装 {#installation}
+
+安装日历同步所需的依赖项：
+
+### Arch Linux 及其衍生版 {#arch--derivatives}
+
+```bash
+sudo pacman -S vdirsyncer khal python-aiohttp-oauthlib
+```
+
+### Fedora 及其衍生版 {#fedora--derivatives}
+
+```bash
+sudo dnf install python3-vdirsyncer khal python3-aiohttp-oauthlib
+```
+
+## 配置 {#configuration}
+
+### 1.配置vdirsyncer {#1-configure-vdirsyncer}
+
+创建`~/.vdirsyncer/config`：
+
+```ini
+[general]
+status_path = "~/.calendars/status"
+
+[pair personal_sync]
+a = "personal"
+b = "personallocal"
+collections = ["from a", "from b"]
+conflict_resolution = "a wins"
+metadata = ["color"]
+
+[storage personal]
+type = "google_calendar"
+token_file = "~/.vdirsyncer/google_calendar_token"
+client_id = "your_client_id"
+client_secret = "your_client_secret"
+
+[storage personallocal]
+type = "filesystem"
+path = "~/.calendars/Personal"
+fileext = ".ics"
+```
+
+### 2. 初始同步 {#2-initial-sync}
+
+运行初始同步并配置 khal：
+
+```bash
+vdirsyncer sync
+khal configure
+```
+
+### 3.自动同步（可选） {#3-auto-sync-optional}
+
+使用 cron 设置每 5 分钟自动同步一次：
+
+```bash
+crontab -e
+```
+
+添加以下行：
+
+```cron
+*/5 * * * * /usr/bin/vdirsyncer sync
+```
+
+## 故障排除 {#troubleshooting}
+
+### 日历未同步 {#calendar-not-syncing}
+
+检查 vdirsyncer 凭据和网络连接：
+
+```bash
+vdirsyncer -vdebug sync
+```
+
+### 缺少日历事件 {#missing-calendar-events}
+
+验证 khal 配置是否正确：
+
+```bash
+khal list
+```
+
+### 身份验证问题 {#authentication-issues}
+
+对于 Google 日历，请确保您的 OAuth 客户端 ID 和密码正确。您可能需要重新验证：
+
+```bash
+rm ~/.vdirsyncer/google_calendar_token
+vdirsyncer sync
+```

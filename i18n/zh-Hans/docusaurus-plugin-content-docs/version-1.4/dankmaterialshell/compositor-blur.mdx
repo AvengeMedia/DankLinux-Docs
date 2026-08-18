@@ -1,0 +1,39 @@
+---
+title: 合成器模糊
+description: 在支持 ext-bg-effect-v1 的合成器上启用背景模糊
+sidebar_position: 7.5
+---
+
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+# 合成器模糊 {#compositor-blur}
+
+在支持 `ext-bg-effect-v1` 协议的合成器上（例如 [niri](https://github.com/YaLTeR/niri)），DMS 可以要求合成器模糊其表面后面的任何内容 - 条形图、弹出窗口、模态框和通知。
+
+## 启用 {#enabling}
+
+在**设置→个性化→主题和颜色**下切换**背景模糊**。
+
+<ThemedImage
+  alt="Background Blur settings panel"
+  sources={{
+    light: useBaseUrl('/img/blur_light.png'),
+    dark: useBaseUrl('/img/blur_dark.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%' }}
+/>
+
+这需要合成器的支持。如果您的合成器未实现 `ext-bg-effect-v1`，则切换无效。
+
+:::note
+在不支持 `ext-bg-effect-v1` 的合成器上（例如 Hyprland），您仍然可以通过合成器端图层规则模糊 DMS 表面。有关每个命名空间的模糊示例，请参阅[图层命名空间](./layers.mdx)。
+:::
+
+## 使其可见 {#making-it-visible}
+
+模糊仅通过透明像素显示。降低您想要透视的表面的不透明度 - 在**主题和颜色→小部件样式**下找到。完全不透明的表面看起来和以前一样。
+
+## 模糊边框 {#blur-border}
+
+具有圆角的表面沿着模糊与半径相交的边缘可能看起来有点粗糙。 **模糊边框颜色**和**模糊边框不透明度**选项绘制微妙的轮廓，使这些边缘平滑 - 如果您使用任何圆角，建议使用。

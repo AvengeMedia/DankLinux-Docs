@@ -1,0 +1,271 @@
+---
+title: NixOS安装
+description: 使用本机 nixpkgs 在 NixOS 上安装和配置 DankMaterialShell
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 可以使用 NixOS 模块安装在 NixOS 上。本指南涵盖了本机 nixpkgs 安装方法。
+
+:::note
+`nixos-unstable` 中目前可用的 DMS 版本为 DMS 1.0.3。一旦 [1.2](/blog/v1-2-release) 在 `nixpkgs` 中更新，本页面将随之更新。
+:::
+
+:::info[需要 NixOS Unstable]
+DankMaterialShell 目前仅在 nixpkgs 的 **unstable** 分支中可用。如果您使用 NixOS stable（当前为 25.11），则需要改用 [Flake 安装](nixos-flake) 方法。
+:::
+
+## 安装 {#installation}
+
+### 1.启用 NixOS Unstable {#1-enable-nixos-unstable}
+
+通过设置您的 channel 或 flake 输入来确保您使用 NixOS unstable：
+
+**使用 channels：**
+```bash
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+sudo nix-channel --update
+```
+
+**使用 flakes（在 `flake.nix` 中）：**
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
+}
+```
+
+### 2.启用 DankMaterialShell {#2-enable-dankmaterialshell}
+
+在 NixOS 配置中，启用 DankMaterialShell：
+
+```nix
+programs.dms-shell.enable = true;
+```
+
+就是这样！重建您的系统，DankMaterialShell 将使用合理的默认值进行安装。
+
+## 配置选项 {#configuration-options}
+
+DankMaterialShell 提供了大量配置选项来自定义您的安装。以下是主要选项：
+
+### 功能切换 {#feature-toggles}
+
+```nix
+programs.dms-shell = {
+  enable = true;
+
+  systemd = {
+    enable = true;             # Systemd service for auto-start
+    restartIfChanged = true;   # Auto-restart dms.service when dms-shell changes
+  };
+
+  # Core features
+  enableSystemMonitoring = true;     # System monitoring widgets (dgop)
+  enableClipboard = true;            # Clipboard history manager
+  enableVPN = true;                  # VPN management widget
+  enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
+  enableAudioWavelength = true;      # Audio visualizer (cava)
+  enableCalendarEvents = true;       # Calendar integration (khal)
+};
+```
+
+### 自定义 Quickshell 包 {#custom-quickshell-package}
+
+如果您需要特定版本的 Quickshell：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  quickshell.package = pkgs.quickshell; # or your custom package
+};
+```
+
+#### 从源代码中使用 Quickshell {#using-quickshell-from-source}
+
+:::tip[推荐用于最新功能]
+
+DankMaterialShell 中的许多功能依赖于未发布的 Quickshell 功能。为获得最佳体验，您可能需要使用从源代码构建的 Quickshell。
+
+:::
+
+要从源代码使用 Quickshell，请将其添加为 flake 输入：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+然后在您的配置中使用它：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
+};
+```
+
+### 将 Flake 包与 NixOS 模块结合使用 {#using-flake-package-with-nixos-module}
+
+您可以使用 DankMaterialShell flake 中的包，同时仍然使用本机 NixOS 模块。这使您可以在保留模块配置的同时获得更快的更新：
+
+首先，将 flake 输入添加到 `flake.nix`：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+:::tip[使用不稳定版本]
+如果您想使用 master 分支中的不稳定 (-git) 版本来加快更新速度，请从 URL 中删除 `/stable`：
+```nix
+dms.url = "github:AvengeMedia/DankMaterialShell";
+```
+但是，请注意，不稳定版本可能无法正常工作，并且可能包含重大更改。该文档可能无法反映不稳定版本中的最新更改。
+:::
+
+然后将 flake 包与本机模块一起使用：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+};
+```
+
+:::warning
+
+当将 flake 包与本机 nixpkgs 模块一起使用时，默认情况下某些依赖项可能不会自动启用，并且某些配置可能会丢失。您可能需要手动安装可选依赖项或调整功能切换以满足您的需求。
+
+:::
+
+### 插件 {#plugins}
+
+以声明方式安装 DankMaterialShell 插件。有两种方法：
+
+#### 方法 1：使用插件注册表（推荐） {#method-1-using-the-plugin-registry-recommended}
+
+[dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) flake 提供所有社区插件作为每日更新的包。这是安装插件的最简单方法。
+
+首先，将插件注册表添加为 flake 输入：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+然后导入模块并启用插件：
+
+```nix
+{
+  imports = [ inputs.dms-plugin-registry.nixosModules.default ];
+
+  programs.dms-shell = {
+    enable = true;
+
+    plugins = {
+      # Simply enable plugins by their ID (from the registry)
+      dankBatteryAlerts.enable = true;
+      dockerManager.enable = true;
+    };
+  };
+}
+```
+
+插件 ID 可以在 [插件商店](https://danklinux.com/plugins) 中找到 - 它是安装 URL 的最后部分。例如，`dms://plugin/install/dankBatteryAlerts` 的 ID 为 `dankBatteryAlerts`。
+
+#### 方法 2：从源手动安装 {#method-2-manual-installation-from-source}
+
+如果您不想使用注册表片，可以通过提供源来手动安装插件：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+
+  plugins = {
+    dockerManager = {
+      src = pkgs.fetchFromGitHub {
+        owner = "LuckShiba";
+        repo = "DmsDockerManager";
+        rev = "v1.2.0";
+        sha256 = "sha256-VoJCaygWnKpv0s0pqTOmzZnPM922qPDMHk4EPcgVnaU=";
+      };
+    };
+    anotherPlugin = {
+      enable = true;
+      src = pkgs.another-plugin;
+    };
+  };
+};
+```
+
+## 高级配置 {#advanced-configuration}
+
+有关可用选项的完整列表，请检查 nixpkgs 中的[模块文件](https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/programs/wayland/dms-shell.nix)。
+
+## 重建 {#rebuilding}
+
+进行配置更改后，重建系统：
+
+```bash
+sudo nixos-rebuild switch
+```
+
+## 故障排除 {#troubleshooting}
+
+### DMS 不会自动启动 {#dms-doesnt-start-automatically}
+
+确保您设置了 `systemd.enable = true`：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  systemd.enable = true;
+};
+```
+
+### 缺少依赖项 {#missing-dependencies}
+
+每个功能都有自己的依赖项集。如果某功能不起作用，请确保相应的 `enable` 选项设置为 `true`。例如，剪贴板历史需要 `enableClipboard = true`，它会安装 `cliphist` 和 `wl-clipboard`。
+
+## 后续步骤 {#next-steps}
+
+- 通过[主题](application-themes)配置您的偏好
+- 在[Keybinds & IPC](keybinds-ipc)中设置合成器键绑定
+- 使用[插件]扩展功能(plugins-overview)

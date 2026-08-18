@@ -1,0 +1,376 @@
+---
+title: Dank16
+description: 通过智能对比度处理从单一颜色生成 Base16 调色板
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██╗ ██████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝███║██╔════╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ╚██║███████╗
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗  ██║██╔═══██╗
+██████╔╝██║  ██║██║ ╚████║██║  ██╗ ██║╚██████╔╝
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═╝ ╚═════╝`}
+  hideTitle={true}
+/>
+
+`dms dank16` 命令从单个输入颜色生成完整的 Base16 调色板。它创建和谐的 16 色终端主题，并为浅色和深色模式提供适当的对比度。
+
+## 概述 {#overview}
+
+Dank16 采用单一十六进制颜色并生成适合终端、编辑器和其他应用程序的完整 Base16 兼容调色板。该算法智能地得出互补色，同时确保所有颜色都满足可读性的对比度要求。
+
+**主要特点**：
+- 从一种颜色生成完整的 16 色调色板
+- 支持深色和浅色主题
+- 高级对比度算法（Delta Phi Star 或 WCAG）
+- 多种输出格式（终端配置、JSON、VSCode）
+- 自定义背景颜色支持
+
+<ThemedImage
+  alt="Dank16 color palette example showing 16 ANSI colors"
+  sources={{
+    light: useBaseUrl('/img/dank16_light.png'),
+    dark: useBaseUrl('/img/dank16.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%', marginTop: '1.5rem', marginBottom: '1.5rem' }}
+/>
+
+## 快速入门 {#quick-start}
+
+生成深色主题调色板：
+
+```bash
+dms dank16 "#8b5cf6"
+```
+
+**输出**：
+```
+palette = 0=#1a1a1a
+palette = 1=#e25443
+palette = 2=#6ed675
+palette = 3=#dbd97b
+palette = 4=#9a65fd
+palette = 5=#9173d2
+palette = 6=#9565ff
+palette = 7=#abb2bf
+palette = 8=#5c6370
+palette = 9=#e06a5f
+palette = 10=#86e08b
+palette = 11=#e8e697
+palette = 12=#e5c7ff
+palette = 13=#8269d9
+palette = 14=#9069c0
+palette = 15=#ffffff
+```
+
+生成浅色主题调色板：
+
+```bash
+dms dank16 "#8b5cf6" --light
+```
+
+## Base16 颜色映射 {#base16-color-mapping}
+
+生成的调色板遵循标准 Base16 规范：
+
+|索引 |目的|黑暗主题 |浅色主题 |
+|-------|---------|------------|-------------|
+| 0 |背景|深灰色|浅灰色|
+| 1 |红色|饱和红|深红色|
+| 2 |绿色|饱和绿 |深绿色|
+| 3 |黄色|饱和黄|深黄色|
+| 4 |蓝色|源自输入 |源自输入 |
+| 5 |洋红色|源自输入 |源自输入 |
+| 6 |青色 |源自输入 |源自输入 |
+| 7 |前景|浅灰色|深灰色|
+| 8 |亮黑色|中灰色|深灰色|
+| 9 |亮红色|打火机红色 |中红色 |
+| 10 | 10亮绿色|浅绿色|中绿色|
+| 11 | 11亮黄色|淡黄色 |中黄色 |
+| 12 | 12亮蓝色|打火机版本 |打火机版本|
+| 13 |明亮的洋红色|打火机版本 |打火机版本|
+| 14 | 14亮青色 |打火机版本 |打火机版本 |
+| 15 | 15亮白|白色|黑色|
+
+## 输出格式 {#output-formats}
+
+### 默认格式 {#default-format}
+
+默认输出是简单的调色板格式：
+
+```bash
+dms dank16 "#8b5cf6"
+```
+
+### 小猫终端 {#kitty-terminal}
+
+```bash
+dms dank16 "#8b5cf6" --kitty
+```
+
+**输出**：
+```
+color0   #1a1a1a
+color1   #e25443
+color2   #6ed675
+color3   #dbd97b
+...
+```
+
+将输出直接复制到 `~/.config/kitty/kitty.conf`。
+
+### 脚踏终端 {#foot-terminal}
+
+```bash
+dms dank16 "#8b5cf6" --foot
+```
+
+为 Foot 终端模拟器生成颜色配置。
+
+### Alacritty 终端 {#alacritty-terminal}
+
+```bash
+dms dank16 "#8b5cf6" --alacritty
+```
+
+为 Alacritty 的配色方案生成 YAML 配置。
+
+### 幽灵终端 {#ghostty-terminal}
+
+```bash
+dms dank16 "#8b5cf6" --ghostty
+```
+
+生成 Ghostty 终端模拟器的配置。
+
+### JSON 格式 {#json-format}
+
+```bash
+dms dank16 "#8b5cf6" --json
+```
+
+将调色板输出为包含详细颜色信息的 JSON 对象。
+
+### 变体格式 {#variants-format}
+
+```bash
+dms dank16 "#8b5cf6" --variants [--light] [--background <color>]
+```
+
+在一次调用中输出所有颜色变体：
+
+```json
+{
+  "color0": {
+    "dark": { "hex": "#1a1a1a", "hex_stripped": "1a1a1a" },
+    "light": { "hex": "#f8f8f8", "hex_stripped": "f8f8f8" },
+    "default": { "hex": "#1a1a1a", "hex_stripped": "1a1a1a" }
+  },
+  ...
+}
+```
+
+|变体 |描述 |
+|---------|-------------|
+| `dark` |始终为深色模式颜色 |
+| `light` |常亮模式颜色 |
+| `default` |模式感知（使用 `--light` 标志来确定哪个变体）|
+
+使用 `--primary-dark` 和 `--primary-light` 为每种模式指定不同的原色：
+
+```bash
+dms dank16 --variants --primary-dark "#8b5cf6" --primary-light "#6d28d9"
+```
+
+这是作为 `dank16` 对象注入到 matugen 模板中的格式。
+
+## 对比算法 {#contrast-algorithms}
+
+Dank16 支持两种对比算法以确保可读性：
+
+### Delta Phi Star (DPS) - 默认 {#delta-phi-star-dps---default}
+
+默认算法使用 Delta Phi Star 对比度，它根据黄金比例 (phi) 提供感知均匀的对比度。该算法：
+- 使用 CIELAB 色彩空间来提高感知准确性
+- 应用黄金比例（φ ≈ 1.618）计算以获得和谐的对比度
+- 正常文本的最小 Lc（亮度对比度）值为 40，辅助文本的目标值为 35
+- 调整黑暗主题中的负极性
+
+```bash
+dms dank16 "#8b5cf6" --contrast dps
+```
+
+**它是如何工作的**：
+1. 将颜色转换为CIELAB空间（L*、a*、b*）
+2. 使用：`Lc = (|Lb^φ - Lf^φ|)^(1/φ) × 1.414 - 40` 计算亮度对比度
+3. 调整极性（暗模式+5）
+4. 确保满足最低对比度阈值
+
+### WCAG 对比 {#wcag-contrast}
+
+使用标准 WCAG 2.1 对比度算法：
+- 普通文本的最小比例为 4.5:1，辅助文本的最小比例为 3.0:1
+- 基于相对亮度计算
+- 无障碍合规性行业标准
+
+```bash
+dms dank16 "#8b5cf6" --contrast wcag
+```
+
+## 高级选项 {#advanced-options}
+
+### 自定义背景 {#custom-background}
+
+指定自定义背景颜色而不是默认背景颜色：
+
+```bash
+# Dark theme with custom background
+dms dank16 "#8b5cf6" --background "#0d1117"
+
+# Light theme with custom background
+dms dank16 "#8b5cf6" --light --background "#ffffff"
+```
+
+### 组合选项 {#combining-options}
+
+所有选项都可以组合：
+
+```bash
+dms dank16 "#8b5cf6" \
+  --light \
+  --background "#fafafa" \
+  --contrast wcag \
+  --kitty > ~/.config/kitty/dank-light.conf
+```
+
+## 算法概述 {#algorithm-overview}
+
+调色板生成过程遵循以下步骤：
+
+1. **容器导出**：通过根据主题模式调整饱和度和值，从输入导出容器颜色
+
+2. **颜色生成**：创建核心调色板颜色：
+- 红、绿、黄：通过色调偏移和饱和度调整生成
+- 蓝色、品红色、青色：源自具有变化的输入颜色
+- 前景/背景：根据主题模式设置
+
+3. **对比度执行**：调整每种颜色以满足最低对比度要求：
+- 转换为 HSV 或 CIELAB 色彩空间
+- 逐渐调整亮度/值，直到达到对比度阈值
+- 保留色调以保持颜色特性
+
+4. **明亮变体**：为颜色 9-14 生成更明亮的版本：
+- 深色模式：使用 L* 重新调色以确保高可见度
+- 灯光模式：降低饱和度并调整微妙对比度的值
+
+## 用例 {#use-cases}
+
+### 终端主题 {#terminal-theming}
+
+为您的终端生成一致的配色方案：
+
+```bash
+# Kitty
+dms dank16 "#your-color" --kitty >> ~/.config/kitty/kitty.conf
+
+# Foot
+dms dank16 "#your-color" --foot >> ~/.config/foot/foot.ini
+
+# Alacritty
+dms dank16 "#your-color" --alacritty >> ~/.config/alacritty/alacritty.yml
+```
+
+### 编辑器主题 {#editor-themes}
+
+VSCode 和其他编辑器通过 DMS 的内置主题自动获取终端颜色。 dank16 调色板也可通过 `dank16` 对象在您的自定义 matugen 模板中使用 - 有关详细信息，请参阅 [应用程序主题](/docs/dankmaterialshell/application-themes#available-template-variables) 文档。
+
+### 动态主题 {#dynamic-theming}
+
+根据壁纸颜色或系统强调生成主题：
+
+```bash
+#!/bin/bash
+# Extract dominant color from wallpaper
+dominant_color=$(your-color-extraction-tool ~/wallpaper.jpg)
+
+# Generate and apply terminal theme
+dms dank16 "$dominant_color" --kitty > ~/.config/kitty/auto-theme.conf
+kitty @ set-colors -a ~/.config/kitty/auto-theme.conf
+```
+
+### 亮/暗模式自动化 {#lightdark-mode-automation}
+
+创建匹配的浅色和深色变体：
+
+```bash
+#!/bin/bash
+COLOR="#8b5cf6"
+
+# Generate both variants
+dms dank16 "$COLOR" --kitty > ~/.config/kitty/dank-dark.conf
+dms dank16 "$COLOR" --light --kitty > ~/.config/kitty/dank-light.conf
+
+# Switch based on time or system setting
+if is_dark_mode; then
+    kitty @ set-colors -a ~/.config/kitty/dank-dark.conf
+else
+    kitty @ set-colors -a ~/.config/kitty/dank-light.conf
+fi
+```
+
+## 提示和最佳实践 {#tips--best-practices}
+
+### 选择输入颜色 {#choosing-input-colors}
+
+选择您希望在终端中突出显示的输入颜色。输入颜色将在输出中最直接地表示为蓝色/青色（调色板索引 4、6、12、14），其他颜色则派生为互补色调。真正的红色、绿色和黄色仍将显示在适当的位置。
+
+### 测试对比度 {#testing-contrast}
+
+生成调色板后，使用实际的终端应用程序对其进行测试：
+
+```bash
+# Generate palette
+dms dank16 "#8b5cf6" --kitty > /tmp/test-theme.conf
+
+# Open new kitty window with theme
+kitty -o include=/tmp/test-theme.conf
+```
+
+### 主题迭代 {#iterating-on-themes}
+
+尝试稍微改变输入颜色以找到完美的调色板：
+
+```bash
+# Try different shades
+dms dank16 "#8b5cf6"  # Original
+dms dank16 "#9b6cf6"  # Slightly lighter
+dms dank16 "#7b4ce6"  # Slightly darker
+```
+
+## 命令参考 {#command-reference}
+
+```bash
+dms dank16 <hex_color> [flags]
+```
+
+**参数**：
+- `hex_color`（必填）：以十六进制格式输入颜色（例如“#8b5cf6”或“8b5cf6”）
+
+**标志**：
+- `--light`：生成浅色主题变体（默认：深色）
+- `--background <hex>`：自定义背景颜色
+- `--contrast <algorithm>`：对比算法 - “dps”或“wcag”（默认值：“dps”）
+- `--kitty`：以Kitty终端格式输出
+- `--foot`：以脚端子格式输出
+- `--alacritty`：以 Alacritty 终端格式输出
+- `--ghostty`：以 Ghostty 终端格式输出
+- `--json`：输出为带有 hex、hex_stripped 和 RGB 值的 JSON 对象
+- `--variants`：将所有变体（深色/浅色/默认）输出为 JSON
+- `--primary-dark <hex>`：深色模式的原色（与 `--variants` 一起使用）
+- `--primary-light <hex>`：灯光模式的原色（与 `--variants` 一起使用）
+- `--wezterm`：以 Wezterm 终端格式输出
+- `-h, --help`：显示帮助

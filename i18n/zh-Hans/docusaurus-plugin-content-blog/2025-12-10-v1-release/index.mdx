@@ -1,0 +1,484 @@
+---
+title: DMS 1.0 "The Dark Knight" 发布
+description: DMS 1.0 来了！了解 DankMaterialShell 的第一个主要版本！
+slug: v1-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true">
+    {/* Far left edge */}
+    <div style={{ position: 'absolute', top: '12%', left: '2%', transform: 'rotate(-15deg) scale(0.62)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim1}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '45%', left: '1%', transform: 'rotate(8deg) scale(0.7)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim3}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '75%', left: '3%', transform: 'rotate(-22deg) scale(0.58)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim2}`} style={{ color: '#B794F4' }} />
+    </div>
+    {/* Left inner - closer to text */}
+    <div style={{ position: 'absolute', top: '8%', left: '12%', transform: 'rotate(5deg) scale(0.75)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim2}`} style={{ color: '#6B46C1' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '32%', left: '15%', transform: 'rotate(-10deg) scale(0.65)' }}>
+      <span className={`${styles.bat} ${styles.bat7} ${styles.batAnim1}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '58%', left: '10%', transform: 'rotate(18deg) scale(0.55)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim3}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '82%', left: '14%', transform: 'rotate(-8deg) scale(0.68)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim1}`} style={{ color: '#B794F4' }} />
+    </div>
+    {/* Top area - above text */}
+    <div style={{ position: 'absolute', top: '5%', left: '28%', transform: 'rotate(12deg) scale(0.52)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim2}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '2%', left: '45%', transform: 'rotate(-6deg) scale(0.6)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim3}`} style={{ color: '#6B46C1' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '8%', left: '68%', transform: 'rotate(20deg) scale(0.48)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim1}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    {/* Bottom area - below text */}
+    <div style={{ position: 'absolute', top: '88%', left: '32%', transform: 'rotate(-18deg) scale(0.55)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim3}`} style={{ color: '#B794F4' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '92%', left: '55%', transform: 'rotate(10deg) scale(0.62)' }}>
+      <span className={`${styles.bat} ${styles.bat7} ${styles.batAnim1}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '85%', left: '72%', transform: 'rotate(-12deg) scale(0.5)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim2}`} style={{ color: '#6B46C1' }} />
+    </div>
+    {/* Right inner - closer to text */}
+    <div style={{ position: 'absolute', top: '10%', left: '82%', transform: 'rotate(-14deg) scale(0.72)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim3}`} style={{ color: '#B794F4' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '35%', left: '78%', transform: 'rotate(8deg) scale(0.58)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim2}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '55%', left: '84%', transform: 'rotate(-20deg) scale(0.65)' }}>
+      <span className={`${styles.bat} ${styles.bat3} ${styles.batAnim1}`} style={{ color: '#9F7AEA' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '78%', left: '80%', transform: 'rotate(15deg) scale(0.6)' }}>
+      <span className={`${styles.bat} ${styles.bat7} ${styles.batAnim3}`} style={{ color: '#6B46C1' }} />
+    </div>
+    {/* Far right edge */}
+    <div style={{ position: 'absolute', top: '18%', left: '94%', transform: 'rotate(22deg) scale(0.65)' }}>
+      <span className={`${styles.bat} ${styles.bat4} ${styles.batAnim1}`} style={{ color: '#B794F4' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '48%', left: '96%', transform: 'rotate(-5deg) scale(0.72)' }}>
+      <span className={`${styles.bat} ${styles.bat2} ${styles.batAnim2}`} style={{ color: '#805AD5' }} />
+    </div>
+    <div style={{ position: 'absolute', top: '70%', left: '93%', transform: 'rotate(16deg) scale(0.55)' }}>
+      <span className={`${styles.bat} ${styles.bat1} ${styles.batAnim3}`} style={{ color: '#9F7AEA' }} />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.0</span>
+    </h1>
+    <p className={styles.heroSubtitle}>The Dark Knight</p>
+  </div>
+</div>
+
+我们很高兴地宣布 DankMaterialShell (DMS) 1.0 发布！~ DMS 是一个使用 [Quickshell](https://quickshell.org/) 和 GO 构建的 Wayland 合成器桌面 Shell。
+
+这个最初只是小型爱好项目的作品，如今已成长为拥有数千用户和数十位贡献者的完整桌面 shell 和应用程序套件——为 [niri](https://github.com/niri-wm/niri)、[Hyprland](https://hypr.land)、[Sway](https://swaywm.org)、[MangoWC](https://mangowc.vercel.app/) 和 [LabWC](https://labwc.github.io/) 提供一流支持，并普遍支持所有实现了特定 Wayland 协议的合成器。
+
+{/* truncate */}
+
+这个版本的意义不止于一个版本号，它是对稳定性和可预测性的承诺。今后，DMS 将遵循基于里程碑/路线图的发布周期，并在主要版本之间根据需要发布错误修复版本。
+
+DMS 自诞生以来已经走过了漫长的道路，我们很高兴转向更结构化的开发流程——这是让 DMS 成为主流 Linux 桌面项目的一步。
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>2,300+</span>
+    <span className={styles.statLabel}>次提交</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>2.4k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>75+</span>
+    <span className={styles.statLabel}>位贡献者</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>26</span>
+    <span className={styles.statLabel}>个社区插件</span>
+  </div>
+</div>
+
+## 新特性 {#whats-new}
+
+### OMEGA 栏 {#omega-bar}
+
+最多可添加 **4** 个栏配置，每个配置拥有自己的小部件、布局和样式。配置每个栏显示在哪个显示器上，并使用新的 [IPC](/docs/dankmaterialshell/keybinds-ipc#bar) 独立控制每个栏。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Omega Bars"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/omegabar_light.png'),
+      dark: useBaseUrl('/img/blog/v1/omegabar_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>多个栏配置，各自拥有独立的小部件和样式</figcaption>
+</figure>
+
+### 全局键盘快捷键（niri） {#comprehensive-keyboard-shortcuts-niri}
+
+配置全局键盘快捷键——面向 niri 用户。需要 DankLinux 仓库中的 quickshell 版本或 AUR 中的 quickshell-git。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Keyboard Shortcuts"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/keybinds_light.png'),
+      dark: useBaseUrl('/img/blog/v1/keybinds_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>带冲突检测的键盘快捷键配置</figcaption>
+</figure>
+
+### 打印机管理（CUPS） {#printer-management-cups}
+
+通过 CUPS 集成直接在 DMS 设置中管理打印机。轻松添加、删除和配置打印机。新的控制中心小部件可以查看打印机并管理打印任务。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Printer Management"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/printers_light.png'),
+      dark: useBaseUrl('/img/blog/v1/printers_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>带状态监控和任务控制的 CUPS 打印机管理</figcaption>
+</figure>
+
+### 全面的网络管理 {#comprehensive-network-management}
+
+全面的网络视图，支持 NetworkManager、IWD 和 systemd-networkd。导入 VPN 配置文件、管理连接并连接到 Wi-Fi 网络。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Network Management"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/network_light.png'),
+      dark: useBaseUrl('/img/blog/v1/network_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>带 WiFi 和 VPN 管理的网络设置</figcaption>
+</figure>
+
+### Polkit 代理 {#polkit-agent}
+
+DMS 现在包含自己的 Polkit 代理来处理权限提升请求。不再需要 `polkit-gnome`、`mate-polkit` 或 `kde-polkit` 等外部 polkit 代理。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Polkit Agent"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/polkit_light.png'),
+      dark: useBaseUrl('/img/blog/v1/polkit_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>用于权限提升的原生 polkit 身份验证对话框</figcaption>
+</figure>
+
+### 文件类型关联 {#file-type-associations}
+
+直接在 DMS 设置中为不同的文件类型和协议设置默认应用程序。轻松管理哪些应用程序打开特定文件格式，并选择您偏好的应用程序来处理各种文件类型和链接。请参阅[桌面集成文档](/docs/dankmaterialshell/overview#desktop-integration)。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="App Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/apppicker_light.png'),
+      dark: useBaseUrl('/img/blog/v1/apppicker_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>用于选择默认应用程序的"打开方式"对话框</figcaption>
+</figure>
+
+特别感谢 [@devnullvoid](https://github.com/devnullvoid) 的贡献。
+
+### Dank 取色器 {#dank-color-picker}
+
+取色器并不新鲜，但吸管/取色工具现在内置于 DMS——不再需要第三方工具！它现已集成到 DMS 中，并可作为 Wayland 合成器的独立工具使用。请参阅 [CLI 取色器文档](https://danklinux.com/docs/dankmaterialshell/cli-color-picker)。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Color Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/colorpick_light.png'),
+      dark: useBaseUrl('/img/blog/v1/colorpick_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>从屏幕任意位置取色，支持多种输出格式</figcaption>
+</figure>
+
+### Dank 截图 {#dank-screenshot}
+
+DMS 现在自带截图工具——不再需要 grim、slurp 或 grimblast。截取区域、单个屏幕、所有屏幕或当前聚焦的窗口（仅限 Hyprland/MangoWC/DWL）。保存到剪贴板、文件、stdout，或自由组合。完成时获得通知。支持 PNG、JPEG 和 PPM 格式。请参阅 [CLI 截图文档](https://danklinux.com/docs/dankmaterialshell/cli-screenshot)。
+
+兼容多种 Wayland 合成器，包括 Hyprland、Sway、MangoWC 和 niri。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Screenshot Tool"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/screenshot_light.png'),
+      dark: useBaseUrl('/img/blog/v1/screenshot_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>跨多个显示器的区域选择，带实时尺寸显示</figcaption>
+</figure>
+
+### DMS 插件系统 {#dms-plugin-system}
+
+DMS 拥有强大的插件系统，允许开发者和爱好者通过自定义功能扩展 shell。插件生态系统现在包括 26 个社区创建的插件，其中 6 个是 v0.6.2 版本发布后新增的。从系统实用程序到创意工具，插件系统使添加自定义小部件、与外部服务集成或在 DMS 之上构建全新功能成为可能。
+
+浏览[完整插件目录](https://danklinux.com/plugins)，发现社区贡献，包括壁纸引擎、系统监视器、媒体控制、容器管理等。随着社区不断构建出色的扩展，新插件正在定期添加。
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/v1/dms_plugins.png')}
+    alt="DMS Plugin System"
+    style={{ maxWidth: '600px', width: '100%', borderRadius: '8px' }}
+  />
+  <figcaption>26 个扩展 DMS 功能的社区插件</figcaption>
+</figure>
+
+特别感谢 [rochacbruno](https://github.com/rochacbruno) 开发和迭代插件系统，以及维护[插件注册表](https://github.com/AvengeMedia/dms-plugin-registry)。
+
+## 适用于 Ubuntu、Debian、OpenSUSE、Fedora、CentOS 和 Arch Linux 的软件包 {#packages-for-ubuntu-debian-opensuse-fedora-centos-and-arch-linux}
+
+<div className={`${styles.distroMashup} ${styles.noZoom}`}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+  </div>
+</div>
+
+DMS 现已通过 [DankLinux 仓库](/docs/danklinux) 提供，包含适用于 Ubuntu、Debian、OpenSUSE 和 Fedora/CentOS 的官方软件包（通过 PPA、OBS 和 COPR）。Arch Linux 用户可以从 Arch User Repository (AUR) 获取。
+
+这不仅包括 DMS 本身，还包括可以与 DMS 搭配或独立使用的核心依赖项：
+- **niri** - Ubuntu、Debian 和 OpenSUSE（包括 **xwayland-satellite**）
+- **quickshell** - Ubuntu、Debian、OpenSUSE 和 Fedora
+- **dgop** - 所有受支持的发行版
+- **dsearch** - 所有受支持的发行版
+- **dms-greeter** - AUR、Fedora 和 Ubuntu（更多通过 DankInstaller）
+- **matugen** - Ubuntu、Debian、OpenSUSE 和 Fedora
+- **cliphist** - 所有受支持的发行版
+- **ghostty** - Fedora、Debian 和 Ubuntu
+
+*开发软件包/夜间构建也可通过相同的仓库获取*
+
+### 登陆 nixpkgs {#available-on-nixpkgs}
+
+<div className={styles.noZoom}>
+  <a href="https://search.nixos.org/options?channel=unstable&query=dms-" style={{ display: 'inline-block', margin: '1rem 0' }}>
+    <ThemedImage
+      alt="Packaged for Nixpkgs"
+      sources={{
+        light: useBaseUrl('/img/distros/nixpkgs-light.svg'),
+        dark: useBaseUrl('/img/distros/nixpkgs-dark.svg'),
+      }}
+      style={{ maxWidth: '240px' }}
+    />
+  </a>
+</div>
+
+DMS 现已在 nixpkgs unstable 中可用。这大大简化了 NixOS 用户和 Nix 包管理器用户的安装，代表着向更广泛采用迈出的重要一步。请在 [search.nixos.org](https://search.nixos.org/options?channel=unstable&query=dms-) 上查看可用选项。
+
+特别感谢 [@LuckShiba](https://github.com/LuckShiba) 创建 nixpkgs 软件包，感谢 [@marcusramberg](https://github.com/marcusramberg) 批准！
+
+## 不只是一个 Shell {#more-than-just-a-shell}
+
+DMS 已经不仅仅是一个桌面 shell。它是一套全面的工具，以连贯、集成的方式提供核心桌面功能——或作为完全独立的实用程序来丰富非 DMS 桌面。
+
+
+- **DankMaterialShell (qml)** - shell 中基于 quickshell 的部分
+- **DankMaterialShell (go)** - 全面的后端服务和工具套件
+  - **Dank16** - 适用于 Base16 风格主题的对比度感知调色板生成器
+  - **Matugen** - 自定义 matugen 运行器，用 Dank16 和自定义颜色丰富 matugen 模板
+  - **Brightness** - 用于背光、LED 和 ddc/ci 亮度控制的完整管理 CLI 和套接字服务。
+  - **Networking** - 与 NetworkManager、IWD 和 systemd-networkd 的原生 dbus 集成，提供全面的网络管理——包括 VPN、WiFi 和以太网。
+  - **Keybinds** - 完整的按键绑定系统，带有可插拔的提供程序，用于读取和写入备忘单和管理界面的按键绑定。
+  - **Color Picker** - 带多种输出格式的 CLI 取色器和 Wayland 吸管工具。
+  - **Screenshot** - 完整的截图工具，支持区域选择、窗口捕获和多种输出格式。
+  - **Plugins** - 用于通过自定义功能扩展 shell 和启动器的插件系统。
+- **dgop** - 无状态系统监控工具，采用独特的基于游标的方式。CLI 和完整文档（OpenAPI 3.1）的 REST API。
+- **dsearch** - 极速、带增量索引的索引式文件系统搜索服务器。完全可配置——选择深度、文件夹、排除项、元数据、内容等。CLI、Unix Socket 和 Rest API。
+
+**TL;DR** *DMS* 取代了许多 Wayland 桌面常用的工具。不再需要 `brightnessctl`、`ddcutil`、`grimblast`、`nmcli`、`iwctl`、`grim`、`slurp`、`wofi`、`fuzzel`、`swayidle`、`hyprlock`、`mate/gnome/kde polkit`、`mako/dunst`、`hyprpicker`、`sddm`（以及一大堆其他工具）。完全可选，并完全独立于 DMS 本身。
+
+## 错误修复和改进 {#bug-fixes-and-improvements}
+
+<details style={{
+  border: '1px solid rgba(128, 90, 213, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(128, 90, 213, 0.08) 0%, rgba(107, 70, 193, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- 查看详情（300+ 次提交）-|</summary>
+
+自上次 v0.6.2 发布以来，DMS 在所有组件中进行了大量的错误修复和稳定性改进：
+
+**截图和取色器**
+- 处理来自合成器的 24 位帧和 RGB888 位翻转
+- 色彩空间和缩放修复
+- 处理变换和多显示器显示
+- 吸管工具的保存按钮显示修复
+- 在 niri 上回退到 niri 选择器
+
+**栏和 Dock**
+- 中间区域定位和边框粗细修复
+- 隐私指示器背景颜色对齐
+- 透明度处理改进（>95% 不透明度、窗口规则）
+- 不透明度绑定和提前返回修复
+- 最大化检测、滚动处理和小部件背景选项
+- 屏幕更改时的 IPC 可靠性
+- 自动隐藏闪烁和弹出交互修复
+
+**显示和监视器**
+- 工作区概述截断和缩放（Hyprland）
+- 物理与逻辑分辨率显示
+- 监视器小部件中的图标垂直对齐
+
+**音频和媒体**
+- 控制中心中的音频滑块绑定
+- 输出设备切换 IPC 和 OSD
+- 媒体控制列定位（栏感知）
+- 新播放器上的媒体 OSD 抑制
+- 播放器按钮控制弹出显示
+
+**网络和 VPN**
+- VPN 图标一致性和锁屏状态
+- VPN 密码提示修复
+- 绑定循环修复
+
+**键盘和输入**
+- Alt+Shift 和按键绑定的 KDL 解析
+- 按键绑定选项卡问题（niri）
+- 无 LED 设备的大写锁定检测
+- 防止 Esc 关闭窗口
+- 上下文菜单键盘导航
+
+**亮度和伽马**
+- 非自动化切换修复
+- 启动时的夜间模式
+- DDC 设备擦除和 OSD 行为
+- 每显示器固定设备 IPC
+- 用于亮度事件的 Udev 监视器集成
+
+**设置和系统**
+- 天气设置（greeter）
+- Mango 配置覆盖（greeter）
+- 启动器选项卡大小
+- 设置窗口可滚动区域
+- 自定义主题和字体系列处理
+
+**通知和 UI**
+- 通知弹出中的键盘导航
+- 按钮小部件绑定循环
+- ProcessList 上下文菜单可见性
+- 模态中的过度重绘
+- DnD 工具提示显示
+
+**锁屏和电源**
+- VPN 图标一致性
+- 单显示器锁屏选项
+- 电源操作的按住式确认
+- 配置文件 OSD 和 DBus 激活
+
+**壁纸和主题**
+- 每显示器壁纸显示
+- 壁纸循环
+- 隐私小部件背景颜色
+
+**构建和分发**
+- NixOS fprintd 解锁、TUI 启动崩溃和 systemd 服务 PATH
+- 所有构建中的 DMS CLI 版本控制
+- IPC 参数处理
+- OpenSUSE 软件包目录和哈希版本控制
+- Hyprland 配置语法
+- NixOS nativeBuildInputs
+
+**插件系统**
+- 插件响应性和工具提示更新
+- 插件弹出绑定和重载 IPC
+
+以及整个代码库中的更多针对性修复，以确保所有受支持的合成器（Hyprland、Sway、niri、MangoWC、LabWC 和 DWL）的稳定性和可靠性。
+
+</details>
+
+## 资源 {#resources}
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  开始使用 DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>文档</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>插件</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>在 GitHub 上赞助</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>在 Ko-fi 上支持</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>特别感谢 <a href="https://github.com/YaLTeR">YaLTeR</a> 与 DMS 团队合作，感谢 <a href="https://github.com/niri-wm/niri">niri</a>——启发 DMS 的合成器，并感谢在 <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a> 上托管 DMS。</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      谢谢 <span className={styles.gradientText}>你们</span>
+    </h2>
+    <p className={styles.thankYouText}>感谢所有通过反馈、贡献、赞助、捐赠和打包支持 DMS 的人。</p>
+    <p className={styles.thankYouTagline}>期待未来更多的发布！</p>
+  </div>
+</div>

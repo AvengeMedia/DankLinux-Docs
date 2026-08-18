@@ -1,0 +1,211 @@
+---
+title: 配置
+description: 配置DGOP外观和命令
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
+# DGOP配置 {#dgop-configuration}
+
+## API {#api}
+
+对于 API，您可以设置以下环境变量来覆盖 http 服务器的端口：
+- `API_PORT`（默认为`63484`）
+
+## 颜色 {#colors}
+
+dgop 将从 `~/.config/dgop/colors.json` 准备颜色：
+
+示例：
+
+```json
+{
+  "ui": {
+    "border_primary": "#ccbeff",
+    "border_secondary": "#cac3dc",
+    "header_background": "#ccbeff",
+    "header_text": "#33275e",
+    "footer_background": "#141318",
+    "footer_text": "#cac4cf",
+    "text_primary": "#e6e1e9",
+    "text_secondary": "#cac4cf",
+    "text_accent": "#ccbeff",
+    "selection_background": "#ccbeff",
+    "selection_text": "#33275e"
+  },
+  "charts": {
+    "network_download": "#ccbeff",
+    "network_upload": "#4a3e76",
+    "network_line": "#cac3dc",
+    "cpu_core_low": "#4a3e76",
+    "cpu_core_medium": "#ccbeff",
+    "cpu_core_high": "#eeb8ca",
+    "disk_read": "#ccbeff",
+    "disk_write": "#4a3e76"
+  },
+  "progress_bars": {
+    "memory_low": "#4a3e76",
+    "memory_medium": "#ccbeff",
+    "memory_high": "#eeb8ca",
+    "disk_low": "#4a3e76",
+    "disk_medium": "#ccbeff",
+    "disk_high": "#eeb8ca",
+    "cpu_low": "#4a3e76",
+    "cpu_medium": "#ccbeff",
+    "cpu_high": "#eeb8ca",
+    "progress_background": "#201f24"
+  },
+  "temperature": {
+    "cold": "#4a3e76",
+    "warm": "#ccbeff",
+    "hot": "#eeb8ca",
+    "danger": "#ffb4ab"
+  },
+  "status": {
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "#ffb4ab",
+    "info": "#ccbeff"
+  }
+}
+```
+
+### matugen 模板 {#matugen-template}
+
+以下是可与 matugen 一起使用的模板：
+
+```json
+{
+  "ui": {
+    "border_primary": "{{colors.primary.default.hex}}",
+    "border_secondary": "{{colors.secondary.default.hex}}",
+    "header_background": "{{colors.primary.default.hex}}",
+    "header_text": "{{colors.on_primary.default.hex}}",
+    "footer_background": "{{colors.surface_container.default.hex}}",
+    "footer_text": "{{colors.on_surface_variant.default.hex}}",
+    "text_primary": "{{colors.on_surface.default.hex}}",
+    "text_secondary": "{{colors.on_surface_variant.default.hex}}",
+    "text_accent": "{{colors.primary.default.hex}}",
+    "selection_background": "{{colors.primary.default.hex}}",
+    "selection_text": "{{colors.on_primary.default.hex}}"
+  },
+  "charts": {
+    "network_download": "{{colors.primary.default.hex}}",
+    "network_upload": "{{colors.primary_container.default.hex}}",
+    "network_line": "{{colors.secondary.default.hex}}",
+    "cpu_core_low": "{{colors.primary_container.default.hex}}",
+    "cpu_core_medium": "{{colors.primary.default.hex}}",
+    "cpu_core_high": "{{colors.tertiary.default.hex}}",
+    "disk_read": "{{colors.primary.default.hex}}",
+    "disk_write": "{{colors.primary_container.default.hex}}"
+  },
+  "progress_bars": {
+    "memory_low": "{{colors.primary_container.default.hex}}",
+    "memory_medium": "{{colors.primary.default.hex}}",
+    "memory_high": "{{colors.tertiary.default.hex}}",
+    "disk_low": "{{colors.primary_container.default.hex}}",
+    "disk_medium": "{{colors.primary.default.hex}}",
+    "disk_high": "{{colors.tertiary.default.hex}}",
+    "cpu_low": "{{colors.primary_container.default.hex}}",
+    "cpu_medium": "{{colors.primary.default.hex}}",
+    "cpu_high": "{{colors.tertiary.default.hex}}",
+  "progress_background": "{{colors.surface_container_high.default.hex}}"
+  },
+  "temperature": {
+    "cold": "{{colors.primary_container.default.hex}}",
+    "warm": "{{colors.primary.default.hex}}",
+    "hot": "{{colors.tertiary.default.hex}}",
+    "danger": "{{colors.error.default.hex}}"
+  },
+  "status": {
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "{{colors.error.default.hex}}",
+    "info": "{{colors.primary.default.hex}}"
+  }
+}
+```
+
+## 按键绑定 {#keybinds}
+
+交互式 TUI 从 `~/.config/dgop/keybinds.json` 读取按键绑定。该文件是在首次运行时使用默认值创建的，并且在 dgop 运行时热重新加载更改。
+
+自定义键是**附加**：您设置的任何键都会添加到内置默认值之上，因此默认的箭头/vim 键将继续工作。这样可以轻松添加替代键盘布局（例如 Colemak-DH）的绑定，而不会丢失默认值。
+
+每个操作都映射到一个键列表。特殊键使用名称 `up`、`down`、`left`、`right`、`enter`、`esc` 以及 `ctrl+c` 等修饰符。
+
+默认`keybinds.json`：
+
+```json
+{
+  "quit": ["q", "ctrl+c"],
+  "refresh": ["r"],
+  "details": ["d"],
+  "kill": ["x"],
+  "group": ["g"],
+  "sortCPU": ["c"],
+  "sortMemory": ["m"],
+  "sortName": ["n"],
+  "sortPID": ["p"],
+  "navUp": ["up", "k"],
+  "navDown": ["down", "j"],
+  "selectLeft": ["left", "h"],
+  "selectRight": ["right", "l"],
+  "confirm": ["enter"],
+  "cancel": ["esc", "escape"]
+}
+```
+
+### 行动 {#actions}
+
+|行动|描述 |
+| --- | --- |
+| `quit` |退出途易 |
+| `refresh` |强制数据刷新 |
+| `details` |切换流程详细信息面板 |
+| `kill` |打开所选进程的终止确认 |
+| `group` |切换子进程分组 |
+| `sortCPU` |按 CPU 使用率对进程进行排序 |
+| `sortMemory` |按内存使用情况对进程进行排序 |
+| `sortName` |按名称对进程进行排序 |
+| `sortPID` |按 PID 对进程进行排序 |
+| `navUp` / `navDown` |上/下移动流程选择 |
+| `selectLeft` / `selectRight` |在终止确认中的选项之间移动 |
+| `confirm` |确认击杀动作|
+| `cancel` |驳回击杀确认 |
+
+### 示例：Colemak-DH 导航 {#example-colemak-dh-navigation}
+
+添加布局的主行键以进行导航。默认值（`j`/`k`，箭头）仍然与它们一起工作：
+
+```json
+{
+  "navUp": ["e"],
+  "navDown": ["n"]
+}
+```
+
+您只需要包含要扩展的操作 - 省略的操作保留其默认值。
+
+## 故障排除 {#troubleshooting}
+
+### 常见问题 {#common-issues}
+
+**API 未启动：**
+- 检查端口可用性：`netstat -tlnp | grep :63484`
+- 检查日志
+
+## 后续步骤 {#next-steps}
+
+- [用法](usage) - 学习 CLI 命令和 API 用法

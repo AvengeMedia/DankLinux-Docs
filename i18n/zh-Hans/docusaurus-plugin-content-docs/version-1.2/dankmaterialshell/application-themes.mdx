@@ -1,0 +1,484 @@
+---
+title: 应用程序主题
+description: 主题 GTK 和 Qt 应用程序以匹配您的桌面
+sidebar_position: 4.2
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`████████╗██╗  ██╗███████╗███╗   ███╗███████╗███████╗
+╚══██╔══╝██║  ██║██╔════╝████╗ ████║██╔════╝██╔════╝
+     ██║   ███████║█████╗  ██╔████╔██║█████╗  ███████╗
+     ██║   ██╔══██║██╔══╝  ██║╚██╔╝██║██╔══╝  ╚════██║
+     ██║   ██║  ██║███████╗██║ ╚═╝ ██║███████╗███████║
+     ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚══════╝╚══════╝`}
+  hideTitle={true}
+/>
+
+当启用 matugen 时，DankMaterialShell 会自动为本机应用程序生成主题文件。这些文件是在壁纸更改和主题切换时创建的。
+
+## 禁用 Matugen {#disabling-matugen}
+
+在启动之前将环境变量 `DMS_DISABLE_MATUGEN` 设置为 `1` 或 `true` 以完全禁用主题生成。
+
+:::tip
+
+设置环境变量的详细说明请参见【高级配置-设置环境变量】(/docs/dankmaterialshell/advanced-configuration#setting-environment-variables)。
+
+:::
+
+## 自定义 Matugen 模板 {#custom-matugen-templates}
+
+您可以将自己的 matugen 模板添加到主题附加应用程序中。模板必须使用绝对路径并在 `[config]` 部分下定义。 DMS 将与其内置模板一起执行这些模板。
+
+请参阅 [matugen wiki](https://github.com/InioX/matugen/wiki/Configuration) 了解完整的配置和模板选项。
+
+创建或编辑 `~/.config/matugen/config.toml`：
+
+```toml
+[config]
+
+[templates.mytemplate]
+input_path = '/home/username/.config/matugen/templates/mytemplate.toml'
+output_path = '/home/username/.local/share/mytemplate/themes/matugen.toml'
+
+[templates.myapp]
+input_path = '/home/username/.config/matugen/templates/myapp.conf'
+output_path = '/home/username/.config/myapp/colors.conf'
+```
+
+### 可用的模板变量 {#available-template-variables}
+
+您的模板可以访问所有标准 [matugen 颜色关键字](https://github.com/InioX/matugen/wiki/Configuration#colors)，此外 DMS 还为终端和编辑器主题提供完整的 `dank16` 调色板。
+
+#### dank16 颜色结构 {#dank16-color-structure}
+
+dank16 颜色使用与材质颜色系统相匹配的变体结构：
+
+```
+{{dank16.color0.default.hex}}
+{{dank16.color0.dark.hex}}
+{{dank16.color0.light.hex}}
+```
+
+|变体 |使用案例|
+|---------|----------|
+| `.default` |模式感知颜色（推荐用于大多数用途）|
+| `.dark` |无论系统模式如何，始终保持黑暗 |
+| `.light` |无论系统模式如何，始终亮起 |
+
+每个变体都包含 `hex` 和 `hex_stripped` 值。
+
+#### 终端模板 {#terminal-templates}
+
+终端模板应使用 `.default` 变体。 **终端 - 始终使用深色主题** 设置在构建终端配置（kitty、alacritty、ghostty、foot、wezterm）时自动将 `.default` 替换为 `.dark`。
+
+以下是使用 matugen 颜色和 dank16 的 kitty 模板示例：
+
+```
+cursor                {{colors.on_surface.default.hex}}
+cursor_text_color     {{colors.on_surface_variant.default.hex}}
+
+foreground            {{colors.on_surface.default.hex}}
+background            {{colors.background.default.hex}}
+selection_foreground  {{colors.on_secondary.default.hex}}
+selection_background  {{colors.secondary_fixed_dim.default.hex}}
+url_color             {{colors.primary.default.hex}}
+
+color0   {{dank16.color0.default.hex}}
+color1   {{dank16.color1.default.hex}}
+color2   {{dank16.color2.default.hex}}
+color3   {{dank16.color3.default.hex}}
+color4   {{dank16.color4.default.hex}}
+color5   {{dank16.color5.default.hex}}
+color6   {{dank16.color6.default.hex}}
+color7   {{dank16.color7.default.hex}}
+color8   {{dank16.color8.default.hex}}
+color9   {{dank16.color9.default.hex}}
+color10  {{dank16.color10.default.hex}}
+color11  {{dank16.color11.default.hex}}
+color12  {{dank16.color12.default.hex}}
+color13  {{dank16.color13.default.hex}}
+color14  {{dank16.color14.default.hex}}
+color15  {{dank16.color15.default.hex}}
+```
+
+#### 迁移 {#migration}
+
+从旧格式更新自定义 matugen 模板：
+
+```diff
+- {{dank16.color0.hex}}
++ {{dank16.color0.default.hex}}
+```
+
+**重要说明：**
+- 使用绝对路径，而不是像 `./templates/` 这样的相对路径
+- 所有模板定义必须位于 `[config]` 部分下
+- 模板在壁纸更改和主题切换时重新生成
+
+
+## 生成的文件 {#generated-files}
+
+启用 matugen 后，无论“应用 GTK/Qt 主题”切换如何，始终都会生成主题文件：
+
+- `~/.config/gtk-3.0/dank-colors.css`
+- `~/.config/gtk-4.0/dank-colors.css`
+- `~/.config/qt5ct/colors/matugen.conf`
+- `~/.config/qt6ct/colors/matugen.conf`
+
+“应用 GTK/Qt 主题”切换仅控制 DankMaterialShell 是否管理符号链接以使应用程序使用这些文件。
+
+## GTK 应用程序 {#gtk-applications}
+
+### 安装先决条件 {#install-prerequisites}
+
+```bash
+# Arch
+sudo pacman -S adw-gtk-theme
+
+# Fedora
+sudo dnf install adw-gtk3-theme
+```
+
+### 通过设置启用 {#enable-via-settings}
+
+1. 打开**设置→主题和颜色**
+2. 切换 **应用 GTK 主题**
+
+这将创建从 `dank-colors.css` 到 `gtk.css` 的符号链接，从而为 GTK 3 和 GTK 4 应用程序启用动态主题。
+
+### 手动集成 {#manual-integration}
+
+如果您管理自己的 GTK 主题但想要 DMS 颜色：
+
+```css
+/* In ~/.config/gtk-3.0/gtk.css or gtk-4.0/gtk.css */
+@import url("dank-colors.css");
+```
+
+## Qt 应用程序 {#qt-applications}
+
+Qt 主题提供两种方法：基本 GTK 直通或专用 Qt 控制。
+
+:::tip[Systemd / DankInstall 用户]
+
+如果您通过 dankinstall 安装或使用 systemd 管理 DMS，请在 `~/.config/environment.d/90-dms.conf` 中设置环境变量。例如，切换到 qt6ct：
+
+```ini
+QT_QPA_PLATFORMTHEME=qt6ct
+```
+
+注销并重新登录以使更改生效。
+
+:::
+
+### 选项 1：GTK 直通（简单） {#option-1-gtk-passthrough-simple}
+
+最适合主要运行 GTK 应用程序的用户。 Qt 应用程序将使用 GTK 主题。这是 dankinstall 设置的默认设置。
+
+**尼里配置：**
+```kdl
+environment {
+  QT_QPA_PLATFORMTHEME "gtk3"
+  QT_QPA_PLATFORMTHEME_QT6 "gtk3"
+}
+```
+
+**海普拉兰配置：**
+```conf
+env = QT_QPA_PLATFORMTHEME,gtk3
+env = QT_QPA_PLATFORMTHEME_QT6,gtk3
+```
+
+### 选项 2：专用 Qt 控件（高级） {#option-2-dedicated-qt-control-advanced}
+
+提供更好的 Qt 集成和更多样式控制。
+
+**安装qt6ct：**
+
+```bash
+# Arch
+paru -S qt6ct-kde
+
+# Fedora
+sudo dnf install qt6ct
+
+# Other distributions
+# Follow instructions at https://www.opencode.net/trialuser/qt6ct
+```
+
+**配置环境：**
+
+如果您使用 systemd 管理 DMS（包括 dankinstall 用户），请编辑 `~/.config/environment.d/90-dms.conf`：
+```ini
+QT_QPA_PLATFORMTHEME=qt6ct
+```
+
+:::warning[KDE/Plasma 用户]
+
+在 `environment.d` 中设置 `QT_QPA_PLATFORMTHEME` 将中断 KDE/Plasma 会话。相反，直接将环境变量添加到 DMS systemd 服务：
+
+```bash
+# Copy the service file to user config
+sudo cp /usr/lib/systemd/user/dms.service ~/.config/systemd/user/dms.service
+sudo chown $USER:$USER ~/.config/systemd/user/dms.service
+
+# Edit the service file
+nano ~/.config/systemd/user/dms.service
+```
+
+在 `[Service]` 下添加 `Environment=` 行：
+
+```ini
+[Service]
+Environment=QT_QPA_PLATFORMTHEME=qt6ct
+Type=dbus
+BusName=org.freedesktop.Notifications
+ExecStart=/usr/bin/dms run --session
+...
+```
+
+然后重新加载并重新启动：
+
+```bash
+systemctl --user daemon-reload
+systemctl --user restart dms.service
+```
+
+:::
+
+否则，添加到您的合成器配置中：
+
+**尼里：**
+```kdl
+environment {
+  QT_QPA_PLATFORMTHEME "qt6ct"
+  QT_QPA_PLATFORMTHEME_QT6 "qt6ct"
+}
+```
+
+**海普兰：**
+```conf
+env = QT_QPA_PLATFORMTHEME,qt6ct
+env = QT_QPA_PLATFORMTHEME_QT6,qt6ct
+```
+
+**启用 Qt 主题：**
+
+1. 注销并重新登录（针对environment.d 更改）或重新启动合成器
+2. 打开**设置→主题和颜色**
+3. 切换 **应用 Qt 主题**
+
+这会将生成的 matugen 颜色文件链接到 qt5ct/qt6ct 配置。
+
+### 海豚文件管理器 {#dolphin-file-manager}
+
+Dolphin 需要 `qt6ct-kde`（不是标准 `qt6ct`）才能实现正确的颜色主题。使用标准 `qt6ct`，Dolphin 的颜色渲染效果很差。
+
+**安装了 qt6ct-kde 后：**
+
+在 Qt6ct 的 KColorScheme 下的“外观”选项卡中将配色方案设置为 **Dank Shell (matugen)**。
+
+**替代方案（如果 qt6ct-kde 不可用）：**
+
+创建`~/.config/dolphinrc`：
+
+```ini
+[UiSettings]
+ColorScheme=DankMatugen
+```
+
+## 火狐浏览器 {#firefox}
+
+Firefox 有两个主题集成选项：Material Fox 或 Pywalfox。
+
+### 选项 1：Material Fox（类似铬合金，具有动态颜色） {#option-1-material-fox-chrome-like-with-dynamic-colors}
+
+Firefox 使用 GTK3 主题，但会生成单独的 matugen CSS，以便更好地与 Material Fox 集成。
+
+**在 Firefox 中启用自定义样式：**
+
+导航至 `about:config` 并设置：
+- `toolkit.legacyuserprofilecustomizations.stylesheets` = `true`
+- `svg.context-properties.content.enabled` = `true`
+
+创建新的布尔属性：
+- `userChrome.theme-material` = `true`
+
+**安装 Material Fox 主题：**
+
+```bash
+# Find Firefox profile directory
+export PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default-release" | head -n 1)
+
+# Download and extract theme
+curl -L -o "$PROFILE_DIR/chrome.zip" https://github.com/edelvarden/material-fox-updated/releases/download/v2.0.0/chrome.zip
+unzip -o "$PROFILE_DIR/chrome.zip" -d "$PROFILE_DIR"
+rm "$PROFILE_DIR/chrome.zip"
+```
+
+**链接动态颜色：**
+
+```bash
+export PROFILE_DIR=$(find ~/.mozilla/firefox -maxdepth 1 -type d -name "*.default-release" | head -n 1)
+rm -f "$PROFILE_DIR/chrome/theme-material-blue.css"
+ln -sf ~/.config/DankMaterialShell/firefox.css "$PROFILE_DIR/chrome/theme-material-blue.css"
+```
+
+重新启动 Firefox 以应用更改。
+
+### 选项 2：Pywalfox {#option-2-pywalfox}
+
+**安装 Pywalfox：**
+
+```bash
+# Arch
+paru -S python-pywalfox
+
+# Other distributions
+# Install from https://github.com/Frewacom/pywalfox
+```
+
+**安装浏览器扩展：**
+
+从 Firefox 附加组件安装 [Pywalfox 扩展](https://addons.mozilla.org/firefox/addon/pywalfox/)。
+
+**启用 DMS 颜色：**
+
+```bash
+ln -sf ~/.cache/wal/dank-pywalfox.json ~/.cache/wal/colors.json
+```
+
+重新启动 DMS 以生成调色板，然后在浏览器中启用 Pywalfox。
+
+### Zen 浏览器 {#zen-browser}
+
+Zen Browser 处理主题的方式与 Firefox 不同 - Pywalfox 和 Firefox 主题扩展不再工作。主题化通过配置文件目录中的 `userChrome.css` 进行控制。
+
+DMS 自动生成 `~/.config/DankMaterialShell/zen.css`。将其链接到您的 Zen 配置文件：
+
+```bash
+# Find default profile directory
+export PROFILE_DIR=$(find ~/.zen -maxdepth 1 -type d -name "*.Default Profile" | head -n 1)
+mkdir -p "$PROFILE_DIR/chrome"
+ln -sf ~/.config/DankMaterialShell/zen.css "$PROFILE_DIR/chrome/userChrome.css"
+```
+
+:::note
+必须在 Zen 浏览器中启用主题才能对 userChrome.css 进行更改才能生效！打开`about:config`并启用`toolkit.legacyUserProfileCustomizations.stylesheets`。重新启动浏览器。
+:::
+
+### 浏览器提示 {#browser-tips}
+
+- 将 userChrome/userContent 覆盖置于版本控制之下
+- 使用 DMS 管理的颜色时禁用冲突的主题扩展
+
+## 编辑 {#editors}
+
+编辑器使用 `dank16` 和 matugen 的组合来生成色彩丰富、符合主题的模板，并在编辑器本身中形成对比。
+
+### VSCode / Codium / 光标 / Windsurf {#vscode--codium--cursor--windsurf}
+
+通过搜索“DMS - Dank Material Shell Theme”从 VS Code Marketplace 进行安装：
+
+![VS 代码市场](/img/vscode-marketplace.png)
+
+或者手动安装：
+
+```bash
+wget https://github.com/AvengeMedia/DankMaterialShell/raw/refs/heads/master/quickshell/matugen/dms-theme.vsix
+code --install-extension dms-theme.vsix
+# or: codium / cursor / windsurf --install-extension ...
+```
+
+**激活：** 打开命令面板（`Ctrl+Shift+P`），选择`Preferences: Color Theme`，选择`Dynamic Base16 DankShell`（或1.2中的`DMS - Dank Material Shell`）。
+
+**触发颜色：** 重新启动DMS或更改壁纸/主题以生成动态颜色。
+
+<ThemedImage
+  alt="VS Code theme selection"
+  sources={{
+    light: useBaseUrl('/img/vscodelight.png'),
+    dark: useBaseUrl('/img/vscode.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%' }}
+/>
+
+## 终端应用 {#terminal-applications}
+
+终端编辑器使用自定义 `dank16` 算法和 matugen 来生成尊重主题美感的调色板，同时还提供 16 种 ansi 颜色。
+
+### 幽灵般的 {#ghostty}
+
+```bash
+echo "theme = dankcolors" >> ~/.config/ghostty/config
+```
+
+可选 - 禁用过多的通知：
+
+```bash
+echo "app-notifications = no-clipboard-copy,no-config-reload" >> ~/.config/ghostty/config
+```
+
+### 小猫 {#kitty}
+
+```bash
+echo "include dank-tabs.conf" >> ~/.config/kitty/kitty.conf
+echo "include dank-theme.conf" >> ~/.config/kitty/kitty.conf
+```
+
+:::tip
+
+如果您自定义了kitty主题，kitty可能会在配置目录中保存`dark-theme.auto.conf`、`light-theme.auto.conf`、`no-preference-theme.auto.conf`（通常为`~/.config/kitty`）。请删除它们以使主题生效。
+
+:::
+
+### 脚 {#foot}
+
+foot 在其配置中需要绝对路径，编辑 `~/.config/foot/foot.ini` 添加包含：
+
+```ini
+[main]
+include=/home/<USERNAME>/.config/foot/dank-colors.ini
+```
+
+### 活泼 {#alacritty}
+
+将 alacritty 主题添加到 `~/.config/alacritty/alacritty.toml` 中的导入部分
+
+```bash
+[general]
+import = [
+    "~/.config/alacritty/dank-theme.toml"
+]
+```
+
+重新加载或重新启动终端以应用颜色。
+
+## 故障排除 {#troubleshooting}
+
+**GTK 应用程序没有主题：**
+- 验证 `adw-gtk-theme` 是否已安装
+- 检查符号链接是否存在：`ls -la ~/.config/gtk-3.0/gtk.css`
+- 确保在“设置”中切换“应用 GTK 主题”
+
+**Qt 应用程序没有主题：**
+- 验证合成器配置中设置的环境变量
+- 更改环境后重新启动合成器会话
+- 如果使用选项 2，请检查是否安装了 `qt6ct`
+- 确保在“设置”中切换“应用 Qt 主题”
+
+**Firefox 主题不工作：**
+- 验证 `about:config` 设置是否正确
+- 检查配置文件目录中是否存在主题文件
+- 尝试禁用其他 Firefox 主题扩展
+- 更改后重新启动 Firefox
+
+**终端颜色未更新：**
+- 验证配置行是否已添加到终端配置中
+- 检查`~/.config/DankMaterialShell/`中是否存在主题文件
+- 重新启动终端应用程序

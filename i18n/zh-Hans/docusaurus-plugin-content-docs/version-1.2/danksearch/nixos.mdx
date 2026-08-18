@@ -1,0 +1,164 @@
+---
+title: NixOS安装
+description: 使用本机 nixpkgs 在 NixOS 上安装和配置 DankSearch
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+  hideTitle={true}
+/>
+
+DankSearch 可以使用 NixOS 模块安装在 NixOS 上。本指南涵盖了本机 nixpkgs 安装方法。
+
+:::info[需要 NixOS Unstable]
+DankSearch 目前仅在 nixpkgs 的 **unstable** 分支中可用。如果您使用 NixOS stable，则需要改用 [Flake 安装](nixos-flake) 方法。
+:::
+
+## 安装 {#installation}
+
+### 1.启用 NixOS Unstable {#1-enable-nixos-unstable}
+
+通过设置您的 channel 或 flake 输入来确保您使用 NixOS unstable：
+
+**使用 channels：**
+```bash
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+sudo nix-channel --update
+```
+
+**使用 flakes（在 `flake.nix` 中）：**
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
+}
+```
+
+### 2.启用 DankSearch {#2-enable-danksearch}
+
+在 NixOS 配置中，启用 DankSearch：
+
+```nix
+programs.dsearch.enable = true;
+```
+
+就是这样！重建您的系统，DankSearch 将以合理的默认值安装。
+
+## 配置选项 {#configuration-options}
+
+DankSearch 提供配置选项来自定义您的安装：
+
+### 基本配置 {#basic-configuration}
+
+```nix
+programs.dsearch = {
+  enable = true;
+
+  # Use a custom package (optional)
+  package = pkgs.dsearch;
+
+  # Systemd service configuration
+  systemd = {
+    enable = true;               # Enable systemd user service
+    target = "default.target";   # Start with user session
+  };
+};
+```
+
+### Systemd 服务选项 {#systemd-service-options}
+
+NixOS 模块配置 systemd 用户服务。您可以自定义启动时间：
+
+```nix
+programs.dsearch = {
+  enable = true;
+
+  systemd = {
+    enable = true;
+    target = "graphical-session.target";  # Only start in graphical sessions
+  };
+};
+```
+
+### 将 Flake 包与 NixOS 模块结合使用 {#using-flake-package-with-nixos-module}
+
+您可以使用 DankSearch flake 中的包，同时仍然使用本机 NixOS 模块。这使您可以在保留模块配置的同时获得更快的更新：
+
+首先，将 flake 输入添加到 `flake.nix`：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    danksearch = {
+      url = "github:AvengeMedia/danksearch";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+然后将 flake 包与本机模块一起使用：
+
+```nix
+programs.dsearch = {
+  enable = true;
+  package = inputs.danksearch.packages.${pkgs.stdenv.hostPlatform.system}.default;
+};
+```
+
+:::warning
+
+当将 flake 包与本机 nixpkgs 模块一起使用时，默认情况下某些依赖项可能不会自动启用，并且某些配置可能会丢失。您可能需要手动安装可选依赖项或调整功能切换以满足您的需求。
+
+:::
+
+:::tip
+为了更灵活地按用户安装，请考虑使用 [home-manager flake 安装](nixos-flake) 方法。
+:::
+
+## 重建 {#rebuilding}
+
+进行配置更改后，重建系统：
+
+```bash
+sudo nixos-rebuild switch
+```
+
+## 故障排除 {#troubleshooting}
+
+### 服务不会自动启动 {#service-doesnt-start-automatically}
+
+确保您设置了 `systemd.enable = true`：
+
+```nix
+programs.dsearch = {
+  enable = true;
+  systemd.enable = true;
+};
+```
+
+### 未找到二进制文件 {#binary-not-found}
+
+确保 DankSearch 已正确安装：
+
+```nix
+programs.dsearch.enable = true;
+```
+
+## 后续步骤 {#next-steps}
+
+- 了解有关[配置](configuration)选项的更多信息
+- 探索CLI和API使用的[使用](usage)指南
+- 查看 [DankMaterialShell 集成](../dankmaterialshell/overview)

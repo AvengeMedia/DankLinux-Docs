@@ -1,0 +1,152 @@
+---
+title: 颜色选择器
+description: 从 Wayland 屏幕上的任何位置选择具有多种输出格式的颜色
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={` ██████╗ ██████╗ ██╗      ██████╗ ██████╗ ███████╗
+██╔════╝██╔═══██╗██║     ██╔═══██╗██╔══██╗██╔════╝
+██║     ██║   ██║██║     ██║   ██║██████╔╝███████╗
+██║     ██║   ██║██║     ██║   ██║██╔══██╗╚════██║
+╚██████╗╚██████╔╝███████╗╚██████╔╝██║  ██║███████║
+ ╚═════╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Color Picker"
+    sources={{
+      light: useBaseUrl('/img/blog/v1/colorpick_light.png'),
+      dark: useBaseUrl('/img/blog/v1/colorpick_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+<figcaption>从屏幕上的任意位置选取颜色</figcaption>
+</figure>
+
+`dms color pick` 命令启动 Wayland 的交互式颜色选择器。单击屏幕上的任何像素即可捕获其颜色，支持多种输出格式和自定义模板。
+
+## 快速入门 {#quick-start}
+
+```bash
+# Pick a color, output as hex
+dms color pick
+
+# Output as RGB
+dms color pick --rgb
+
+# Auto-copy to clipboard
+dms color pick -a
+```
+
+按 **Escape** 可随时取消选择器。
+
+## 输出格式 {#output-formats}
+
+一次只能使用一个格式标志。默认值为 `--hex`。
+
+|选项|输出|示例|
+|------|--------|---------|
+| `--hex` |十六进制 | `#FF8040` |
+| `--rgb` | RGB 值 | `255 128 64` |
+| `--hsl` | HSL 值 | `24 75% 60%` |
+| `--hsv` | HSV 值 | `24 75% 100%` |
+| `--cmyk` | CMYK 值 | `0% 50% 75% 0%` |
+| `--json` |所有格式 |见下文 |
+
+### JSON 输出 {#json-output}
+
+```bash
+dms color pick --json
+```
+
+返回单个 JSON 对象中的所有颜色格式，对于脚本编写很有用。
+
+## 自定义格式模板 {#custom-format-templates}
+
+`-o` 标志允许您使用占位符 `{0}`、`{1}`、`{2}`（以及 CMYK 的 `{3}`）定义自定义输出格式。
+
+### 占位符参考 {#placeholder-reference}
+
+|格式| {0} | {1} | {2} | {3} |
+|--------|-----|-----|-----|-----|
+| `--hex`（默认）| R（十六进制，例如 FF）| G（十六进制）| B（十六进制）| - |
+| `--rgb` | R (0-255) | G（0-255）| B（0-255）| - |
+| `--hsl` | H（0-360）| S（0-100）|升 (0-100) | - |
+| `--hsv` | H（0-360）| S（0-100）| V (0-100) | - |
+| `--cmyk` | C（0-100）|中号（0-100）|是（0-100）| K（0-100）|
+
+### 示例 {#examples}
+
+```bash
+# CSS rgb() function
+dms color pick --rgb -o "rgb({0}, {1}, {2})"
+# Output: rgb(255, 128, 64)
+
+# CSS hsl() function
+dms color pick --hsl -o "hsl({0}, {1}%, {2}%)"
+# Output: hsl(24, 75%, 60%)
+
+# Hex without hash
+dms color pick -o "{0}{1}{2}"
+# Output: FF8040
+
+# Custom CMYK format
+dms color pick --cmyk -o "C={0} M={1} Y={2} K={3}"
+# Output: C=0 M=50 Y=75 K=0
+```
+
+## 选项 {#options}
+
+|选项|短|描述 |
+|------|-------|-------------|
+| `--hex` | |输出为十六进制 (#RRGGBB) |
+| `--rgb` | |输出为 RGB (R G B) |
+| `--hsl` | |输出为 HSL (H S% L%) |
+| `--hsv` | |输出为 HSV (H S% V%) |
+| `--cmyk` | |输出为 CMYK (C% M% Y% K%) |
+| `--json` | |将所有格式输出为 JSON |
+| `--lowercase` | `-l` |以小写形式输出十六进制 |
+| `--autocopy` | `-a` |将结果复制到剪贴板 |
+| `--output-format` | `-o` |自定义输出格式模板|
+| `--config` | `-c` |自定义 DMS 配置目录路径 |
+| `--help` | `-h` |显示帮助 |
+
+## 用例 {#use-cases}
+
+### 快速颜色参考 {#quick-color-reference}
+
+从屏幕上抓取任何颜色以用于设计工作：
+
+```bash
+dms color pick -a
+# Picked color is now in your clipboard
+```
+
+### CSS 开发 {#css-development}
+
+为您的样式表准备好颜色：
+
+```bash
+# For CSS custom properties
+dms color pick --hsl -o "hsl({0}deg {1}% {2}%)" -a
+
+# For rgba with full opacity
+dms color pick --rgb -o "rgba({0}, {1}, {2}, 1)" -a
+```
+
+### 颜色提取脚本 {#color-extraction-scripts}
+
+以编程方式捕获颜色：
+
+```bash
+#!/bin/bash
+color=$(dms color pick --json)
+hex=$(echo "$color" | jq -r '.hex')
+echo "Selected: $hex"
+```

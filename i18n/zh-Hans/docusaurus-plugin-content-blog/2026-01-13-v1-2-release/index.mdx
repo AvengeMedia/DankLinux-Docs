@@ -1,0 +1,968 @@
+---
+title: DMS 1.2 "Spicy Miso" 发布
+description: DMS 的第二个主要版本
+slug: v1-2-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+export const PepperA = ({ color, className, opacity = 0.3, mirror = false }) => (
+  <svg viewBox="0 0 32 64" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+    <g transform={mirror ? 'translate(32,0) scale(-1,1) rotate(-5, 16, 10)' : 'rotate(-5, 16, 10)'}>
+      <path fill="#2d4a22" d="M14.5 2C14 0 15 -2 17 -2.5C18 -2.7 18.5 -2 18 -1C17.5 0 17 2 16.5 4" />
+      <path fill="#3a5a2a" d="M11 6C12 5 13 4.5 16 4.5C19 4.5 20 5 21 6C22 7 20 8 18.5 8.5C16.5 9 14.5 9 13 8.5C11.5 8 10 7 11 6Z" />
+      <path fill={color} d="M10 6.5C12 5.5 20 5.5 22 6.5C24 9 25 15 24 22C23 28 20 34 15 42C13 45 11 46 10 45C9 44 10 42 12 40C15 35 11 28 9 22C7 16 8 9 10 6.5Z" />
+      <path fill="rgba(255,255,255,0.15)" d="M11 10C10.5 14 10 22 12 30C12.5 33 13 36 13 36C12 29 13 18 16 10C14.5 10 12 10 11 10Z" />
+    </g>
+  </svg>
+);
+
+export const PepperB = ({ color, className, opacity = 0.3, mirror = false }) => (
+  <svg viewBox="0 0 32 64" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+    <g transform={mirror ? 'translate(32,0) scale(-1,1) translate(2,0)' : 'translate(2,0)'}>
+      <path fill="#2d4a22" d="M13 2C12.5 0 13.5 -2 16 -2.5C17 -2.7 17.5 -2 17 -1C16.5 0 16 2 16 4" />
+      <path fill="#3a5a2a" d="M10 6C11 5 12 4.5 15 4.5C18 4.5 19 5 20 6C21 7 19 8 17.5 8.5C15.5 9 13.5 9 12 8.5C10.5 8 9 7 10 6Z" />
+      <path fill={color} d="M10 6.5C12 5.5 18 5.5 20 6.5C22 8 23 13 22 20C21 28 17 38 10 50C9 52 8 52 7 50C10 40 12 30 11 20C10.5 13 9 8 10 6.5Z" />
+      <path fill="rgba(255,255,255,0.15)" d="M12 10C11.5 16 12 24 11 32C10.5 36 9 40 9 40C12 30 14 20 16 10C14.5 10 13 10 12 10Z" />
+    </g>
+  </svg>
+);
+
+export const PepperC = ({ color, className, opacity = 0.3, mirror = false }) => (
+  <svg viewBox="0 0 32 64" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+    <g transform={mirror ? 'translate(32,0) scale(-1,1) translate(4,0)' : 'translate(4,0)'}>
+      <path fill="#2d4a22" d="M11 3C10.5 1 11.5 -1 14 -1.5C15 -1.7 15.5 -1 15 0C14.5 1 14 3 14 5" />
+      <path fill="#3a5a2a" d="M8 7C9 6 10 5.5 13 5.5C16 5.5 17 6 18 7C19 8 17 9 15.5 9.5C13.5 10 11.5 10 10 9.5C8.5 9 7 8 8 7Z" />
+      <path fill={color} d="M8 7.5C10 6.5 16 6.5 18 7.5C20 9 21 14 19 22C17 32 11 42 1 52C0 53 -1 52 0 50C8 40 11 30 10 20C9.5 14 7 9 8 7.5Z" />
+      <path fill="rgba(255,255,255,0.15)" d="M10 11C9.5 17 10 25 8 33C7 37 5 41 5 41C9 30 12 20 14 11C12.5 11 11 11 10 11Z" />
+    </g>
+  </svg>
+);
+
+<div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true">
+    <div style={{ position: 'absolute', top: '2%', left: '4%', width: '34px', height: '68px', transform: 'rotate(-22deg) scale(0.9)' }}>
+      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.35} />
+    </div>
+    <div style={{ position: 'absolute', top: '5%', left: '16%', width: '28px', height: '56px', transform: 'rotate(38deg) scale(0.75)' }}>
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '3%', left: '76%', width: '30px', height: '60px', transform: 'rotate(-31deg) scale(0.8)' }}>
+      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.3} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '6%', left: '88%', width: '32px', height: '64px', transform: 'rotate(25deg) scale(0.85)' }}>
+      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.32} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '18%', left: '2%', width: '32px', height: '64px', transform: 'rotate(29deg) scale(0.85)' }}>
+      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.3} />
+    </div>
+    <div style={{ position: 'absolute', top: '38%', left: '4%', width: '30px', height: '60px', transform: 'rotate(-41deg) scale(0.8)' }}>
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '58%', left: '2%', width: '34px', height: '68px', transform: 'rotate(17deg) scale(0.9)' }}>
+      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.32} />
+    </div>
+    <div style={{ position: 'absolute', top: '75%', left: '5%', width: '28px', height: '56px', transform: 'rotate(-33deg) scale(0.75)' }}>
+      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.25} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '28%', left: '12%', width: '26px', height: '52px', transform: 'rotate(47deg) scale(0.7)' }}>
+      <PepperB className={styles.chiliAnim1} color="#dc2626" opacity={0.18} />
+    </div>
+    <div style={{ position: 'absolute', top: '65%', left: '10%', width: '24px', height: '48px', transform: 'rotate(-28deg) scale(0.65)' }}>
+      <PepperA className={styles.chiliAnim2} color="#f97316" opacity={0.15} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '74%', left: '22%', width: '30px', height: '60px', transform: 'rotate(-45deg) scale(0.8)' }}>
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} />
+    </div>
+    <div style={{ position: 'absolute', top: '78%', left: '42%', width: '26px', height: '52px', transform: 'rotate(35deg) scale(0.7)' }}>
+      <PepperC className={styles.chiliAnim1} color="#ef4444" opacity={0.22} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '75%', left: '58%', width: '28px', height: '56px', transform: 'rotate(-19deg) scale(0.75)' }}>
+      <PepperA className={styles.chiliAnim3} color="#f97316" opacity={0.25} />
+    </div>
+    <div style={{ position: 'absolute', top: '72%', left: '75%', width: '30px', height: '60px', transform: 'rotate(42deg) scale(0.8)' }}>
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.28} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '32%', left: '82%', width: '24px', height: '48px', transform: 'rotate(-38deg) scale(0.65)' }}>
+      <PepperC className={styles.chiliAnim3} color="#f97316" opacity={0.15} />
+    </div>
+    <div style={{ position: 'absolute', top: '62%', left: '84%', width: '26px', height: '52px', transform: 'rotate(31deg) scale(0.7)' }}>
+      <PepperA className={styles.chiliAnim1} color="#ef4444" opacity={0.18} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '20%', left: '92%', width: '32px', height: '64px', transform: 'rotate(-26deg) scale(0.85)' }}>
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.3} />
+    </div>
+    <div style={{ position: 'absolute', top: '42%', left: '90%', width: '30px', height: '60px', transform: 'rotate(37deg) scale(0.8)' }}>
+      <PepperA className={styles.chiliAnim1} color="#f97316" opacity={0.28} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '55%', left: '93%', width: '34px', height: '68px', transform: 'rotate(-21deg) scale(0.9)' }}>
+      <PepperC className={styles.chiliAnim3} color="#ef4444" opacity={0.32} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '73%', left: '91%', width: '28px', height: '56px', transform: 'rotate(44deg) scale(0.75)' }}>
+      <PepperB className={styles.chiliAnim2} color="#dc2626" opacity={0.25} />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.2</span>
+    </h1>
+    <p className={styles.heroSubtitle}>Spicy Miso</p>
+  </div>
+</div>
+
+我们很高兴地宣布 DankMaterialShell (DMS) 1.2 "Spicy Miso" 发布！此版本为 DMS 核心和插件系统带来众多新功能和重大改进。
+
+{/* truncate */}
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>2,800+</span>
+    <span className={styles.statLabel}>次提交</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>3.3k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>100+</span>
+    <span className={styles.statLabel}>位贡献者</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>40</span>
+    <span className={styles.statLabel}>个插件</span>
+  </div>
+</div>
+
+## 新特性 {#whats-new}
+
+### 桌面小部件和插件 {#desktop-widgets--plugins}
+
+DMS 1.2 引入桌面小部件——驻留在您桌面上的小型应用，位于窗口下方、壁纸上方。可按显示器定位、调整大小和配置。
+
+<div className={styles.widgetGrid}>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/clock.png')} alt="Clock Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>时钟 <span className={`${styles.widgetBadge} ${styles.widgetBadgeBuiltin}`}>内置</span></p>
+      <p className={styles.widgetAuthor}>模拟和数字模式</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/dgop.png')} alt="System Monitor Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>系统监视器 <span className={`${styles.widgetBadge} ${styles.widgetBadgeBuiltin}`}>内置</span></p>
+      <p className={styles.widgetAuthor}>CPU、内存、GPU、温度等</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/weather.png')} alt="Weather Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>天气 <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>插件</span></p>
+      <p className={styles.widgetAuthor}>由 Avenge Media 开发</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/mediaplayer.png')} alt="Media Player Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>媒体播放器 <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>插件</span></p>
+      <p className={styles.widgetAuthor}>由 Abdur Rahman Rifat 开发</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/appshortcut.png')} alt="App Shortcut Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>应用快捷方式 <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>插件</span></p>
+      <p className={styles.widgetAuthor}>由 Omar (@oabragh) 开发</p>
+    </div>
+  </div>
+  <div className={styles.widgetCard}>
+    <img src={useBaseUrl('/img/blog/v1.2/desktopcommand.jpg')} alt="Desktop Command Widget" />
+    <div className={styles.widgetInfo}>
+      <p className={styles.widgetName}>桌面命令 <span className={`${styles.widgetBadge} ${styles.widgetBadgeCommunity}`}>插件</span></p>
+      <p className={styles.widgetAuthor}>由 yayuuu 开发</p>
+    </div>
+  </div>
+</div>
+
+插件系统让构建您自己的小部件变得简单——请参阅[插件开发指南](/docs/dankmaterialshell/plugin-development#desktop-plugins)开始。
+
+### 主题注册表 {#theme-registry}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Theme Registry"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/themeregistrylight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/themeregistry.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>集成到 DMS 设置中的主题浏览器。</figcaption>
+</figure>
+
+DMS 1.2 引入主题系统，单一主题可以拥有多个变体和强调色。插件注册表现在包含一个[主题注册表](https://danklinux.com/plugins?tab=themes)，提供社区开发的主题供轻松安装。了解如何[贡献您自己的主题](https://github.com/AvengeMedia/dms-plugin-registry/blob/master/CONTRIBUTING.md#contributing-a-theme)。
+
+### 原生剪贴板和历史 {#native-clipboard-and-history}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Clipboard Settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/clipboardlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/clipboard.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>配置剪贴板历史大小、条目限制和自动清理行为。</figcaption>
+</figure>
+
+完整的零依赖剪贴板和剪贴板历史集成。
+- 不依赖 cliphist 或 wl-clipboard 等外部工具。
+- 可配置的最大条目大小、保留时长和自动清理。
+- 带分页、按文本、图像或任何 mime 类型过滤的搜索 API 和 CLI。
+- 自动忽略来自密码管理器（如 KeepassXC 和 1Password）的数据。防止敏感数据被存储到剪贴板历史。
+- 导出和导入功能
+- 用于从 cliphist 迁移历史的工具。
+
+### 显示器配置器 {#monitor-configurator}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Monitor Configuration"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/monitorlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/monitordark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>直接在 DMS 设置中配置显示设置。</figcaption>
+</figure>
+
+直接在 DMS 设置中配置显示设置。适用于 niri、Hyprland 和 MangoWC。包括定位、分辨率、刷新率、VRR、完整布局自定义（niri）、HDR（Hyprland）、缩放、镜像（Hyprland）等。
+
+
+### 通知改进 {#notification-improvements}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Notification Center"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/notiflight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/notifdark.png'),
+    }}
+    style={{ maxWidth: '400px', width: '100%' }}
+  />
+  <figcaption>带历史记录和滑动关闭的通知中心。</figcaption>
+</figure>
+
+通知获得多项新功能和改进：
+
+- 可配置的历史记录，支持可变大小、过期和自动清理
+- 关闭通知的手势
+- 在锁屏上显示的能力（仅计数、仅名称或完整内容——基于隐私偏好）
+
+### 光标和布局配置 {#cursor--layout-configuration}
+
+<div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'flex-end' }}>
+  <figure style={{ textAlign: 'center', margin: 0, flex: '1 1 300px', maxWidth: '400px' }}>
+    <img
+      src={useBaseUrl('/img/blog/v1.2/cursor-control.png')}
+      alt="Cursor Control Settings"
+      style={{ width: '100%', borderRadius: '8px' }}
+    />
+    <figcaption>光标主题、大小和行为设置。</figcaption>
+  </figure>
+  <figure style={{ textAlign: 'center', margin: 0, flex: '1 1 300px', maxWidth: '400px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+    <div style={{ padding: '2rem 1rem', background: 'var(--ifm-card-background-color)', borderRadius: '8px' }}>
+      <img
+        src={useBaseUrl('/img/blog/v1.2/layout.png')}
+        alt="Layout Override Settings"
+        style={{ width: '100%', borderRadius: '4px' }}
+      />
+    </div>
+    <figcaption>覆盖间隙、圆角和边框大小。</figcaption>
+  </figure>
+</div>
+
+直接在 DMS 设置中自定义合成器设置。适用于 niri、Hyprland 和 MangoWC：
+
+- **光标** - 从可用光标主题中选择、调整大小，并配置合成器特定的隐藏行为（键入时隐藏、触摸时隐藏、非活动超时）
+- **间隙** - 调整窗口周围的间隙
+- **边框和圆角** - 覆盖窗口边框宽度和圆角的主题默认值
+- **焦点环** - 自定义焦点环颜色、宽度和样式
+
+光标设置通过 XResources 自动应用到 XWayland 应用程序，确保原生 Wayland 和 XWayland 应用外观一致。
+
+### DMS 诊断 {#dms-doctor}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DMS Doctor"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/doctorlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/doctordark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>显示服务状态和可选功能的系统检查对话框。</figcaption>
+</figure>
+
+全新的 `dms doctor` 命令用于诊断可能负面影响 DMS 功能可用性或性能的配置问题和冲突。也可通过 DMS GUI 使用。
+
+感谢 [@LuckShiba](https://github.com/LuckShiba) 的贡献！
+
+### niri、Hyprland 和 MangoWC 的键盘快捷键编辑器 {#keyboard-shortcuts-editor-for-niri-hyprland--mangowc}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Keyboard Shortcuts"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/bindslight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/bindsdark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>带搜索、过滤和冲突检测的键盘快捷键配置。</figcaption>
+</figure>
+
+举世闻名的 DMS 键盘快捷键工具现已支持 niri、Hyprland 和 MangoWC。直接在 DMS 设置中搜索、编辑和添加新按键绑定。
+
+### 设置搜索 {#settings-search}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Settings Search"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/searchlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/searchdark.png'),
+    }}
+    style={{ maxWidth: '280px', width: '100%' }}
+  />
+  <figcaption>搜索所有设置以快速找到您需要的内容。</figcaption>
+</figure>
+
+全新的设置搜索让找到您想更改的内容变得更容易。包括默认通过 `?` 触发的集成启动器搜索。
+
+### i18n：RTL 支持 {#i18n-rtl-support}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="RTL Language Support"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/rtllight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/rtldark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>以波斯语显示的 DMS 设置，带完整 RTL 布局支持。</figcaption>
+</figure>
+
+DMS 1.2 引入对从右到左语言的正确支持，跨组件实现正确的布局镜像。DMS 目前有希伯来语和波斯语翻译。
+
+要参与翻译贡献，请参阅[置顶的 github issue](https://github.com/AvengeMedia/DankMaterialShell/issues/324)
+
+### 启动器改进 {#launcher-improvements}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Launcher File Search"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.2/launcherlight.png'),
+      dark: useBaseUrl('/img/blog/v1.2/launcherdark.png'),
+    }}
+    style={{ maxWidth: '400px', width: '100%' }}
+  />
+  <figcaption>通过 /path 前缀的索引式文件系统搜索。</figcaption>
+</figure>
+
+DMS 启动器经历了多项改进。性能改进、支持插件定义上下文菜单（带完整键盘导航）、内置设置搜索，以及用于搜索按键绑定的新第一方插件（niri、Hyprland、MangoWC、Sway 以及通过 `dms keybinds` 的自定义提供程序）。
+
+带插件的 DMS 启动器支持计算器、niri 窗口管理、带历史的 CLI 命令、emoji 和 gitmoji 搜索、网络搜索、极快的索引式文件系统搜索等。它还可以在 niri 概览中无需任何触发器即可工作。
+
+
+## Debian SID、OpenSUSE Slowroll、Leap 16.0 和 CentOS Stream 10 软件包 {#debian-sid-opensuse-slowroll-leap-160-and-centos-stream-10-packages}
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/NixOS.svg')} alt="NixOS" /></div>
+  </div>
+</div>
+
+DMS 1.2 扩展了发行版支持，官方软件包现已适用于：
+
+- **Debian SID** - 通过 OBS 的滚动发布软件包
+- **OpenSUSE Slowroll** - 通过 OBS 的软件包
+- **OpenSUSE Leap 16.0** - 通过 OBS 的软件包
+- **CentOS Stream 10** - 通过 COPR 的软件包
+
+这些是对现有 Debian、Ubuntu、Fedora、Arch Linux 和 NixOS 软件包的补充。
+
+软件包包括 DMS、niri、quickshell、dgop、dsearch 和其他核心依赖项。设置说明请参阅[安装指南](/docs/getting-started)。
+
+## 升级说明 {#upgrade-notes}
+
+:::warning
+此版本包含可能需要手动干预的更改。
+:::
+
+### （破坏性）主题更新 {#breaking-theme-updates}
+
+Ghostty 和 VSCode 主题已更改，不手动干预将停止工作。
+
+<details>
+<summary>Ghostty 和 VS Code 主题变更</summary>
+
+**Ghostty**
+
+主题路径已更改为 `~/.config/ghostty/themes/danktheme`。更新您的 Ghostty 配置：
+
+```toml
+# ~/.config/ghostty/config
+# Add this
+theme = dankcolors
+
+# ! Remove this
+# config-file = ./config-dankcolors
+```
+
+**VS Code / Codium**
+
+由于内部变更，需要重新安装主题扩展：
+
+1. 卸载当前的 "Dank material shell theme" 扩展
+2. 从扩展市场重新安装：搜索 "DankLinux" 的 "Dank material shell theme"
+3. Ctrl+Shift+P -> "Preferences: Color Theme" -> 选择 "Dynamic Base16 DankShell"
+4. 触发主题重新生成 - 在 DMS 设置中更改主题或重启 DMS
+5. 完全退出并重启 VSCode
+
+</details>
+
+### 剪贴板历史迁移 {#clipboard-history-migration}
+
+建议按步骤移除现有的剪贴板历史守护进程，并将现有历史迁移到新的 DMS 剪贴板系统。
+
+<details>
+<summary>清理和迁移步骤</summary>
+
+**1. 清理旧的剪贴板历史集成：**
+
+从合成器配置中删除 `wl-paste --watch cliphist store` 守护进程/启动项。
+
+```js
+// ~/.config/niri/config.kdl
+spawn-at-startup "wl-paste --watch cliphist store" // REMOVE THIS LINE
+```
+
+```toml
+# ~/.config/hypr/hyprland.conf
+exec-once = wl-paste --watch cliphist store # REMOVE THIS LINE
+```
+
+**2. 配置 DMS 剪贴板设置（可选）：**
+
+迁移前，您可能需要在 DMS 设置 -> 系统 -> 剪贴板中配置保留设置。您可以配置最大条目大小、总条目数和保留时长。仅在您想覆盖默认值时需要。
+
+
+**3. 将剪贴板历史从 `cliphist` 迁移到 DMS：**
+
+剪贴板历史不会从以前的版本自动迁移。您仍然可以使用 `cliphist` CLI 访问它。新的剪贴板历史位于 `~/.cache/DankMaterialShell/clipboard/db`——这是一个 [bbolt](https://github.com/etcd-io/bbolt) 数据库。
+
+要迁移旧历史：
+
+```bash
+# First stop DMS
+systemctl --user stop dms # Or dms kill, if not using systemd
+# Run migration (optionally override path with cliphist-migrate /path/to/db)
+dms cl cliphist-migrate
+# Start DMS again
+systemctl --user start dms # or dms run -d, if not using systemd
+```
+
+然后您可以卸载 cliphist 并删除位于 `~/.cache/cliphist/db` 的旧数据库
+
+`wl-clipboard` 也可以移除，不过保留它对依赖它的插件或脚本很有用。
+
+```bash
+# DMS clipboard CLI 与 wl-clipboard 功能对等
+# To copy text:
+echo "Hello, World!" | dms cl copy
+# To paste text:
+dms cl paste
+```
+
+</details>
+
+### 合成器配置更新 {#compositor-configuration-updates}
+
+对于 niri 或 Hyprland，您可以运行 `dms setup` 生成新的合成器配置——显示器配置将被保留，原始配置将被备份。主要变更迁移到更模块化的配置。
+
+仅当您希望使用 DMS 设置中新的光标、输出、布局和按键绑定控制时才需要更改。
+
+<details>
+<summary>niri</summary>
+
+使用 GUI 光标和输出设置时必需。
+
+1. 创建新文件
+
+```bash
+mkdir -p ~/.config/niri/dms
+touch ~/.config/niri/dms/cursor.kdl
+touch ~/.config/niri/dms/outputs.kdl
+```
+
+2. 将现有配置移到新文件
+
+```js
+// ~/.config/niri/dms/cursor.kdl
+// Move cursor {} block from config.kdl
+cursor {
+    xcursor-theme "Bibata-Original-Ice"
+    xcursor-size 24
+}
+
+// ~/.config/niri/dms/outputs.kdl
+// Move output {} blocks from config.kdl
+output "DP-1" {
+    position 0 0
+    scale 1.0
+    transform normal
+}
+```
+
+3. 在配置中包含新文件
+
+```js
+// ~/.config/niri/config.kdl
+// Recommended to place at the end of the file
+include "dms/cursor.kdl"
+include "dms/outputs.kdl"
+include "dms/layout.kdl"
+```
+
+</details>
+
+<details>
+<summary>Hyprland</summary>
+
+使用 GUI 光标、输出、布局和按键绑定设置时必需。
+
+1. 创建新文件
+
+```bash
+mkdir -p ~/.config/hypr/dms
+touch ~/.config/hypr/dms/cursor.conf
+touch ~/.config/hypr/dms/outputs.conf
+touch ~/.config/hypr/dms/layout.conf
+touch ~/.config/hypr/dms/binds.conf
+```
+
+2. 将现有配置移到新文件
+
+```bash
+# ~/.config/hypr/dms/cursor.conf
+# Move cursor settings from hyprland.conf
+env = HYPRCURSOR_THEME,Bibata-Original-Ice
+env = HYPRCURSOR_SIZE,24
+env = XCURSOR_THEME,Bibata-Original-Ice
+env = XCURSOR_SIZE,24
+
+# ~/.config/hypr/dms/outputs.conf
+# Move monitor lines from hyprland.conf
+monitor = DP-1,2560x1440@144,0x0,1
+
+# ~/.config/hypr/dms/layout.conf
+# Move general layout settings from hyprland.conf
+general {
+    gaps_in = 5
+    gaps_out = 10
+    border_size = 2
+}
+
+# ! Binds do not need to be moved, only edited/new binds via GUI will be stored here
+```
+
+3. 在配置中 source 新文件
+
+```bash
+# ~/.config/hypr/hyprland.conf
+# Recommended to place at the end of the file
+source = ./dms/cursor.conf
+source = ./dms/outputs.conf
+source = ./dms/layout.conf
+source = ./dms/binds.conf
+```
+
+</details>
+
+<details>
+<summary>MangoWC</summary>
+
+使用 GUI 光标、输出、布局和按键绑定设置时必需。
+
+1. 创建新文件
+
+```bash
+mkdir -p ~/.config/mangowc/dms
+touch ~/.config/mangowc/dms/cursor.conf
+touch ~/.config/mangowc/dms/outputs.conf
+touch ~/.config/mangowc/dms/layout.conf
+touch ~/.config/mangowc/dms/binds.conf
+```
+
+2. 将现有配置移到新文件
+
+```bash
+# ~/.config/mangowc/dms/cursor.conf
+# Move cursor settings from mangowc.conf
+cursor_size=24
+cursor_theme=Bibata-Original-Ice
+
+# ~/.config/mangowc/dms/outputs.conf
+# Move output blocks from mangowc.conf
+monitorrule=DP-2,0.55,1,tile,0,1,0,0,2560,1440,144
+monitorrule=eDP-1,0.55,1,tile,0,1,2560,0,2560,1600,240
+
+# ~/.config/mangowc/dms/layout.conf
+# Move layout settings from mangowc.conf
+border_radius=13
+gappih=4
+gappiv=4
+gappoh=4
+gappov=4
+borderpx=2
+
+# ~/.config/mangowc/dms/binds.conf
+# Moving binds is not required, only edited/new binds via GUI will be stored here
+```
+
+3. 在配置中 source 新文件
+
+```bash
+# ~/.config/mangowc/mangowc.conf
+# Recommended to place at the end of the file
+source = ./dms/cursor.conf
+source = ./dms/outputs.conf
+source = ./dms/layout.conf
+source = ./dms/binds.conf
+```
+
+</details>
+
+### NixOS 更新 {#nixos-updates}
+
+DMS 1.2 为 NixOS 集成和基于 flake 的安装体验带来重大改进：
+
+**Home Manager 模块增强**
+- 用于声明式剪贴板配置的新 `clipboardSettings` 选项
+- 插件现在可以直接在其配置中包含逐插件设置
+- 移除 `default*` 设置选项，改为能够设置实际的设置文件
+- 通过 home-manager 模块改进插件安装和管理
+
+**NixOS 模块改进**
+- 在 NixOS 模块中添加插件支持，支持声明式安装
+- 默认启用 `power-profiles-daemon` 和 `accounts-daemon`，以获得更好的电源管理和用户账户集成
+- QML 依赖项现在正确包含在 `dms-shell` 软件包中
+
+**niri 集成**
+- 添加对 niri-flake 的配置包含支持。DMS 生成的配置文件现在可与 niri 基于flake 的设置无缝协作
+
+**插件注册表 Flake**
+- 新的 [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) Nix flake 将所有社区插件作为软件包提供
+- 插件每天从注册表自动更新
+- 简单的声明式安装——只需按 ID 启用插件
+- 同时适用于 NixOS 和 Home Manager 模块
+
+:::note
+DMS Flake 选项名称现已从 `programs.dankMaterialShell` 更改为 `programs.dank-material-shell`。模块名称也已更改。
+旧模块名称仍可使用，但您会收到有关新名称的弃用警告。
+:::
+
+:::info
+[nixpkgs 模块](/docs/dankmaterialshell/nixos) 的文档将在 DMS 1.2 进入 `nixos-unstable` 后立即更新。
+:::
+
+请查阅[文档](/docs/dankmaterialshell/nixos-flake)了解如何使用新功能配置 DMS 1.2 的更多信息。
+
+## 错误修复和改进 {#bug-fixes-and-improvements}
+
+<details style={{
+  border: '1px solid rgba(239, 68, 68, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- 查看详情（300+ 次提交）-|</summary>
+
+自 v1.0 发布以来，DMS 在所有组件中进行了大量的错误修复和稳定性改进：
+
+**剪贴板**
+- 零外部依赖的原生剪贴板和历史实现
+- 添加 cliphist-migrate CLI 用于导入现有历史
+- 在剪贴板历史模态中添加 shift+enter 粘贴
+- 可配置的持久化、mime 类型处理和自动清理
+- 自动忽略来自密码管理器的敏感 mime 类型
+- 修复 mime 类型选择和空 offer 处理
+
+**栏和 Dock**
+- 为栏添加阴影选项
+- 添加滚轮行为配置
+- 添加栏 get/setPosition IPC
+- 改进高 DPI 滚动逻辑
+- 修复独占区域弹出定位
+- 修复启用自动隐藏时在概览/niri 上的显示
+- 修复相邻栏的工具提示定位
+- 改进固定应用重新排序反馈
+- 控制中心小部件改为逐实例
+- 添加隐藏且无窗口时显示栏的选项
+- 垂直栏上尊重紧凑模式
+- 媒体播放器小部件的鼠标滚轮选项
+- 修复小部件基础悬停混合逻辑
+- 添加按显示器隔离运行中应用的选项
+
+**桌面小部件和插件**
+- 新的桌面小部件插件类型，支持可拖动的逐显示器小部件
+- 内置时钟和系统监视器桌面小部件
+- 为小部件定位添加网格/网格大小提示
+- 添加 overlay IPC 和概览选项
+- 默认启用桌面插件
+- 修复小部件显示切换和按键事件处理
+- 在桌面小部件选项卡中集中配置
+- 添加仅 niri 概览选项
+- 带异步更新的持久插件
+- 修复首次插件安装响应性
+- 隐藏系统插件的卸载/更新按钮
+- 插件的 IPC 可见性条件
+
+**显示和监视器配置**
+- 为 niri、Hyprland 和 MangoWC 添加配置器
+- 配置位置、VRR、方向、分辨率、刷新率
+- 添加 Hyprland HDR 选项
+- 添加 niri 特定的布局选项
+- 为 Hyprland 添加镜像选项
+- 为 Hyprland 添加禁用输出选项
+- 修复位置恢复状态
+- 修复 model 模式下的文本对齐
+- 为 niri 显式写入 scale 1
+- 向 wlroutput API 添加 adaptiveSyncSupported
+
+**通知**
+- 添加可配置的持久历史，支持可变大小和过期
+- 添加滑动关闭功能
+- 添加锁屏显示支持（计数、应用名称或完整详情）
+- 添加紧凑模式，在历史记录和弹出中展开
+- 添加图像持久化
+- 右键切换勿扰模式
+- 将勿扰模式添加到 IPC
+- 添加清除所有通知的模态功能
+- 修复禁用历史记录时通知为瞬态的问题
+- 修复冗余高度动画和间距改进
+- 减少快速窗口创建/销毁
+
+**主题和 Matugen**
+- 带社区主题和变体的主题注册表
+- 支持强调色和主题变体
+- 为 VSCode 主题添加颜色重新加载能力
+- 添加 GTK 主题方法并修复浅色模式
+- 将 Ghostty 主题移到新路径
+- 添加 Zen Browser 模板
+- 添加 gruvbox material 自定义主题品种
+- 将 neovim 添加到 matugen 管道并带 soothing 主题
+- 修复浅色模式下的 adw-gtk3 设置
+- 为主题设置光标颜色
+- 修复自定义主题下终端始终为深色
+- 更新 VSCode 模板，改进高亮
+
+**光标和布局**
+- niri 中用于大小和主题的 DMS 光标控制
+- 为 XWayland 应用创建/更新 XResources
+- 添加 Hyprland 和 MangoWC 光标配置支持
+- 添加 GUI 间隙、窗口圆角和边框覆盖
+- 支持 niri、Hyprland 和 MangoWC 布局
+
+**启动器**
+- 内置设置搜索插件，带 ? 触发器
+- 支持插件定义上下文菜单
+- 为非英语应用添加 ID 搜索回退
+- 允许终端应用
+- F10 作为菜单键的替代
+- 优化绑定和过滤器
+- 修复无效图标渲染
+
+**设置**
+- 添加跨所有设置的搜索
+- 添加带 GUI 集成的 doctor 命令
+- 添加电池充电限制设置
+- 添加锁屏布局设置
+- 添加音量和亮度百分比
+- 修复桌面小部件折叠行高度
+- 修复通用颜色选择器裁剪
+- 修复 default-settings 的主题应用
+- 在加载完成前保护保存
+- 使默认高度感知屏幕
+- 只读处理重构
+
+**网络和 VPN**
+- 支持隐藏 SSID
+- 监听 NetworkManager 有线接口
+- 使用 nmcli 获取路由指标
+- 右键 VPN 小部件快速连接
+- 聚合 VPN 导入错误并带 toast 详情
+- 支持 pkcs11 提示
+- 缓存 pkcs11 pin 输入
+
+**键盘和输入**
+- 可写 Hyprland 和 MangoWC 按键绑定的初步支持
+- 为音频播放添加媒体控制绑定
+- 修复按键绑定对 cooldown-ms 参数的处理
+- 修复空字符串参数和 screenshot-window 选项
+- 缺少 ShortcutInhibitor 时添加日志
+- 接受小键盘 enter 键进行截图选择
+
+**锁屏和电源**
+- 添加淡出关闭显示器选项
+- Escape 时清除锁屏文本框
+- 处理会话锁定被拒绝的情况
+- 修复字体对齐
+- 添加 PAM 登录回退
+- 默认淡入锁定并关闭显示器
+
+**音频和媒体**
+- pipewire 设备更改时重新创建媒体播放器
+- 添加在栏小部件中禁用可视化器的选项
+- 添加滚轮行为配置
+- 允许调整通知音量
+- 媒体播放器小部件的更大选项
+
+**i18n 和 RTL**
+- 通知、设置、控制中心、启动器的初步 RTL 支持
+- 修复设置侧边栏和插件设置的 RTL 对齐
+- 添加波斯语和匈牙利语翻译
+- 通用术语清理和同步
+
+**niri**
+- 添加间隙和圆角覆盖
+- 在自动生成的文件上添加警告
+- 修复模态中的 effectiveScreenAssignment
+- 修复间隙响应性
+- 处理窗口紧急事件
+- 关闭输出时保留其余设置
+- 在概览上释放弹出焦点
+- 跟踪打开的模态以进行焦点转移
+- 使用 niri flake 的配置包含技巧
+
+**Hyprland**
+- 始终使用单窗口模式
+- 修复光标设置
+- 将 DPMS off 更改为 DPMS toggle
+- 更新 0.53 的参考配置
+- 智能合成器入口点检测
+
+**核心和后端**
+- 添加 resolve-include 递归功能
+- 为 wayland 堆栈添加带竞争检测的测试覆盖
+- 为测试模拟 wayland 上下文
+- 检测 SIGTERM 上的 quickshell 崩溃
+- 在 SIGUSR1 上非零退出以供 systemd 重启
+- 保留 quickshell 退出代码
+- 修复套接字报告的 CLI 版本
+- 对 XDG 目录使用标准库
+- 为空闲禁止器实现屏幕保护接口
+- 使用唤醒管道轮询而不是读取截止时间
+
+**Greeter**
+- 将 Hyprland 启动更改为 exec-once
+- 使用 FolderListModel 进行会话迭代
+- 添加启动超时
+- 简化 start-hyprland 检查
+- 修复逐显示器和逐模式壁纸（NixOS）
+
+**壁纸**
+- 为壁纸循环添加秒数
+- 锁定时暂停循环
+- 编码图像 URI
+- 限制最大纹理大小
+- 将纹理缩放到物理像素
+
+**构建和分发**
+- Debian SID、OpenSUSE Slowroll、Leap 16.0、CentOS Stream 10 软件包
+- Ubuntu ARM64 支持
+- Artix Linux 和 Void Linux 小部件映射
+- 移除 dms-git 上的 cliphist 依赖
+- OBS 和 PPA 自动化改进
+- NixOS 模块重构和修复
+
+**杂项**
+- 添加带 doctor 集成的首次启动欢迎页面
+- 可配置的应用 ID 替换
+- 将 steam_app_ID 映射到 steam_icon_ID 以获取游戏图标
+- Flatpak 内省实用程序
+- 检测 Zen Browser 和 Vesktop 的 flatpak 安装
+- 修复触摸板滚动行为
+- 添加分组工作区应用切换
+- 反向工作区滚动选项
+- 为更新器小部件添加隐藏选项
+- volume==0 时使用 volume_mute 图标
+
+</details>
+
+## 资源 {#resources}
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  开始使用 DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>文档</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>插件</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>在 GitHub 上赞助</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>在 Ko-fi 上支持</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>特别感谢 <a href="https://github.com/YaLTeR">YaLTeR</a> 与 DMS 团队合作，感谢 <a href="https://github.com/niri-wm/niri">niri</a>——启发 DMS 的合成器，并感谢在 <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a> 上托管 DMS。</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      谢谢 <span className={styles.gradientText}>你们</span>
+    </h2>
+    <p className={styles.thankYouText}>感谢所有通过反馈、贡献、赞助、捐赠和打包支持 DMS 的人。</p>
+    <p className={styles.thankYouTagline}>Zan, Zendegi, Azadi</p>
+  </div>
+</div>

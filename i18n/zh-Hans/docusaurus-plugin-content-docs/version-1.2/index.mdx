@@ -1,0 +1,229 @@
+---
+title: 欢迎
+description: 欢迎使用 Dank Linux
+sidebar_position: 1
+image: img/danklinux-docs.png
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗    ██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝    ██║     ██║████╗  ██║██║   ██║╚██╗██╔╝
+██║  ██║███████║██╔██╗ ██║█████╔╝     ██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗     ██║     ██║██║╚██╗██║██║   ██║ ██╔██╗
+██████╔╝██║  ██║██║ ╚████║██║  ██╗    ███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝    ╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝`}
+  hideTitle={true}
+/>
+
+## 快速开始 {#quick-start}
+
+*下面的命令会在系统中安装 Dank Linux，包括全部依赖、DankMaterialShell™，以及默认的合成器和终端配置。*
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+支持 Arch Linux 及其衍生版、Fedora 及其衍生版、Ubuntu、Debian、openSUSE 和 Gentoo。
+
+:::tip
+
+安装程序会添加适用于当前发行版的软件仓库（AUR、COPR、OBS 或 PPA）并通过发行版的包管理器安装软件包。后续更新可通过系统常规更新机制获取。如果直接从软件包安装 DMS，请运行 `dms setup` 生成合成器和终端的初始配置（目前适用于 niri/Hyprland）。sway、MangoWC 和 labwc 等其他合成器同样受到支持，详情请参阅[手动配置](dankmaterialshell/installation#post-install)。
+
+:::
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DankDash 概览"
+    sources={{
+      light: useBaseUrl('/img/dankdashlight.png'),
+      dark: useBaseUrl('/img/dankdash.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>包含一组 DankBar 小组件的 DankMaterialShell DankDash</figcaption>
+</figure>
+
+## 套件组成 {#the-suite}
+
+- **[DankMaterialShell](dankmaterialshell/overview)** — 使用 [Quickshell](https://quickshell.org/) 和 [Go](https://golang.org/) 构建的功能丰富的桌面 Shell。
+- **[dgop](dgop/)** — 无状态、基于游标的系统与进程监控工具，提供 TUI、CLI 和 REST API。
+- **[dsearch](danksearch/)** — 速度极快、可配置且零依赖的索引式文件系统搜索服务。
+- **[dankinstall](dankinstall/)** — 整套 Dank Linux 的自动化安装与管理工具。
+- **dcal（开发中）** - 一款与在线和本地日历集成的日历应用程序。
+
+## 开箱即用 {#batteries-included}
+
+你不必再从几十种工具中拼装桌面，也不必花费数小时让它们保持统一。传统 Wayland 环境需要自行寻找、配置和维护大量工具，而 Dank Linux 用更少的依赖提供一套完整、协调的解决方案。
+
+### 传统方式：软件包搜寻模拟器 {#the-traditional-way-package-hunting-simulator}
+
+典型的 Hyprland、niri、Sway、MangoWC、dwl、labwc 或通用 Wayland 环境，往往要求用户学习和配置十几种独立工具，例如：
+
+- **状态栏**：waybar、eww 或自定义脚本
+- **通知**：mako、swaync 或 dunst
+- **应用启动器**：rofi、wofi、fuzzel 或 tofi
+- **锁屏**：swaylock、hyprlock 或 gtklock
+- **空闲管理**：swayidle、hypridle
+- **系统工具**：htop、btop、nm-applet、blueman、pavucontrol
+- **音频控制**：pavucontrol、pamixer 脚本
+- **亮度控制**：brightnessctl 与自定义快捷键
+- **剪贴板管理**：clipman、cliphist 或 wl-clipboard 脚本
+- **壁纸管理**：swaybg、swww、hyprpaper 或 wpaperd
+- **主题**：手动配置 GTK、Qt、各种应用、状态栏、合成器间距和颜色
+- **电源管理**：自定义脚本或额外守护进程
+- **登录界面**：gdm、sddm、lightdm、greetd
+
+每种工具都有不同的配置格式、使用习惯和依赖。用户往往需要编写粘合脚本、排查集成问题，并在最不合适的时候发现功能缺失。
+
+### 使用预配置的“dotfiles” {#with-preconfigured-dotfiles}
+
+共享的预配置 dotfiles 可以帮助其他人复现一套可用环境，但也会带来问题：
+
+- **侵入式配置**：它们经常修改系统中大量配置文件，难以追踪和撤销。
+  - **DMS** 不修改、也不要求修改任何用户配置；所有内容都自包含。
+- **兼容性**：系统之间的细微差异可能破坏整套配置。
+- **复杂度**：理解并调整他人的配置并不轻松。
+- **偏好差异**：现有方案可能不符合个人习惯与工作流。
+
+*说明：* 社区在分享独特配置方面做得非常出色，我们也非常鼓励探索这些作品。它们可以提供 DMS 不具备的独特能力，不过通常也更具个人倾向，并会修改较多系统配置，而 DMS 不会这样做。
+
+### Dank 方式：完整集成 {#the-dank-way-completely-integrated}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="控制中心"
+    sources={{
+      light: useBaseUrl('/img/cclight.png'),
+      dark: useBaseUrl('/img/cc.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>包含系统控制与快捷开关的控制中心</figcaption>
+</figure>
+
+Dank Linux 使用 **DankMaterialShell** 取代碎片化的工具生态。它是使用 [Quickshell](https://quickshell.org) 和 [Go](https://go.dev) 构建的单一集成方案：
+
+- ✅ **完整桌面 Shell** — 面板、小组件和系统集成功能一应俱全
+- ✅ **统一配置** — 使用一致的配置方式，不再面对十几种不同语法
+- ✅ **智能搜索** — `danksearch` 提供高速文件索引和搜索
+- ✅ **系统监控** — `dgop` 无需额外工具、常驻守护进程或阻止 CPU 进入休眠状态的长期采样器，即可提供完整系统信息
+- ✅ **动态主题** — 使用 `matugen` 自动生成配色并应用到整个桌面
+- ✅ **核心功能齐备** — 包括通知、应用启动器、系统托盘、媒体控制等
+- ✅ **完整插件系统** — 可自由扩展新的小组件和启动器功能
+- ✅ **合理默认值** — 开箱即用，需要时仍可深度自定义
+
+无需再因忘记安装剪贴板管理器而深夜排错，也无需手动同步十几个配置文件的配色。
+
+**一次安装，一个 Shell，所有功能直接可用。**
+
+这就是 Dank Linux：我们已经完成集成工作，让你可以专注于使用桌面，而不是从头搭建桌面。
+
+### 预配置镜像 {#pre-configured-images}
+
+希望进一步减少设置工作？一些发行版已经预配置 DankMaterialShell：
+
+- <a href="https://github.com/zirconium-dev/zirconium/" style={{display: 'inline-flex', alignItems: 'center', gap: '0.4rem'}}><img src="/img/z.svg" alt="" style={{width: '1.1em', height: '1.1em', verticalAlign: 'middle'}} /> **Zirconium**</a> — 基于 Fedora 的不可变操作系统，预装 niri + DMS，并针对容器化开发优化
+
+## 默认即美观 {#beautiful-by-default}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="桌面概览"
+    sources={{
+      light: useBaseUrl('/img/desktoplight.png'),
+      dark: useBaseUrl('/img/desktop.png'),
+    }}
+    style={{ maxWidth: '800px', width: '100%' }}
+  />
+  <figcaption>包含终端、启动器和系统监控的完整桌面</figcaption>
+</figure>
+
+DankMaterialShell 开箱即可提供精致的桌面体验：
+
+- **数十种可自定义小组件**：包括可扩展启动器、工作区切换器、媒体播放器、时钟、天气、系统托盘、通知、锁屏、登录界面、网络与蓝牙集成等。
+- **动态主题**：自动生成并应用桌面配色。
+- **流畅动画**：整个桌面都具有精心打磨的过渡与效果。
+- **Material Design**：采用受 Material Design 3 启发的现代简洁视觉风格。
+
+## 创新解决方案 {#innovating-solutions}
+
+Dank Linux 正在为 Linux 生态中尚未解决的问题构建新的解决方案。
+
+### dgop — 首创的无状态系统与进程状态工具 {#dgop---first-of-its-kind-stateless-system--process-status-tool}
+
+在 dgop 出现之前，要测量 CPU 使用率通常只能：
+
+1. 在一段明显的时间内（例如 1–5 秒）采集样本，再计算差值得到平均 CPU 使用率；或者
+2. 使用常驻守护进程持续采样，并将系统指标存储在磁盘或内存中，这会消耗资源并增加系统复杂度。
+
+两种方式都会带来响应延迟、额外资源消耗和复杂度。dgop 使用一种新的基于游标的采样技术解决这一问题：
+
+1. 请求 CPU 百分比并通过 `cursor` 接收基线值。
+2. 在任意时间再次请求 CPU 百分比并传入先前的 `cursor`，立即得到从上次请求到当前时刻这一精确时间段内的 CPU、进程和系统指标。
+
+相同方法也用于磁盘吞吐量和网络使用量等时序指标。dgop 还提供类似 top 的 TUI、高级 CLI，以及完整记录的 OpenAPI 3.1 REST API；“meta”命令允许自由组合所需指标。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DGOP 预览"
+    sources={{
+      light: useBaseUrl('/img/dgoplight.png'),
+      dark: useBaseUrl('/img/dgop.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>dgop TUI 界面</figcaption>
+</figure>
+
+### danksearch — 极速文件系统搜索 {#danksearch---blazingly-fast-filesystem-search}
+
+传统文件系统搜索工具通常是 [KDE](https://kde.org/) 或 [GNOME](https://www.gnome.org/) 桌面环境的一部分。它们依赖较多、不易配置，也难以通过程序调用，因此很多用户会直接禁用它们。
+
+DankSearch 是一个零依赖、速度极快、仅用一个文件即可完整配置的索引式文件系统搜索服务，也可以独立运行。
+
+- **零依赖**：使用 Go 编写，可在各种环境运行
+- **易于配置**：单一配置文件，并提供合理默认值
+- **高速索引**：可在数分钟内索引数万文件
+- **索引同步**：自动跟踪文件系统变化并更新索引
+- **高级搜索**：支持全文、正则、模糊、扩展名过滤和元数据搜索等方式
+- **程序化访问**：提供完整 OpenAPI 3.1 REST API 和 CLI，便于集成到其他工具与脚本
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DankSearch"
+    sources={{
+      light: useBaseUrl('/img/dsearchlight.png'),
+      dark: useBaseUrl('/img/dsearch.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>DankSearch 文件搜索界面</figcaption>
+</figure>
+
+## 开源 {#open-source}
+
+Dank Linux 及其所有组件均采用 MIT 许可证开源。
+
+源代码：
+
+- [DankMaterialShell/dms](https://github.com/AvengeMedia/DankMaterialShell)
+- [DankMaterialShell/dms 后端（core）与 dankinstall](https://github.com/AvengeMedia/DankMaterialShell/core)
+- [dms 官方插件](https://github.com/AvengeMedia/dms-plugins)
+- [dgop GitHub](https://github.com/AvengeMedia/dgop)
+- [danksearch GitHub](https://github.com/AvengeMedia/danksearch)
+
+## 开始使用 {#get-started}
+
+准备好了吗？请前往[快速入门](./getting-started.mdx)指南，开始使用 Dank Linux。
+
+## 加入社区 {#join-the-community}
+
+- **GitHub**：[github.com/AvengeMedia](https://github.com/AvengeMedia)
+- **Discord**：`DankMaterialShell` 在 niri Discord 服务器中设有专属分区，请在对应的 `#dms-*` 频道讨论相关内容。
+  - [niri Discord](https://discord.gg/ppWTpKmPgT)
+- **文档**：你现在就在这里！
+- **支持开发**：[Ko-fi](https://ko-fi.com/danklinux) — 如果希望支持项目，可以在这里赞助我们。
