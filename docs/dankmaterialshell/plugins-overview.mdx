@@ -213,6 +213,13 @@ See [Plugin Development](plugin-development) for the complete development guide 
 - Bar and Control Center integration
 - Launcher plugin development
 - Global variables and state management
+- Plugin translations (`translations/` + `I18n.trFor`)
+
+## Translations
+
+Plugins carry their own translations — a `translations/` directory in the plugin repo with one JSON file per locale. DMS picks the file matching your locale automatically and updates live when you switch languages in Settings → Locale. Nothing to configure as a user; if the plugin ships your language, you get it.
+
+For plugin authors: see [Translations](plugin-development#translations) in the development guide for the file format and the `I18n.trFor` API. Registry plugins can also [apply for central translation](../contributing-registry#plugin-translations) through the same POEditor project that translates DMS itself.
 
 ## Example Plugins
 

@@ -1721,6 +1721,93 @@ PluginComponent {
 - `"process"` - Execute system commands
 - `"network"` - Network access
 
+## Translations
+
+Plugins ship their own translations. Drop a `translations/` directory next to `plugin.json`, wrap your strings in `I18n.trFor()`, done — nothing needs to change in the DMS repo, and users get your translations just by installing the plugin.
+
+```
+MyPlugin/
+├── plugin.json
+├── MyWidget.qml
+└── translations/
+    ├── es.json
+    ├── fr.json
+    └── zh_CN.json
+```
+
+DMS loads the file matching the user's locale when it discovers the plugin, and re-reads it whenever the locale changes. No restart, no registration call.
+
+### Marking Strings
+
+Wrap every user-facing string in `I18n.trFor()`, with your plugin id as the first argument:
+
+```qml
+import qs.Common
+
+StyledText {
+    text: I18n.trFor("myPlugin", "Cycle Speed")
+}
+```
+
+Placeholders work the same as anywhere else in DMS:
+
+```qml
+ToastService.showInfo(I18n.trFor("myPlugin", "Copied %1 to clipboard").arg(item))
+```
+
+Lookup order is: your plugin's translation file → the global DMS catalog → the English term itself. Strings DMS already translates ("Settings", "Close", etc.) resolve from the global catalog for free, and anything untranslated renders as your English text instead of breaking.
+
+Two rules:
+
+- The plugin id must be a **literal string** that exactly matches `id` in your `plugin.json`. The string extraction tooling for central translation reads call sites — a variable there means your strings never get extracted.
+- `I18n.trFor` doesn't exist on DMS versions without plugin translation support, and calling a missing function in QML is a TypeError, not a silent no-op. Bump `requires_dms` when you adopt it.
+
+Plain `I18n.tr()` still works inside plugins, but it only checks the global catalog — it will never see your `translations/` files.
+
+### Translation Files
+
+One JSON file per locale. Top-level keys are context buckets; unless you have a reason to do otherwise, use the English term as its own bucket:
+
+```json
+{
+  "Cycle Speed": {
+    "Cycle Speed": "Velocidad de ciclo"
+  },
+  "Copied %1 to clipboard": {
+    "Copied %1 to clipboard": "%1 copiado al portapapeles"
+  }
+}
+```
+
+There is no `en.json` — the strings in your QML are the English source. Translate what you want, skip what you don't; missing terms fall through the lookup order above.
+
+### File Naming and Locale Resolution
+
+Use the same file names DMS ships in its own catalog: `ar`, `de`, `eo`, `es`, `fa`, `fr`, `he`, `hu`, `it`, `ja`, `ko`, `nl`, `pl`, `pt` (Brazilian), `ru`, `sv`, `tr`, `uk`, `vi`, `zh_CN`, `zh_TW`.
+
+You're not limited to that list — resolution is driven by the user's locale, not by what DMS core translates. Ship a `cs.json` and Czech users get it even though DMS itself has no Czech catalog yet.
+
+For a user on `zh_CN`, DMS tries `zh_CN.json`, then `zh-CN.json`, then `zh.json`, and uses the first one that exists. No match means your English strings render as-is.
+
+### Testing Translations
+
+1. Reload after editing a file: `dms ipc call plugins reload myPlugin`
+2. Switch languages under Settings → Locale — plugin strings retranslate live along with the rest of the shell
+3. Broken JSON logs a `bad plugin translations` warning in shell output and falls back to English
+
+`ExampleEmojiPlugin` in the DMS repo's `PLUGINS/` directory is a complete working example — `trFor` calls in the widget and settings, plus `es.json` and `fr.json`.
+
+### Central Translation via POEditor
+
+DMS itself is translated by community translators through a POEditor project covering 21 languages. Plugins in the [registry](https://github.com/AvengeMedia/dms-plugin-registry) can apply to have their strings translated there too:
+
+1. Make sure every user-facing string goes through `I18n.trFor("<your plugin id>", ...)` with the id as a literal
+2. Open a PR to the registry setting `"i18n": true` in your plugin's JSON, with a short note on what the plugin does and roughly how many strings it has
+3. On approval your English strings are uploaded to POEditor, tagged with your plugin id
+4. As translators complete languages, PRs land in your repo adding `translations/<locale>.json` files — merge them and the translations ship with your next plugin update
+
+Keep your English strings stable once they're in POEditor. Renaming a term is a delete-plus-add: the old term's translations are discarded.
+
 ## Testing
 
 1. Enable plugin: Settings → Plugins → Scan → Toggle on
@@ -1758,7 +1845,7 @@ This is way faster than `dms restart` when you're iterating on your code.
 Check the `PLUGINS/` directory in the DMS repo for example plugins:
 
 - **ColorDemoPlugin** - Color picker integration
-- **ExampleEmojiPlugin** - Popout with grid view
+- **ExampleEmojiPlugin** - Popout with grid view, plugin-local translations
 - **ControlCenterExample** - Control Center toggle
 - **LauncherExample** - Spotlight extension
 - **WallpaperWatcherDaemon** - Background event watcher

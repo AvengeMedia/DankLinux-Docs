@@ -67,6 +67,7 @@ Thank you for contributing to the DankMaterialShell registry! This guide covers 
 | `compositors` | Yes | Supported compositors: `["niri", "hyprland"]`, `["any"]` |
 | `distro` | Yes | Supported distributions: `["any"]`, `["fedora"]`, `["arch"]`, etc. |
 | `screenshot` | No | Direct URL to a screenshot image |
+| `i18n` | No | `true` once approved for central translation — see [Plugin Translations](#plugin-translations). Not for initial submissions |
 
 :::warning[Important]
 The `id` and `name` fields **must exactly match** the corresponding fields in your plugin repository's `plugin.json` file.
@@ -103,6 +104,27 @@ When your plugin is merged, a tracking issue is automatically opened for it in t
   `/similar` references one or more plugin tracking issues by number (e.g. `/similar #530` or `/similar #403 #411`) and links them to this plugin both ways — each issue lists the others under **Related plugins**, and the directory and DMS surface the relationship. Use `/unsimilar #<issue>` to remove a link.
 
 The directory links to each plugin's issue from its **Discuss** button.
+
+### Plugin Translations
+
+Any plugin can ship its own translations — a `translations/` directory with one JSON file per locale, loaded by DMS automatically. No approval needed, no registry involvement. See [Translations](dankmaterialshell/plugin-development#translations) in the development guide for the file format and the `I18n.trFor` API.
+
+On top of that, registry plugins can apply to join the central DMS POEditor project — the same one community translators use for DMS itself, currently covering 21 languages. Approved plugins get their strings translated alongside the shell, and finished translations come back to the plugin repo as PRs.
+
+**Before applying:**
+
+- Your plugin is listed in this registry and actively maintained
+- Every user-facing string goes through `I18n.trFor("<your plugin id>", ...)`, with the id as a literal string exactly matching the `id` in your `plugin.json` — the extraction tooling reads call sites, so a variable there means your strings never get picked up
+
+**Applying:**
+
+1. Open a PR setting `"i18n": true` in your plugin's registry JSON. Include a short note: what the plugin does, roughly how many strings
+2. On approval, a maintainer adds your repo to the translation sync. Your English strings get uploaded to POEditor, tagged with your plugin id
+3. As translators finish languages, you get PRs adding `translations/<locale>.json` files to your repo — merge them and the translations ship with your next plugin update
+
+:::warning
+Once your strings are in POEditor, renaming a term is a delete-plus-add — the old term's translations across every language are discarded. Keep English strings stable.
+:::
 
 ---
 
