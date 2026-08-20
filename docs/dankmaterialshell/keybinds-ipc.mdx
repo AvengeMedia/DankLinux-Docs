@@ -226,12 +226,21 @@ Idle inhibitor control to prevent automatic sleep/lock.
 | `toggle` | Toggle idle inhibit state |
 | `enable` | Enable idle inhibit (prevent sleep) |
 | `disable` | Disable idle inhibit (allow sleep) |
+| `status` | Report whether idle inhibit is currently enabled |
+| `reason <text>` | Set the inhibit reason; pass an empty string to read the current one |
 
 **Examples:**
 ```bash
 dms ipc call inhibit toggle
 dms ipc call inhibit enable
+dms ipc call inhibit status
+dms ipc call inhibit reason "rendering a video"
+dms ipc call inhibit reason ""   # prints the current reason
 ```
+
+The state is saved in the session, like Do Not Disturb, so it survives a shell
+restart — whether that comes from `dms restart` or from systemd bringing the
+service back.
 
 ### powerprofile
 
