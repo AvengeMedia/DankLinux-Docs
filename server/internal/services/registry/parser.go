@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/gitlab"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
 )
@@ -15,6 +17,7 @@ import (
 type Parser struct {
 	token   string
 	clients map[string]*github.Client
+	gitlab  *gitlab.Client
 }
 
 func NewParser(token string) *Parser {
@@ -22,6 +25,13 @@ func NewParser(token string) *Parser {
 		token:   token,
 		clients: make(map[string]*github.Client),
 	}
+}
+
+func (p *Parser) getGitLabClient() *gitlab.Client {
+	if p.gitlab == nil {
+		p.gitlab = gitlab.NewClient("")
+	}
+	return p.gitlab
 }
 
 func (p *Parser) getClient(host string) (*github.Client, error) {
@@ -61,7 +71,19 @@ func (p *Parser) FetchPlugins(ctx context.Context) ([]models.Plugin, error) {
 		plugins = append(plugins, plugin)
 	}
 
+	p.applyFeedback(ctx, plugins)
+
 	return plugins, nil
+}
+
+func (p *Parser) applyFeedback(ctx context.Context, plugins []models.Plugin) {
+	feedback, err := p.FetchFeedback(ctx)
+	if err != nil {
+		log.Warnf("Failed to fetch plugin feedback: %v", err)
+		return
+	}
+
+	mergeFeedback(plugins, feedback)
 }
 
 func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlugin, error) {
@@ -109,6 +131,10 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("invalid repo URL: %w", err)
 	}
 
+	if host == "gitlab.com" {
+		return p.enrichPluginGitLab(ctx, regPlugin, owner, repo)
+	}
+
 	client, err := p.getClient(host)
 	if err != nil {
 		return models.Plugin{}, err
@@ -133,13 +159,9 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("failed to fetch plugin.json: %w", err)
 	}
 
-	var metadata models.PluginMetadata
-	if err := json.Unmarshal(fileData, &metadata); err != nil {
-		return models.Plugin{}, fmt.Errorf("invalid plugin.json: %w", err)
-	}
-
-	if metadata.Version == "" {
-		return models.Plugin{}, fmt.Errorf("plugin.json missing version")
+	metadata, err := parseMetadata(fileData)
+	if err != nil {
+		return models.Plugin{}, err
 	}
 
 	lastCommit, err := client.GetLastCommit(ctx, owner, repo, regPlugin.Path)
@@ -147,6 +169,50 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		return models.Plugin{}, fmt.Errorf("failed to fetch last commit: %w", err)
 	}
 
+	return buildPlugin(regPlugin, metadata, lastCommit.Commit.Committer.Date), nil
+}
+
+func (p *Parser) enrichPluginGitLab(ctx context.Context, regPlugin models.RegistryPlugin, owner, repo string) (models.Plugin, error) {
+	client := p.getGitLabClient()
+	project := owner + "/" + repo
+
+	filePath := "plugin.json"
+	if regPlugin.Path != "" {
+		filePath = regPlugin.Path + "/plugin.json"
+	}
+
+	fileData, err := client.GetRawFile(ctx, project, filePath, "HEAD")
+	if err != nil {
+		return models.Plugin{}, fmt.Errorf("plugin.json not found or inaccessible: %w", err)
+	}
+
+	metadata, err := parseMetadata(fileData)
+	if err != nil {
+		return models.Plugin{}, err
+	}
+
+	updatedAt, err := client.GetLastCommitDate(ctx, project, regPlugin.Path)
+	if err != nil {
+		return models.Plugin{}, fmt.Errorf("failed to fetch last commit: %w", err)
+	}
+
+	return buildPlugin(regPlugin, metadata, updatedAt), nil
+}
+
+func parseMetadata(data []byte) (models.PluginMetadata, error) {
+	var metadata models.PluginMetadata
+	if err := json.Unmarshal(data, &metadata); err != nil {
+		return models.PluginMetadata{}, fmt.Errorf("invalid plugin.json: %w", err)
+	}
+
+	if metadata.Version == "" {
+		return models.PluginMetadata{}, fmt.Errorf("plugin.json missing version")
+	}
+
+	return metadata, nil
+}
+
+func buildPlugin(regPlugin models.RegistryPlugin, metadata models.PluginMetadata, updatedAt time.Time) models.Plugin {
 	plugin := models.Plugin{
 		ID:           regPlugin.ID,
 		Name:         regPlugin.Name,
@@ -155,7 +221,6 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		Repo:         regPlugin.Repo,
 		Author:       regPlugin.Author,
 		FirstParty:   regPlugin.FirstParty,
-		Featured:     regPlugin.Featured,
 		Description:  regPlugin.Description,
 		Dependencies: regPlugin.Dependencies,
 		Compositors:  regPlugin.Compositors,
@@ -165,14 +230,14 @@ func (p *Parser) enrichPlugin(ctx context.Context, regPlugin models.RegistryPlug
 		Version:      metadata.Version,
 		Icon:         metadata.Icon,
 		Permissions:  metadata.Permissions,
-		UpdatedAt:    lastCommit.Commit.Committer.Date,
+		UpdatedAt:    updatedAt,
 	}
 
 	if metadata.Author != "" {
 		plugin.Author = metadata.Author
 	}
 
-	return plugin, nil
+	return plugin
 }
 
 func parseRepoURL(repoURL string) (host, owner, repo string, err error) {
@@ -186,7 +251,7 @@ func parseRepoURL(repoURL string) (host, owner, repo string, err error) {
 		return "", "", "", fmt.Errorf("invalid repo URL format")
 	}
 
-	return parsedURL.Host, parts[0], parts[1], nil
+	return parsedURL.Host, parts[0], strings.TrimSuffix(parts[1], ".git"), nil
 }
 
 func getAPIBaseURL(host string) (string, error) {

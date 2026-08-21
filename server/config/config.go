@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 )
 
 type Config struct {
@@ -10,10 +11,18 @@ type Config struct {
 	GithubToken            string
 	KlipyAPIKey            string
 	PoeditorCallbackSecret string
+	GithubWebhookSecret    string
+	GithubModToken         string
+	GithubAppID            int64
+	GithubAppPrivateKey    string
+	ModOrg                 string
+	ModTeam                string
+	OwnersTeam             string
 	DiscordWebhookURL      string
 	UploadToken            string
 	UploadDir              string
 	CacheDir               string
+	PublicBaseURL          string
 }
 
 func NewConfig() *Config {
@@ -30,6 +39,26 @@ func NewConfig() *Config {
 	githubToken := os.Getenv("GITHUB_TOKEN")
 	klipyAPIKey := os.Getenv("KLIPY_API_KEY")
 	poeditorSecret := os.Getenv("POEDITOR_CALLBACK_SECRET")
+	githubWebhookSecret := os.Getenv("GITHUB_WEBHOOK_SECRET")
+	githubModToken := os.Getenv("GITHUB_MOD_TOKEN")
+	githubAppID, _ := strconv.ParseInt(os.Getenv("GITHUB_APP_ID"), 10, 64)
+	githubAppPrivateKey := os.Getenv("GITHUB_APP_PRIVATE_KEY")
+
+	modOrg := os.Getenv("PLUGIN_MOD_ORG")
+	if modOrg == "" {
+		modOrg = "AvengeMedia"
+	}
+
+	modTeam := os.Getenv("PLUGIN_MOD_TEAM")
+	if modTeam == "" {
+		modTeam = "plugin-moderators"
+	}
+
+	ownersTeam := os.Getenv("PLUGIN_OWNERS_TEAM")
+	if ownersTeam == "" {
+		ownersTeam = "owners"
+	}
+
 	discordWebhookURL := os.Getenv("DISCORD_WEBHOOK_URL")
 	uploadToken := os.Getenv("UPLOAD_TOKEN")
 
@@ -40,15 +69,28 @@ func NewConfig() *Config {
 
 	cacheDir := os.Getenv("CACHE_DIR")
 
+	publicBaseURL := os.Getenv("PUBLIC_BASE_URL")
+	if publicBaseURL == "" {
+		publicBaseURL = "https://api.danklinux.com"
+	}
+
 	return &Config{
 		Port:                   port,
 		Environment:            env,
 		GithubToken:            githubToken,
 		KlipyAPIKey:            klipyAPIKey,
 		PoeditorCallbackSecret: poeditorSecret,
+		GithubWebhookSecret:    githubWebhookSecret,
+		GithubModToken:         githubModToken,
+		GithubAppID:            githubAppID,
+		GithubAppPrivateKey:    githubAppPrivateKey,
+		ModOrg:                 modOrg,
+		ModTeam:                modTeam,
+		OwnersTeam:             ownersTeam,
 		DiscordWebhookURL:      discordWebhookURL,
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,
 		CacheDir:               cacheDir,
+		PublicBaseURL:          publicBaseURL,
 	}
 }

@@ -22,6 +22,20 @@ DankMaterialShell provides comprehensive IPC (Inter-Process Communication) funct
 dms ipc call <target> <function> [parameters...]
 ```
 
+## Discovering IPC commands
+
+List all available targets and functions while DMS is running:
+
+```bash
+dms ipc list     # list all targets and functions
+dms ipc          # same
+dms ipc --help   # same, plus usage text
+```
+
+:::note
+Live listing requires DMS to be running. If listing fails, use this page as the offline reference or start the shell with `dms run`.
+:::
+
 ## Core Controls
 
 ### audio
@@ -159,12 +173,14 @@ Screen lock control and status.
 | Function | Description |
 | --- | --- |
 | `lock` | Lock the screen immediately |
+| `lockAndOutputsOff` | Lock the screen, fade to black, then power off the monitors (GNOME Super+L style). Any input cancels the fade or wakes the monitors; the fade duration follows the fade-to-DPMS grace period setting. |
 | `demo` | Show lock screen demo (doesn't lock) |
 | `isLocked` | Check if screen is locked |
 
 **Examples:**
 ```bash
 dms ipc call lock lock
+dms ipc call lock lockAndOutputsOff
 dms ipc call lock isLocked
 ```
 
@@ -219,9 +235,9 @@ dms ipc call inhibit enable
 
 ### powerprofile
 
-Power profile control via `power-profiles-daemon`. Changes stay in sync with DMS UI and trigger the power profile OSD when enabled in Settings → OSD.
+Power profile control via the PowerProfiles D-Bus interface. Changes stay in sync with DMS UI and trigger the power profile OSD when enabled in Settings → OSD.
 
-Requires `power-profiles-daemon` to be installed and running. Works on all compositors.
+Requires either `power-profiles-daemon`, or `tuned` with `tuned-ppd`, to be installed and running. Works on all compositors.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
@@ -253,7 +269,7 @@ dms ipc call powerprofile toggle
 **Notes:**
 - `list` returns only profiles available on your system (performance is omitted when unsupported)
 - `status` returns the current slug: `power-saver`, `balanced`, or `performance`
-- Returns `ERROR: power-profiles-daemon not available` when the daemon is missing
+- Returns `ERROR: power-profiles-daemon not available` when no PowerProfiles daemon (`power-profiles-daemon` or `tuned-ppd`) is running
 - Returns `ERROR: Failed to set power profile` if the profile change could not be applied
 
 ## Wallpaper & Profile
@@ -497,17 +513,25 @@ Spotlight Bar — a compact inline search bar that drops down from the top cente
 
 **Default keybind:** `Alt + Space`
 
-| Function | Description |
-| --- | --- |
-| `open` | Show the Spotlight Bar |
-| `close` | Hide the Spotlight Bar |
-| `toggle` | Toggle the Spotlight Bar |
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show the Spotlight Bar | - |
+| `close` | Hide the Spotlight Bar | - |
+| `toggle` | Toggle the Spotlight Bar | - |
+| `openWith <mode>` | Open the Spotlight Bar in a specific mode | `all`, `apps`, `files`, `plugins` |
+| `toggleWith <mode>` | Toggle the Spotlight Bar in a specific mode | `all`, `apps`, `files`, `plugins` |
+| `openQuery <query>` | Show the Spotlight Bar with search | search text |
+| `toggleQuery <query>` | Toggle the Spotlight Bar with search | search text |
 
 **Examples:**
 ```bash
 dms ipc call spotlight-bar toggle
 dms ipc call spotlight-bar open
 dms ipc call spotlight-bar close
+dms ipc call spotlight-bar openQuery browser
+dms ipc call spotlight-bar toggleQuery "!"
+dms ipc call spotlight-bar openWith apps
+dms ipc call spotlight-bar toggleWith files
 ```
 
 ### Other Modals
@@ -515,7 +539,7 @@ dms ipc call spotlight-bar close
 All these modals support `open`, `close`, and `toggle` functions:
 
 - **clipboard** - Clipboard history manager
-- **notifications** - Notification center (also supports `clearAll`, `dismissAllPopups`, `toggleDoNotDisturb`, `getDoNotDisturb`, `enableDoNotDisturbIndefinitely`, `enableDoNotDisturbUntilTomorrowMorning`, and `enableDoNotDisturbUntil <timestampMs>`)
+- **notifications** - Notification center (also supports `clearAll`, `dismiss`, `dismissAllPopups`, `toggleDoNotDisturb`, `getDoNotDisturb`, `enableDoNotDisturbIndefinitely`, `enableDoNotDisturbUntilTomorrowMorning`, and `enableDoNotDisturbUntil <timestampMs>`)
 - **processlist** - System process list and performance monitor (also supports `focusOrToggle`)
 - **powermenu** - Power menu for system actions
 - **control-center** - Quick settings (network, bluetooth, audio, etc.)
@@ -526,6 +550,7 @@ All these modals support `open`, `close`, and `toggle` functions:
 dms ipc call clipboard toggle
 dms ipc call notifications open
 dms ipc call notifications clearAll
+dms ipc call notifications dismiss
 dms ipc call notifications dismissAllPopups
 dms ipc call notifications toggleDoNotDisturb
 dms ipc call notifications getDoNotDisturb
@@ -582,9 +607,13 @@ Dashboard popup with multiple tabs.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
-| `open [tab]` | Show dashboard | tab: "", "overview", "media", "weather" |
+| `open [tab]` | Show dashboard | tab: "", "overview", "media", "wallpaper", "weather" |
 | `close` | Hide dashboard | - |
 | `toggle [tab]` | Toggle dashboard | tab |
+| `openAt <tab> <position>` | Show dashboard anchored to a bar section | tab, position: "left", "center", "right" |
+| `toggleAt <tab> <position>` | Toggle dashboard anchored to a bar section | tab, position |
+
+Without a position, the dashboard anchors to the clock widget. `openAt`/`toggleAt` anchor it to the given bar section instead — useful when triggering the dash from a custom widget or script.
 
 **Examples:**
 ```bash
@@ -592,6 +621,8 @@ dms ipc call dash toggle ""
 dms ipc call dash open overview
 dms ipc call dash toggle media
 dms ipc call dash open weather
+dms ipc call dash toggleAt wallpaper center
+dms ipc call dash openAt overview right
 ```
 
 ### file
@@ -608,18 +639,28 @@ dms ipc call file browse wallpaper
 dms ipc call file browse profile
 ```
 
-### dankdash
+### color-picker
 
-DankDash wallpaper browser control.
+In-shell color picker modal for theme and settings color selection.
 
-| Function | Description |
-| --- | --- |
-| `wallpaper` | Toggle DankDash wallpaper browser |
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open` | Show color picker modal | - |
+| `openColor <color>` | Show modal with a pre-selected color | color string (e.g. `#ff0000`) |
+| `close` | Hide color picker modal | - |
+| `closeInstant` | Hide without animation | - |
+| `toggle` | Toggle modal visibility | - |
+| `toggleInstant` | Toggle without animation on hide | - |
 
 **Examples:**
 ```bash
-dms ipc call dankdash wallpaper
+dms ipc call color-picker toggle
+dms ipc call color-picker openColor "#3f51b5"
 ```
+
+:::tip
+**Screen eyedropper:** `dms color pick` is a standalone CLI command, not an IPC target. See [Color Picker CLI](cli-color-picker).
+:::
 
 ### welcome
 

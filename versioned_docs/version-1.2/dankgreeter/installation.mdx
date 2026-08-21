@@ -147,6 +147,21 @@ dms greeter status
 
 This verifies your greeter setup and sync status. See the [Configuration guide](/docs/dankgreeter/configuration#checking-sync-status) for detailed information.
 
+#### PAM Modules
+
+DMS Greeter configures PAM automatically, but some features, such as keyring unlocking,  may require additional PAM modules depending on your distribution :
+
+| Distribution  Packages for a couple modules |
+|---|---|
+| Arch Linux | PAM modules are already provided by their respective packages (e.g. `gnome-keyring` |
+| Fedora | `gnome-keyring-pam`, `pam-kwallet`, `fprintd-pam`|
+| Debian/Ubuntu |`libpam-gnome-keyring`, `libpam-kwallet-common`, `libpam-fprintd` |
+| openSUSE | `gnome-keyring-pam`, `pam_kwallet`, `fprintd-pam` |
+| Gentoo | `kwallet-pam`, or the `pam` USE flag for the gnome-keyring and fprint packages |
+| NixOS | `kdePackages.kwallet-pam`, gnome-keyring and fprint include their PAM modules |
+
+After installing the relevant packages, unlocking will work on the next login
+
 ---
 
 ### Manual Setup (all distros)

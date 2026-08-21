@@ -1,7 +1,7 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
-import type {PrismTheme} from 'prism-react-renderer';
+import type { PrismTheme } from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -178,6 +178,11 @@ const config: Config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    faster: {
+      // SWC HTML minifier strips optional <main>/<div> tags on blog pages and
+      // breaks the three-column layout (content appears unformatted below footer).
+      swcHtmlMinimizer: false,
+    },
   },
 
   // Add favicon, icons, and Open Graph meta tags
@@ -277,16 +282,20 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
-          lastVersion: '1.4',
+          lastVersion: '1.5',
           versions: {
             current: {
-              label: '1.5',
-              path: '1.5',
+              label: '1.6',
+              path: '1.6',
               banner: 'unreleased',
+            },
+            '1.5': {
+              label: '1.5',
+              path: '',
             },
             '1.4': {
               label: '1.4',
-              path: '',
+              path: '1.4',
             },
             '1.2': {
               label: '1.2',
@@ -296,7 +305,7 @@ const config: Config = {
         },
         blog: {
           showReadingTime: true,
-          blogTitle: 'Dank Linux Blog',
+          blogTitle: 'Dank Linux Updates',
           blogDescription: 'News, releases, and updates from the Dank Linux project.',
           blogSidebarTitle: 'Recent Posts',
           blogSidebarCount: 5,
@@ -364,9 +373,23 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card (fallback for pages without images)
     image: 'img/homepage/danklinux-preview.png',
+    announcementBar: {
+      id: 'v1-5-release',
+      content:
+        '<b>DMS 1.5 "The Wolverine" is here</b> — Frame Mode, DankCalendar integration, Hyprland Lua, and a lot more. <a href="/blog/v1-5-release">Read the announcement</a>',
+      backgroundColor: '#C77B3B',
+      textColor: '#ffffff',
+      isCloseable: true,
+    },
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
+    },
+    docs: {
+      sidebar: {
+        hideable: true,
+        autoCollapseCategories: true,
+      },
     },
     // Panzoom configuration for Mermaid diagrams only (images use fullscreen zoom)
     zoom: {
@@ -412,7 +435,7 @@ const config: Config = {
         },
         {
           to: '/blog',
-          label: 'Blog',
+          label: 'Updates',
           position: 'right',
         },
         {
@@ -464,7 +487,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} Dank Linux • Free Forever • MIT License`,
+      copyright: `© ${new Date().getFullYear()} Dank Linux • MIT License`,
     },
     prism: {
       theme: dankPurpleLight,

@@ -20,22 +20,6 @@ DankMaterialShell supports several advanced configuration options through enviro
 
 ## Core Configuration
 
-### DMS_RUN_GREETER
-
-Enables greeter/login screen mode instead of regular shell mode. Used for display manager integration with greetd.
-
-```bash
-DMS_RUN_GREETER=1 dms run
-```
-
-### DMS_GREET_CFG_DIR
-
-Specifies custom configuration directory for greeter mode (defaults to `/etc/greetd/.dms`). Useful for isolating greeter settings from user settings.
-
-```bash
-DMS_GREET_CFG_DIR=/custom/path dms run
-```
-
 ### DMS_SOCKET
 
 Custom Unix socket path for DMS internal services communication. Used by DMSService, NetworkService, SessionService, and PortalService for IPC.
@@ -52,6 +36,14 @@ Disables matugen dynamic theming system for troubleshooting or when using static
 
 ```bash
 DMS_DISABLE_MATUGEN=1 dms run
+```
+
+### DMS_ENABLE_GTK4_REFRESH
+
+Enables the GTK4 live theme refresh after each matugen rebuild. Running GTK4/libadwaita apps only reload `~/.config/gtk-4.0` colors when the system color-scheme changes, so DMS briefly round-trips `color-scheme` through the opposite value to force it. Some apps that follow the portal color-scheme (notably Chromium/Chrome) can miss the restore signal and get stuck in the wrong mode, so this is disabled by default — without it, GTK4 apps pick up new colors on their next launch. Set to `1` to enable.
+
+```bash
+DMS_ENABLE_GTK4_REFRESH=1 dms run
 ```
 
 ### DMS_DISABLE_CAVA
@@ -111,10 +103,13 @@ Launcher. These toggles map directly to `top` when off and `overlay` when on.
 Environment variables are stronger overrides: if a matching `DMS_*_LAYER`
 variable is set, that value wins over the UI toggle.
 
-Frame mode is separate from fullscreen policy. When a visible Frame is enabled,
-bar and dock surfaces may internally use `overlay` so their icons stack above
-the frame in both Separate and Connected modes. Fullscreen windows are still
-handled by the compositor and by the per-surface layer choices above.
+Frame mode is separate from fullscreen policy. A visible Frame renders on the
+`top` layer by default. In Connected mode the bar and dock are merged into the
+frame window itself, so they share that layer rather than opening as separate
+surfaces. A bar or dock with **Use Overlay Layer** enabled is the exception: it
+is not merged into the frame and instead renders as a standalone `overlay`
+surface stacked above it. Fullscreen windows are still handled by the compositor
+and by the per-surface layer choices above.
 
 ### DMS_DANKBAR_LAYER
 
@@ -288,10 +283,10 @@ environment {
 
 Add to your Hyprland config:
 
-```conf
-env = DMS_DISABLE_MATUGEN,1
-env = DMS_DANKBAR_LAYER,overlay
-env = DMS_HIDE_TRAYIDS,discord,spotify
+```lua
+hl.env("DMS_DISABLE_MATUGEN", "1")
+hl.env("DMS_DANKBAR_LAYER", "overlay")
+hl.env("DMS_HIDE_TRAYIDS", "discord,spotify")
 ```
 
 ### Sway

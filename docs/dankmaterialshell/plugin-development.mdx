@@ -24,7 +24,7 @@ For IDE support (autocomplete, type checking, etc.), clone the DMS repo and deve
 
 ```bash
 mkdir -p ~/repos && cd ~/repos
-git clone https://github.com/AvengeMedia/DankMaterialShell.git
+git clone --recurse-submodules https://github.com/AvengeMedia/DankMaterialShell.git
 cd DankMaterialShell/quickshell
 
 # Generate QML language server config
@@ -34,6 +34,8 @@ qs -p .  # Press Ctrl+C after it starts
 # Create your plugins here
 mkdir -p dms-plugins/MyPlugin
 ```
+
+Core widget sources under `quickshell/DankCommon` come from the shared [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) submodule — plugin imports are unchanged (`qs.Widgets`, `qs.Common`, ...), but the submodule must be present for the QML language server to resolve them.
 
 ### VSCode Setup
 
@@ -1361,6 +1363,67 @@ The `components` map is only understood by DMS 1.5.0 and later — declare `"req
 
 :::
 
+## Dependency Checks
+
+A plugin can optionally gate activation behind a dependency check, so it refuses to load (and tells the user why) when something it needs is missing. The check runs **before** the plugin loads — both when the user enables it and when it auto-loads at startup.
+
+Point the manifest's `startupCheck` field at a small component, and list the tools you depend on in `dependencies`:
+
+```json
+{
+  "id": "myPlugin",
+  "name": "My Plugin",
+  "type": "widget",
+  "component": "./Widget.qml",
+  "startupCheck": "./StartupCheck.qml",
+  "dependencies": ["boregard"]
+}
+```
+
+The check component must be **non-visual** — use a `QtObject` so nothing is created in the graphics scene. It exposes a `check` function. Call `done(null)` to allow activation, or `done(error)` to block it:
+
+```qml
+// StartupCheck.qml
+import QtQuick
+import qs.Common
+
+QtObject {
+    function check(done) {
+        Proc.runCommand("myPlugin.depCheck", ["which", "boregard"], (stdout, exitCode) => {
+            if (exitCode === 0) {
+                done(null)
+                return
+            }
+            done({
+                title: I18n.tr("boregard is required"),
+                details: I18n.tr("The 'boregard' tool is not installed or not on your PATH.\n\nInstall it from https://danklinux.com, then re-enable this plugin.")
+            })
+        })
+    }
+}
+```
+
+The error passed to `done` can be:
+
+- a **string** — shown as the toast title, or
+- an **object** `{ title, details }` — where `details` is long-form text rendered as an expandable section of the toast. Use this for multi-line install instructions. Any `http(s)` URL in `details` becomes a clickable link that opens in the browser.
+
+A **synchronous** variant is supported for in-process checks — declare `check()` with no argument and return the result directly:
+
+```qml
+QtObject {
+    function check() {
+        return SomeService.ready ? null : I18n.tr("Service unavailable")
+    }
+}
+```
+
+:::note
+Async vs sync is chosen by **arity**: if you declare `check(done)` (one argument) it is treated as async and you must call `done(...)`; if you declare `check()` (no arguments) its return value is used directly. Don't mix the two — a one-argument `check` that returns instead of calling `done` will hang activation.
+:::
+
+When the check fails the enable toggle reverts and the error is shown as a toast. Plugins without a `startupCheck` are unaffected. The last error per plugin is available at `PluginService.pluginLoadErrors[pluginId]`. See **ExampleStartupCheck** in the `PLUGINS/` directory for a complete plugin.
+
 ## Plugin Settings
 
 Use `PluginSettings` as the base and drop in setting components. They handle all the loading and saving automatically.
@@ -1627,10 +1690,11 @@ PluginComponent {
 {
   "icon": "material_icon",
   "settings": "./Settings.qml",
+  "startupCheck": "./StartupCheck.qml",
   "trigger": "#",
   "permissions": ["settings_read", "settings_write"],
   "requires_dms": ">=0.1.18",
-  "requires": ["tool1", "tool2"],
+  "dependencies": ["tool1", "tool2"],
   "components": {
     "daemon": "./Daemon.qml",
     "widget": "./Widget.qml",
@@ -1656,6 +1720,93 @@ PluginComponent {
 - `"settings_write"` - Write plugin settings
 - `"process"` - Execute system commands
 - `"network"` - Network access
+
+## Translations
+
+Plugins ship their own translations. Drop a `translations/` directory next to `plugin.json`, wrap your strings in `I18n.trFor()`, done — nothing needs to change in the DMS repo, and users get your translations just by installing the plugin.
+
+```
+MyPlugin/
+├── plugin.json
+├── MyWidget.qml
+└── translations/
+    ├── es.json
+    ├── fr.json
+    └── zh_CN.json
+```
+
+DMS loads the file matching the user's locale when it discovers the plugin, and re-reads it whenever the locale changes. No restart, no registration call.
+
+### Marking Strings
+
+Wrap every user-facing string in `I18n.trFor()`, with your plugin id as the first argument:
+
+```qml
+import qs.Common
+
+StyledText {
+    text: I18n.trFor("myPlugin", "Cycle Speed")
+}
+```
+
+Placeholders work the same as anywhere else in DMS:
+
+```qml
+ToastService.showInfo(I18n.trFor("myPlugin", "Copied %1 to clipboard").arg(item))
+```
+
+Lookup order is: your plugin's translation file → the global DMS catalog → the English term itself. Strings DMS already translates ("Settings", "Close", etc.) resolve from the global catalog for free, and anything untranslated renders as your English text instead of breaking.
+
+Two rules:
+
+- The plugin id must be a **literal string** that exactly matches `id` in your `plugin.json`. The string extraction tooling for central translation reads call sites — a variable there means your strings never get extracted.
+- `I18n.trFor` doesn't exist on DMS versions without plugin translation support, and calling a missing function in QML is a TypeError, not a silent no-op. Bump `requires_dms` when you adopt it.
+
+Plain `I18n.tr()` still works inside plugins, but it only checks the global catalog — it will never see your `translations/` files.
+
+### Translation Files
+
+One JSON file per locale. Top-level keys are context buckets; unless you have a reason to do otherwise, use the English term as its own bucket:
+
+```json
+{
+  "Cycle Speed": {
+    "Cycle Speed": "Velocidad de ciclo"
+  },
+  "Copied %1 to clipboard": {
+    "Copied %1 to clipboard": "%1 copiado al portapapeles"
+  }
+}
+```
+
+There is no `en.json` — the strings in your QML are the English source. Translate what you want, skip what you don't; missing terms fall through the lookup order above.
+
+### File Naming and Locale Resolution
+
+Use the same file names DMS ships in its own catalog: `ar`, `de`, `eo`, `es`, `fa`, `fr`, `he`, `hu`, `it`, `ja`, `ko`, `nl`, `pl`, `pt` (Brazilian), `ru`, `sv`, `tr`, `uk`, `vi`, `zh_CN`, `zh_TW`.
+
+You're not limited to that list — resolution is driven by the user's locale, not by what DMS core translates. Ship a `cs.json` and Czech users get it even though DMS itself has no Czech catalog yet.
+
+For a user on `zh_CN`, DMS tries `zh_CN.json`, then `zh-CN.json`, then `zh.json`, and uses the first one that exists. No match means your English strings render as-is.
+
+### Testing Translations
+
+1. Reload after editing a file: `dms ipc call plugins reload myPlugin`
+2. Switch languages under Settings → Locale — plugin strings retranslate live along with the rest of the shell
+3. Broken JSON logs a `bad plugin translations` warning in shell output and falls back to English
+
+`ExampleEmojiPlugin` in the DMS repo's `PLUGINS/` directory is a complete working example — `trFor` calls in the widget and settings, plus `es.json` and `fr.json`.
+
+### Central Translation via POEditor
+
+DMS itself is translated by community translators through a POEditor project covering 21 languages. Plugins in the [registry](https://github.com/AvengeMedia/dms-plugin-registry) can apply to have their strings translated there too:
+
+1. Make sure every user-facing string goes through `I18n.trFor("<your plugin id>", ...)` with the id as a literal
+2. Open a PR to the registry setting `"i18n": true` in your plugin's JSON, with a short note on what the plugin does and roughly how many strings it has
+3. On approval your English strings are uploaded to POEditor, tagged with your plugin id
+4. As translators complete languages, PRs land in your repo adding `translations/<locale>.json` files — merge them and the translations ship with your next plugin update
+
+Keep your English strings stable once they're in POEditor. Renaming a term is a delete-plus-add: the old term's translations are discarded.
 
 ## Testing
 
@@ -1694,11 +1845,12 @@ This is way faster than `dms restart` when you're iterating on your code.
 Check the `PLUGINS/` directory in the DMS repo for example plugins:
 
 - **ColorDemoPlugin** - Color picker integration
-- **ExampleEmojiPlugin** - Popout with grid view
+- **ExampleEmojiPlugin** - Popout with grid view, plugin-local translations
 - **ControlCenterExample** - Control Center toggle
 - **LauncherExample** - Spotlight extension
 - **WallpaperWatcherDaemon** - Background event watcher
 - **ExampleCompositePlugin** - Daemon + bar widget + desktop widget in one plugin
+- **ExampleStartupCheck** - Blocks activation when a system dependency is missing
 
 **First-party plugins** (good references for real-world patterns):
 

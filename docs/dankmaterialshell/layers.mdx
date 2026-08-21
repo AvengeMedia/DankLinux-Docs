@@ -88,6 +88,15 @@ Namespaces for other component that aren't modals or popouts.
 > - **Niri**: Run `niri msg layers` to list active layer surfaces
 
 If you're a plugin dev, see the [plugin development](./plugin-development.mdx#widget-with-popout) page to add your layer namespace.
+
+## Floating Windows
+
+DMS application windows — Settings, Notepad, Polkit, Process List, the greeter, and the app/widget browsers — are regular XDG toplevel windows, not layer-shell surfaces. They share app ID `com.danklinux.dms`, so compositor **window rules** (not layer rules) apply to them.
+
+- **Floating vs. tiled**: **Theme & Colors** → **Floating Windows** → **Open Windows Floating** manages a compositor window rule that opens DMS windows floating (niri, Hyprland, MangoWC). The rule lives in a managed fragment (`~/.config/niri/dms/windowrules.kdl`, `~/.config/hypr/dms/windowrules.lua`, `~/.config/mango/dms/windowrules.conf`); if the fragment isn't included in your compositor config yet, a **First Time Setup** banner on the same page adds it when you click **Setup**.
+- **Transparency & blur**: floating windows have their own **Window Opacity** and foreground controls under **Theme & Colors** → **Floating Windows**, independent of layer surfaces (which use **Surface Styling**). Enable **Sync with Global Settings** to have floating windows follow Surface Styling.
+- **niri xray**: the `background-effect` xray behavior of DMS windows follows **Settings → Compositor → Layout → Xray Blur Effect** and is managed in `dms/layout.kdl` — a hand-written `background-effect` block for DMS in your main niri config is redundant and can be removed.
+
 ## Compositor Examples
 
 Each compositor has its own syntax for layer rules.
@@ -99,66 +108,66 @@ Each compositor has its own syntax for layer rules.
 In order for some layer rules (such as `animation`, `blur` and `dimaround`), you will have to disable the shell's animations and dim effect.
 
 - You can disable animations in **Settings**>**Personalization**>**Animation Speed** and set to **None**.
-- You can disable the dim in **Theme & Colors**>**Widget Styling** and untoggle **Darken Modal Background**.
+- You can disable the dim in **Settings**>**Launcher** and untoggle **Darken Modal Background**.
 
 :::
 
 #### Blur Settings
 
-```conf
-decoration {
-    blur {
-        enabled = true
-        size = 10
-        passes = 4
-
-        ignore_opacity = true
-        new_optimizations = true
-        xray = false
-
-        noise = 0.02
-        contrast = 1.1
-        vibrancy = 0.2
-        vibrancy_darkness = 0.3
-    }
-
-    drop_shadow = true
-    shadow_range = 20
-    shadow_render_power = 3
-    col.shadow = rgba(00000099)
-}
+```lua
+hl.config({
+    decoration = {
+        blur = {
+            enabled = true,
+            size = 10,
+            passes = 4,
+            ignore_opacity = true,
+            new_optimizations = true,
+            xray = false,
+            noise = 0.02,
+            contrast = 1.1,
+            vibrancy = 0.2,
+            vibrancy_darkness = 0.3
+        },
+        shadow = {
+            enabled = true,
+            range = 20,
+            render_power = 3,
+            color = "rgba(00000099)"
+        },
+    },
+})
 ```
 
 #### Layer Rules
 
 Add these layer rules to enable blur for DMS components:
 
-```conf
-# Animations
-layerrule {
-    animation = slide right
-    match:namespace = dms:control-center
-}
+```lua
+hl.layer_rule({
+    match = { namespace = "dms:control-center" },
+    animation = "slide right"
+})
 
-layerrule {
-    animation = slide top
-    match:namespace = dms:workspace-overview
-}
-# You can find all available animations here: https://wiki.hypr.land/Configuring/Animations/#animation-tree
+hl.layer_rule({
+    match= { namespace = "dms:workspace-overview" },
+    animation = "slide top"
+})
+-- You can find all available animations here: https://wiki.hypr.land/Configuring/Advanced-and-Cool/Animations/#animation-tree
 
-# Blur
-# You can use match:namespace with regex to target multiple layers
-layerrule {
-    blur = on
+-- Blur
+-- You can use match.namespace with regex to target multiple layers
+hl.layer_rule({
+    match = { namespace = "dms:(color-picker|clipboard|spotlight|settings)" },
+    blur = true,
     ignore_alpha = 0
-    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
-}
+})
 
-# Dim (if you prefer a dim instead of a blur effect)
-layerrule {
-    dimaround = on
-    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
-}
+-- Dim (if you prefer a dim instead of a blur effect)
+hl.layer_rule({
+    match = { namespace = "dms:(color-picker|clipboard|spotlight|settings)" },
+    dim_around = true
+})
 ```
 #### Examples
 
@@ -166,21 +175,21 @@ layerrule {
 <summary>Examples</summary>
 ##### Add a blur effect on the shell's Components
 
-Lower the shell's components' opacity in **Theme & Colors**>**Widget Styling**.
-```conf
-# Modals
-layerrule {
-    blur = on
+Lower the shell's components' opacity in **Theme & Colors**>**Surface Styling** (**Surface Opacity**).
+```lua
+-- Modals
+hl.layer_rule({
+    match = { namespace = "dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)" },
+    blur = true,
     ignore_alpha = 0
-    match:namespace = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
-}
+})
 
-# Shell components (bar, popouts, etc.)
-layerrule {
-    blur = on
+-- Shell components (bar, popouts, etc.)
+hl.layer_rule({
+    match = { namespace = "dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)" },
+    blur = true,
     ignore_alpha = 0
-    match:namespace = dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
-}
+})
 ```
 </details>
 #### Performance Tuning

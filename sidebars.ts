@@ -46,6 +46,7 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'dankmaterialshell/calendar-integration',
+        'dankmaterialshell/lock-screen-authentication',
         {
           type: 'doc',
           id: 'dankmaterialshell/managing',
@@ -96,6 +97,11 @@ const sidebars: SidebarsConfig = {
               label: 'Clipboard Manager',
             },
             'dankmaterialshell/cli-screenshot',
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-qr',
+              label: 'QR Codes',
+            },
           ],
         },
         {
@@ -151,6 +157,7 @@ const sidebars: SidebarsConfig = {
           ],
         },
         'dankgreeter/configuration',
+        'dankgreeter/authentication',
       ],
     },
     {
@@ -200,13 +207,31 @@ const sidebars: SidebarsConfig = {
         'danksearch/usage',
       ],
     },
+    {
+      type: 'category',
+      label: 'DankCalendar (dcal)',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'dankcalendar/index',
+          label: 'Overview',
+        },
+        'dankcalendar/installation',
+        'dankcalendar/accounts',
+        'dankcalendar/usage',
+        'dankcalendar/navigation',
+        'dankcalendar/ipc',
+      ],
+    },
     'contributing',
     {
       type: 'doc',
       id: 'contributing-registry',
       label: 'Contributing Plugins & Themes',
     },
-    'support'
+    'support',
+    'dankmaterialshell/changelog',
   ],
 };
 

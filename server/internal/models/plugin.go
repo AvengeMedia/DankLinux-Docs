@@ -47,11 +47,18 @@ type Plugin struct {
 	Compositors  []string  `json:"compositors"`
 	Distro       []string  `json:"distro"`
 	Screenshot   string    `json:"screenshot"`
+	PreviewURL   string    `json:"previewUrl,omitempty"`
 	RequiresDMS  string    `json:"requires_dms,omitempty"`
 	Version      string    `json:"version"`
 	Icon         string    `json:"icon,omitempty"`
 	Permissions  []string  `json:"permissions,omitempty"`
 	UpdatedAt    time.Time `json:"updated_at"`
+	CreatedAt    time.Time `json:"created_at"`
+	Upvotes      int       `json:"upvotes"`
+	IssueURL     string    `json:"issueUrl,omitempty"`
+	IssueNumber  int       `json:"issueNumber,omitempty"`
+	Status       []string  `json:"status,omitempty"`
+	Similar      []string  `json:"similar,omitempty"`
 }
 
 type ThemeVariantOption struct {
@@ -88,6 +95,37 @@ type ThemeVariants struct {
 	Accents  []map[string]interface{}      `json:"accents,omitempty"`
 }
 
+type ThemeWCAGGroup struct {
+	Level     string   `json:"level"`
+	MinRatio  float64  `json:"minRatio"`
+	WorstPair []string `json:"worstPair,omitempty"`
+}
+
+type ThemeWCAGBreakdown struct {
+	Name      string `json:"name"`
+	Mode      string `json:"mode"`
+	Level     string `json:"level"`
+	BodyLevel string `json:"bodyLevel"`
+}
+
+type ThemeWCAGMode struct {
+	Level     string            `json:"level"`
+	MinRatio  float64           `json:"minRatio"`
+	WorstPair []string          `json:"worstPair,omitempty"`
+	Body      *ThemeWCAGGroup   `json:"body,omitempty"`
+	Accent    *ThemeWCAGGroup   `json:"accent,omitempty"`
+	NonText   *ThemeWCAGGroup   `json:"nonText,omitempty"`
+	Variants  map[string]string `json:"variants,omitempty"`
+
+	Breakdown []ThemeWCAGBreakdown `json:"breakdown,omitempty"`
+}
+
+type ThemeWCAG struct {
+	Level string         `json:"level"`
+	Dark  *ThemeWCAGMode `json:"dark,omitempty"`
+	Light *ThemeWCAGMode `json:"light,omitempty"`
+}
+
 type Theme struct {
 	ID          string                 `json:"id"`
 	Name        string                 `json:"name"`
@@ -97,6 +135,7 @@ type Theme struct {
 	Dark        map[string]interface{} `json:"dark"`
 	Light       map[string]interface{} `json:"light"`
 	Variants    *ThemeVariants         `json:"variants,omitempty"`
+	WCAG        *ThemeWCAG             `json:"wcag,omitempty"`
 	PreviewURL  string                 `json:"previewUrl"`
 	UpdatedAt   time.Time              `json:"updated_at"`
 }

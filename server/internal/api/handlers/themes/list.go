@@ -14,6 +14,8 @@ type ThemeSortBy string
 
 const (
 	SortByUpdatedAt ThemeSortBy = "updated_at"
+	SortByNewest    ThemeSortBy = "newest"
+	SortByOldest    ThemeSortBy = "oldest"
 	SortByName      ThemeSortBy = "name"
 	SortByRandom    ThemeSortBy = "random"
 )
@@ -27,6 +29,8 @@ func (u ThemeSortBy) Schema(r huma.Registry) *huma.Schema {
 	schemaRef.Title = "ThemeSortBy"
 	schemaRef.Enum = append(schemaRef.Enum, []any{
 		string(SortByUpdatedAt),
+		string(SortByNewest),
+		string(SortByOldest),
 		string(SortByName),
 		string(SortByRandom),
 	}...)
@@ -66,6 +70,10 @@ func (h *HandlerGroup) GetThemes(ctx context.Context, input *ListThemesInput) (*
 		rand.Shuffle(len(themes), func(i, j int) {
 			themes[i], themes[j] = themes[j], themes[i]
 		})
+	case SortByOldest:
+		sort.Slice(themes, func(i, j int) bool {
+			return themes[i].UpdatedAt.Before(themes[j].UpdatedAt)
+		})
 	default:
 		sort.Slice(themes, func(i, j int) bool {
 			return themes[i].UpdatedAt.After(themes[j].UpdatedAt)
@@ -73,6 +81,9 @@ func (h *HandlerGroup) GetThemes(ctx context.Context, input *ListThemesInput) (*
 	}
 
 	resp := &ListThemesResponse{}
+	if themes == nil {
+		themes = []models.Theme{}
+	}
 	resp.Body.Themes = themes
 	resp.Body.Count = len(themes)
 

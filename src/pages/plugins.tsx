@@ -12,17 +12,21 @@ interface Plugin {
   repo: string;
   author: string;
   firstParty: boolean;
-  featured: boolean;
   description: string;
   dependencies: string[];
   compositors: string[];
   distro: string[];
   screenshot?: string;
+  previewUrl?: string;
   version?: string;
   icon?: string;
   permissions?: string[];
   requires_dms?: string;
   updated_at: string;
+  upvotes: number;
+  issueUrl?: string;
+  status?: string[];
+  similar?: string[];
 }
 
 interface ThemeVariantOption {
@@ -59,6 +63,36 @@ interface ThemeVariants {
   accents?: ThemeAccent[];
 }
 
+interface ThemeWCAGGroup {
+  level: string;
+  minRatio: number;
+  worstPair?: string[];
+}
+
+interface ThemeWCAGBreakdown {
+  name: string;
+  mode: string;
+  level: string;
+  bodyLevel: string;
+}
+
+interface ThemeWCAGMode {
+  level: string;
+  minRatio: number;
+  worstPair?: string[];
+  body?: ThemeWCAGGroup;
+  accent?: ThemeWCAGGroup;
+  nonText?: ThemeWCAGGroup;
+  variants?: Record<string, string>;
+  breakdown?: ThemeWCAGBreakdown[];
+}
+
+interface ThemeWCAG {
+  level: string;
+  dark?: ThemeWCAGMode;
+  light?: ThemeWCAGMode;
+}
+
 interface Theme {
   id: string;
   name: string;
@@ -68,6 +102,7 @@ interface Theme {
   dark: Record<string, string>;
   light: Record<string, string>;
   variants?: ThemeVariants;
+  wcag?: ThemeWCAG;
   previewUrl: string;
   updated_at: string;
 }
@@ -110,12 +145,184 @@ const compositors = [
 ];
 
 const sortOptions = [
-  { id: 'updated_at', label: 'Recently Updated' },
+  { id: 'upvotes', label: 'Upvotes' },
+  { id: 'updated_at', label: 'Last Updated' },
+  { id: 'created_at', label: 'Date Added' },
   { id: 'name', label: 'Name' },
   { id: 'random', label: 'Random' },
 ];
 
+// Sorts that only apply to plugins (themes have no upvotes or registry-added date).
+const pluginOnlySorts = ['upvotes', 'created_at'];
+
+const defaultSortOrder = (sort: string): 'asc' | 'desc' => (sort === 'name' ? 'asc' : 'desc');
+
+const STATUS_LABELS: Record<string, string> = {
+  broken: 'Broken',
+  unmaintained: 'Unmaintained',
+  deprecated: 'Deprecated',
+  reviewed: 'Reviewed',
+};
+
+const STATUS_TOOLTIPS: Record<string, string> = {
+  reviewed: 'Reviewed by catalog moderators for basic quality, ownership, and policy compliance. This is not a security guarantee.',
+};
+
+function wcagBadgeClass(level: string): string {
+  switch (level) {
+    case 'AAA':
+      return styles.wcagAAA;
+    case 'AA':
+      return styles.wcagAA;
+    default:
+      return styles.wcagFail;
+  }
+}
+
+const MODES = ['dark', 'light'] as const;
+
+function wcagBreakdownRows(wcag: ThemeWCAG): ThemeWCAGBreakdown[] {
+  const rows: ThemeWCAGBreakdown[] = [];
+  for (const mode of MODES) {
+    const result = wcag[mode];
+    if (result?.breakdown) {
+      rows.push(...result.breakdown);
+    }
+  }
+  return rows;
+}
+
+// Rate every selectable config, not just the default, then advertise the level
+// they all reach. "Partial" flags that some configs fall short, so the badge
+// never over-promises for a theme whose flavors differ. Themes that only miss
+// on accent colors still get credit for readable body text.
+function wcagBadge(wcag: ThemeWCAG): { label: string; level: string } {
+  const rows = wcagBreakdownRows(wcag);
+  const tiers: Array<[keyof ThemeWCAGBreakdown, string]> = [
+    ['level', ''],
+    ['bodyLevel', ' body text'],
+  ];
+
+  for (const [key, suffix] of tiers) {
+    const levels = rows.map(row => row[key] as string).filter(Boolean);
+    const passing = levels.filter(level => level !== 'fail');
+    if (!passing.length) {
+      continue;
+    }
+
+    const level = passing.some(l => l === 'AA') ? 'AA' : 'AAA';
+    const scope = passing.length === levels.length ? '' : ' (Partial)';
+    return { label: `WCAG ${level}${suffix}${scope}`, level };
+  }
+
+  return { label: 'Below WCAG AA', level: 'fail' };
+}
+
+function wcagRowLabel(level: string): string {
+  return level === 'fail' ? 'below AA' : `WCAG ${level}`;
+}
+
+function wcagTooltip(wcag: ThemeWCAG): string {
+  const lines: string[] = ['Contrast measured per WCAG 2.2'];
+  for (const row of wcagBreakdownRows(wcag)) {
+    lines.push(`${row.name} (${row.mode}): ${wcagRowLabel(row.level)}`);
+  }
+  return lines.join('\n');
+}
+
+function statusBadgeClass(status: string): string {
+  switch (status) {
+    case 'broken':
+      return styles.statusBroken;
+    case 'unmaintained':
+      return styles.statusUnmaintained;
+    case 'deprecated':
+      return styles.statusDeprecated;
+    case 'reviewed':
+      return styles.statusReviewed;
+    default:
+      return '';
+  }
+}
+
 type ViewMode = 'grid' | 'list';
+
+interface SortDropdownProps {
+  id: string;
+  options: { id: string; label: string }[];
+  value: string;
+  onChange: (value: string) => void;
+}
+
+function SortDropdown({ id, options, value, onChange }: SortDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const selected = options.find(option => option.id === value);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div className={styles.sortDropdown} ref={containerRef}>
+      <button
+        type="button"
+        id={id}
+        className={`${styles.sortDropdownTrigger} ${open ? styles.sortDropdownTriggerOpen : ''}`}
+        onClick={() => setOpen(current => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        <span>{selected?.label ?? 'Sort'}</span>
+        <span className={`material-symbols-outlined ${styles.sortDropdownChevron} ${open ? styles.sortDropdownChevronOpen : ''}`}>
+          expand_more
+        </span>
+      </button>
+      {open && (
+        <ul className={styles.sortDropdownMenu} role="listbox" aria-labelledby={id}>
+          {options.map(option => (
+            <li key={option.id} role="presentation">
+              <button
+                type="button"
+                role="option"
+                aria-selected={option.id === value}
+                className={`${styles.sortDropdownOption} ${option.id === value ? styles.sortDropdownOptionActive : ''}`}
+                onClick={() => {
+                  onChange(option.id);
+                  setOpen(false);
+                }}
+              >
+                {option.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 export default function Plugins() {
   const location = useLocation();
@@ -139,11 +346,23 @@ export default function Plugins() {
   const [selectedCompositor, setSelectedCompositor] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFirstPartyOnly, setShowFirstPartyOnly] = useState(false);
-  const [sortBy, setSortBy] = useState('updated_at');
+  const [showReviewedOnly, setShowReviewedOnly] = useState(false);
+  const [hideBroken, setHideBroken] = useState(false);
+  const [sortBy, setSortBy] = useState('upvotes');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [lightboxPlugin, setLightboxPlugin] = useState<Plugin | null>(null);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedFlavors, setSelectedFlavors] = useState<Record<string, string>>({});
   const [selectedAccents, setSelectedAccents] = useState<Record<string, string>>({});
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
+
+  const pluginsById = React.useMemo(() => {
+    const map: Record<string, Plugin> = {};
+    for (const p of plugins) {
+      map[p.id] = p;
+    }
+    return map;
+  }, [plugins]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -172,11 +391,11 @@ export default function Plugins() {
       default:
         fetchPlugins();
     }
-  }, [sortBy, activeTab]);
+  }, [sortBy, sortOrder, activeTab]);
 
   useEffect(() => {
     filterPlugins();
-  }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly]);
+  }, [plugins, selectedCategory, selectedCapability, selectedCompositor, searchQuery, showFirstPartyOnly, showReviewedOnly, hideBroken]);
 
   useEffect(() => {
     filterThemes();
@@ -186,15 +405,19 @@ export default function Plugins() {
     try {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
-      const baseUrl = isDev ? 'http://localhost:8337/plugins' : 'https://api.danklinux.com/plugins';
-      const apiUrl = `${baseUrl}?sortBy=${sortBy}`;
+      const apiOrigin = isDev ? 'http://localhost:8337' : 'https://api.danklinux.com';
+      const apiUrl = `${apiOrigin}/plugins?sortBy=${sortBy}&order=${sortOrder}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch plugins');
       }
       const data: PluginsResponse = await response.json();
-      setPlugins(data.plugins);
-      setFilteredPlugins(data.plugins);
+      const pluginList = (data.plugins ?? []).map(p => ({
+        ...p,
+        previewUrl: p.previewUrl ? `${apiOrigin}/previews/${p.id}` : p.previewUrl,
+      }));
+      setPlugins(pluginList);
+      setFilteredPlugins(pluginList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -203,7 +426,7 @@ export default function Plugins() {
   };
 
   const filterPlugins = () => {
-    let filtered = [...plugins];
+    let filtered = [...(plugins ?? [])];
 
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(p => p.category === selectedCategory);
@@ -223,6 +446,16 @@ export default function Plugins() {
       filtered = filtered.filter(p => p.firstParty);
     }
 
+    if (showReviewedOnly) {
+      filtered = filtered.filter(p => p.status?.includes('reviewed'));
+    }
+
+    if (hideBroken) {
+      filtered = filtered.filter(p =>
+        !p.status?.includes('broken') && !p.status?.includes('deprecated')
+      );
+    }
+
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
@@ -233,12 +466,6 @@ export default function Plugins() {
       );
     }
 
-    filtered.sort((a, b) => {
-      if (a.featured && !b.featured) return -1;
-      if (!a.featured && b.featured) return 1;
-      return 0;
-    });
-
     setFilteredPlugins(filtered);
   };
 
@@ -247,14 +474,16 @@ export default function Plugins() {
       setLoading(true);
       const isDev = process.env.NODE_ENV === 'development';
       const baseUrl = isDev ? 'http://localhost:8337/themes' : 'https://api.danklinux.com/themes';
-      const apiUrl = `${baseUrl}?sortBy=${sortBy}`;
+      const themeSort = pluginOnlySorts.includes(sortBy) ? 'updated_at' : sortBy;
+      const apiUrl = `${baseUrl}?sortBy=${themeSort}`;
       const response = await fetch(apiUrl);
       if (!response.ok) {
         throw new Error('Failed to fetch themes');
       }
       const data: ThemesResponse = await response.json();
-      setThemes(data.themes);
-      setFilteredThemes(data.themes);
+      const themeList = data.themes ?? [];
+      setThemes(themeList);
+      setFilteredThemes(themeList);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -292,6 +521,15 @@ export default function Plugins() {
     document.addEventListener('mousemove', handleGlobalMouseMove);
     return () => document.removeEventListener('mousemove', handleGlobalMouseMove);
   }, []);
+
+  useEffect(() => {
+    if (!lightboxPlugin) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxPlugin(null);
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [lightboxPlugin]);
 
   const getPluginIcon = (plugin: Plugin) => {
     if (plugin.icon) {
@@ -469,23 +707,55 @@ export default function Plugins() {
                       onChange={(e) => setShowFirstPartyOnly(e.target.checked)}
                       className={styles.checkbox}
                     />
-                    <span>Official only</span>
+                    <span>First-party only</span>
+                  </label>
+                )}
+                {activeTab === 'plugins' && (
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={showReviewedOnly}
+                      onChange={(e) => setShowReviewedOnly(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span>Reviewed only</span>
+                  </label>
+                )}
+                {activeTab === 'plugins' && (
+                  <label className={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={hideBroken}
+                      onChange={(e) => setHideBroken(e.target.checked)}
+                      className={styles.checkbox}
+                    />
+                    <span>Hide broken</span>
                   </label>
                 )}
                 <div className={styles.sortGroup}>
-                  <label className={styles.filterLabel} htmlFor="sort-select">Sort by</label>
-                  <select
+                  <span className={styles.filterLabel} id="sort-select-label">Sort by</span>
+                  <SortDropdown
                     id="sort-select"
-                    className={styles.sortSelect}
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    {sortOptions.map(option => (
-                      <option key={option.id} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                    options={sortOptions.filter(option => activeTab === 'plugins' || !pluginOnlySorts.includes(option.id))}
+                    value={activeTab === 'themes' && pluginOnlySorts.includes(sortBy) ? 'updated_at' : sortBy}
+                    onChange={(next) => {
+                      setSortBy(next);
+                      setSortOrder(defaultSortOrder(next));
+                    }}
+                  />
+                  {activeTab === 'plugins' && sortBy !== 'random' && (
+                    <button
+                      type="button"
+                      className={styles.sortOrderButton}
+                      onClick={() => setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'))}
+                      title={sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                      aria-label={sortOrder === 'asc' ? 'Sort ascending' : 'Sort descending'}
+                    >
+                      <span className="material-symbols-outlined">
+                        {sortOrder === 'asc' ? 'arrow_upward' : 'arrow_downward'}
+                      </span>
+                    </button>
+                  )}
                 </div>
                 <div className={styles.viewToggle}>
                   <button
@@ -584,16 +854,15 @@ export default function Plugins() {
           {!loading && !error && activeTab === 'plugins' && (
             <section className={viewMode === 'grid' ? styles.pluginsGrid : styles.pluginsList}>
               {filteredPlugins.map(plugin => (
-                <div key={plugin.id} className={`${styles.pluginCard} ${viewMode === 'list' ? styles.listCard : ''} ${plugin.featured ? styles.featuredCard : ''}`}>
-                  {plugin.featured && viewMode === 'grid' && (
-                    <div className={styles.featuredRibbon}>
-                      <span className="material-symbols-outlined">star</span>
-                      Featured
-                    </div>
-                  )}
-                  {plugin.screenshot && viewMode === 'grid' && (
-                    <div className={styles.pluginImage}>
-                      <img src={plugin.screenshot} alt={plugin.name} loading="lazy" />
+                <div key={plugin.id} className={`${styles.pluginCard} ${viewMode === 'list' ? styles.listCard : ''}`}>
+                  {(plugin.previewUrl || plugin.screenshot) && viewMode === 'grid' && (
+                    <div
+                      className={styles.pluginImage}
+                      onClick={() => setLightboxPlugin(plugin)}
+                      role="button"
+                      title="Click to expand"
+                    >
+                      <img src={plugin.previewUrl || plugin.screenshot} alt={plugin.name} loading="lazy" />
                     </div>
                   )}
                   <div className={styles.pluginContent}>
@@ -608,10 +877,17 @@ export default function Plugins() {
                         </h3>
                         <p className={styles.pluginAuthor}>by {plugin.author}</p>
                       </div>
-                      {plugin.featured && viewMode === 'list' && (
-                        <div className={styles.featuredRibbon}>
-                          <span className="material-symbols-outlined">star</span>
-                        </div>
+                      {plugin.issueUrl && (
+                        <a
+                          href={plugin.issueUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.upvoteChip}
+                          title="Upvote on GitHub"
+                        >
+                          <span className="material-symbols-outlined">thumb_up</span>
+                          {plugin.upvotes}
+                        </a>
                       )}
                     </div>
 
@@ -619,6 +895,11 @@ export default function Plugins() {
 
                     <div className={styles.pluginMeta}>
                       <div className={styles.pluginTags}>
+                        {plugin.status?.map(s => (
+                          <span key={s} className={`${styles.statusBadge} ${statusBadgeClass(s)}`} title={STATUS_TOOLTIPS[s]}>
+                            {STATUS_LABELS[s] || s}
+                          </span>
+                        ))}
                         <span className={styles.tag}>{plugin.category}</span>
                         {viewMode === 'grid' && plugin.version && (
                           <span className={styles.tag}>v{plugin.version}</span>
@@ -662,6 +943,24 @@ export default function Plugins() {
                           <strong>Requires DMS:</strong> {plugin.requires_dms}+
                         </div>
                       )}
+
+                      {plugin.similar && plugin.similar.length > 0 && (
+                        <div className={styles.pluginRelated}>
+                          <strong>Related:</strong>
+                          {plugin.similar.map(id => (
+                            <button
+                              key={id}
+                              type="button"
+                              className={styles.relatedChip}
+                              onClick={() => {
+                                setSearchQuery(pluginsById[id]?.name || id);
+                              }}
+                            >
+                              {pluginsById[id]?.name || id}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.pluginActions}>
@@ -684,6 +983,18 @@ export default function Plugins() {
                         </svg>
                         {viewMode === 'grid' && <span>Repository</span>}
                       </a>
+                      {plugin.issueUrl && (
+                        <a
+                          href={plugin.issueUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.discussButton}
+                          title="Discuss / Vote"
+                        >
+                          <span className="material-symbols-outlined">forum</span>
+                          {viewMode === 'grid' && <span>Discuss</span>}
+                        </a>
+                      )}
                     </div>
                   </div>
                   {viewMode === 'grid' && <div className={styles.cardGlow}></div>}
@@ -817,6 +1128,14 @@ export default function Plugins() {
                     </div>
 
                     <div className={styles.pluginTags}>
+                      {theme.wcag && (
+                        <span
+                          className={`${styles.statusBadge} ${wcagBadgeClass(wcagBadge(theme.wcag).level)}`}
+                          title={wcagTooltip(theme.wcag)}
+                        >
+                          {wcagBadge(theme.wcag).label}
+                        </span>
+                      )}
                       {theme.version && (
                         <span className={styles.tag}>v{theme.version}</span>
                       )}
@@ -851,7 +1170,10 @@ export default function Plugins() {
                   setSelectedCompositor('all');
                   setSearchQuery('');
                   setShowFirstPartyOnly(false);
-                  setSortBy('updated_at');
+                  setShowReviewedOnly(false);
+                  setHideBroken(false);
+                  setSortBy('upvotes');
+                  setSortOrder('desc');
                 }}
                 className={styles.resetButton}
               >
@@ -876,6 +1198,28 @@ export default function Plugins() {
           )}
         </div>
       </div>
+      {lightboxPlugin && (
+        <div className={styles.lightboxOverlay} onClick={() => setLightboxPlugin(null)}>
+          <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
+            <img
+              src={lightboxPlugin.previewUrl || lightboxPlugin.screenshot}
+              alt={lightboxPlugin.name}
+              className={styles.lightboxImage}
+            />
+            <div className={styles.lightboxCaption}>
+              <span>{lightboxPlugin.name}</span>
+              {lightboxPlugin.screenshot && (
+                <a href={lightboxPlugin.screenshot} target="_blank" rel="noopener noreferrer">
+                  Open raw screenshot
+                </a>
+              )}
+              <button onClick={() => setLightboxPlugin(null)} aria-label="Close">
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

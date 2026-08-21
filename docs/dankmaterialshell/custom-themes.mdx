@@ -42,6 +42,8 @@ Custom themes are defined in JSON files that generally map to [matugen color key
     "background": "#000000",
     "backgroundText": "#F0FFF0",
     "outline": "#80FF80",
+    "surfaceContainerLowest": "#0A0A0A",
+    "surfaceContainerLow": "#152315",
     "surfaceContainer": "#1A2B1A",
     "surfaceContainerHigh": "#264026",
     "surfaceContainerHighest": "#33553F",
@@ -64,6 +66,8 @@ Custom themes are defined in JSON files that generally map to [matugen color key
     "background": "#FFFFFF",
     "backgroundText": "#000000",
     "outline": "#4DCC4D",
+    "surfaceContainerLowest": "#FAFFFA",
+    "surfaceContainerLow": "#F9FFF9",
     "surfaceContainer": "#F5FFF5",
     "surfaceContainerHigh": "#EBFFEB",
     "surfaceContainerHighest": "#E1FFE1",
@@ -118,13 +122,22 @@ For themes without light/dark variants, define colors at the top level:
 - `surfaceText` - Primary text color on surface backgrounds
 - `surfaceVariant` - Alternate surface for subtle differentiation
 - `surfaceVariantText` - Text color for surfaceVariant backgrounds
+- `surfaceContainerLowest` - Lowest elevation container (darkest in dark mode, lightest in light mode) — _matugen-only, see note below_
+- `surfaceContainerLow` - Low elevation container, between surface and surfaceContainer — _matugen-only, see note below_
 - `surfaceContainer` - Container surface, slightly different from surface
 - `surfaceContainerHigh` - Elevated container for layered interfaces
 - `surfaceContainerHighest` - Highest elevation container for top-level surfaces
 
+:::note Not all colors are used by DMS itself
+A few keys complete the Material palette but aren't rendered by DMS's own UI —
+currently `surfaceContainerLowest`, `surfaceContainerLow`, and `backgroundText`. They are
+still required and are exported to matugen templates (VS Code, KDE, Firefox, Zed, etc.), so
+external apps themed by DMS use them even though the shell does not.
+:::
+
 ### Background Colors
 - `background` - Main background color for the interface
-- `backgroundText` - Text color for background areas
+- `backgroundText` - Text color for background areas — _matugen-only, see note above_
 
 ### Outline
 - `outline` - Color for subtle borders, dividers, muted icons, and extra subtle text
@@ -190,3 +203,7 @@ Custom theme files are reactive - editing the JSON file automatically updates th
 - **Consider contrast:** Ensure text colors have sufficient contrast with backgrounds
 - **Experiment with matugen_type:** Different schemes work better with different color palettes
 - **Version control:** Store themes in your dotfiles for easy synchronization
+
+## Distributing Themes
+
+To share themes with others, publish them in a registry — a Git repository with a `themes/<theme-id>/theme.json` layout. Users add it with `dms registry add` or via **Settings → Plugins → Registries**, and your themes appear in their theme browser alongside the official ones. See [Custom Registries](plugins-overview#custom-registries) for the format and resolution rules, or submit to the official [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry).

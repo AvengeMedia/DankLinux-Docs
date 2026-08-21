@@ -133,6 +133,7 @@ Used to prevent the system from idling or sleeping.
 ### ShortcutInhibitor
 
 Used to manage keyboard shortcuts, specific to the niri compositor.
+
 ---
 
 ## Optional Features
@@ -145,6 +146,8 @@ Required to persist user profile changes, such as profile picture.
 
 Required to manage power profiles. (e.g. performance, balanced, power-saver)
 
+Either `power-profiles-daemon` or `tuned` together with `tuned-ppd` satisfies this check. `tuned-ppd` exposes the same D-Bus interface that `power-profiles-daemon` does, so DMS works with either. The two conflict, so install only one of them.
+
 ### cups-pk-helper
 
 Required for printer management (adding, deleting, and configuring printers). Provides the `org.opensuse.CupsPkHelper.Mechanism` D-Bus interface.
@@ -152,6 +155,30 @@ Required for printer management (adding, deleting, and configuring printers). Pr
 ### I2C/DDC
 
 Required for external monitor brightness control, on most distributions requires `i2c-tools` and the user to be in the `i2c` group.
+
+### qt6-imageformats
+
+Qt image format plugins adding WebP, TIFF, GIF, JP2, and ICNS support — used for wallpapers, notification images, and previews.
+
+| Distribution | Package |
+|------|---------|
+| Arch | `qt6-imageformats` |
+| Fedora | `qt6-qtimageformats` |
+| Debian/Ubuntu | `qt6-image-formats-plugins` |
+| openSUSE | `qt6-imageformats` |
+| NixOS | `qt6.qtimageformats` |
+
+### kimageformats
+
+KDE image format plugins adding AVIF, HEIF, JXL, and EXR support.
+
+| Distribution | Package |
+|------|---------|
+| Arch | `kimageformats` |
+| Fedora | `kf6-kimageformats` |
+| Debian/Ubuntu | `kimageformat6-plugins` |
+| openSUSE | `kf6-kimageformats` |
+| NixOS | `kdePackages.kimageformats` |
 
 ### Terminal
 
@@ -190,11 +217,16 @@ Required for GlobalProtect VPN connections that use SAML (browser-based) authent
 
 ### openconnect
 
-Required alongside `gp-saml-gui` for GlobalProtect SAML VPN connections. After `gp-saml-gui` captures the SAML prelogin cookie, [openconnect](https://gitlab.com/openconnect/openconnect) converts it into a full authentication cookie that NetworkManager can use.
+Required for GlobalProtect SAML VPN connections and Fortinet VPN profiles that use password authentication.
+
+- For GlobalProtect SAML, [openconnect](https://gitlab.com/openconnect/openconnect) converts the prelogin cookie from `gp-saml-gui` into an authentication cookie that NetworkManager can use.
+- For Fortinet password profiles started from the DMS VPN widget, DMS uses `openconnect --authenticate` directly and passes the short-lived cookie to NetworkManager. If the VPN server certificate is not trusted, DMS displays its fingerprint for confirmation and saves the approved fingerprint only after the tunnel connects successfully.
 
 :::note
-Both `gp-saml-gui` and `openconnect` are only needed for GlobalProtect VPNs with SAML authentication. Standard VPN connections that use username/password work without them.
+Native Fortinet authentication currently applies to profiles with `protocol=fortinet` and `authtype=password`. OTP/MFA challenge forms and other OpenConnect protocols are not included in this flow.
 :::
+
+![Fortinet VPN server certificate confirmation in DMS](/img/fortinet-certificate-prompt.png)
 
 ### danksearch
 
@@ -244,6 +276,35 @@ Used to set the Qt platform theme - usually one of `gtk3`, `qt6ct`, or `kde`. Th
 
 Optional environment variable to set the icon theme for DMS only. Will not effect other applications.
 
+### XDG_MENU_PREFIX {/* #xdg-menu-prefix */}
+
+Required by KDE applications under a non-Plasma compositor. Without it, `KService` cannot build the XDG menu tree and Dolphin's "Open with…" dialog appears empty; double-clicking files also don't open them, and if they do, is with the wrong application.
+
+Set `plasma-` in your compositor's environment. The matching `/etc/xdg/menus/plasma-applications.menu` is provided by `plasma-workspace`.
+
+Example in niri's `config.kdl`:
+
+```kdl
+environment {
+  XDG_MENU_PREFIX "plasma-"
+}
+```
+
+Or globally via `~/.config/environment.d/`:
+
+```ini
+XDG_MENU_PREFIX=plasma-
+```
+
+After changing it, re-login to apply the changes.
+
+:::tip
+To verify without re-login, force a cache rebuild:`XDG_MENU_PREFIX=plasma- kbuildsycoca6 --noincremental`.
+:::
+
+:::note
+`kde-cli-tools` (which provides `keditfiletype`) must also be installed, as Dolphin's "Open with…" dialog depends on it. Plasma sessions already export this variable automatically, so this only applies to non-Plasma compositors.
+:::
 ---
 
 ## JSON Output

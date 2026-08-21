@@ -27,6 +27,8 @@ Plugins are installed to `~/.config/DankMaterialShell/plugins/`. Each plugin is 
 **Registry source:** [github.com/AvengeMedia/dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry)
 **Example plugins:** [github.com/AvengeMedia/DankMaterialShell/tree/master/quickshell/PLUGINS](https://github.com/AvengeMedia/DankMaterialShell/tree/master/quickshell/PLUGINS)
 
+The [plugin directory](https://danklinux.com/plugins) ranks plugins by community 👍 upvotes. Each plugin has a tracking issue in the registry you can upvote and discuss — see [Contributing to the Registry](../contributing-registry#plugin-feedback--ranking).
+
 ## Plugin Types
 
 DankMaterialShell supports the following plugin types, defined in `plugin.json`:
@@ -114,6 +116,24 @@ dms restart
 
 Browse [plugins.danklinux.com](https://plugins.danklinux.com) for installation links and documentation.
 
+### Reproduce Managed Plugins
+
+DMS keeps `~/.config/DankMaterialShell/plugins.lock.json` synchronized when registry plugins are installed, updated, or removed. The lockfile records each Git repository, optional monorepo path, and exact commit.
+
+```bash
+# Refresh the lockfile and optionally export a copy
+dms plugins lock
+dms plugins lock --output ~/plugins.lock.json
+
+# Install or reset plugins to the exact locked commits
+dms plugins restore ~/plugins.lock.json
+
+# Also remove managed plugins that are absent from the lockfile
+dms plugins restore ~/plugins.lock.json --prune
+```
+
+The lockfile covers DMS-managed Git plugins. It does not include system plugins, plugin settings, enablement state, or local plugin directories without Git provenance.
+
 ### Enable Plugin
 
 1. Open **Settings → Plugins**
@@ -121,6 +141,46 @@ Browse [plugins.danklinux.com](https://plugins.danklinux.com) for installation l
 3. Toggle the plugin on
 4. Add to DankBar layout if applicable
 5. Restart shell: `dms restart`
+
+## Custom Registries
+
+DMS fetches installable plugins and themes from registries — Git repositories containing `plugins/` and/or `themes/` directories in the [registry format](https://github.com/AvengeMedia/dms-plugin-registry). The official registry is always active; additional registries can be added alongside it.
+
+> Requires DMS &ge; 1.6.0.
+
+### Managing Registries
+
+**GUI:** Settings → Plugins → Registries — add a registry by name and Git URL, or remove one. The official registry cannot be removed.
+
+**CLI:**
+
+```bash
+# Show configured registries
+dms registry list
+
+# Add a registry by name and Git URL
+dms registry add myregistry https://github.com/user/my-registry.git
+
+# Remove a registry
+dms registry remove myregistry
+```
+
+Additional registries are stored in `~/.config/DankMaterialShell/registries.json`. Names are short lowercase identifiers (letters, digits, hyphens) and become the local cache directory for that registry.
+
+### Resolution Order
+
+Registries are consulted in declaration order, official first. When two registries provide the same plugin or theme ID, the first occurrence wins — a custom registry cannot override an official entry. An unreachable registry is skipped so the remaining registries keep working.
+
+### Registry Format
+
+A registry is a Git repository with either or both of:
+
+- `plugins/*.json` — one plugin manifest per file
+- `themes/<theme-id>/theme.json` — one directory per theme
+
+A registry can provide only plugins, only themes, or both. See [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) for the manifest schema.
+
+> Plugins run with full desktop session permissions. Only add registries you trust.
 
 ## Official Plugins
 
@@ -153,6 +213,13 @@ See [Plugin Development](plugin-development) for the complete development guide 
 - Bar and Control Center integration
 - Launcher plugin development
 - Global variables and state management
+- Plugin translations (`translations/` + `I18n.trFor`)
+
+## Translations
+
+Plugins carry their own translations — a `translations/` directory in the plugin repo with one JSON file per locale. DMS picks the file matching your locale automatically and updates live when you switch languages in Settings → Locale. Nothing to configure as a user; if the plugin ships your language, you get it.
+
+For plugin authors: see [Translations](plugin-development#translations) in the development guide for the file format and the `I18n.trFor` API. Registry plugins can also [apply for central translation](../contributing-registry#plugin-translations) through the same POEditor project that translates DMS itself.
 
 ## Example Plugins
 

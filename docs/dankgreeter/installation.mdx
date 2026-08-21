@@ -5,6 +5,8 @@ sidebar_position: 2
 ---
 
 import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <Hero
   asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
@@ -20,52 +22,104 @@ import Hero from '@site/src/components/Hero';
 
 ## Installation Methods
 
-:::note[Already have the DankLinux repository?]
+:::note[How installation works]
 
-If DMS or another DankLinux package is already installed, the repository is already configured. The simplest option is:
+Install the `dms-greeter` package for your distro (sections below), then run:
 
 ```bash
-dms greeter install
+dms-greeter install
 ```
 
-This installs the package and handles all configuration automatically.
+This installs greetd if needed and handles all configuration automatically.
 
 > ⚠️ **[This replaces your current display manager.](#dankinstall-users)**
 
-Or install the package manually and proceed to [Completing Setup](#completing-setup):
-- **Arch**: `paru -S greetd-dms-greeter-git` or `yay -S greetd-dms-greeter-git` *(requires paru or yay for `dms greeter install`)*
-- **Fedora**: `sudo dnf install dms-greeter`
-- **Debian/Ubuntu**: `sudo apt install dms-greeter`
-- **openSUSE**: `sudo zypper install dms-greeter`
+The old `dms greeter <command>` form still works as a deprecated alias that forwards to `dms-greeter`.
 
 :::
 
 ## Distro Installation
 
-### Arch Linux (AUR)
+### Arch & Derivatives
+
+DankGreeter is available in the AUR as a prebuilt binary package or a source (`-git`) package.
+
+<Tabs groupId="greeter-channel">
+<TabItem value="bin" label="Prebuilt Binary" default>
+
+```bash
+paru -S greetd-dms-greeter-bin
+```
+
+`greetd-dms-greeter-bin` installs a prebuilt binary from the latest tagged release, so there is nothing to compile. This is the fastest way to install and the recommended option for most users.
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
 paru -S greetd-dms-greeter-git
-# Or with yay
-yay -S greetd-dms-greeter-git
 ```
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
+`greetd-dms-greeter-git` builds from the tip of the `master` branch. Use it if you want the newest changes before they are tagged, at the cost of a local compile and possible instability.
 
-### Fedora
+</TabItem>
+</Tabs>
+
+Both packages ship the `dms-greeter` binary along with the `/usr/lib/sysusers.d/dms-greeter.conf` and `/usr/lib/tmpfiles.d/dms-greeter.conf` declarations described in [Greeter system user](#greeter-system-user-rpm-deb-and-immutable-systems). After installing, either run `dms-greeter install` (see the note at the top) or continue with [Completing Setup](#completing-setup).
+
+### Fedora & CentOS
+
+DankGreeter is published to the [avengemedia/danklinux](https://copr.fedorainfracloud.org/coprs/avengemedia/danklinux/) COPR from the [dank-greeter](https://github.com/AvengeMedia/dank-greeter) repository.
+
+<Tabs groupId="fedora-greeter-channel">
+<TabItem value="stable" label="Stable" default>
 
 ```bash
 sudo dnf copr enable avengemedia/danklinux
 sudo dnf install dms-greeter
 ```
 
-The `dms-greeter` RPM installs `/usr/lib/sysusers.d/dms-greeter.conf` so the `greeter` user is recreated from `/usr` on every boot. That matters on **Fedora Atomic**, Universal Blue, bootc, and other ostree systems where install-time `useradd` in `/etc/passwd` may not persist.
+Tagged releases. Recommended for most users.
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
+</TabItem>
+<TabItem value="git" label="Git (development)">
 
-### Debian
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dms-greeter-git
+```
 
-**Debian 13 (Trixie)**:
+Builds from the tip of `master` in dank-greeter. Conflicts with the stable `dms-greeter` package (both provide `/usr/bin/dms-greeter`).
+
+To switch from stable:
+
+```bash
+sudo dnf swap dms-greeter dms-greeter-git
+```
+
+To switch back:
+
+```bash
+sudo dnf swap dms-greeter-git dms-greeter
+```
+
+</TabItem>
+</Tabs>
+
+Both RPMs install `/usr/lib/sysusers.d/dms-greeter.conf` so the `greeter` user is recreated from `/usr` on every boot. That matters on **Fedora Atomic**, Universal Blue, bootc, and other ostree systems where install-time `useradd` in `/etc/passwd` may not persist.
+
+### Debian & Ubuntu
+
+DankGreeter is published from [dank-greeter](https://github.com/AvengeMedia/dank-greeter) into the danklinux OBS/PPA channels as **`dms-greeter`** (tagged releases) and **`dms-greeter-git`** (master snapshots). The two packages conflict; both install `/usr/bin/dms-greeter`.
+
+#### Debian
+
+Packages are published on OBS for **Debian 13 (Trixie)**, **Debian Testing**, and **Debian Sid**.
+
+Select your release (add the repository):
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
@@ -73,10 +127,10 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install dms-greeter
 ```
 
-**Debian Testing**:
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
@@ -84,10 +138,10 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
-sudo apt install dms-greeter
 ```
 
-**Debian Sid (Unstable)**:
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
 
 ```bash
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
@@ -95,60 +149,232 @@ curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+```
+
+</TabItem>
+</Tabs>
+
+Then install:
+
+<Tabs groupId="debian-greeter-channel">
+<TabItem value="stable" label="Stable" default>
+
+```bash
 sudo apt install dms-greeter
 ```
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
+Tagged releases. Recommended for most users.
 
-### Ubuntu
+</TabItem>
+<TabItem value="git" label="Git (development)">
+
+```bash
+sudo apt install dms-greeter-git
+```
+
+Builds from the tip of `master` in dank-greeter. Conflicts with stable `dms-greeter`; both install `/usr/bin/dms-greeter`.
+
+To switch from stable → git or git → stable, install the package you want:
+
+```bash
+sudo apt install dms-greeter-git   # replaces dms-greeter
+sudo apt install dms-greeter       # replaces dms-greeter-git
+```
+
+</TabItem>
+</Tabs>
+
+#### Ubuntu
+
+Ubuntu 26.04 LTS+ (Resolute Raccoon) is supported via Launchpad PPA.
 
 ```bash
 sudo add-apt-repository ppa:avengemedia/danklinux
 sudo apt update
+```
+
+<Tabs groupId="ubuntu-greeter-channel">
+<TabItem value="stable" label="Stable" default>
+
+```bash
 sudo apt install dms-greeter
 ```
 
-After installation, proceed to [Completing Setup](#completing-setup) below.
+Tagged releases. Recommended for most users.
 
-### openSUSE
+</TabItem>
+<TabItem value="git" label="Git (development)">
 
-**Tumbleweed**:
+```bash
+sudo apt install dms-greeter-git
+```
+
+Builds from the tip of `master` in dank-greeter. Conflicts with stable `dms-greeter`; both install `/usr/bin/dms-greeter`.
+
+To switch from stable → git or git → stable, install the package you want:
+
+```bash
+sudo apt install dms-greeter-git   # replaces dms-greeter
+sudo apt install dms-greeter       # replaces dms-greeter-git
+```
+
+</TabItem>
+</Tabs>
+
+### openSUSE & Derivatives
+
+DankGreeter is available through the Open Build Service (OBS) for OpenSUSE Tumbleweed, Leap 16/16.1, and Slowroll. Both **`dms-greeter`** and **`dms-greeter-git`** ship from the same danklinux project and conflict with each other.
+
+Select your distribution (add the repository):
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-sudo zypper install dms-greeter
 ```
 
-**Leap 16**:
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-sudo zypper install dms-greeter
 ```
 
-**Leap 16.1**:
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-sudo zypper install dms-greeter
 ```
 
-**Slowroll**:
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
 
 ```bash
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
+```
+
+</TabItem>
+</Tabs>
+
+Then install:
+
+<Tabs groupId="opensuse-greeter-channel">
+<TabItem value="stable" label="Stable" default>
+
+```bash
 sudo zypper install dms-greeter
 ```
+
+Tagged releases. Recommended for most users.
+
+</TabItem>
+<TabItem value="git" label="Git (development)">
+
+```bash
+sudo zypper install dms-greeter-git
+```
+
+Builds from the tip of `master` in dank-greeter. Conflicts with stable `dms-greeter`
+
+To switch:
+
+```bash
+sudo zypper remove dms-greeter && sudo zypper install dms-greeter-git
+sudo zypper remove dms-greeter-git && sudo zypper install dms-greeter
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux
+
+:::note
+
+Install DankGreeter from our R2-backed DMS XBPS repository or build it from source. Stable and git packages conflict; both provide `/usr/bin/dms-greeter`.
+
+:::
+
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DMS Repository" default>
+
+```bash
+echo "repository=https://void.danklinux.com/dms/current" | sudo tee /etc/xbps.d/dms.conf
+sudo xbps-install -Su
+```
+
+:::note
+
+On the first sync, `xbps-install` will output our signing key fingerprint and ask you to type `y` to trust and import it. Verify that the key matches our official signing fingerprint.
+
+:::
+
+<Tabs groupId="void-greeter-channel">
+<TabItem value="stable" label="Stable" default>
+
+```bash
+sudo xbps-install -S dms-greeter
+```
+
+Tagged releases. Recommended for most users.
+
+</TabItem>
+<TabItem value="git" label="Git (development)">
+
+```bash
+sudo xbps-install -S dms-greeter-git
+```
+
+Builds from the `master` branch in dank-greeter. Conflicts with stable `dms-greeter`.
+
+To switch:
+
+```bash
+sudo xbps-remove dms-greeter && sudo xbps-install -S dms-greeter-git
+sudo xbps-remove dms-greeter-git && sudo xbps-install -S dms-greeter
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
+
+If you prefer to build from source using `xbps-src`:
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the templates (adjust paths as needed)
+cp -R ../dank-greeter/distro/void/srcpkgs/dms-greeter srcpkgs/
+# Optional git snapshot template:
+# cp -R ../dank-greeter/distro/void/srcpkgs/dms-greeter-git srcpkgs/
+
+# Build the package (use dms-greeter-git for a master snapshot)
+./xbps-src pkg dms-greeter
+# ./xbps-src pkg dms-greeter-git
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs dms-greeter
+# sudo xbps-install --repository=hostdir/binpkgs dms-greeter-git
+```
+
+</TabItem>
+</Tabs>
 
 After installation, proceed to [Completing Setup](#completing-setup) below.
 
 ## Greeter system user (RPM, DEB, and immutable systems)
 
-Official `dms-greeter` packages (Arch AUR, Fedora, Debian, Ubuntu, openSUSE) ship two systemd declarations under `/usr`:
+Official `dms-greeter` / `dms-greeter-git` packages (Arch AUR, Fedora, Debian, Ubuntu, openSUSE) ship two systemd declarations under `/usr`:
 
 | File | Purpose |
 |------|---------|
@@ -161,9 +387,9 @@ Official `dms-greeter` packages (Arch AUR, Fedora, Debian, Ubuntu, openSUSE) shi
 
 On Fedora Atomic, Universal Blue, bootc, [Zirconium](https://github.com/zirconium-dev/zirconium/), and similar systems:
 
-- Install **`dms-greeter` from your distro repo** (layered package or image build). Do **not** rely on `dms greeter install`, `dms greeter enable`, or `dms greeter uninstall` — those commands are disabled on immutable systems by DMS CLI policy.
-- After installing or upgrading `dms-greeter`, **reboot once** if `getent passwd greeter` is empty (sysusers runs early in boot).
-- Configure `/etc/greetd/config.toml`, enable `greetd`, and set up theme sync using your distro or image documentation. `dms greeter sync` may still work for theme files if not blocked by your image policy.
+- Install **`dms-greeter` or `dms-greeter-git` from your distro repo** (layered package or image build). Do **not** rely on `dms-greeter install`, `dms-greeter enable`, or `dms-greeter uninstall` - those commands are disabled on immutable systems by CLI policy.
+- After installing or upgrading the greeter package, **reboot once** if `getent passwd greeter` is empty (sysusers runs early in boot).
+- Configure `/etc/greetd/config.toml`, enable `greetd`, and set up theme sync using your distro or image documentation. `dms-greeter sync` may still work for theme files if not blocked by your image policy.
 
 Verify the account:
 
@@ -178,17 +404,20 @@ If you previously added a manual `/usr/lib/sysusers.d/dms-greeter.conf` workarou
 
 ### Gentoo
 
-:::note
-
-DMS must already be installed on your system before running this command. The greeter wrapper is sourced from your local DMS installation.
-
-:::
+There is no Gentoo package yet. Install the prebuilt binary from the latest release:
 
 ```bash
-dms greeter install
+curl -fsSL https://github.com/AvengeMedia/dank-greeter/releases/latest/download/dms-greeter-linux-amd64.tar.gz | tar -xz
+sudo install -Dm755 dms-greeter-linux-amd64 /usr/local/bin/dms-greeter
 ```
 
-This will automatically install `greetd` via Portage, copy the greeter wrapper from your local DMS installation, configure permissions, and set up greetd to use DMS. To start the greeter immediately without rebooting, run `sudo systemctl start greetd`.
+Then run:
+
+```bash
+dms-greeter install
+```
+
+This will automatically install `greetd` via Portage, configure permissions, and set up greetd to use dms-greeter. To start the greeter immediately without rebooting, run `sudo systemctl start greetd`.
 
 ### NixOS
 
@@ -199,6 +428,21 @@ NixOS has dedicated documentation with two installation methods:
 - [Flake-based installation](./nixos-flake) - Use for quicker updates
 
 :::
+
+### Void Linux
+
+After installing **`dms-greeter`** or **`dms-greeter-git`** (see [Void Linux](#void-linux) under Distro Installation above), enable and optionally sync theming:
+
+```bash
+dms-greeter enable
+dms-greeter sync     # optional: share theming with the shell
+```
+
+On Void, `dms-greeter enable` sets up everything logind provides automatically on systemd distros: it enables the `dbus` and `elogind` services, configures greetd for elogind (`LIBSEAT_BACKEND=logind`), rewrites `/etc/sv/greetd/run` to wait for those services at boot, adds the `_greeter` user to the `video`/`input` groups, and adds `pam_rundir` to `/etc/pam.d/greetd` so the post-login session gets an `XDG_RUNTIME_DIR`. If `seatd` is enabled it is disabled, elogind manages the seat instead.
+
+On runit, enabling greetd starts it within a few seconds, no separate start command is needed. greetd package updates restore the stock run script, re-run `dms-greeter enable` afterwards.
+
+A Wayland compositor (`niri`, `hyprland`, `sway`, …) is required and is not pulled in automatically.
 
 ## Installer & Manual Installation
 
@@ -218,31 +462,32 @@ Enabling `dms-greeter` will replace your current display manager.
 
 :::
 
-### Manual installation (DMS already installed)
+### Manual installation (no package)
 
-If you already have DMS installed but need to set up the greeter manually, install `greetd` and then the greeter wrapper:
-
-```bash
-sudo wget https://raw.githubusercontent.com/AvengeMedia/DankMaterialShell/refs/heads/master/quickshell/Modules/Greetd/assets/dms-greeter -O /usr/local/bin/dms-greeter
-sudo chmod +x /usr/local/bin/dms-greeter
-```
-
-Then proceed to [Completing Setup](#completing-setup) below, using the following command in `/etc/greetd/config.toml`:
-
-```toml
-command = "dms-greeter --command niri -p /usr/share/quickshell/dms"
-```
-
-### Manual installation (without DMS)
-
-For non-dankinstall users without DMS, install `greetd`, `quickshell`, and then the greeter:
+Prefer your distro package when available (see the sections above). If your distro has no `dms-greeter` package, install `greetd` and `quickshell`, then grab the prebuilt binary from the latest release:
 
 ```bash
-sudo mkdir -p /etc/xdg/quickshell
-sudo git clone https://github.com/AvengeMedia/DankMaterialShell.git /etc/xdg/quickshell/dms-greeter
-sudo mkdir /var/cache/dms-greeter
+curl -fsSL https://github.com/AvengeMedia/dank-greeter/releases/latest/download/dms-greeter-linux-amd64.tar.gz | tar -xz
+sudo install -Dm755 dms-greeter-linux-amd64 /usr/local/bin/dms-greeter
+```
+
+Or build it from source (requires go and make):
+
+```bash
+git clone --recurse-submodules https://github.com/AvengeMedia/dank-greeter.git
+cd dank-greeter
+make build
+sudo make install
+```
+
+The UI is embedded in the binary, there is no quickshell config tree to install. Create the greeter user and cache directory if your setup does not already have them (see the [dank-greeter README](https://github.com/AvengeMedia/dank-greeter)):
+
+```bash
+sudo mkdir -p /var/cache/dms-greeter
 sudo chown greeter:greeter /var/cache/dms-greeter
 ```
+
+Then proceed to [Completing Setup](#completing-setup) below.
 
 :::note
 
@@ -252,13 +497,13 @@ Some distributions may have different user/group names for the greetd user.
 
 #### Prerequisites for Theme Syncing
 
-ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files. The `acl` package is installed automatically when you run `dms greeter sync` or `dms greeter install`, so no manual action is needed on supported distributions.
+ACLs (Access Control Lists) are required to allow the greeter user to traverse your home directory and access configuration files. The `acl` package is installed automatically when you run `dms-greeter sync` or `dms-greeter install`, so no manual action is needed on supported distributions.
 
 ## Completing Setup
 
-### If you used `dms greeter install`
+### If you used `dms-greeter install`
 
-This applies to any distro where you ran `dms greeter install`, including **Arch Linux** (requires paru or yay), **Ubuntu**, **Fedora**, **Debian**, **openSUSE**, and **Gentoo**.
+This applies to any distro where you ran `dms-greeter install`, including **Arch Linux** (requires paru or yay), **Ubuntu**, **Fedora**, **Debian**, **openSUSE**, and **Gentoo**.
 
 Configuration, permissions, theme syncing, and greetd service enablement are all handled automatically. To start the greeter immediately without rebooting:
 
@@ -266,7 +511,7 @@ Configuration, permissions, theme syncing, and greetd service enablement are all
 sudo systemctl start greetd
 ```
 
-You can verify your setup at any time with `dms greeter status`. `dms greeter sync` can be re-run after theme changes.
+You can verify your setup at any time with `dms-greeter status`. `dms-greeter sync` can be re-run after theme changes.
 
 ### If you installed the package manually
 
@@ -277,7 +522,7 @@ After installing the package, run these two commands to complete setup:
 #### 1. Enable the Greeter
 
 ```bash
-dms greeter enable
+dms-greeter enable
 ```
 
 This will:
@@ -288,7 +533,7 @@ This will:
 #### 2. Sync with Your User Theme
 
 ```bash
-dms greeter sync
+dms-greeter sync
 ```
 
 This will:
@@ -301,19 +546,19 @@ This will:
 
 :::note
 
-After running `dms greeter sync`, you will need to log out and log back in for group membership changes to take effect.
+After running `dms-greeter sync`, you will need to log out and log back in for group membership changes to take effect.
 
 :::
 
 :::tip[Multi-user systems]
 
-One **main admin** runs `dms greeter sync` once for system setup. Add every other user to the `greeter` group in **Settings → Users** (greeter access toggle), or with `sudo usermod -aG greeter <username>`. Each of those accounts should then run **`dms greeter sync --profile`** after logging out and back in—not full sync. See [Configuration → Multi-user systems](./configuration#multi-user-systems).
+One **main admin** runs `dms-greeter sync` once for system setup. Add every other user to the `greeter` group in **Settings → Users** (greeter access toggle), or with `sudo usermod -aG greeter <username>`. Each of those accounts should then run **`dms-greeter sync --profile`** after logging out and back in - not full sync. See [Configuration → Multi-user systems](./configuration#multi-user-systems).
 
 :::
 
 :::note
 
-**NixOS users:** The `dms greeter enable` and `dms greeter sync` commands are not available on NixOS. Please follow the manual steps below or see the [NixOS installation guides](./nixos).
+**NixOS users:** The `dms-greeter enable` and `dms-greeter sync` commands are not available on NixOS. Please follow the manual steps below or see the [NixOS installation guides](./nixos).
 
 :::
 
@@ -322,10 +567,12 @@ One **main admin** runs `dms greeter sync` once for system setup. Add every othe
 You can check your greeter configuration at any time:
 
 ```bash
-dms greeter status
+dms-greeter status
 ```
 
 This verifies your greeter setup and sync status. See the [Configuration guide](./configuration#checking-sync-status) for detailed information.
+
+For optional fingerprint or security-key login, see [Login authentication](./configuration#login-authentication).
 
 ---
 
@@ -335,7 +582,7 @@ If you prefer to set up the greeter manually, follow these steps:
 
 :::tip
 
-**All users:** You can use `dms greeter enable` to automate this process instead of following the manual steps below.
+**All users:** You can use `dms-greeter enable` to automate this process instead of following the manual steps below.
 
 :::
 

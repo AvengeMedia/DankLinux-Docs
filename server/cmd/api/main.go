@@ -14,13 +14,17 @@ import (
 	gifs_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/gifs"
 	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/poeditor"
+	previews_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/previews"
 	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	uploads_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/uploads"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/webhooks"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/githubapp"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/previews"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
@@ -71,13 +75,25 @@ func startAPI(cfg *config.Config) {
 		cancel()
 	}()
 
-	pluginCache := registry.NewCache(cfg.GithubToken)
-
-	var themeCacheFile string
+	var pluginCacheFile, themeCacheFile string
 	if cfg.CacheDir != "" {
+		pluginCacheFile = filepath.Join(cfg.CacheDir, "plugins.json")
 		themeCacheFile = filepath.Join(cfg.CacheDir, "themes.json")
 	}
+	pluginCache := registry.NewCache(cfg.GithubToken, pluginCacheFile)
 	themeCache := registry.NewThemeCache(cfg.GithubToken, themeCacheFile)
+
+	var previewGen *previews.Generator
+	if cfg.CacheDir != "" {
+		gen, err := previews.NewGenerator(cfg.CacheDir, cfg.PublicBaseURL)
+		if err != nil {
+			log.Error("Failed to initialize preview generator", "err", err)
+		} else {
+			previewGen = gen
+			pluginCache.SetPreviewSyncer(gen)
+			log.Info("Preview generator initialized")
+		}
+	}
 
 	srvImpl := &server.Server{
 		PluginCache: pluginCache,
@@ -143,6 +159,14 @@ func startAPI(cfg *config.Config) {
 	r.Get("/uploads/{filename}", func(w http.ResponseWriter, r *http.Request) {
 		uploads_handler.ServeFile(cfg.UploadDir, chi.URLParam(r, "filename"), w, r)
 	})
+
+	if previewGen != nil {
+		servePreview := func(w http.ResponseWriter, r *http.Request) {
+			previews_handler.ServePreview(previewGen.Store(), chi.URLParam(r, "pluginId"), w, r)
+		}
+		r.Get("/previews/{pluginId}", servePreview)
+		r.Head("/previews/{pluginId}", servePreview)
+	}
 
 	r.Get("/ready", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -217,6 +241,35 @@ func startAPI(cfg *config.Config) {
 			op.Tags = []string{"Uploads"}
 		})
 		uploads_handler.RegisterHandlers(cfg.UploadDir, cfg.UploadToken, uploadsGroup)
+
+		webhooksGroup := huma.NewGroup(api, "/webhooks/github")
+		webhooksGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"Webhooks"}
+		})
+		const registryOwner, registryRepo = "AvengeMedia", "dms-plugin-registry"
+		var moderator webhooks.Moderator
+		switch {
+		case cfg.GithubAppID != 0 && cfg.GithubAppPrivateKey != "":
+			appClient, err := githubapp.NewApp(cfg.GithubAppID, cfg.GithubAppPrivateKey, registryOwner, registryRepo)
+			if err != nil {
+				log.Error("Failed to init GitHub App moderator", "err", err)
+			} else {
+				moderator = appClient
+			}
+		case cfg.GithubModToken != "":
+			moderator = githubapp.NewToken(cfg.GithubModToken, registryOwner, registryRepo)
+		}
+		webhooks.RegisterHandlers(webhooks.Config{
+			Secret:     cfg.GithubWebhookSecret,
+			Owner:      registryOwner,
+			Repo:       registryRepo,
+			Org:        cfg.ModOrg,
+			Team:       cfg.ModTeam,
+			OwnersTeam: cfg.OwnersTeam,
+			Cache:      pluginCache,
+			Moderator:  moderator,
+			Authors:    pluginCache,
+		}, webhooksGroup)
 	})
 
 	addr := ":" + cfg.Port

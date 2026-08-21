@@ -25,7 +25,7 @@ div[class*='announcementBar'] {
 }
 
 /* Remove any inner borders/dividers */
-div[class*='announcementBar'] > div,
+div[class*='announcementBar']>div,
 div[class*='announcementBar'] [class*='content'] {
   border: none !important;
 }
@@ -214,6 +214,7 @@ html[data-theme='light'] .navbar-kofi-link {
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -328,7 +329,7 @@ body.landing-page * {
 body.landing-page #__docusaurus,
 body.landing-page .main-wrapper,
 body.landing-page main,
-body.landing-page > div {
+body.landing-page>div {
   background: transparent !important;
   background-color: transparent !important;
 }
@@ -412,7 +413,7 @@ pre[class*='language-'] {
 }
 
 /* Inline code styling */
-:not(pre) > code {
+:not(pre)>code {
   background-color: rgba(208, 188, 255, 0.1);
   border: 1px solid rgba(208, 188, 255, 0.2);
   color: var(--dank-purple-dark);
@@ -421,7 +422,7 @@ pre[class*='language-'] {
   font-size: 0.9em;
 }
 
-[data-theme='dark'] :not(pre) > code {
+[data-theme='dark'] :not(pre)>code {
   background-color: rgba(208, 188, 255, 0.15);
   border-color: rgba(208, 188, 255, 0.25);
   color: var(--dank-purple-light);
@@ -649,6 +650,7 @@ body.docs-page .footer {
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
+
   /* Tighten footer padding on mobile */
   .footer {
     padding: 1rem 0 0.75rem !important;
@@ -701,6 +703,20 @@ body.blog-page .main-wrapper {
 
 body.blog-page main {
   padding-top: 0;
+}
+
+@media (max-width: 996px) {
+
+  /* BlogSidebar hides its nav here; drop the empty left column on post/list pages */
+  body.blog-page aside.col--3 {
+    display: none;
+  }
+
+  body.blog-page .container.margin-vert--lg>.row>main {
+    --ifm-col-width: 100%;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }
 
 /* Markdown headers with purple accent */
@@ -871,7 +887,7 @@ body.docs-page .navbar__items--right .navbarSearchContainer_Bca1 {
   }
 
   /* Make primary menu a flex container so search can be ordered first */
-  .navbar-sidebar__items > .navbar-sidebar__item:first-child .menu {
+  .navbar-sidebar__items>.navbar-sidebar__item:first-child .menu {
     display: flex !important;
     flex-direction: column !important;
   }
@@ -901,6 +917,7 @@ body.docs-page .navbar__items--right .navbarSearchContainer_Bca1 {
 
 /* Additional mobile navbar adjustments for all pages */
 @media (max-width: 996px) {
+
   /* Ensure backdrop filters work on mobile navbar */
   body.landing-page .navbar,
   body.docs-page .navbar {
@@ -1024,27 +1041,27 @@ figcaption {
    ======================================== */
 
 /* Base details element */
+/* Base details element */
 details {
-  border: 1px solid rgba(208, 188, 255, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 0.5rem !important;
   padding: 0 !important;
   margin: 1.5rem 0 !important;
-  background: rgba(128, 90, 213, 0.06) !important;
-  backdrop-filter: blur(8px);
+  background: #18181b !important;
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 details:hover {
-  border-color: rgba(208, 188, 255, 0.4) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 details[open] {
-  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* Summary (clickable header) */
-details > summary {
+details>summary {
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
@@ -1052,55 +1069,57 @@ details > summary {
   margin: 0 !important;
   user-select: none;
   list-style: none !important;
-  background: rgba(128, 90, 213, 0.08);
-  color: var(--dank-purple-light);
+  background: rgba(255, 255, 255, 0.03);
+  color: #f4f4f5;
   transition: background 0.2s ease, color 0.2s ease;
   border-radius: 0.5rem 0.5rem 0 0;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
 }
 
 /* Hide all default markers/arrows */
-details > summary::-webkit-details-marker {
+details>summary::-webkit-details-marker {
   display: none !important;
 }
 
-details > summary::marker {
+details>summary::marker {
   display: none !important;
   content: '' !important;
 }
 
 /* Hide Docusaurus's built-in toggle arrow */
-details > summary::before {
+details>summary::before {
   display: none !important;
 }
 
 /* Arrow indicator */
-details > summary::after {
+details>summary::after {
   content: '▸';
   display: inline-block;
-  margin-left: auto;
   font-size: 0.875rem;
   transition: transform 0.2s ease;
-  color: var(--dank-purple-light);
+  color: #a1a1aa;
 }
 
-details[open] > summary::after {
+details[open]>summary::after {
   transform: rotate(90deg);
 }
 
-details > summary:hover {
-  background: rgba(128, 90, 213, 0.12);
-  color: var(--dank-purple-lighter);
+details>summary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
 /* Content area */
-details > summary ~ * {
+details>summary~* {
   padding: 0 1.25rem;
 }
 
-details > summary + div,
-details > .collapsibleContent_i85q {
-  padding: 1rem 1.25rem !important;
-  border-top: 1px solid rgba(208, 188, 255, 0.15);
+details>summary+div,
+details>.collapsibleContent_i85q {
+  padding: 1.25rem !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 /* Reset alert styling that Docusaurus applies */
@@ -1116,35 +1135,59 @@ details.alert--info {
 
 /* Light mode adjustments */
 [data-theme='light'] details {
-  border-color: rgba(128, 90, 213, 0.2) !important;
-  background: rgba(128, 90, 213, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  background: #f4f4f5 !important;
 }
 
 [data-theme='light'] details:hover {
-  border-color: rgba(128, 90, 213, 0.35) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 [data-theme='light'] details[open] {
-  box-shadow: 0 4px 12px rgba(128, 90, 213, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-[data-theme='light'] details > summary {
-  background: rgba(128, 90, 213, 0.06);
-  color: var(--dank-purple-dark);
+[data-theme='light'] details>summary {
+  background: rgba(0, 0, 0, 0.02);
+  color: #18181b;
 }
 
-[data-theme='light'] details > summary:hover {
-  background: rgba(128, 90, 213, 0.1);
-  color: var(--dank-purple-darker);
+[data-theme='light'] details>summary:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #000000;
 }
 
-[data-theme='light'] details > summary::after {
-  color: var(--dank-purple-dark);
+[data-theme='light'] details>summary::after {
+  color: #71717a;
 }
 
-[data-theme='light'] details > summary + div,
-[data-theme='light'] details > .collapsibleContent_i85q {
-  border-top-color: rgba(128, 90, 213, 0.12);
+[data-theme='light'] details>summary+div,
+[data-theme='light'] details>.collapsibleContent_i85q {
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Details inner text and link colors override to prevent Docusaurus alert theme purple bleed */
+details {
+  color: var(--ifm-font-color-base) !important;
+}
+
+details a {
+  color: var(--ifm-link-color) !important;
+}
+
+details a:hover {
+  color: var(--ifm-link-hover-color) !important;
+}
+
+/* Category headers are bold paragraphs */
+details p>strong {
+  color: var(--ifm-color-primary) !important;
+  font-size: 1.1rem;
+}
+
+/* Nested bold texts inside lists (like names) inherit base color */
+details li strong {
+  color: var(--ifm-font-color-base) !important;
 }
 
 /* Nested list styling within details */
@@ -1172,7 +1215,7 @@ details p:last-child {
 
 /* Panzoom wrapper styling - only for Mermaid diagrams */
 .mermaid[style*="overflow"],
-.docusaurus-mermaid-container > div[style*="overflow: hidden"] {
+.docusaurus-mermaid-container>div[style*="overflow: hidden"] {
   border-radius: 0.5rem;
   border: 1px solid rgba(208, 188, 255, 0.2);
   background: rgba(0, 0, 0, 0.2);
@@ -1181,13 +1224,13 @@ details p:last-child {
 }
 
 [data-theme='light'] .mermaid[style*="overflow"],
-[data-theme='light'] .docusaurus-mermaid-container > div[style*="overflow: hidden"] {
+[data-theme='light'] .docusaurus-mermaid-container>div[style*="overflow: hidden"] {
   border-color: rgba(128, 90, 213, 0.2);
   background: rgba(248, 247, 251, 0.5);
 }
 
 /* Hint text for panzoom interaction on Mermaid only */
-.docusaurus-mermaid-container > div[style*="overflow: hidden"]::before {
+.docusaurus-mermaid-container>div[style*="overflow: hidden"]::before {
   content: "Scroll to zoom • Drag to pan • Double-click to reset";
   position: absolute;
   bottom: 0.5rem;
@@ -1203,11 +1246,11 @@ details p:last-child {
   z-index: 10;
 }
 
-.docusaurus-mermaid-container > div[style*="overflow: hidden"]:hover::before {
+.docusaurus-mermaid-container>div[style*="overflow: hidden"]:hover::before {
   opacity: 1;
 }
 
-[data-theme='light'] .docusaurus-mermaid-container > div[style*="overflow: hidden"]::before {
+[data-theme='light'] .docusaurus-mermaid-container>div[style*="overflow: hidden"]::before {
   color: rgba(128, 90, 213, 0.8);
   background: rgba(248, 247, 251, 0.9);
   border: 1px solid rgba(128, 90, 213, 0.2);
@@ -1248,3 +1291,94 @@ a.navbar-version-dropdown.navbar__link::after {
   --search-local-hit-active-color: #1a1a1a;
 }
 
+/* Color H2 and H3 headings inside markdown pages with the primary purple color */
+.markdown h2,
+.markdown h3 {
+  color: var(--ifm-color-primary);
+}
+
+/* ========================================
+   BLOG CONTAINER & LAYOUT EXPANSION
+   ======================================== */
+
+/* On Blog Pages: 22% / 60% / 18% Grid Split */
+@media (min-width: 997px) {
+
+  /* Index Page: 22% Left Sidebar / 78% Main Content */
+  body.blog-page .container.margin-vert--lg>.row>aside.col--3:first-child {
+    flex: 0 0 22% !important;
+    max-width: 22% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg>.row>main.col--7:last-child {
+    flex: 0 0 78% !important;
+    max-width: 78% !important;
+  }
+
+  /* Single Post Page: 22% Left Sidebar / 60% Main Post / 18% Right TOC */
+  body.blog-page .container.margin-vert--lg>.row>aside.col--3 {
+    flex: 0 0 22% !important;
+    max-width: 22% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg>.row>main.col--7 {
+    flex: 0 0 60% !important;
+    max-width: 60% !important;
+  }
+
+  body.blog-page .container.margin-vert--lg>.row>div.col--2 {
+    flex: 0 0 18% !important;
+    max-width: 18% !important;
+  }
+}
+
+/* ========================================
+   CLEAN OVERLAY SCROLLBARS FOR TOC & SIDEBARS
+   ======================================== */
+
+/* Hide clunky default browser scrollbars; display subtle overlay scrollbar on scroll/hover */
+body.blog-page .container .col--2,
+body.blog-page aside.col--3,
+.table-of-contents,
+.theme-doc-sidebar-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
+
+body.blog-page .container .col--2:hover,
+body.blog-page aside.col--3:hover,
+.table-of-contents:hover,
+.theme-doc-sidebar-container:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+body.blog-page .container .col--2::-webkit-scrollbar,
+body.blog-page aside.col--3::-webkit-scrollbar,
+.table-of-contents::-webkit-scrollbar,
+.theme-doc-sidebar-container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+body.blog-page .container .col--2::-webkit-scrollbar-track,
+body.blog-page aside.col--3::-webkit-scrollbar-track,
+.table-of-contents::-webkit-scrollbar-track,
+.theme-doc-sidebar-container::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+body.blog-page .container .col--2::-webkit-scrollbar-thumb,
+body.blog-page aside.col--3::-webkit-scrollbar-thumb,
+.table-of-contents::-webkit-scrollbar-thumb,
+.theme-doc-sidebar-container::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+body.blog-page .container .col--2:hover::-webkit-scrollbar-thumb,
+body.blog-page aside.col--3:hover::-webkit-scrollbar-thumb,
+.table-of-contents:hover::-webkit-scrollbar-thumb,
+.theme-doc-sidebar-container:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+}

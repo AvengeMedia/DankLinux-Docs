@@ -9,7 +9,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 # Compositor Blur
 
-On compositors that support the `ext-bg-effect-v1` protocol (such as [niri](https://github.com/YaLTeR/niri)), DMS can ask the compositor to blur whatever sits behind its surfaces — bars, popouts, modals, and notifications.
+On compositors that support the `ext-bg-effect-v1` protocol (such as [niri](https://github.com/YaLTeR/niri)), DMS can ask the compositor to blur whatever sits behind its surfaces, bars, popouts, modals, notifications, and DMS's floating windows (Settings, Notepad, Process List, and friends).
 
 ## Enabling
 
@@ -32,7 +32,7 @@ On compositors without `ext-bg-effect-v1` support — such as Hyprland — you m
 
 ## Making It Visible
 
-Blur only shows through transparent pixels. Lower the opacity on the surfaces you want to see through — found under **Theme & Colors → Widget Styling**. Fully opaque surfaces will look the same as before.
+Blur only shows through transparent pixels. Lower the opacity on the surfaces you want to see through. You can change this in **Theme & Colors → Surface Styling → Surface Opacity** for shell surfaces and popouts, or **Theme & Colors → Floating Windows → Window Opacity** for DMS's floating windows. Fully opaque surfaces will look the same as before.
 
 ## Blur Border
 

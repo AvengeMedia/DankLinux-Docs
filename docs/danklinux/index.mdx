@@ -1,9 +1,11 @@
 ---
 title: DankLinux Repository
-description: Pre-built packages for Fedora, CentOS, Debian, Ubuntu, and OpenSUSE
+description: Pre-built packages for Fedora, CentOS, Debian, Ubuntu, OpenSUSE, and Void Linux
 ---
 
 import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 <Hero
   asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
@@ -21,7 +23,7 @@ The **DankLinux Repository** provides pre-built packages for **DankMaterialShell
 DankMaterialShell is now available on more distributions than ever before!
 
 - [**Fedora**](https://fedoraproject.org/) | [**CentOS**](https://www.centos.org/) | [**OpenSUSE**](https://www.opensuse.org/) 
-- [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/)
+- [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/) | [**Void Linux**](https://voidlinux.org/)
 
 ### Desktop Environment
 - **DankMaterialShell (dms)**: The complete desktop shell with widgets and CLI tools
@@ -32,13 +34,14 @@ DankMaterialShell is now available on more distributions than ever before!
 - [**Niri-git**](https://github.com/niri-wm/niri): Development build of niri
 
 ### Core Framework
-- [**Quickshell**](https://github.com/quickshell-mirror/quickshell): QtQuick-based Wayland desktop shell framework
-- [**Quickshell-git**](https://github.com/quickshell-mirror/quickshell): Development build of Quickshell
+- [**Quickshell**](https://github.com/quickshell-mirror/quickshell): QtQuick-based Wayland desktop shell framework — on **Debian**, use the native package (see below); DankLinux builds remain for other distros
+- [**Quickshell-git**](https://github.com/quickshell-mirror/quickshell): Development build of Quickshell (DankLinux repositories)
 
 ### Utilities
 - [**cliphist**](https://github.com/sentriz/cliphist): Wayland clipboard manager with history support
 - [**dgop**](https://github.com/AvengeMedia/dgop): Stateless CPU/GPU monitor system by Avenge Media
 - [**dsearch**](https://github.com/AvengeMedia/danksearch): a Blazingly fast filesystem search tool by Avenge Media
+- [**DankCalendar**](https://github.com/AvengeMedia/dankcalendar) (`dcal`): Standalone calendar app for Local, Google, Microsoft, CalDAV, and iCloud — package **`dankcalendar-git`**
 - [**matugen**](https://github.com/InioX/matugen): Material Design 3 color palette generator for themes
 - [**xWayland-Satellite**](https://github.com/Supreeeme/xwayland-satellite): XWayland integration tool
 - [**xWayland-Satellite-git**](https://github.com/Supreeeme/xwayland-satellite): Development build of xWayland-Satellite
@@ -54,6 +57,7 @@ For complete DMS installation instructions including repository setup, see the [
 - **Fedora**: See the [Fedora & CentOS](../dankmaterialshell/installation#fedora--centos) section in the installation guide
 - **Ubuntu/Debian**: See the [Ubuntu & Debian](../dankmaterialshell/installation#debian--ubuntu) section in the installation guide
 - **OpenSUSE**: See the [OpenSUSE](../dankmaterialshell/installation#opensuse--derivatives) section in the installation guide
+- **Void Linux**: See the [Void Linux](../dankmaterialshell/installation#void-linux) section in the installation guide
 
 :::
 
@@ -69,143 +73,289 @@ All packages in the DankLinux repository can be installed independently. First, 
 
 ### Debian
 
-**Debian 13 (Trixie)**:
+Stable **quickshell** should come from Debian (trixie-backports on Debian 13; main on testing/sid). The DankLinux OBS `quickshell` package for Debian is **deprecated** and will be removed in the future — migrate with `sudo apt remove quickshell` then install the Debian package below. DankLinux OBS remains for **niri**, **quickshell-git**, and other companions.
+
+Select your release, then choose stable or development packages.
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
+# Native quickshell from Debian backports
+echo "deb http://deb.debian.org/debian trixie-backports main" | \
+  sudo tee /etc/apt/sources.list.d/trixie-backports.list
+sudo apt update
+sudo apt install -t trixie-backports quickshell
+
+# DankLinux OBS for niri and other companions
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+sudo apt install niri
+```
 
-# Install stable packages
-sudo apt install quickshell niri
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
-# Or install development packages
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
 sudo apt install quickshell-git niri-git
 ```
 
-**Debian Testing**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
+# Native quickshell from Debian
+sudo apt update
+sudo apt install quickshell
+
+# DankLinux OBS for niri and other companions
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+sudo apt install niri
+```
 
-# Install stable packages
-sudo apt install quickshell niri
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
-# Or install development packages
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
 sudo apt install quickshell-git niri-git
 ```
 
-**Debian Sid**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
+# Native quickshell from Debian
+sudo apt update
+sudo apt install quickshell
+
+# DankLinux OBS for niri and other companions
 curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
   sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
 echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
   sudo tee /etc/apt/sources.list.d/danklinux.list
 sudo apt update
+sudo apt install niri
+```
 
-# Install stable packages
-sudo apt install quickshell niri
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
-# Or install development packages
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
 sudo apt install quickshell-git niri-git
 ```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
 
 ### Ubuntu
 
+#### Step 1: Add the DankLinux PPA
+
 ```bash
-# Add DankLinux PPA
 sudo add-apt-repository ppa:avengemedia/danklinux
 sudo apt update
+```
 
-# Install stable packages
+#### Step 2: Install packages
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
 sudo apt install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
 sudo apt install quickshell-git niri-git
 ```
 
+</TabItem>
+</Tabs>
+
+### Void Linux
+
+Add the DankLinux XBPS repository, synchronize it, and install whichever
+standalone packages you need:
+
+```bash
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -S
+sudo xbps-install -S dgop danksearch dankcalendar
+```
+
+The package names are `dgop`, `danksearch`, and `dankcalendar`; they install
+the `dgop`, `dsearch`, and `dcal` commands respectively. To install DMS itself,
+also configure the separate repository in the [Void Linux DMS installation
+guide](../dankmaterialshell/installation#void-linux).
+
 ### OpenSUSE
 
-**OpenSUSE Tumbleweed**:
+Select your distribution, then choose stable or development packages.
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
 sudo zypper install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
 sudo zypper install quickshell-git niri-git
 ```
 
-**OpenSUSE Leap 16**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
 sudo zypper install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
 sudo zypper install quickshell-git niri-git
 ```
 
-**OpenSUSE Leap 16.1**:
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux repository
 sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
 sudo zypper install quickshell niri
-
-# Or install development packages
-sudo zypper install quickshell-git niri-git
 ```
 
-**OpenSUSE Slowroll**:
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
 
 ```bash
-# Add DankLinux repository
-sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
 sudo zypper refresh
-
-# Install stable packages
-sudo zypper install quickshell niri
-
-# Or install development packages
 sudo zypper install quickshell-git niri-git
 ```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
 
 ### Fedora & CentOS
 
-The COPR repositories provide packages for Fedora 41/42/43 rawhide and CentOS 10:
+The COPR repositories provide packages for Fedora 41/42/43 rawhide and CentOS 10.
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
 
 ```bash
-# Add DankLinux COPR
 sudo dnf copr enable avengemedia/danklinux
-
-# Install stable packages
 sudo dnf install quickshell niri
+```
 
-# Or install development packages
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
 sudo dnf install quickshell-git niri-git
 ```
+
+</TabItem>
+</Tabs>
 
 :::note
 
@@ -256,7 +406,7 @@ The packaging configurations and build scripts are maintained in the official Da
 
 :::note
 
-**Official Avenge Media packages**: `dms`, `dms-cli`, `dgop`, `danksearch`, `dank-greeteer`, `dms-color-picker`, and `dms clipboard` are developed and maintained by the Avenge Media team under the MIT License. External packages in these repositories are maintained by Avenge Media, but originate from upstream projects by their respective authors, credited in the package listings. They are considered unofficial Avenge Media packages unless stated otherwise by the project authors.
+**Official Avenge Media packages**: `dms`, `dms-cli`, `dgop`, `danksearch`, `dankcalendar-git`, `dms-greeter`, `dms-greeter-git`, `dms-color-picker`, and `dms clipboard` are developed and maintained by the Avenge Media team under the MIT License. External packages in these repositories are maintained by Avenge Media, but originate from upstream projects by their respective authors, credited in the package listings. They are considered unofficial Avenge Media packages unless stated otherwise by the project authors.
 Packages retain their upstream licenses: Niri (GPL-3.0), Quickshell (LGPL-3.0), Matugen (GPL-2.0), Cliphist (GPL-3.0).
 
 :::
@@ -273,4 +423,3 @@ If you encounter issues with the repositories or packages:
 ## Contributing
 
 Interested in maintaining packages for other distributions? Contributions to the DankLinux repository are welcome! Check out the [Contributing Guide](../contributing) to get started.
-
