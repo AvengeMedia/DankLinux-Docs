@@ -166,9 +166,63 @@ Outputs all color variants in a single call:
 ```json
 {
   "color0": {
-    "dark": { "hex": "#1a1a1a", "hex_stripped": "1a1a1a" },
-    "light": { "hex": "#f8f8f8", "hex_stripped": "f8f8f8" },
-    "default": { "hex": "#1a1a1a", "hex_stripped": "1a1a1a" }
+    "dark": {
+      "hex": "#1a1a1a",
+      "hex_stripped": "1a1a1a",
+      "hex_alpha": "#1a1a1aff",
+      "hex_alpha_stripped": "1a1a1aff",
+      "alpha_hex": "#ff1a1a1a",
+      "alpha_hex_stripped": "ff1a1a1a",
+      "rgb": "rgb(26, 26, 26)",
+      "rgba": "rgba(26, 26, 26, 1.0)",
+      "hsl": "hsl(0.0, 0.0%, 10.2%)",
+      "hsla": "hsla(0.0, 0.0%, 10.2%, 1.0)",
+      "red": "26",
+      "green": "26",
+      "blue": "26",
+      "alpha": "1.0",
+      "hue": "0.0",
+      "saturation": "0.0%",
+      "lightness": "10.2%"
+    },
+    "light": {
+      "hex": "#f8f8f8",
+      "hex_stripped": "f8f8f8",
+      "hex_alpha": "#f8f8f8ff",
+      "hex_alpha_stripped": "f8f8f8ff",
+      "alpha_hex": "#fff8f8f8",
+      "alpha_hex_stripped": "fff8f8f8",
+      "rgb": "rgb(248, 248, 248)",
+      "rgba": "rgba(248, 248, 248, 1.0)",
+      "hsl": "hsl(0.0, 0.0%, 97.3%)",
+      "hsla": "hsla(0.0, 0.0%, 97.3%, 1.0)",
+      "red": "248",
+      "green": "248",
+      "blue": "248",
+      "alpha": "1.0",
+      "hue": "0.0",
+      "saturation": "0.0%",
+      "lightness": "97.3%"
+    },
+    "default": {
+      "hex": "#1a1a1a",
+      "hex_stripped": "1a1a1a",
+      "hex_alpha": "#1a1a1aff",
+      "hex_alpha_stripped": "1a1a1aff",
+      "alpha_hex": "#ff1a1a1a",
+      "alpha_hex_stripped": "ff1a1a1a",
+      "rgb": "rgb(26, 26, 26)",
+      "rgba": "rgba(26, 26, 26, 1.0)",
+      "hsl": "hsl(0.0, 0.0%, 10.2%)",
+      "hsla": "hsla(0.0, 0.0%, 10.2%, 1.0)",
+      "red": "26",
+      "green": "26",
+      "blue": "26",
+      "alpha": "1.0",
+      "hue": "0.0",
+      "saturation": "0.0%",
+      "lightness": "10.2%"
+    }
   },
   ...
 }
@@ -361,16 +415,17 @@ dms dank16 <hex_color> [flags]
 - `hex_color` (required): Input color in hex format (e.g., "#8b5cf6" or "8b5cf6")
 
 **Flags**:
-- `--light`: Generate light theme variant (default: dark)
+- `--light`: Generate light theme variant (sets default to light)
 - `--background <hex>`: Custom background color
-- `--contrast <algorithm>`: Contrast algorithm - "dps" or "wcag" (default: "dps")
+- `--contrast <algorithm>`: Contrast algorithm: dps (Delta Phi Star, default) or wcag (default "dps")
 - `--kitty`: Output in Kitty terminal format
 - `--foot`: Output in Foot terminal format
 - `--alacritty`: Output in Alacritty terminal format
 - `--ghostty`: Output in Ghostty terminal format
-- `--json`: Output as JSON object with hex, hex_stripped, and RGB values
+- `--json`: Output in JSON format
 - `--variants`: Output all variants (dark/light/default) as JSON
 - `--primary-dark <hex>`: Primary color for dark mode (use with `--variants`)
 - `--primary-light <hex>`: Primary color for light mode (use with `--variants`)
 - `--wezterm`: Output in Wezterm terminal format
+- `--neovim`: Output in Neovim plugin format
 - `-h, --help`: Show help
