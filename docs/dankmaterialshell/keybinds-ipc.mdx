@@ -400,6 +400,49 @@ dms ipc call bar setPosition index 0 top
 dms ipc call bar setPosition id default left
 ```
 
+**Dank Island:** One bar instance may be designated as Dank Island (Settings → Island → Island instance). It is still listed by `bar` selectors (`index` includes it), but visibility and auto-hide commands return `BAR_IS_ISLAND` — use the [`island`](#island) target instead. `setPosition` accepts only `top` and `bottom` for that instance.
+
+### island
+
+Dank Island activity surface. Requires a bar instance designated as the island in Settings and enabled. Commands target the focused screen unless you use an `*On` variant.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `open <activity>` | Expand into the requested activity | activity id |
+| `toggle <activity>` | Collapse if expanded; otherwise expand into the activity | activity id |
+| `show <activity>` | Switch the compact face without expanding | activity id |
+| `close` | Collapse back to the compact face | - |
+| `cycle` | Cycle activities (`home` → `media` when available → `launcher` when Default Opens is Island) | - |
+| `status` | JSON snapshot of the island on the focused screen | - |
+| `notifications` | Toggle the notification center as an island activity | - |
+| `openOn` / `toggleOn` / `showOn` / `closeOn` / `cycleOn` / `statusOn` / `notificationsOn` | Same actions on a named monitor | activity (where required) + screen name |
+
+**Activities:** `home` (clock), `media`, `launcher`, `controlcenter` (`control-center`, `cc`), `wallpaper`, `weather`, `notificationcenter` (`notifications`, `notification-center`, `nc`). Unrecognized ids open `home`. `media` needs an active session; `weather` needs weather enabled. A screen name with no island returns `DANK_ISLAND_UNAVAILABLE` rather than falling back to another display.
+
+When Dank Island is the sole top chrome on the focused display, these existing targets open island activities instead of their popouts:
+
+- `control-center` `open` / `toggle` / `hide` / `status`
+- `notifications` `open` / `toggle` / `close` (the notification modal is used if the island does not own the screen)
+- `dash` `open` / `toggle` with `media`, `wallpaper`, or `weather`, and `dash close` while those activities are open
+
+`spotlight` and `launcher` open the island launcher when **Launcher → Default Opens** is Island, and fall back to Spotlight if the focused screen has no island.
+
+**Examples:**
+```bash
+dms ipc call island toggle home
+dms ipc call island open media
+dms ipc call island open launcher
+dms ipc call island open controlcenter
+dms ipc call island open wallpaper
+dms ipc call island open weather
+dms ipc call island open notifications
+dms ipc call island show home
+dms ipc call island toggleOn media DP-1
+dms ipc call island cycle
+dms ipc call island close
+dms ipc call island status
+```
+
 ### dock
 
 Dock visibility and behavior control.
@@ -486,6 +529,8 @@ Application launcher modal with search capabilities.
 
 :::note
 `spotlight` and `launcher` are synonymous — both targets call the same launcher modal for backwards compatibility.
+
+When **Launcher → Default Opens** is set to Island, these calls open the island launcher on the focused screen (Spotlight is used if that screen has no Dank Island). Direct control is `island open launcher`.
 :::
 
 | Function | Description | Parameters |
@@ -545,6 +590,8 @@ All these modals support `open`, `close`, and `toggle` functions:
 - **control-center** - Quick settings (network, bluetooth, audio, etc.)
 - **notepad** - Quick notepad/scratchpad
 
+When Dank Island is the sole top chrome on the focused display, `control-center` and `notifications` open island activities instead of their popouts. The notification modal still opens if the island does not own the screen.
+
 **Examples:**
 ```bash
 dms ipc call clipboard toggle
@@ -582,7 +629,7 @@ Settings modal with additional read/write access to configuration values.
 
 **Available Tab IDs:**
 - **Personalization:** `personalization`, `wallpaper`, `theme`, `typography`, `time_weather`, `sounds`
-- **Dankbar:** `dankbar`, `dankbar_settings`, `dankbar_widgets`
+- **Dankbar:** `dankbar`, `dankbar_settings`, `dankbar_widgets`, `dank_island`
 - **Widgets:** `workspaces_widgets`, `workspaces`, `media_player`, `notifications`, `osd`, `running_apps`, `updater`
 - **Dock & Launcher:** `dock_launcher`, `dock`, `launcher`
 - **System:** `keybinds`, `displays`, `network`, `printers`
@@ -614,6 +661,8 @@ Dashboard popup with multiple tabs.
 | `toggleAt <tab> <position>` | Toggle dashboard anchored to a bar section | tab, position |
 
 Without a position, the dashboard anchors to the clock widget. `openAt`/`toggleAt` anchor it to the given bar section instead — useful when triggering the dash from a custom widget or script.
+
+On displays where Dank Island is the sole top chrome, `open`/`toggle` with `media`, `wallpaper`, or `weather` route to the matching island activity. `close` collapses those activities when they are open.
 
 **Examples:**
 ```bash
