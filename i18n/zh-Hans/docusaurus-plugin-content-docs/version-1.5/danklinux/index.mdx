@@ -1,0 +1,439 @@
+---
+title: DankLinux 存储库
+description: 适用于 Fedora、CentOS、Debian、Ubuntu、OpenSUSE 和 Void Linux 的预构建软件包
+---
+
+import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗██╗     ██╗███╗   ██╗██╗   ██╗██╗  ██╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██║     ██║████╗  ██║██║   ██║╚██╗██╔╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║     ██║██╔██╗ ██║██║   ██║ ╚███╔╝
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║     ██║██║╚██╗██║██║   ██║ ██╔██╗
+██████╔╝██║  ██║██║ ╚████║██║  ██╗███████╗██║██║ ╚████║╚██████╔╝██╔╝ ██╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝`}
+  hideTitle={true}
+/>
+
+## 概述 {#overview}
+
+**DankLinux 存储库** 为 **DankMaterialShell** 和 **niri** 提供预构建的软件包！ \
+DankMaterialShell 现在可用于比以往更多的发行版！
+
+- [**Fedora**](https://fedoraproject.org/) | [**CentOS**](https://www.centos.org/) | [**OpenSUSE**](https://www.opensuse.org/)
+- [**Debian**](https://www.debian.org/) | [**Ubuntu**](https://ubuntu.com/) | [**无效Linux**](https://voidlinux.org/)
+
+### 桌面环境 {#desktop-environment}
+- **DankMaterialShell (dms)**：带有小部件和 CLI 工具的完整桌面 shell
+- **DankMaterialShell (dms-git)**：具有最新功能的开发版本
+
+### 合成器 {#compositors}
+- [**Niri**](https://github.com/niri-wm/niri)：可滚动平铺 Wayland 合成器
+- [**Niri-git**](https://github.com/niri-wm/niri)：niri 的开发版本
+
+### 核心框架 {#core-framework}
+- [**Quickshell**](https://github.com/quickshell-mirror/quickshell)：基于 QtQuick 的 Wayland 桌面 shell 框架 — 在 **Debian** 上，使用本机包（见下文）； DankLinux 版本仍适用于其他发行版
+- [**Quickshell-git**](https://github.com/quickshell-mirror/quickshell)：Quickshell 的开发版本（DankLinux 存储库）
+
+### 实用程序 {#utilities}
+- [**cliphist**](https://github.com/sentriz/cliphist)：具有历史记录支持的 Wayland 剪贴板管理器
+- [**dgop**](https://github.com/AvengeMedia/dgop)：Avenge Media 的无状态 CPU/GPU 监控系统
+- [**dsearch**](https://github.com/AvengeMedia/danksearch)：Avenge Media 提供的速度极快的文件系统搜索工具
+- [**DankCalendar**](https://github.com/AvengeMedia/dankcalendar) (`dcal`)：适用于 Local、Google、Microsoft、CalDAV 和 iCloud 的独立日历应用程序 — 包 **`dankcalendar-git`**
+- [**matugen**](https://github.com/InioX/matugen)：Material Design 3 主题调色板生成器
+- [**xWayland-Satellite**](https://github.com/Supreeeme/xwayland-satellite)：XWayland 集成工具
+- [**xWayland-Satellite-git**](https://github.com/Supreeeme/xwayland-satellite)：xWayland-Satellite 的开发版本
+
+## 如何安装 {#how-to-install}
+
+### 安装 DankMaterialShell (DMS) {#installing-dankmaterialshell-dms}
+
+有关包括存储库设置在内的完整 DMS 安装说明，请参阅 [DankMaterialShell 安装指南](../dankmaterialshell/installation)。
+
+:::tip[快速入门]
+
+- **Fedora**：请参阅安装指南中的 [Fedora 和 CentOS](../dankmaterialshell/installation#fedora--centos) 部分
+- **Ubuntu/Debian**：请参阅安装指南中的 [Ubuntu 和 Debian](../dankmaterialshell/installation#debian--ubuntu) 部分
+- **OpenSUSE**：请参阅安装指南中的 [OpenSUSE](../dankmaterialshell/installation#opensuse--derivatives) 部分
+- **Void Linux**：请参阅安装指南中的 [Void Linux](../dankmaterialshell/installation#void-linux) 部分
+
+:::
+
+### 安装独立包 {#installing-standalone-packages}
+
+DankLinux 存储库中的所有软件包都可以独立安装。首先，为您的发行版添加 DankLinux 存储库，然后安装您需要的软件包。
+
+:::note
+
+安装 **niri** 或 **niri-git** 时，**xWayland-Satellite** 会自动安装为依赖项。您不需要单独安装它。
+
+:::
+
+### Debian {#debian}
+
+稳定的**quickshell**应该来自Debian（Debian 13上的trixie-backports；主要在testing/sid上）。适用于 Debian 的 DankLinux OBS `quickshell` 软件包已**弃用**，并将在将来删除 - 使用 `sudo apt remove quickshell` 进行迁移，然后安装下面的 Debian 软件包。 DankLinux OBS 仍然适用于 **niri**、**quickshell-git** 和其他伙伴。
+
+选择您的版本，然后选择稳定包或开发包。
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+# Native quickshell from Debian backports
+echo "deb http://deb.debian.org/debian trixie-backports main" | \
+  sudo tee /etc/apt/sources.list.d/trixie-backports.list
+sudo apt update
+sudo apt install -t trixie-backports quickshell
+
+# DankLinux OBS for niri and other companions
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+# Native quickshell from Debian
+sudo apt update
+sudo apt install quickshell
+
+# DankLinux OBS for niri and other companions
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+# Native quickshell from Debian
+sudo apt update
+sudo apt install quickshell
+
+# DankLinux OBS for niri and other companions
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
+
+### Ubuntu {#ubuntu}
+
+#### 第 1 步：添加 DankLinux PPA {#step-1-add-the-danklinux-ppa}
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+```
+
+#### 第 2 步：安装软件包 {#step-2-install-packages}
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo apt install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo apt install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux {#void-linux}
+
+:::warning[存储库迁移]
+
+如果您已经使用以前的 GitHub Pages 存储库，请将其 URL 替换为
+退休前的位置：
+
+```bash
+sudo sed -i 's|https://avengemedia.github.io/DankLinux/current|https://void.danklinux.com/danklinux/current|' /etc/xbps.d/danklinux.conf
+```
+
+冻结的 GitHub Pages 存储库不再接收更新，并将被
+**2026 年 7 月 24 日 22:27 UTC** 后退休。
+
+:::
+
+添加 DankLinux XBPS 存储库，同步它，然后安装
+您需要的独立包：
+
+```bash
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -S
+sudo xbps-install -S dgop danksearch dankcalendar
+```
+
+封装名称为`dgop`、`danksearch`、`dankcalendar`；他们安装
+分别为 `dgop`、`dsearch` 和 `dcal` 命令。要安装 DMS 本身，
+还可以在 [Void Linux DMS 安装
+指南](../dankmaterialshell/installation#void-linux)。
+
+### OpenSUSE {#opensuse}
+
+选择您的发行版，然后选择稳定包或开发包。
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+</TabItem>
+</Tabs>
+
+### Fedora 和 CentOS {#fedora--centos}
+
+COPR 存储库提供了适用于 Fedora 41/42/43 rawhide 和 CentOS 10 的软件包。
+
+<Tabs groupId="dms-channel">
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install quickshell niri
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install quickshell-git niri-git
+```
+
+</TabItem>
+</Tabs>
+
+:::note
+
+软件包的可用性可能因发行版而异。某些软件包可能只能通过 OBS/PPA 在 Debian、Ubuntu 和 OpenSUSE 上使用。
+
+:::
+
+### Niri 可滚动平铺 Wayland 合成器 {#niri-scrollable-tiling-wayland-compositor}
+
+Niri 软件包有稳定版本和开发版本。在官方存储库中不提供 niri 的发行版上受支持。
+
+安装 **niri** 或 **niri-git** 时，**xWayland-Satellite** 会自动安装为依赖项，提供开箱即用的 XWayland 集成。
+
+[**维基**](https://yalter.github.io/niri/) | [**GitHub**](https://github.com/niri-wm/niri)
+
+## 存储库链接 {#repository-links}
+
+### Fedora COPR {#fedora-copr}
+
+COPR 提供了适用于 Fedora 41/42/43 rawhide 和 CentOS 10 的软件包：
+
+- **DankLinux 核心存储库**：[avengemedia/danklinux](https://copr.fedorainfracloud.org/coprs/avengemedia/danklinux/)
+- **DMS 稳定**：[avengemedia/dms](https://copr.fedorainfracloud.org/coprs/avengemedia/dms/)
+- **DMS 开发**：[avengemedia/dms-git](https://copr.fedorainfracloud.org/coprs/avengemedia/dms-git/)
+
+### 开放构建服务（OBS） {#open-build-service-obs}
+
+OBS 为基于 OpenSUSE 和 Debian 的发行版提供了软件包：
+
+- **DankLinux 核心存储库**：[home:AvengeMedia:danklinux](https://build.opensuse.org/project/show/home:AvengeMedia:danklinux)
+- **DMS 稳定**：[主页：AvengeMedia：dms](https://build.opensuse.org/project/show/home:AvengeMedia:dms)
+- **DMS 开发**：[home:AvengeMedia:dms-git](https://build.opensuse.org/project/show/home:AvengeMedia:dms-git)
+
+### 启动板 PPA {#launchpad-ppa}
+
+Launchpad PPA 为 Ubuntu 发行版提供软件包：
+
+- **AvengeMedia 团队页面**：[~avengemedia](https://launchpad.net/~avengemedia)
+- **DankLinux 核心 PPA**：[ppa:avengemedia/danklinux](https://launchpad.net/~avengemedia/+archive/ubuntu/danklinux)
+- **DMS 稳定 PPA**：[ppa:avengemedia/dms](https://launchpad.net/~avengemedia/+archive/ubuntu/dms)
+- **DMS 开发 PPA**：[ppa:avengemedia/dms-git](https://launchpad.net/~avengemedia/+archive/ubuntu/dms-git)
+
+## GitHub 存储库 {#github-repository}
+
+打包配置和构建脚本维护在官方 DankLinux 存储库中：
+
+**存储库**：[github.com/AvengeMedia/DankLinux](https://github.com/AvengeMedia/DankLinux)
+
+:::note
+
+**官方 Avenge Media 软件包**：`dms`、`dms-cli`、`dgop`、`danksearch`、`dankcalendar-git`、`dank-greeteer`、`dms-color-picker` 和`dms clipboard` 由 Avenge Media 团队根据 MIT 许可证开发和维护。这些存储库中的外部包由 Avenge Media 维护，但源自其各自作者的上游项目，在包列表中注明。除非项目作者另有说明，否则它们被视为非官方 Avenge Media 包。
+软件包保留其上游许可证：Niri (GPL-3.0)、Quickshell (LGPL-3.0)、Matugen (GPL-2.0)、Cliphist (GPL-3.0)。
+
+:::
+
+## 支持 {#support}
+
+如果您遇到存储库或包的问题：
+
+1.查看【DankMaterialShell安装指南】(../dankmaterialshell/installation)常见解决方案
+2.访问【支持页面】(../support)获取社区资源
+3. 报告[DankLinux Repository]上的打包问题(https://github.com/AvengeMedia/DankLinux/issues)
+4. 报告[DankMaterialShell Repository]上的应用程序问题(https://github.com/AvengeMedia/DankMaterialShell/issues)
+
+## 贡献 {#contributing}
+
+有兴趣维护其他发行版的软件包吗？欢迎为 DankLinux 存储库做出贡献！查看[贡献指南](../contributing) 以开始使用。

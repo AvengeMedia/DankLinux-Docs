@@ -1,0 +1,259 @@
+---
+title: 图标主题
+description: 在DMS中为Qt和GTK应用程序配置图标主题
+sidebar_position: 4.3
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██╗ ██████╗ ██████╗ ███╗   ██╗███████╗
+██║██╔════╝██╔═══██╗████╗  ██║██╔════╝
+██║██║     ██║   ██║██╔██╗ ██║███████╗
+██║██║     ██║   ██║██║╚██╗██║╚════██║
+██║╚██████╗╚██████╔╝██║ ╚████║███████║
+╚═╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 将使用 QT6 图标主题系统作为应用程序图标的主要来源。根据您使用的平台主题，图标配置在不同的位置。
+
+## 图标主题如何工作 {#how-icon-theming-works}
+
+Qt6 应用程序（包括 DankMaterialShell）会根据您的 `QT_QPA_PLATFORMTHEME` 设置查找图标主题。每个平台主题从不同位置读取图标配置：
+
+- **gtk3**：从 GTK 设置读取 (`~/.config/gtk-3.0/settings.ini`)
+- **qt6ct**：从 qt6ct 配置读取 (`~/.config/qt6ct/qt6ct.conf`)
+- **kde**：从 KDE Plasma 设置读取 (`~/.config/kdeglobals`)
+
+DMS 尊重这些特定于平台的配置，并且不会覆盖您的图标主题选择。
+
+### 环境变量覆盖 {#environment-variable-override}
+
+您还可以直接使用 `QS_ICON_THEME` 环境变量设置图标主题：
+
+```bash
+export QS_ICON_THEME=Papirus-Dark
+```
+
+这优先于平台主题设置，并且对于测试或当您希望 DMS 使用与其他 Qt 应用程序不同的图标主题时非常有用。
+
+## GTK 平台主题 (gtk3) {#gtk-platform-theme-gtk3}
+
+如果您使用 GTK 直通方法进行 Qt 主题设置，则图标主题通过 GTK 设置进行控制。
+
+### 配置 {#configuration}
+
+编辑`~/.config/gtk-3.0/settings.ini`：
+
+```ini
+[Settings]
+gtk-icon-theme-name=Papirus-Dark
+```
+
+**常见图标主题：**
+- `Papirus` / `Papirus-Dark`
+- `Adwaita`
+- `breeze` / `breeze-dark`
+- `Tela`
+- `Nordzy`
+
+### 安装图标主题 {#installing-icon-themes}
+
+```bash
+# Arch - Papirus
+sudo pacman -S papirus-icon-theme
+
+# Arch - Adwaita (usually pre-installed)
+sudo pacman -S adwaita-icon-theme
+
+# Flatpak icon themes (available to all apps)
+flatpak install flathub org.kde.PaplirusIconTheme
+```
+
+## Qt6ct 平台主题 {#qt6ct-platform-theme}
+
+当使用 qt6ct 进行专用 Qt 控件时，图标主题通过 qt6ct 界面或配置文件进行管理。
+
+### 通过 GUI 配置 {#configuration-via-gui}
+
+1. 从应用程序启动器启动 `qt6ct`
+2. 导航到 **图标主题** 选项卡
+3. 从列表中选择您喜欢的图标主题
+4. 单击“**应用**”
+
+### 通过文件配置 {#configuration-via-file}
+
+编辑`~/.config/qt6ct/qt6ct.conf`：
+
+```ini
+[Appearance]
+icon_theme=Papirus-Dark
+```
+
+## KDE 平台主题 {#kde-platform-theme}
+
+如果您使用 KDE Plasma 或 KDE 平台主题，则图标主题通过 KDE 的配置系统进行管理。
+
+### 通过文件配置 {#configuration-via-file-1}
+
+编辑`~/.config/kdeglobals`：
+
+```ini
+[Icons]
+Theme=Papirus-Dark
+```
+
+## 安装图标主题 {#installing-icon-themes-1}
+
+图标主题可以在系统范围内安装或按用户安装。
+
+### 系统范围内的安装 {#system-wide-installation}
+
+```bash
+# Arch
+sudo pacman -S papirus-icon-theme
+sudo pacman -S breeze-icons
+sudo pacman -S adwaita-icon-theme
+
+# Fedora
+sudo dnf install papirus-icon-theme
+sudo dnf install breeze-icon-theme
+sudo dnf install adwaita-icon-theme
+```
+
+### 每用户安装 {#per-user-installation}
+
+下载图标主题并解压到`~/.local/share/icons/`：
+
+```bash
+# Example: Installing from a downloaded archive
+mkdir -p ~/.local/share/icons
+cd ~/.local/share/icons
+tar xf ~/Downloads/Papirus-Dark.tar.gz
+```
+
+### Flatpak 图标主题 {#flatpak-icon-themes}
+
+Flatpak 应用程序使用 Flatpak 运行时的图标主题：
+
+```bash
+# List available icon theme extensions
+flatpak search icon
+
+# Install Papirus for Flatpak apps
+flatpak install flathub org.kde.PaplirusIconTheme
+```
+
+## 验证您的配置 {#verifying-your-configuration}
+
+检查您当前使用的平台主题：
+
+```bash
+echo $QT_QPA_PLATFORMTHEME
+```
+
+:::tip[DankInstall 用户]
+
+dankinstall 将 `QT_QPA_PLATFORMTHEME=gtk3` 设置为 `~/.config/environment.d/90-dms.conf`。检查此文件以查看您当前的设置。您还可以使用 `systemctl --user edit dms` 覆盖此每个服务（仅影响 DMS 及其启动的应用程序）。
+
+:::
+
+:::note
+
+该变量必须暴露给 `dms` 进程。 dankinstall 用户在 `~/.config/environment.d/90-dms.conf` 中有这个。手动设置通常在合成器配置、自定义环境.d 文件中或通过 `systemctl --user edit dms` 进行设置（仅影响 DMS 及其启动的应用程序）。
+
+:::
+
+检查每个配置的图标主题：
+
+```bash
+# GTK configuration
+cat ~/.config/gtk-3.0/settings.ini | grep icon-theme
+
+# qt6ct configuration
+cat ~/.config/qt6ct/qt6ct.conf | grep icon_theme
+
+# KDE configuration
+cat ~/.config/kdeglobals | grep -A 1 "\[Icons\]"
+```
+
+## 常用图标主题推荐 {#common-icon-theme-recommendations}
+
+### 材料设计风格 {#material-design-style}
+- **Papirus** / **Papirus-Dark**：最受欢迎，覆盖范围极广
+- **Tela**：现代、色彩丰富的图标，具有良好的应用程序覆盖率
+
+### Gnome 或 KDE 风格 {#gnome-or-kde-style}
+- **Adwaita**：GNOME 的默认设置，干净简单
+- **breeze**：KDE 默认的专业外观
+
+## 故障排除 {#troubleshooting}
+
+### 图标没有改变 {#icons-not-changing}
+
+确保您在更改图标主题后重新启动了应用程序。 Qt 应用程序缓存图标信息，需要重新启动。
+
+```bash
+# Restart DMS to apply icon theme changes
+dms restart
+```
+
+### 缺少图标 {#missing-icons}
+
+如果主题不包含所有必需的图标，某些应用程序可能会显示缺少的图标。安装后备主题：
+
+```bash
+# Arch
+sudo pacman -S adwaita-icon-theme hicolor-icon-theme
+
+# Fedora
+sudo dnf install adwaita-icon-theme hicolor-icon-theme
+```
+
+### 使用了错误的主题 {#wrong-theme-being-used}
+
+验证您的平台主题环境变量是否与您的配置匹配：
+
+```bash
+# Check current setting
+echo $QT_QPA_PLATFORMTHEME
+```
+
+如果更改 `QT_QPA_PLATFORMTHEME`，则必须重新启动合成器会话才能使更改生效。
+
+### qt6ct 没有显示主题 {#qt6ct-shows-no-themes}
+
+如果 qt6ct 显示空的图标主题列表，请检查图标主题是否安装在正确的位置：
+
+```bash
+# Check system icon themes
+ls /usr/share/icons/
+
+# Check user icon themes
+ls ~/.local/share/icons/
+```
+
+### 使用不同图标的 Flatpak 应用程序 {#flatpak-apps-using-different-icons}
+
+Flatpak 应用程序在沙盒环境中运行，可能看不到您的系统图标主题。通过 Flatpak 安装图标主题：
+
+```bash
+flatpak install flathub org.kde.PaplirusIconTheme
+```
+
+## 平台主题比较 {#platform-theme-comparison}
+
+|特色 | GTK3 | qt6ct | KDE |
+|---------|------|-------|-----|
+| **配置文件** | `~/.config/gtk-3.0/settings.ini` | `~/.config/qt6ct/qt6ct.conf` | `~/.config/kdeglobals` |
+| **图形用户界面工具** | GNOME 设置，nwg-look | `qt6ct` |系统设置|
+| **最适合** | GTK 重型桌面 |混合 Qt/GTK | KDE Plasma 用户 |
+| **图标缓存** | GTK 图标缓存 | Qt 图标缓存 | KDE 图标缓存 |
+
+## 相关文档 {#related-documentation}
+
+- [应用程序主题](/docs/dankmaterialshell/application-themes)：为 GTK 和 Qt 应用程序配置颜色主题
+- [自定义主题](/docs/dankmaterialshell/custom-themes)：创建自定义DMS主题

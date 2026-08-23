@@ -1,0 +1,228 @@
+---
+title: DankInstall
+description: 完整 Dank Linux 套件的交互式安装程序
+sidebar_position: 2.5
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝`}
+  hideTitle={true}
+/>
+
+`dankinstall` 设置完整的 [DankMaterialShell](./dankmaterialshell/overview.mdx) 桌面体验 - 壁纸、自动主题、通知、锁定屏幕以及您期望从现代桌面获得的所有其他内容。它为您的合成器和终端安装软件包并配置用户级设置。如果您已经设置了 niri 或 Hyprland，dankinstall 可以解决您现有的配置（并且始终在进行更改之前备份）。
+
+## 快速入门 {#quickstart}
+
+```bash
+curl -fsSL https://install.danklinux.com | sh
+```
+
+:::tip
+
+安装程序是交互式的，可指导您完成发行版的设置。您还可以手动下载[最新版本](https://github.com/AvengeMedia/DankMaterialShell/releases)。
+
+:::
+
+## 无头安装 {#headless-install}
+
+通过 `--compositor`、`--term` 和 `--yes` 无人值守运行 `dankinstall` — 无需 TUI，无提示。对于编写脚本或配置新系统很有用。
+
+```bash
+sudo -v && curl -fsSL https://install.danklinux.com | sh -s -- -c niri -t ghostty -y
+```
+
+无头模式需要缓存的 `sudo` 凭证。首先运行 `sudo -v`，或者为您的用户配置无密码 sudo — 否则在执行任何操作之前都会出错。
+
+### 选项 {#flags}
+
+|选项|短|描述 |
+|------|-------|-------------|
+| `--compositor <niri\|hyprland>` | `-c` |要安装的合成器。需要无头。 |
+| `--term <ghostty\|kitty\|alacritty>` | `-t` |要安装的终端。需要无头。 |
+| `--yes` | `-y` |无头所需 — 确认安装而不提示。 |
+| `--include-deps <name,...>` | |启用默认情况下关闭的可选依赖项（例如 `dms-greeter`）。 |
+| `--exclude-deps <name,...>` | |跳过特定部门。 |
+| `--replace-configs <name,...>` | |仅替换列出的配置：`niri`、`hyprland`、`ghostty`、`kitty`、`alacritty`。 |
+| `--replace-configs-all` | |替换所有配置。与 `--replace-configs` 互斥。 |
+
+默认情况下，现有的合成器和终端配置保持不变 - 传递 `--replace-configs` 标志之一来更改它。始终部署缺少的配置。在进行任何替换之前都会备份现有文件。
+
+启用欢迎程序并替换所有配置的示例：
+
+```bash
+sudo -v && curl -fsSL https://install.danklinux.com | sh -s -- \
+  -c hyprland -t kitty --include-deps dms-greeter --replace-configs-all -y
+```
+
+:::info[日志]
+
+日志写入`/tmp/dankinstall-<timestamp>.log`。设置 `DANKINSTALL_LOG_DIR` 以覆盖该目录。
+
+:::
+
+## 安装了什么 {#what-gets-installed}
+
+### 核心组件 {#core-components}
+- **[DankMaterialShell](./dankmaterialshell/overview.mdx)** - 使用 Quickshell 和 Go 构建的桌面 shell。
+- **合成器** - 您选择 [niri](https://github.com/niri-wm/niri) 或 [Hyprland](https://hypr.land)
+- **终端** - Ghostty，可选择 Kitty 和 Alacritty
+- **dms CLI** - 提供 dbus API、插件管理和 Wayland 协议实现的后端服务
+
+### 桌面实用程序 {#desktop-utilities}
+- **quickshell** - 为 DMS 提供支持的基于 QML 的 shell 框架
+- **matugen** - 自动主题引擎，可从壁纸生成配色方案
+- **dgop** - 系统资源监控（CPU、RAM、GPU、温度）
+- **dsearch** - 极快的文件系统搜索。
+- **cliphist** - 剪贴板历史记录管理器
+- **wl-clipboard** - Wayland 的剪贴板实用程序
+
+### 系统包 {#system-packages}
+构建依赖项：git、jq、curl、wget、go、cmake、rustup。确切的软件包列表因发行版而异。
+
+## 支持的发行版 {#supported-distributions}
+
+### Arch Linux 及其衍生版 {#arch-linux--derivatives}
+
+**支持：** Arch、ArchARM、Archcraft、CachyOS、EndeavourOS、Manjaro
+
+使用 `pacman` 获取官方存储库中的系统包，包括来自 extra 的 `dms-shell` 。使用 `makepkg` 从 AUR 构建 Quickshell、matugen（预编译的二进制文件）和 dgop - 无需 AUR 帮助程序。 niri 和 hyprland 可在官方仓库中找到。
+
+如果您使用 archinstall，则用于网络的 `minimal` 配置文件和 `NetworkManager` 是一个很好的起点。
+
+### Fedora 及其衍生版 {#fedora--derivatives}
+
+**支持：** Fedora、Nobara、Fedora Asahi Remix
+
+几乎所有内容都来自官方存储库或 COPR 存储库（`avengemedia/danklinux`、`avengemedia/dms`、`solopasha/hyprland`、`niri-wm/niri`）。只有 dgop 需要使用 Go 从源代码构建。
+
+dankinstall 在 Workstation Edition 上进行了测试，但在任何 Fedora 版本上都应该可以正常工作。
+
+### Ubuntu {#ubuntu}
+
+**支持：** Ubuntu 26.04 LTS+ (Resolute Raccoon)
+
+软件包来自 [DankLinux PPA](./danklinux#ubuntu) (`ppa:avengemedia/danklinux`)。 Hyprland来自`ppa:cppiber/hyprland`。
+
+### Debian {#debian}
+
+**支持：** Debian 13+ (Trixie)、Debian 测试、Debian Sid
+
+软件包来自 [DankLinux OBS 存储库](./danklinux#debian)。 **仅限 niri** - Debian 还没有 Hyprland 软件包。
+
+### openSUSE Tumbleweed {#opensuse-tumbleweed}
+
+开箱即用的包装可用性良好。 niri、hyprland、ghostty 和大多数工具都在标准存储库中。其他软件包来自 [DankLinux OBS 存储库](./danklinux#opensuse)。
+
+### Gentoo {#gentoo}
+
+:::warning
+
+Gentoo 需要安装 **systemd**。不支持 OpenRC。
+
+:::
+
+**特别说明：**
+- Gentoo 安装**高度可变**并且特定于用户，不能保证成功。
+- `dankinstall` 最有可能在新的 stage3/systemd 系统上取得成功
+- 使用带有 GURU 覆盖的 Portage 包管理器来获取其他包
+- 自动配置`/etc/portage/make.conf`中的全局USE标志
+- 将创建或附加到您现有的 USE 标志。
+- 自动配置 `/etc/portage/package.use/danklinux` 中特定于包的 USE 标志
+- 根据需要使用 `/etc/portage/package.accept_keywords/danklinux` 中的架构关键字取消屏蔽软件包
+- 动态支持`amd64`和`arm64`架构
+- 如果不使用bin包，请做好编译时间较长的准备
+- **Ghostty** 已从选项中删除，因为其编译时间极长
+
+**包来源：**
+|套餐 |来源 |笔记|
+|---------|---------|-------|
+|系统包（git等）|官方仓库 |通过 `emerge` |
+| niri | GURU overlay | 启用 dbus 和 screencast USE 标志 |
+|海普兰德 |官方仓库（GURU for -git）|取决于变体选择，带有 X USE 标志 |
+| quickshell | GURU overlay | 始终使用 live ebuild（`**` 关键字），完整功能集 |
+| matugen | GURU overlay | 配色生成工具 |
+| cliphist | GURU overlay | 剪贴板管理器 |
+| xdg-桌面-portal-gtk |官方仓库 |带有 Wayland 和 X USE 标志 |
+|伴侣波尔基特 |官方仓库 | PolicyKit 身份验证代理 |
+|账户服务 |官方仓库 |用户账户管理 |
+|德戈普 |手册|使用 Go 从源代码构建 |
+| xwayland 卫星 |手册|对于 niri X11 应用程序支持 |
+| DankMaterialShell |手册| Git 克隆到 `~/.config/quickshell/dms` |
+
+**全局使用标志：**
+`dbus udev alsa policykit jpeg png webp gif tiff svg brotli gdbm accessibility gtk qt6 egl gbm`
+
+**特定于包的使用标志：**
+- `sys-apps/xdg-desktop-portal-gtk`：韦兰X
+- `gui-wm/niri`：dbus 截屏视频
+- `gui-wm/hyprland`：X
+- `dev-qt/qtbase`：wayland opengl vulkan 小部件
+- `dev-qt/qtdeclarative`：opengl vulkan
+- `media-libs/mesa`：opengl vulkan
+- `gui-apps/quickshell`：breakpad jemalloc 套接字 wayland 层外壳会话锁顶级管理 screencopy X 管道线托盘 mpris pam hyprland hyprland-global-shortcuts hyprland-focus-grab i3 i3-ipc 蓝牙
+
+## 手动构建怎么样？ {#what-about-manual-building}
+
+大多数发行版现在都通过 [DankLinux 存储库](./danklinux) 提供了预构建的软件包。安装程序会自动处理任何剩余的构建：
+
+- **dgop** - 在发行版上从 Go 源代码构建，没有软件包。安装到 `/usr/local/bin`。
+- **Gentoo** - 仍然通过 Portage 从源代码构建大多数软件包（见上文）。
+
+## 管理您的设置 {#managing-your-setup}
+
+dankinstall 默认将 DMS 配置为 **systemd 用户服务**。当您登录时，shell 会自动启动 - 无需向合成器配置添加任何内容。
+
+```bash
+# Restart the shell (works with both systemd and manual setups)
+dms restart
+
+# Check service status
+systemctl --user status dms
+
+# View logs
+journalctl --user -u dms -f
+
+# Interactive management TUI
+dms
+
+# Send IPC commands to running shell
+dms ipc <command>
+```
+
+:::tip
+
+有关在 systemd 和手动启动之间切换、环境变量配置等的详细信息，请参阅[管理您的安装](./dankmaterialshell/managing)。
+
+:::
+
+### 环境变量 {#environment-variables}
+
+dankinstall 使用 Qt/GTK 主题和 Wayland 兼容性的环境变量创建 `~/.config/environment.d/90-dms.conf`。如果您需要更改 Qt 平台主题（例如，从 `gtk3` 切换到 `qt6ct`），请编辑此文件并注销/登录以使更改生效。
+
+您还可以运行 `systemctl --user edit dms` 并在 `[Service]` 下添加 `Environment=VAR=Value` 行。这仅影响 DMS 及其启动的应用程序，而 `90-dms.conf` 适用于所有用户会话。
+
+### 权限提升 {#privilege-escalation}
+
+任何需要 root 的 `dms` CLI 命令（`dankinstall`、`dms greeter sync`、`dms greeter install` 等）在检测到 `sudo` 和 `run0` 时都会提示：
+
+```
+Multiple privilege escalation tools detected:
+  [1] sudo
+  [2] run0
+Choose one [1-2] (default 1, or set DMS_PRIVESC=<tool> to skip)
+```
+
+设置 `DMS_PRIVESC` 固定一个工具并在各处跳过提示：
+
+```bash
+export DMS_PRIVESC=sudo   # or: run0
+```
+
+如果您希望将其永久保存，请将其放入您的 shell 配置文件中（`.bashrc`、`.zshrc` 等）。可选 - 如果仅安装一个工具，则会自动选择它。

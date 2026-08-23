@@ -1,0 +1,230 @@
+---
+title: 变更日志
+description: 最新 DankMaterialShell 稳定版和单点版的发行说明。
+---
+
+# 变更日志 {#changelog}
+
+DankMaterialShell (DMS) v1.5 系列的最新发行说明。请参阅[更新](/blog) 中的原始发布公告。
+
+## v1.5.3 {#v153}
+
+**发布**：2026-07-26
+
+### 特点 {#features}
+- DankCalendar 已作为 Flatpak 在 [Flathub](https://flathub.org/apps/com.danklinux.dankcalendar) 上发布！
+
+```bash
+flatpak install flathub com.danklinux.dankcalendar
+flatpak run com.danklinux.dankcalendar
+```
+
+### 修复 {#fixes}
+- 破折号：修复日历中占位符的颜色标记，以及 @bbedward 导致天气失败的问题 (ad936bf)
+- 系统托盘：通过 @bbedward 修复 vbar 上的菜单定位 (95b120b)
+- 锁定：修复 dpms 淡入淡出表面在解锁后卡住的问题，作者：@bbedward (8477184)
+- polkit：修复 @bbedward 提交的 qs 0.2 弃用中的 DMS_DISABLE_POLKIT 回归 (0381a11)
+- 弹出窗口：通过 @bbedward (accdd09) 的各种弹出窗口修复模糊的生命周期
+- 日历/dcal：修复 @bbedward 的 flatpak 套接字检测 (f457e04)
+- 设置：修复关闭 IPC by @bbedward (f89fb67)
+- 修复（锁定）：保留睡眠抑制剂，直到合成器在#2907中确认@tkroll-ionos的锁定
+- 修复（聚光灯）：通过@Legend-017在#2887中改进文件搜索查询恢复和模式切换
+- 修复：在 #2872 中 @NeoDarkness 将 Hyprland 包含在最小安装逻辑中
+- 网络：通过 @bbedward 修复网络首选项从 eth 恢复为 wifi (5a80a32)
+- cups：修复@bbedward 的初始化竞赛（3927886）
+- 修复（设置）：在关闭时重置 AppBrowserPopup 模型以避免崩溃（@feng-yifan 在 #2925 中）
+- dbar/通知：修复右键单击上下文菜单位置并添加中键单击至 DnD by @bbedward (6c27b92)
+- dbar：修复中心部分的点击掩码，作者：@bbedward (d2b61b9)
+- 杯赛：通过@bbedward (7058b00) 修复 sub/unsub 比赛
+- sysupdate：修复 gnome-terminal 标题 by @bbedward (45cf6ec)
+
+### 其他变化 {#other-changes}
+- 锁：当锁表面被 @bbedward (876ead6) 拒绝时增加弹性
+- matugen/neovim：尊重 TerminalAlwaysDark，作者：@bbedward (7b08e61)
+- powermenu：除了挂起和休眠之外的操作不需要释放按键，@bbedward (110396c)
+- 主题：将完整的主题目录放入 neovim 下拉列表中，作者：@bbedward (6061157)
+- matugen：通过 @bbedward 从 gtk light 中删除填充 0 (e5eff91)
+- 芒果：通过@bbedward (bf5faf7) 抑制过多的重新加载消息
+- matugen：添加配置目录以检测 @bbedward 的存在（4dd2f1d）
+- 音频：恢复 wpctl 解决方法 @bbedward (ed5e2a2)
+- compositor/toplevels：在屏幕上过滤通用合成器，没有工作区区分，作者：@bbedward (4975960)
+- 锁：避免锁表面搅动@bbedward (2e0337b)
+- 壁纸：使用 @bbedward 的随机过渡滤镜芯片 (00c28f6)
+- 位置：当 @bbedward (23daca0) 禁用天气自动定位时，阻止呼叫
+- lock/pam：尝试修复 @bbedward 恢复后 fprintd 重试垃圾邮件 (b72b276)
+- 码头：将输入掩码限制为主体，禁用悬停净空，除非由 @bbedward 启用（f455456）
+- 迎宾员：不要用 @bbedward 保存/默认覆盖手动选择的会话 (8321d28)
+- 锁定：守卫 dpms 窗口，作者：@bbedward (9b55383)
+- 通知：动画退出时剪辑区域，作者：@bbedward (c2a5397)
+- 显示配置：关闭 niri 时保留配置 @bbedward (3d5a6fb)
+- window-rules/niri：使浮动成为三态 by @bbedward (a64bd80)
+- 电池：当 DMS 由 @bbedward 管理时，启动时自动应用电源配置文件 (906eba5)
+- 抄送：通过@bbedward将一些设置迁移到缓存（e15db00）
+- 蓝牙：添加软 rfkill 解锁，等待适配器变得可用，而不是放弃 @bbedward 的订阅 (c58d55d)
+- 停靠：在停靠项目委托中使用所需的属性，通过 @bbedward 在 #2926 中修复了 Qt 6.8 上的上下文注入
+- 端口：记录 @bbedward (6ba4b79) 手动移植的主版本
+
+**GitHub 发布**：https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.5.3
+
+---
+
+## v1.5.2 {#v152}
+
+**发布**：2026-07-17
+
+### 发生了什么变化 {#whats-changed}
+
+### 特点 {#features-1}
+- feat(auth)：通过 @Purian23 (c2a6a7a) 扩展对自定义策略的共享 PAM 支持
+- 壮举（设置）：添加显式边框切换和更新布局由@Purian23（dac08b3）
+- 壮举（通知）：引入@Purian23（63ffd7c）覆盖的通知前景层设置
+- feat(nix)：选择加入用于锁定屏幕安全密钥的 dankshell-u2f PAM 服务，作者：@Purian23 (85ebb40)
+
+### 修复 {#fixes-1}
+- 修复（媒体播放器）：通过 @Purian23 更新 Mpris 稳定元数据处理（a55177f）
+- 修复（qml）：解决 @Purian23 异步 shell 加载带来的 lint 回归（b17ef80）
+- 启动器：通过添加 @bbedward 的防护来修复使用历史加载（841167a）
+- 核心：修复日志文件死锁，作者：@bbedward (7ab1f6a)
+- 破折号/天气：通过 @bbedward 修复 X 滚轮滚动 (65f4a9a)
+- 启动器：修复粘性标题外观，不模糊，作者：@bbedward (64ba1fb)
+- 修复（DankSlideout）：通过@Purian23更新textureSize以改进渲染（986a6e0）
+- bar：修复由 @bbedward 异步加载导致的 bar 订单创建回归 (7d6a7ba)
+- 修复（网络）：通过@bbedward设置自动连接时取消飞行中的连接（26d429f）
+- 修复（帧）：通过 @Purian23 在帧模式下恢复帧边缘插入状态回归（9853e14）
+- 小部件：修复隐藏小部件在排列小部件时破坏索引的问题（f1f528b）
+
+### 国际化 {#internationalization}
+- i18n：保留 @bbedward 的 1.5 点版本的条款 (e7b8196)
+
+### 其他变化 {#other-changes-1}
+- 重构：更新工作流程和问题说明 @Purian23 (3d0ce17)
+- 弹出：防止不良状态并在关闭端口 1.5 上重置输入法，作者：@bbedward (59164cb)
+- 启动器：当@bbedward启用模糊时透明粘性标题（ab9df79）
+- sysupdate：通过 @bbedward 将自定义命令传递给守护进程，而不是从 QML 中“fire andforget”（8ba5e1a）
+- sysupdate：不允许在 arch 上进行部分更新，通过 @bbedward 添加忽略到弹出窗口（ad5a96d）
+- sysupdate：通过@bbedward (fd20cce) 调整被忽略横幅的样式
+- 壁纸：优化模糊壁纸层，作者：@bbedward (840a448)
+- 屏幕截图：@bbedward 对滚动捕获模式的初始支持 (4ff93bf)
+- 锁定：添加lockAndOutputsOff IPC功能@bbedward (89895da)
+- 系统徽标：由 @hecknt 在 #2881 中添加锆
+- 媒体：@bbedward (fc11dfb) 对栏小部件动画的进一步优化
+- 重构（auth）：通过 @Purian23 (f37f4a1) 通过 DMS 管理的会话中继发行版系统身份验证
+
+**GitHub 发布**：https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.5.2
+
+---
+
+## v1.5.1 {#v151}
+
+**发布**：2026-07-14
+
+### 发生了什么变化 {#whats-changed-1}
+
+### 特点 {#features-2}
+- feat(void)：通过 @Purian23 (b1beecb) 将软件包存储库切换到 R2
+- 壮举（媒体）：添加切换专辑艺术强调色（＃2831）由@hthienloc在＃2832
+- feat(release)：添加问题通知脚本，用于重新测试 @Purian23 (b5908f4) 的新版本
+- feat(ipc)：添加设置转储以将完整的实时配置打印为 JSON，由 @sweenu 在 #2817 中添加
+- feat(dms updater)：添加对在系统更新期间忽略特定软件包的支持 @Purian23 (e9d958b)
+- 功能/分割移动大小 hyprland windowrules by @Mikilio in #2824
+- 壮举：新的 PAM 身份验证管理和问候语/锁屏设置，作者：@Purian23 (9967db0)
+
+### 修复 {#fixes-2}
+- 修复（通知）：通过@bbedward处理声音名称提示（6d08b91）
+- 修复（工作流程）：@Purian23 无效稳定包（b8f216d）
+- 修复（媒体）：解决@bbedward（302cfda）的单色专辑艺术口音
+- 修复（ListViewTransitions）：当持续时间在#2791中被@14Do截断为0毫秒时，空转换
+- 修复（设置）：@scottmckendry 在 #2794 中搜索不到电池选项卡项目
+- qs/common：修复路径解码修复 #2802 端口 1.5 by @bbedward (bf64451)
+- 小部件：修复下拉菜单/图标选择器引用 @bbedward 的死窗口端口 1.5 (375afaa)
+- 修复（玩家）：将 trackid 与文本标识结合起来（@kanghengliu 在 #2808 中）
+- 修复（通知）：当发件人关闭@atimofeev 在#2815 中的通知时，关闭弹出窗口
+- 修复（void）：更新了 dms-greeter 稳定性支持 @Purian23 (ee84489)
+- 修复（打印机）：修复通过@bbedward手动输入主机的地址添加（c7b58e5）
+- 修复（进程列表）：推迟 IPC 操作，直到 @AiraNadih 在 #2829 中加载模态
+- 修复：使用 DPMS 的 sleep_monitor/wakeup_monitor 来保留 #2842 中的 @A0-42 的监视器布局
+- 修复（dash-tabs）：通过@Purian23更新破折号选项卡元素的可见性逻辑（e29b974）
+- 修复（端口审计）：更新 git fetch 命令以包含 @Purian23 的 prune opt（c0134c2）
+- 修复（破折号）：解决@hthienloc在连接模式下的指针光标悬停问题#2845
+- 核心：修复 @asteroidzman 在 #2805 中后端审计中发现的安全和并发问题
+- 修复了 #2850 中 @Salio24 在 #2627 中提到的蓝牙 UI 错误
+- 码头：修复码头在没有应用程序端口 1.5 时的问题，作者：@bbedward (bd70a62)
+- 修复（Modal）：尊重 targetScreen 属性，而不是始终使用 @hthienloc 在 #2861 中的聚焦屏幕
+- 杂务：修复 niri 媒体键绑定中的缩进。通过 @Alexis12119 在 #2858
+- 媒体：通过 @bbedward (deb0138) 修复 chrome 中的轨道艺术 Flash，更改轨道更改上的媒体艺术尺寸
+- 修复（greeter）：通过@Purian23重新实现回归以在登录期间隐藏调试日志（6b70491）
+- gamma：修复调度程序在挂起期间丢失轨道的问题，作者：@bbedward (1105047)
+- tailscale：修复控制中心小部件端口 1.5 样式不一致的问题，作者：@bbedward (3b1a3c1)
+
+### 国际化 {#internationalization-1}
+- i18n：同步@bbedward (acda199)
+- i18n：添加阿拉伯语 @bbedward (7c6ad65)
+- i18n：同步@bbedward (536ebf7)
+- i18n：减少术语并通过 @bbedward 同步 (01c0ed2)
+
+### 其他变化 {#other-changes-2}
+- 默认应用程序：添加地理配置：URIs by @bbedward (e84e63f)
+- 添加用于发布管理的 GitHub 工作流程 @Purian23 (95c8cc8)
+- 工作流程：通过@Purian23 (067d01f) 更新移植逻辑
+- 工作流程：通过@Purian23 (fa26dbb) 更新部门
+- auth：为锁定屏幕和问候语相关添加一些更智能的 pam 配置分辨率#2789 by @bbedward (c86676d)
+- 网络/iwd：通过@bbedward (b834e82) 改进不良凭证处理
+- 设置：恢复丢失的几何居中选项端口 1.5 by @bbedward (b95f4cd)
+- 构建：在 #2783 中添加 @EbonJaeger 对 DESTDIR 的支持
+- 日历：向事件添加操作按钮以打开链接修复 #2799 端口 1.5 by @bbedward (c02a24f)
+- 工作流程：由 @Purian23 更新了目标提取正则表达式选项 (1d4572a)
+- 工作流程：增强移植逻辑以支持 @Purian23 的内联措辞和审核 (f7d8e2b)
+- 音频：仅通过 DMS IPC 显示麦克风音量 OSD，而不是外部源更改修复 #2790 端口 1.5 by @bbedward (554e55c)
+- OSD/媒体播放：延迟显示，直到专辑封面准备好，并避免在重复元数据来自 @bbedward 的 mpris 相关 #2787 端口 1.5 时重新显示 (fce1a09)
+- 主题：防止失败的门户写入恢复主题模式，作者：@bbedward (fe0214d)
+- ci(void)：通过 @Purian23 (ffd3840) 将 XBPS 存储库发布到 R2
+- 重构（工作流程）：通过 @Purian23 (ee6c91e) 将发布参考更新为 CI 配置中的稳定版本
+- 添加（工作流程）：通过@Purian23（e0fb817）更新notify_issues输入以发布流程
+- dms doctor：当 @Mati7235 在 #2840 安装 KDE 应用程序时检测到缺少的 XDG_MENU_PREFIX
+- 重构（设置）：允许搜索设置保留在侧边栏上，直到被 @Purian23 (6791c20) 取消
+- 重构（debian）：更喜欢 dankinstall 中的原生 Debian Quickshell 稳定包支持，作者：@Purian23 (f7157f0)
+- 时间：添加跟随区域设置选项并压缩单独的问候语时间选项，作者：@bbedward (58530ae)
+- 启动器：不要选择预填充的查询，从内存端口 1.5 中排除 @bbedward (28c25d4)
+- 启动器：将 IPC 功能奇偶校验添加到聚光灯栏并通过 @bbedward (dd9edd8) 改进列表视图转换
+- listview：解决方法代表重叠并使聚光灯启动器具有稳定的锚点，作者：@bbedward (b3a129a)
+- 重构（dms-updater）：删除@Purian23在弹出视图中显示的隐藏更新（4b05e7a）
+- 启动器：添加选项以在 @bbedward (fcda17f) 的 niri 概述上选择聚光灯样式
+- 破折号：允许隐藏所有选项卡 @bbedward (35e35a1)
+- 工作区切换器：修复应用程序图标不会重新聚焦的问题（@arfan21 in #2830）
+- 启动器/聚光灯：通过@bbedward改进高度变化动画（781ed16）
+- config/hyprland：默认设置空 kb 布局字符串修复了 #2851 端口 1.5 by @bbedward (928b272)
+- 剪贴板：当 @bbedward (d87e2fc) 提供两者时，将文本与图像一起存储
+- core/cli：通过 @bbedward (c91cb5d) 公开 QR 码 CLI
+- 插件：使用 @bbedward 的网格样式插件浏览器 (724ee94)
+- @wongcallum 在 #2854 中平滑估计电池剩余时间
+- 插件：通过 @bbedward (bd159be) 不重新创建整个地图来防止守护进程插件的流失
+- cava：优化与 CPU 烧录相关的 #631 by @bbedward (b5b0833)
+- cava：对可视化工具相关的更多优化 #2863 by @bbedward (82d5081)
+- dbar：缺少@bbedward (45cafc6) 搜索索引中的概述显示
+- mango：通过 @bbedward 添加单独的调度套接字 (2e0587c)
+- 问候语：通过@Purian23 (8b46397) 更新成功消息
+- qs：使用异步加载器加载 shell 核心，作者：@bbedward (93120fd)
+- 网络：通过@bbedward (9e2d493) 加载时避免掉入旧版服务
+- 由 @Purian23 (9e7fc83) 更新版本和变更日志文档格式
+- 屏幕截图：添加 --json 标志以捕获 @bbedward 的元数据 (c4bca6f)
+- qs：通过 @bbedward (e94fc7f) 改进壁纸、扩展坞和桌面插件的初始加载
+- 合成器：通过@bbedward (b708e97) 改进合成器检测
+- hyprland：比例概览显示相对于@bbedward 的实际比例（970262f）
+- 电池：不要缩放值并扭曲实际电池值修复#2867 by @bbedward (883a787)
+- 媒体：节流媒体相关动画的帧速率，作者：@bbedward (815820a)
+- 系统托盘：修复菜单溢出问题，作者：@bbedward (db9fb0b)
+- 重构：通过 @Purian23 将媒体控制调用统一到 MprisController 同步 (eca9289)
+
+**GitHub 发布**：https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.5.1
+
+## DMS v1.5“金刚狼” {#dms-v15-the-wolverine}
+
+**发布**：2026-06-23
+
+第四个主要版本。框架模式、DankCalendar 集成、Hyprland Lua
+配置和数百个修复。阅读[公告全文](/blog/v1-5-release)。
+
+---
+
+寻找更旧的东西？每个版本，包括完整的二进制文件和
+校验和，位于 [GitHub 版本](https://github.com/AvengeMedia/DankMaterialShell/releases)。

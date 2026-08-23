@@ -1,0 +1,1067 @@
+---
+title: 按键绑定和 IPC
+description: 用于 DankMaterialShell 外部控制的全面 IPC 功能
+sidebar_position: 5
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 提供全面的 IPC（进程间通信）功能，允许通过命令行命令对 shell 进行外部控制。所有 IPC 命令都遵循以下格式：
+
+```bash
+dms ipc call <target> <function> [parameters...]
+```
+
+## 发现IPC命令 {#discovering-ipc-commands}
+
+列出 DMS 运行时所有可用的目标和函数：
+
+```bash
+dms ipc list     # list all targets and functions
+dms ipc          # same
+dms ipc --help   # same, plus usage text
+```
+
+:::note
+实时列表需要 DMS 运行。如果列出失败，请使用此页面作为离线参考或使用 `dms run` 启动 shell。
+:::
+
+## 核心控制 {#core-controls}
+
+### 音频 {#audio}
+
+管理音频输出和输入设备。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `setvolume <percentage>` |设置输出音量 |百分比 (0-100) |
+| `increment <step>` |增加输出音量 |步骤（默认：5）|
+| `decrement <step>` |降低输出音量 |步骤（默认：5）|
+| `mute` |切换输出静音 | - |
+| `setmic <percentage>` |设置麦克风音量 |百分比 (0-100) |
+| `micmute` |切换麦克风静音 | - |
+| `cycleoutput` |循环切换音频输出设备 | - |
+| `status` |获取当前音频状态 | - |
+
+**示例：**
+```bash
+dms ipc call audio setvolume 50
+dms ipc call audio increment 10
+dms ipc call audio mute
+dms ipc call audio cycleoutput
+```
+
+:::note
+`audio setmic` 和 `audio micmute` 仍可用于向后兼容，但新脚本和按键绑定应使用下面的专用 [`mic`](#mic) 目标。
+:::
+
+### 麦克风 {#mic}
+
+具有交互式 OSD 支持的专用麦克风输入控制。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `setvolume <percentage>` |设置麦克风音量 |百分比 (0-100) |
+| `increment <step>` |增加麦克风音量（如果静音则取消静音）|步骤（默认：5）|
+| `decrement <step>` |降低麦克风音量（如果静音则取消静音）|步骤（默认：5）|
+| `mute` |切换麦克风静音 | - |
+| `status` |获取当前麦克风音量和静音状态 | - |
+
+**示例：**
+```bash
+dms ipc call mic setvolume 75
+dms ipc call mic increment 5
+dms ipc call mic decrement 10
+dms ipc call mic mute
+dms ipc call mic status
+```
+
+**注释：**
+- 调整麦克风音量会触发交互式 OSD（当 `osdMicVolumeEnabled` 开启时），带有可拖动滑块和静音开关，镜像扬声器音量 OSD。
+- `increment` 和 `decrement` 在更改级别之前自动取消麦克风静音。
+
+### 亮度 {#brightness}
+
+控制内部和外部显示器的显示亮度。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `set <percentage> [device]` |设置亮度级别 |百分比（1-100），设备（可选）|
+| `increment <step> [device]` |增加亮度|步骤、设备（可选）|
+| `decrement <step> [device]` |降低亮度 |步骤、设备（可选）|
+| `status` |获取当前亮度状态 | - |
+| `list` |列出所有亮度设备 | - |
+| `enableExponential [device]` |启用指数亮度模式 |设备（可选，如果未指定则使用电流）|
+| `disableExponential [device]` |禁用指数亮度模式 |设备（可选，如果未指定则使用电流）|
+| `toggleExponential [device]` |切换指数亮度模式 |设备（可选，如果未指定则使用电流）|
+
+**示例：**
+```bash
+dms ipc call brightness set 80
+dms ipc call brightness increment 10 ""
+dms ipc call brightness decrement 5 "intel_backlight"
+dms ipc call brightness disableExponential "backlight:intel_backlight"
+dms ipc call brightness toggleExponential
+```
+
+### 晚上 {#night}
+
+夜间模式（伽玛/色温）控制。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `toggle` |打开/关闭夜间模式| - |
+| `enable` |启用夜间模式 | - |
+| `disable` |禁用夜间模式 | - |
+| `status` |获取夜间模式状态 | - |
+| `getCurrentTemp` |获取实时伽马温度 | - |
+| `getTargetTemp` |获取配置的夜间温度 | - |
+| `getDayTemp` |获取配置的日间温度 | - |
+| `setTargetTemp <value>` |设置夜间温度 |开尔文值 (2500-6000) |
+| `setDayTemp <value>` |设置日间温度（自动化开启时适用）|开尔文值 (2500-6000) |
+| `getSchedule` |获取自动化详细信息（模式、周期、日照时间、下一次转换）| - |
+| `automation [mode]` |获取/设置自动化模式 | “手动”、“时间”或“位置”（可选）|
+| `schedule <start> <end>` |设置基于时间的时间表 |开始时间 (HH:MM)、结束时间 (HH:MM) |
+| `location <lat> <lon>` |设置位置坐标|纬度、经度 |
+
+**示例：**
+```bash
+dms ipc call night toggle
+dms ipc call night getCurrentTemp
+dms ipc call night setTargetTemp 4000
+dms ipc call night setDayTemp 5500
+dms ipc call night getSchedule
+dms ipc call night automation time
+dms ipc call night schedule 20:00 06:00
+dms ipc call night location 40.7128 -74.0060
+```
+
+### mpris {#mpris}
+
+通过 MPRIS 接口控制媒体播放器。
+
+|功能|描述 |
+| --- | --- |
+| `list` |列出所有可用的媒体播放器 |
+| `play` |开始播放 |
+| `pause` |暂停播放 |
+| `playPause` |切换播放/暂停 |
+| `previous` |跳至上一曲目 |
+| `next` |跳至下一首曲目 |
+| `stop` |停止播放 |
+
+**示例：**
+```bash
+dms ipc call mpris playPause
+dms ipc call mpris next
+```
+
+### 锁 {#lock}
+
+屏幕锁定控制和状态。
+
+|功能|描述 |
+| --- | --- |
+| `lock` |立即锁定屏幕 |
+| `lockAndOutputsOff` |锁定屏幕，淡入黑色，然后关闭显示器电源（GNOME Super+L 风格）。任何输入都会取消淡入淡出或唤醒显示器；淡入淡出持续时间遵循淡入淡出至 DPMS 宽限期设置。 |
+| `demo` |显示锁屏演示（不锁定）|
+| `isLocked` |检查屏幕是否锁定 |
+
+**示例：**
+```bash
+dms ipc call lock lock
+dms ipc call lock lockAndOutputsOff
+dms ipc call lock isLocked
+```
+
+### 会议 {#sessions}
+
+在当前席位上已运行的登录会话之间切换。包裹 `loginctl list-sessions` 和 `loginctl activate`。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `list` |将会话列为制表符分隔行（当前标记为 `*current*`）| - |
+| `refresh` |在后台重新枚举会话 | - |
+| `open` |刷新并打开“切换用户”选择器 | - |
+| `activate <sessionId>` |通过数字登录 ID 激活会话 |会话 ID |
+| `switchTo <target>` |通过用户名或会话 ID 激活会话 |目标（用户名或会话 ID）|
+
+**示例：**
+```bash
+# See what's switchable
+dms ipc call sessions list
+
+# Open the Switch User picker (good for a keybind)
+dms ipc call sessions open
+
+# Jump straight to another logged-in user
+dms ipc call sessions switchTo testuser2
+
+# Or by session ID
+dms ipc call sessions activate 4
+```
+
+:::note
+这仅在当前席位上“已存在”的会话之间切换。为未登录的用户创建全新会话需要多会话欢迎器（greetd-flexiserver / GDM / LightDM）；选择器的空状态提供了注销回退以联系迎宾员。
+:::
+
+当没有目标匹配时，`dms switch-user [target]` CLI 命令会使用更友好的交互列表包装相同的调用。
+
+### 抑制 {#inhibit}
+
+空闲抑制器控制可防止自动睡眠/锁定。
+
+|功能|描述 |
+| --- | --- |
+| `toggle` |切换空闲禁止状态|
+| `enable` |启用空闲抑制（防止睡眠）|
+| `disable` |禁用空闲抑制（允许睡眠）|
+
+**示例：**
+```bash
+dms ipc call inhibit toggle
+dms ipc call inhibit enable
+```
+
+### 电源配置文件 {#powerprofile}
+
+通过 PowerProfiles D-Bus 接口进行电源配置控制。更改与 DMS UI 保持同步，并在“设置”→“OSD”中启用时触发电源配置文件 OSD。
+
+需要安装并运行 `power-profiles-daemon` 或 `tuned` 和 `tuned-ppd`。适用于所有合成器。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open` |显示电源配置文件选择器模式 | - |
+| `close` |关闭电源配置文件选择器模式 | - |
+| `toggle` |切换电源配置文件选择器模态可见性 | - |
+| `list` |列出可用的配置文件段（每行一个）| - |
+| `status` |获取当前活动的配置文件 slug | - |
+| `set <profile>` |设置有功功率配置文件 | slug 或别名（见下文）|
+| `cycle` |循环到下一个可用的配置文件 | - |
+
+**`set` 的配置文件段和别名：**
+- `power-saver` — 还有 `powersaver`、`saver`、`0`
+- `balanced` — 也 `1`
+- `performance` — 以及 `2`（仅当硬件支持时）
+
+**循环顺序：** `power-saver` → `balanced` → `performance` → `power-saver`（跳过您的硬件上不可用的配置文件）。
+
+**示例：**
+```bash
+dms ipc call powerprofile status
+dms ipc call powerprofile list
+dms ipc call powerprofile cycle
+dms ipc call powerprofile set balanced
+dms ipc call powerprofile set performance
+dms ipc call powerprofile toggle
+```
+
+**注释：**
+- `list` 仅返回系统上可用的配置文件（不支持时忽略性能）
+- `status` 返回当前的段：`power-saver`、`balanced` 或 `performance`
+- 当没有 PowerProfiles 守护程序（`power-profiles-daemon` 或 `tuned-ppd`）运行时，返回 `ERROR: power-profiles-daemon not available`
+- 如果无法应用配置文件更改，则返回 `ERROR: Failed to set power profile`
+
+## 壁纸和个人资料 {#wallpaper--profile}
+
+### 壁纸 {#wallpaper}
+
+壁纸管理支持全局和每显示器配置。
+
+#### 全局壁纸功能 {#global-wallpaper-functions}
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `get` |获取当前壁纸路径| - |
+| `set <path>` |设置壁纸|图像文件路径 |
+| `clear` |清除所有壁纸 | - |
+| `next` |循环到下一张壁纸| - |
+| `prev` |循环到上一张壁纸 | - |
+
+#### 每个监视器的功能 {#per-monitor-functions}
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `getFor <screen>` |获取显示器壁纸 |显示器名称（例如“DP-2”）|
+| `setFor <screen> <path>` |设置显示器壁纸|显示器名称、图像路径 |
+| `nextFor <screen>` |循环到下一张壁纸|显示器名称 |
+| `prevFor <screen>` |循环到上一张壁纸|显示器名称 |
+
+**示例：**
+```bash
+# Global wallpaper mode
+dms ipc call wallpaper set /path/to/image.jpg
+dms ipc call wallpaper next
+
+# Per-monitor wallpaper mode
+dms ipc call wallpaper setFor DP-2 /path/to/image1.jpg
+dms ipc call wallpaper setFor eDP-1 /path/to/image2.jpg
+dms ipc call wallpaper nextFor eDP-1
+
+# Clear and return to global mode
+dms ipc call wallpaper clear
+```
+
+**注意：** 启用每监视器模式时，旧版全局函数将返回错误消息，指导您使用每监视器等效项。
+
+### 个人资料 {#profile}
+
+用户个人资料图像管理。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `getImage` |获取当前头像路径 | - |
+| `setImage <path>` |设置个人资料图片 |图像文件路径 |
+| `clearImage` |清晰的个人资料图片 | - |
+
+**示例：**
+```bash
+dms ipc call profile setImage /path/to/avatar.png
+dms ipc call profile clearImage
+```
+
+## 外观控制 {#appearance-controls}
+
+### 主题 {#theme}
+
+主题模式控制（亮/暗模式切换）。
+
+|功能|描述 |
+| --- | --- |
+| `toggle` |在浅色和深色主题之间切换 |
+| `light` |切换到浅色主题 |
+| `dark` |切换到深色主题 |
+| `getMode` |获取当前主题模式 |
+
+**示例：**
+```bash
+dms ipc call theme toggle
+dms ipc call theme dark
+```
+
+### 酒吧 {#bar}
+
+使用灵活的选择器控制各个条。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `reveal <selector> <value>` |显示酒吧 |选择器 + 值 |
+| `hide <selector> <value>` |隐藏酒吧 |选择器 + 值 |
+| `toggle <selector> <value>` |切换栏可见性 |选择器 + 值 |
+| `status <selector> <value>` |获取酒吧可见性状态 |选择器 + 值 |
+| `autoHide <selector> <value>` |启用自动隐藏模式 |选择器 + 值 |
+| `manualHide <selector> <value>` |禁用自动隐藏模式 |选择器 + 值 |
+| `toggleAutoHide <selector> <value>` |切换自动隐藏模式 |选择器 + 值 |
+| `toggleReveal <selector> <value>` |切换自动隐藏栏的运行时显示/隐藏状态 |选择器 + 值 |
+| `getPosition <selector> <value>` |获取酒吧位置 |选择器 + 值 |
+| `setPosition <selector> <value> <position>` |设置栏位置|选择器 + 值 + 位置（上、下、左、右）|
+
+**注意：** `toggleReveal` 仅影响启用了自动隐藏的栏。将指针移动到栏显示区域会清除 IPC 显示状态，并且手控将恢复到正常的悬停自动隐藏行为。
+
+**选择器：**
+- `index` - 按位置选择（从 0 开始）
+- `id` - 通过唯一的条 ID 选择
+- `name` - 按酒吧名称选择
+
+**示例：**
+```bash
+# By index
+dms ipc call bar hide index 0
+dms ipc call bar reveal index 1
+dms ipc call bar toggle index 0
+
+# By name
+dms ipc call bar toggle name "Main Bar"
+dms ipc call bar status name "Secondary"
+
+# By ID
+dms ipc call bar reveal id abc123
+
+# Auto-hide controls
+dms ipc call bar autoHide index 0
+dms ipc call bar manualHide name "Main Bar"
+dms ipc call bar toggleAutoHide index 1
+dms ipc call bar toggleReveal index 0
+
+# Position controls
+dms ipc call bar getPosition index 0
+dms ipc call bar getPosition id default
+dms ipc call bar setPosition index 0 top
+dms ipc call bar setPosition id default left
+```
+
+### 码头 {#dock}
+
+停靠可见性和行为控制。
+
+|功能|描述 |
+| --- | --- |
+| `reveal` |显示坞站 |
+| `hide` |隐藏扩展坞 |
+| `toggle` |切换停靠栏可见性 |
+| `status` |获取码头可见性状态 |
+| `autoHide` |启用自动隐藏模式 |
+| `manualHide` |禁用自动隐藏模式 |
+| `toggleAutoHide` |切换自动隐藏模式 |
+
+**示例：**
+```bash
+dms ipc call dock toggle
+dms ipc call dock hide
+dms ipc call dock reveal
+dms ipc call dock status
+
+# Auto-hide controls
+dms ipc call dock autoHide
+dms ipc call dock manualHide
+dms ipc call dock toggleAutoHide
+```
+
+### 小部件 {#widget}
+
+控制栏小部件弹出窗口、菜单和可见性（包括插件）。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `toggle <widgetId>` |切换小部件弹出窗口可见性 |小部件 ID |
+| `openWith <widgetId> <mode>` |以特定模式打开小部件弹出窗口 |小部件 ID、模式 |
+| `toggleWith <widgetId> <mode>` |在特定模式下切换小部件弹出窗口 |小部件 ID、模式 |
+| `openQuery <widgetId> <query>` |使用预填充的搜索查询打开小部件弹出窗口 |小部件 ID、查询文本 |
+| `toggleQuery <widgetId> <query>` |使用预填充的搜索查询切换小部件弹出窗口 |小部件 ID、查询文本 |
+| `list` |列出所有已注册的具有可见性状态的小部件 ID | - |
+| `status <widgetId>` |获取小部件弹出窗口可见性状态 |小部件 ID |
+| `visibility <widgetId>` |获取小部件可见性状态 |小部件 ID |
+| `reveal <widgetId>` |强制小部件可见 |小部件 ID |
+| `hide <widgetId>` |强制隐藏小部件 |小部件 ID |
+| `reset <widgetId>` |清除可见性覆盖，恢复正常行为 |小部件 ID |
+
+**示例：**
+```bash
+dms ipc call widget list
+dms ipc call widget toggle clock
+dms ipc call widget status weather
+
+# Open widget popout in a specific mode (e.g., launcher tabs)
+dms ipc call widget openWith launcherButton all
+dms ipc call widget openWith launcherButton files
+dms ipc call widget openWith launcherButton apps
+dms ipc call widget openWith launcherButton plugins
+dms ipc call widget toggleWith launcherButton files
+
+# Open widget popout with a pre-filled search query
+dms ipc call widget openQuery launcherButton "browser"
+dms ipc call widget toggleQuery launcherButton "settings"
+
+# Control widget visibility on the bar
+dms ipc call widget visibility weather
+dms ipc call widget hide weather
+dms ipc call widget reveal weather
+dms ipc call widget reset weather
+```
+
+**注释：**
+- 使用 `list` 发现可用的小部件 ID 及其当前可见性状态（`[visible]` 或 `[hidden]`）
+- 小部件 ID 取决于您的栏设置中启用了哪些小部件
+- `status` 函数返回小部件 **弹出** 状态的“可见”或“隐藏”
+- `visibility`、`reveal`、`hide` 和 `reset` 函数控制小部件的**栏存在**（无论它是否出现在栏上）
+- 插件可以通过 `visibilityCommand` 定义条件可见性 — 使用 `reset` 在覆盖后返回到该行为
+
+## 模态控件 {#modal-controls}
+
+这些目标控制各种模式窗口和叠加层。
+
+### 聚光灯 {#spotlight}
+
+具有搜索功能的应用程序启动器模式。
+
+:::note
+`spotlight` 和 `launcher` 是同义词 - 两个目标都调用相同的启动器模式以实现向后兼容性。
+:::
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open` |显示启动器 | - |
+| `close` |隐藏启动器 | - |
+| `toggle` |切换启动器可见性 | - |
+| `openWith <mode>` |以特定模式打开启动器 | `all`、`apps`、`files`、`plugins` |
+| `toggleWith <mode>` |在特定模式下切换启动器 | `all`、`apps`、`files`、`plugins` |
+| `openQuery <query>` |显示带有搜索的启动器 |搜索文本|
+| `toggleQuery <query>` |切换启动器与搜索 |搜索文本|
+
+**示例：**
+```bash
+dms ipc call spotlight toggle
+dms ipc call spotlight openQuery browser
+dms ipc call spotlight toggleQuery "!"
+dms ipc call spotlight openWith apps
+dms ipc call spotlight toggleWith files
+```
+
+### 聚光灯栏 {#spotlight-bar}
+
+Spotlight Bar——一个紧凑的内联搜索栏，从屏幕顶部中心下拉。专为快速应用程序启动和搜索而设计，无需打开完整的启动器模式。
+
+**默认按键绑定：** `Alt + Space`
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open` |显示聚光灯栏 | - |
+| `close` |隐藏聚光灯栏 | - |
+| `toggle` |切换聚光灯栏| - |
+| `openWith <mode>` |以特定模式打开 Spotlight Bar | `all`、`apps`、`files`、`plugins` |
+| `toggleWith <mode>` |在特定模式下切换聚光灯栏 | `all`、`apps`、`files`、`plugins` |
+| `openQuery <query>` |显示带有搜索的聚光灯栏 |搜索文本|
+| `toggleQuery <query>` |通过搜索切换聚光灯栏 |搜索文本|
+
+**示例：**
+```bash
+dms ipc call spotlight-bar toggle
+dms ipc call spotlight-bar open
+dms ipc call spotlight-bar close
+dms ipc call spotlight-bar openQuery browser
+dms ipc call spotlight-bar toggleQuery "!"
+dms ipc call spotlight-bar openWith apps
+dms ipc call spotlight-bar toggleWith files
+```
+
+### 其他情态动词 {#other-modals}
+
+所有这些模态都支持 `open`、`close` 和 `toggle` 功能：
+
+- **剪贴板** - 剪贴板历史记录管理器
+- **通知** - 通知中心（还支持 `clearAll`、`dismissAllPopups`、`toggleDoNotDisturb`、`getDoNotDisturb`、`enableDoNotDisturbIndefinitely`、`enableDoNotDisturbUntilTomorrowMorning` 和 `enableDoNotDisturbUntil <timestampMs>`）
+- **进程列表** - 系统进程列表和性能监视器（还支持`focusOrToggle`）
+- **powermenu** - 用于系统操作的电源菜单
+- **控制中心** - 快速设置（网络、蓝牙、音频等）
+- **记事本** - 快速记事本/便签本
+
+**示例：**
+```bash
+dms ipc call clipboard toggle
+dms ipc call notifications open
+dms ipc call notifications clearAll
+dms ipc call notifications dismissAllPopups
+dms ipc call notifications toggleDoNotDisturb
+dms ipc call notifications getDoNotDisturb
+dms ipc call notifications enableDoNotDisturbIndefinitely
+dms ipc call notifications enableDoNotDisturbUntilTomorrowMorning
+dms ipc call notifications enableDoNotDisturbUntil 1744819200000
+dms ipc call processlist open
+dms ipc call powermenu toggle
+dms ipc call control-center toggle
+dms ipc call notepad open
+```
+
+### 设置 {#settings}
+
+设置模式，具有对配置值的附加读/写访问权限。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open` |显示设置模式 | - |
+| `openWith <tab>` |打开特定选项卡的设置 |选项卡 ID |
+| `close` |隐藏设置模式 | - |
+| `toggle` |切换设置模式 | - |
+| `toggleWith <tab>` |将设置切换到特定选项卡 |选项卡 ID |
+| `focusOrToggle` |焦点设置（如果打开），否则切换 | - |
+| `focusOrToggleWith <tab>` |聚焦/切换到特定选项卡 |选项卡 ID |
+| `tabs` |列出可用的选项卡 ID | - |
+| `get <key>` |获取设定值|设置键名 |
+| `set <key> <value>` |设定设定值 |设置键，新值 |
+
+**可用选项卡 ID：**
+- **个性化：** `personalization`、`wallpaper`、`theme`、`typography`、`time_weather`、`sounds`
+- **DankBar：** `dankbar`、`dankbar_settings`、`dankbar_widgets`
+- **小部件：** `workspaces_widgets`、`workspaces`、`media_player`、`notifications`、`osd`、`running_apps`、`updater`
+- **底座和启动器：** `dock_launcher`、`dock`、`launcher`
+- **系统：** `keybinds`、`displays`、`network`、`printers`
+- **电源和安全：** `power_security`、`lock_screen`、`power_sleep`
+- **其他：** `plugins`，`about`
+
+**示例：**
+```bash
+dms ipc call settings toggle
+dms ipc call settings openWith theme
+dms ipc call settings toggleWith dock
+dms ipc call settings tabs
+dms ipc call settings set showSeconds true
+dms ipc call settings set opacity 0.9
+```
+
+**注意：** `set` 函数支持布尔值、数字和字符串值。目前不支持对象和数组。
+
+### 破折号 {#dash}
+
+带有多个选项卡的仪表板弹出窗口。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open [tab]` |显示仪表板 |选项卡：“”、“概述”、“媒体”、“天气”|
+| `close` |隐藏仪表板 | - |
+| `toggle [tab]` |切换仪表板 |选项卡|
+
+**示例：**
+```bash
+dms ipc call dash toggle ""
+dms ipc call dash open overview
+dms ipc call dash toggle media
+dms ipc call dash open weather
+```
+
+### 文件 {#file}
+
+用于选择壁纸和个人资料图像的文件浏览器控件。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `browse <type>` |打开文件浏览器 | “壁纸”或“配置文件”|
+
+**示例：**
+```bash
+dms ipc call file browse wallpaper
+dms ipc call file browse profile
+```
+
+### 颜色选择器 {#color-picker}
+
+用于主题和设置颜色选择的壳内颜色选择器模式。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open` |显示颜色选择器模式 | - |
+| `openColor <color>` |显示具有预选颜色的模态 |颜色字符串（例如 `#ff0000`）|
+| `close` |隐藏颜色选择器模式 | - |
+| `closeInstant` |隐藏无动画 | - |
+| `toggle` |切换模态可见性 | - |
+| `toggleInstant` |隐藏时不带动画的切换 | - |
+
+**示例：**
+```bash
+dms ipc call color-picker toggle
+dms ipc call color-picker openColor "#3f51b5"
+```
+
+:::tip
+**屏幕吸管：** `dms color pick` 是独立的 CLI 命令，而不是 IPC 目标。请参阅 [拾色器 CLI](cli-color-picker)。
+:::
+
+### 欢迎 {#welcome}
+
+首次启动欢迎向导，包含功能概述、系统诊断和配置快速链接。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open` |在欢迎页面显示向导 | - |
+| `doctor` |在系统检查页面显示向导| - |
+| `page <num>` |在特定页面显示向导 | 0=欢迎，1=医生，2=完成 |
+
+**页数：**
+- **0 - 欢迎**：具有 DMS 亮点的功能概述
+- **1 - 系统检查**：运行 `dms doctor` 并提供可过滤的结果（错误、警告、信息、正常）
+- **2 - 完整**：配置快速链接、按键绑定快捷方式和外部资源
+
+**示例：**
+```bash
+dms ipc call welcome open
+dms ipc call welcome doctor
+dms ipc call welcome page 2
+```
+
+**设置集成：** 可在“设置”→“关于”→“工具”中使用“显示欢迎”和“系统检查”按钮。
+
+## 系统实用程序 {#system-utilities}
+
+### 尼里 {#niri}
+
+**需要 niri 25.11+**
+
+niri 合成器的屏幕截图功能。捕获在您配置的编辑器中打开以进行标记和注释。
+
+|功能|描述 |
+| --- | --- |
+| `screenshot` |互动选择截图|
+| `screenshotScreen` |捕获整个屏幕 |
+| `screenshotWindow` |捕获聚焦窗口 |
+
+**示例：**
+```bash
+dms ipc call niri screenshot
+dms ipc call niri screenshotScreen
+dms ipc call niri screenshotWindow
+```
+
+**配置：**
+
+设置 `DMS_SCREENSHOT_EDITOR` 环境变量以选择您首选的屏幕截图编辑器后端：
+
+```bash
+# Use Swappy (default)
+export DMS_SCREENSHOT_EDITOR=swappy
+
+# Use Satty
+export DMS_SCREENSHOT_EDITOR=satty
+```
+
+**要求：** 必须安装 niri 合成器和您选择的屏幕截图编辑器（Swappy 或 Satty）。
+
+### 按键绑定 {#keybinds}
+
+与多个提供程序一起使用的动态键绑定备忘单模式。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `open <provider>` |显示按键绑定模式 |提供商名称（例如“hyprland”、“sway”、“mangowc”）|
+| `openWithPath <provider> <path>` |使用自定义配置路径显示按键绑定模式 |提供者名称，配置路径|
+| `close` |隐藏按键绑定模式 | - |
+| `toggle <provider>` |切换按键绑定模态可见性 |提供商名称 |
+| `toggleWithPath <provider> <path>` |使用自定义配置路径切换按键绑定模式 |提供者名称，配置路径|
+
+**示例：**
+```bash
+dms ipc call keybinds toggle hyprland
+dms ipc call keybinds toggle sway
+dms ipc call keybinds toggle mangowc
+dms ipc call keybinds open tmux
+
+# With custom config paths
+dms ipc call keybinds openWithPath hyprland /custom/path/to/hypr
+dms ipc call keybinds toggleWithPath sway /etc/sway/config
+```
+
+**支持的提供商：**
+
+键绑定模式支持通过 `dms keybinds` CLI 提供的所有提供程序：
+- **内置提供程序**：Hyprland、Sway、MangoWC、Miracle WM（自动解析合成器配置）
+- **自定义备忘单**：`~/.config/DankMaterialShell/cheatsheets/` 中任何基于 JSON 的备忘单
+
+该模式自动解析配置文件并显示按类别组织的按键绑定以及可选的子类别。有关提供程序和创建自定义备忘单的更多详细信息，请参阅[按键绑定和备忘单](/docs/dankmaterialshell/cli-keybinds-cheatsheets) 文档。
+
+### 窗口规则 {#window-rules}
+
+**仅限尼里**
+
+用于管理合成器窗口规则的窗口规则编辑器模式。
+
+|功能|描述 |
+| --- | --- |
+| `open` |打开规则编辑器窗口 |
+| `close` |关闭规则编辑器窗口 |
+| `toggle` |切换窗口规则编辑器可见性 |
+
+**示例：**
+```bash
+dms ipc call window-rules open
+dms ipc call window-rules close
+dms ipc call window-rules toggle
+```
+
+:::note
+此功能仅在 niri 合成器上可用。
+:::
+
+### 工作区重命名 {#workspace-rename}
+
+**仅限 Niri 和 Hyprland**
+
+通过对话框重命名当前活动的工作区。
+
+|功能|描述 |
+| --- | --- |
+| `open` |打开工作区重命名对话框 |
+
+**示例：**
+```bash
+dms ipc call workspace-rename open
+```
+
+**注意：** 如果在不受支持的合成器上运行，则返回错误。
+
+### 输出 {#outputs}
+
+监视器输出配置文件管理，用于在显示配置之间切换。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `listProfiles` |列出所有可用的输出配置文件 | - |
+| `current` |获取当前活动的个人资料 | - |
+| `setProfile <name>` |切换到特定的输出配置文件 |个人资料名称 |
+| `cycleProfile` |按顺序循环浏览已配置的配置文件（从最后一个回到第一个）| - |
+| `status` |获取当前输出配置状态 | - |
+| `refresh` |刷新输出配置 | - |
+
+**示例：**
+```bash
+# List available profiles
+dms ipc call outputs listProfiles
+
+# Check current profile
+dms ipc call outputs current
+
+# Switch to a specific profile
+dms ipc call outputs setProfile "docked"
+dms ipc call outputs setProfile "laptop-only"
+
+# Cycle through profiles in order
+dms ipc call outputs cycleProfile
+
+# Get output status
+dms ipc call outputs status
+
+# Refresh configuration
+dms ipc call outputs refresh
+```
+
+:::note
+此功能仅适用于 niri、Hyprland 和 MangoWC 合成器。
+:::
+
+### hypr {#hypr}
+
+**仅限 Hyprland 的功能**
+
+Hyprland 特定的工作区概览控制。
+
+|功能|描述 |
+| --- | --- |
+| `openOverview` |显示 Hyprland 工作区概述 |
+| `closeOverview` |隐藏 Hyprland 工作区概述 |
+| `toggleOverview` |切换 Hyprland 工作区概览可见性 |
+
+**示例：**
+```bash
+dms ipc call hypr toggleOverview
+```
+
+**工作区概述：**
+
+工作区概述通过实时窗口预览显示所有显示器上的所有工作区：
+- **多显示器支持** - 显示所有已连接显示器的工作区以及显示器名称标签
+- **实时窗口预览** - 每个工作区上所有窗口的实时屏幕捕获
+- **拖放** - 通过拖动在工作区和监视器之间移动窗口
+- **键盘导航** - 使用左/右箭头键在当前显示器上的工作区之间切换
+- **视觉指示器** - 活动工作区在包含窗口时突出显示
+- **单击切换** - 单击任意工作区即可切换到该工作区
+- **单击外部或按 Esc** - 关闭概述
+
+**注意：** 如果未运行 Hyprland，所有 hypr 函数都会返回 `HYPR_NOT_AVAILABLE`。
+
+### 插件 {#plugins}
+
+在运行时管理插件 - 对于开发和故障排除很有用。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `list` |列出所有可用插件的状态 | - |
+| `status <pluginId>` |检查插件是否已加载 |插件 ID |
+| `reload <pluginId>` |热重载插件而无需重新启动 |插件 ID |
+| `enable <pluginId>` |启用已禁用的插件 |插件 ID |
+| `disable <pluginId>` |禁用已加载的插件 |插件 ID |
+
+**示例：**
+```bash
+# See what plugins are available
+dms ipc call plugins list
+
+# Check if a specific plugin is running
+dms ipc call plugins status myPlugin
+
+# Hot-reload during development (no shell restart needed)
+dms ipc call plugins reload myPlugin
+
+# Toggle plugins on/off
+dms ipc call plugins enable myPlugin
+dms ipc call plugins disable myPlugin
+```
+
+### 系统更新程序 {#systemupdater}
+
+系统更新程序小部件控制和后台更新检查。
+
+|功能|描述 |
+| --- | --- |
+| `toggle` |打开/关闭系统更新程序弹出窗口 |
+| `open` |打开系统更新程序弹出窗口 |
+| `close` |关闭系统更新程序弹出窗口 |
+| `updatestatus` |触发后台更新检查 |
+
+**示例：**
+```bash
+dms ipc call systemupdater toggle
+dms ipc call systemupdater open
+dms ipc call systemupdater close
+dms ipc call systemupdater updatestatus
+```
+
+### 默认应用程序 {#defaultapp}
+
+启动在“设置”→“默认应用程序”中配置的应用程序。每个函数都会解析关联 MIME 类型的默认处理程序并启动它。
+
+|功能|描述 |
+| --- | --- |
+| `browser` |启动默认网络浏览器 |
+| `fileManager` |启动默认文件管理器 |
+| `textEditor` |启动默认文本编辑器 |
+| `pdfReader` |启动默认 PDF 阅读器 |
+| `imageViewer` |启动默认图像查看器 |
+| `videoPlayer` |启动默认视频播放器 |
+| `musicPlayer` |启动默认音乐播放器 |
+| `mail` |启动默认邮件客户端 |
+| `calendar` |启动默认日历应用程序 |
+
+**示例：**
+```bash
+dms ipc call defaultApp browser
+dms ipc call defaultApp fileManager
+dms ipc call defaultApp textEditor
+```
+
+**注意：** 返回启动请求确认。如果没有为请求的类型配置默认值（或者找不到其桌面条目），则会记录一条警告并且不会启动任何内容。
+
+### 桌面小部件 {#desktopwidget}
+
+控制桌面小部件实例（时钟、系统监视器等）。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `list` |列出所有小部件实例及其 ID、类型、名称和状态 | - |
+| `status <instanceId>` |获取小部件状态（启用、覆盖、点击等）|实例 ID |
+| `enable <instanceId>` |启用小部件 |实例 ID |
+| `disable <instanceId>` |禁用小部件 |实例 ID |
+| `toggleEnabled <instanceId>` |启用/禁用小部件|实例 ID |
+| `toggleOverlay <instanceId>` |切换在覆盖层上显示 |实例 ID |
+| `setOverlay <instanceId> <bool>` |设置覆盖可见性 |实例 ID，真/假 |
+| `toggleClickThrough <instanceId>` |切换点击模式 |实例 ID |
+| `setClickThrough <instanceId> <bool>` |设置点击模式 |实例 ID，真/假 |
+| `toggleSyncPosition <instanceId>` |跨屏幕切换位置同步 |实例 ID |
+| `setSyncPosition <instanceId> <bool>` |设置跨屏幕位置同步 |实例 ID，真/假 |
+
+**示例：**
+```bash
+# List all desktop widgets
+dms ipc call desktopWidget list
+
+# Get widget status
+dms ipc call desktopWidget status dw_1234567890_abc123
+
+# Toggle overlay visibility (useful for keybinds)
+dms ipc call desktopWidget toggleOverlay dw_1234567890_abc123
+
+# Enable click-through mode
+dms ipc call desktopWidget setClickThrough dw_1234567890_abc123 true
+
+# Toggle position sync
+dms ipc call desktopWidget toggleSyncPosition dw_1234567890_abc123
+```
+
+**注释：**
+- 使用 `list` 发现小部件实例 ID
+- 点击模式允许鼠标点击穿过小部件到达下面的窗口
+- 位置同步使小部件在多个显示器上保持相同的相对位置
+
+### 吐司 {#toast}
+
+显示用户反馈的 Toast 通知和脚本警报。
+
+|功能|描述 |参数|
+| --- | --- | --- |
+| `info <message>` |显示信息吐司（1.5 秒）|留言内容|
+| `infoWith <message> <details> <command> <category>` |信息吐司与额外的|消息、详细信息、命令、类别 |
+| `warn <message>` |显示警告 Toast（3 秒）|留言内容|
+| `warnWith <message> <details> <command> <category>` |警告吐司与额外的|消息、详细信息、命令、类别 |
+| `error <message>` |显示错误 toast（5 秒）|留言内容|
+| `errorWith <message> <details> <command> <category>` |带有额外内容的错误吐司（8s，可扩展）|消息、详细信息、命令、类别 |
+| `hide` |隐藏当前的吐司 | - |
+| `dismiss <category>` |按类别关闭祝酒 |类别名称 |
+| `status` |获取当前的 toast 状态 | - |
+
+**示例：**
+```bash
+# Simple messages
+dms ipc call toast info "Build complete"
+dms ipc call toast warn "Disk space low"
+dms ipc call toast error "Connection failed"
+
+# With details (expandable in UI)
+dms ipc call toast errorWith "Git push failed" "Permission denied (publickey)" "git push origin main" "git"
+
+# With category for later dismissal
+dms ipc call toast warnWith "Downloading update..." "" "" "updater"
+dms ipc call toast dismiss "updater"
+
+# Check current state
+dms ipc call toast status
+
+# Force hide
+dms ipc call toast hide
+```
+
+**注释：**
+- `*With` 变体接受可选详细信息（可在 UI 中扩展）、命令字符串和类别
+- 使用空字符串 (`""`) 作为要跳过的可选参数
+- 类别允许对相关的 toast 进行分组以便批量解雇
+- `status` 函数返回 `hidden` 或 `visible:level:message`
+
+## 脚本和自动化 {#scripting-and-automation}
+
+IPC 命令设计用于与键绑定、脚本和自动化工具集成。
+
+### 基于时间的自动化 {#time-based-automation}
+
+```bash
+#!/bin/bash
+# Toggle night mode based on time of day
+hour=$(date +%H)
+if [ $hour -ge 20 ] || [ $hour -le 6 ]; then
+    dms ipc call night enable
+else
+    dms ipc call night disable
+fi
+```
+
+### 状态检查 {#status-checking}
+
+```bash
+# Check if screen is locked before performing action
+if dms ipc call lock isLocked | grep -q "false"; then
+    dms ipc call notifications open
+fi
+```
+
+### 条件逻辑 {#conditional-logic}
+
+```bash
+# Increase brightness only if below threshold
+current=$(dms ipc call brightness status | grep -oP '\d+')
+if [ "$current" -lt 50 ]; then
+    dms ipc call brightness set 50
+fi
+
+# Cycle power profile only when not in performance mode
+if [ "$(dms ipc call powerprofile status)" != "performance" ]; then
+    dms ipc call powerprofile cycle
+fi
+```
+
+## 返回值 {#return-values}
+
+大多数 IPC 函数返回字符串消息，指示：
+- 使用当前值成功确认
+- 如果操作失败，会出现错误消息
+- 查询功能的状态信息
+- 简单操作函数的空/无效返回
+
+返回 void 的函数（如媒体控件）执行操作但不提供反馈。如果需要，可以通过其他方式检查应用程序状态。
+
+## 后续步骤 {#next-steps}
+
+请参阅合成器文档中特定于合成器的键绑定配置，以将这些 IPC 命令与您的工作流程集成。

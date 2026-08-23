@@ -1,0 +1,253 @@
+---
+title: 为注册表做贡献
+description: 如何向 DankMaterialShell 注册表贡献插件和主题
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗ ██████╗ ██╗███████╗████████╗██████╗ ██╗   ██╗
+██╔══██╗██╔════╝██╔════╝ ██║██╔════╝╚══██╔══╝██╔══██╗╚██╗ ██╔╝
+██████╔╝█████╗  ██║  ███╗██║███████╗   ██║   ██████╔╝ ╚████╔╝
+██╔══██╗██╔══╝  ██║   ██║██║╚════██║   ██║   ██╔══██╗  ╚██╔╝
+██║  ██║███████╗╚██████╔╝██║███████║   ██║   ██║  ██║   ██║
+╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝`}
+  hideTitle={true}
+/>
+
+感谢您为 DankMaterialShell 注册表做出贡献！本指南介绍如何将插件和主题提交到 [dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) 存储库。
+
+## 贡献一个插件 {#contributing-a-plugin}
+
+### 如何添加您的插件 {#how-to-add-your-plugin}
+
+1. **Fork 软件仓库**
+- 转到 [AvengeMedia/dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) 并单击 Fork
+
+2. **在`plugins/`目录中创建一个新的JSON文件**：
+   ```
+   plugins/{github-username}-{plugin-name}.json
+   ```
+- 使用小写字母
+- 用连字符分隔单词
+- 示例：`daniel-42-z-powerusage.json`、`rochacbruno-worldclock.json`
+
+3. **使用此架构填写您的插件信息**：
+
+```json
+{
+    "id": "pluginId",
+    "name": "PluginName",
+    "capabilities": ["dankbar-widget"],
+    "category": "monitoring",
+    "repo": "https://github.com/yourusername/your-plugin-repo",
+    "path": "optional/path/in/monorepo",
+    "author": "Your Name",
+    "description": "Brief description of what your plugin does",
+    "dependencies": ["dependency1", "dependency2"],
+    "compositors": ["niri", "hyprland"],
+    "distro": ["any"],
+    "screenshot": "https://url/to/screenshot.png"
+}
+```
+
+### 插件字段说明 {#plugin-field-descriptions}
+
+|领域 |必填 |描述 |
+|-------|----------|-------------|
+| `id` |是的 |采用驼峰命名法的唯一标识符（例如，`worldClock`）。必须匹配您的 `plugin.json` |
+| `name` |是的 |显示名称。必须与您的 `plugin.json` | 匹配
+| `capabilities` |是的 |类似 `["dankbar-widget"]` 的数组 |
+| `category` |是的 |其中之一：`monitoring`、`utilities`、`appearance`、`system` 等 |
+| `repo` |是的 |插件存储库的完整 GitHub URL |
+| `path` |没有 |如果插件位于 monorepo 中，则为子目录路径 |
+| `author` |是的 |您的姓名或 GitHub 用户名 |
+| `description` |是的 |清晰、简洁地描述插件的用途 |
+| `dependencies` |是的 |依赖项数组，如果没有，则使用 `[]` |
+| `compositors` |是的 |支持的合成器：`["niri", "hyprland"]`、`["any"]` |
+| `distro` |是的 |支持的发行版：`["any"]`、`["fedora"]`、`["arch"]` 等 |
+| `screenshot` |没有 |屏幕截图图像的直接 URL |
+
+:::warning[重要]
+`id` 和 `name` 字段**必须与插件存储库的 `plugin.json` 文件中的相应字段完全匹配**。
+:::
+
+4. **在本地验证您的插件**：
+
+```bash
+python3 .github/generate.py --validate
+python3 .github/validate_links.py
+```
+
+5. **提交拉取请求**
+
+### 插件反馈和排名 {#plugin-feedback--ranking}
+
+当您的插件被合并时，会在注册表中自动为其打开一个跟踪问题。这个问题是插件反馈之家：
+
+- **投票** — 任何人都可以对这个问题做出 👍 反应。 [插件目录](https://danklinux.com/plugins) 按点赞数对插件进行排名，因此反应直接影响可见性。
+- **状态** — 维护者通过评论问题命令来标记插件，在目录中显示为徽章：
+
+|命令 |徽章|
+  |---------|-------|
+| `/broken` / `/working` |标记（或清除）**破损** |
+| `/unmaintained` |标记**未维护** |
+| `/deprecated` |标记 **已弃用** |
+| `/review` / `/unreview` |标记（或清除）**已审核** |
+| `/similar #<issue> [#<issue> ...]` / `/unsimilar #<issue>` |链接（或取消链接）相关插件 |
+
+版主不能 `/review` 或 `/unreview` 他们编写的插件 - 只有所有者可以。
+
+插件作者可以在自己的插件上运行 `/unmaintained` 和 `/deprecated`，而无需成为主持人。当您寻找新的维护者时，请使用 `/unmaintained`；当插件被其他插件或内置 DMS 功能取代时，请使用 `/deprecated`。其他命令仍然仅限主持人。
+
+`/similar` 按编号引用一个或多个插件跟踪问题（例如 `/similar #530` 或 `/similar #403 #411`），并将它们双向链接到此插件 - 每个问题都会在 **相关插件** 下列出其他问题，目录和 DMS 会显示关系。使用 `/unsimilar #<issue>` 删除链接。
+
+该目录通过其**讨论**按钮链接到每个插件的问题。
+
+---
+
+## 贡献一个主题 {#contributing-a-theme}
+
+### 如何添加您的主题 {#how-to-add-your-theme}
+
+1. **Fork 软件仓库**
+- 转到 [AvengeMedia/dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) 并单击 Fork
+
+2. **在`themes/`目录下新建文件夹**：
+   ```
+   themes/{theme-id}/theme.json
+   ```
+- 使用小写字母和连字符作为文件夹名称
+- 示例：`tokyonight/`、`gruvbox-dark/`、`catppuccin-mocha/`
+
+3. **使用以下架构创建 `theme.json`**：
+
+```json
+{
+  "id": "themeId",
+  "name": "Theme Name",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "description": "Brief description of your theme",
+  "dark": {
+    "primary": "#7aa2f7",
+    "primaryText": "#16161e",
+    "primaryContainer": "#7dcfff",
+    "secondary": "#bb9af7",
+    "surface": "#1a1b26",
+    "surfaceText": "#73daca",
+    "surfaceVariant": "#2f3549",
+    "surfaceVariantText": "#cbccd1",
+    "surfaceTint": "#7aa2f7",
+    "background": "#16161e",
+    "backgroundText": "#d5d6db",
+    "outline": "#787c99",
+    "surfaceContainerLowest": "#121319",
+    "surfaceContainerLow": "#262c3c",
+    "surfaceContainer": "#2f3549",
+    "surfaceContainerHigh": "#444b6a",
+    "error": "#f7768e",
+    "warning": "#ff9e64",
+    "info": "#7dcfff"
+  },
+  "light": {
+    "primary": "#2e7de9",
+    "primaryText": "#d0d5e3",
+    "primaryContainer": "#007197",
+    "secondary": "#9854f1",
+    "surface": "#e1e2e7",
+    "surfaceText": "#387068",
+    "surfaceVariant": "#c4c8da",
+    "surfaceVariantText": "#1a1b26",
+    "surfaceTint": "#2e7de9",
+    "background": "#cbccd1",
+    "backgroundText": "#1a1b26",
+    "outline": "#4c505e",
+    "surfaceContainerLowest": "#fefeff",
+    "surfaceContainerLow": "#fcfcff",
+    "surfaceContainer": "#dfe0e5",
+    "surfaceContainerHigh": "#9699a3",
+    "error": "#f52a65",
+    "warning": "#b15c00",
+    "info": "#007197"
+  }
+}
+```
+
+### 主题元数据字段 {#theme-metadata-fields}
+
+|领域 |必填 |描述 |
+|-------|----------|-------------|
+| `id` |是的 |采用驼峰命名法的唯一标识符（例如，`tokyoNight`、`gruvboxDark`）|
+| `name` |是的 |您的主题的显示名称 |
+| `version` |是的 | Semver 版本（例如 `1.0.0`）|
+| `author` |是的 |您的姓名或用户名 |
+| `description` |是的 |主题简述 |
+
+### 主题颜色字段 {#theme-color-fields}
+
+`dark` 和 `light` 对象都需要以下颜色属性：
+
+|领域 |描述 |
+|-------|-------------|
+| `primary` |主要强调色 |
+| `primaryText` |主要背景上的文本颜色 |
+| `primaryContainer` |原色容器|
+| `secondary` |次要强调色 |
+| `surface` |主面/卡片背景|
+| `surfaceText` |表面上的文字 |
+| `surfaceVariant` |替代表面颜色 |
+| `surfaceVariantText` |不同表面上的文字 |
+| `surfaceTint` |色调叠加颜色 |
+| `background` |应用程序背景颜色|
+| `backgroundText` |背景文字_（仅限matugen — 参见注释）_ |
+| `outline` |边框/分隔线颜色 |
+| `surfaceContainerLowest` |最低海拔容器（深色模式下最暗，浅色模式下最亮）_（仅限 matugen — 参见注释）_ |
+| `surfaceContainerLow` |低海拔容器，位于表面和表面容器之间_（仅限matugen - 参见注释）_ |
+| `surfaceContainer` |集装箱背景|
+| `surfaceContainerHigh` |高架集装箱背景|
+| `error` |错误状态颜色 |
+| `warning` |警告状态颜色 |
+| `info` |信息状态颜色 |
+
+:::note
+`surfaceContainerLowest`、`surfaceContainerLow` 和 `backgroundText` 不由
+DankMaterialShell 自己的 UI。它们完成了材质调色板并导出到 matugen
+模板（VS Code、KDE、Firefox、Zed 等），因此通过 DMS 主题化的外部应用程序可以使用它们。他们
+有效的主题仍然需要 - 选择适合您调色板的合理值。
+:::
+
+有关如何使用这些颜色的更多详细信息，请参阅[自定义主题](/docs/dankmaterialshell/custom-themes)。
+
+4. **在本地验证您的主题**：
+
+```bash
+python3 .github/validate_themes.py
+python3 .github/generate.py --validate
+```
+
+5. **提交拉取请求**
+- 仅提交您的 `theme.json` 文件（预览是自动生成的）
+- 将生成预览并作为对您的 PR 的评论发布
+- 合并后，预览SVG将自动提交
+
+---
+
+## 指南 {#guidelines}
+
+### 对于插件 {#for-plugins}
+- 保持描述简洁且信息丰富
+- 确保您的存储库有适当的文档
+- 测试您的插件是否可以与指定的合成器和发行版一起使用
+- 尽可能包含屏幕截图
+
+### 对于主题 {#for-themes}
+- 所有颜色值必须是 6 位十六进制代码（例如 `#7aa2f7`）
+- 需要 `dark` 和 `light` 变体
+- `id` 必须为驼峰式（小写字母开头，仅限字母数字）
+- 版本必须遵循 semver 格式 (`X.Y.Z`)
+- 测试您的颜色的可读性和对比度
+
+## 有问题吗？ {#questions}
+
+如果您对贡献过程有疑问，请在注册表存储库中[打开问题](https://github.com/AvengeMedia/dms-plugin-registry/issues)。

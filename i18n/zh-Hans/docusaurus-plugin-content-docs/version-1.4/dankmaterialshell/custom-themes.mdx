@@ -1,0 +1,192 @@
+---
+title: 自定义主题
+description: 为 DankMaterialShell 创建自定义颜色主题
+sidebar_position: 4.1
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`████████╗██╗  ██╗███████╗███╗   ███╗███████╗███████╗
+╚══██╔══╝██║  ██║██╔════╝████╗ ████║██╔════╝██╔════╝
+     ██║   ███████║█████╗  ██╔████╔██║█████╗  ███████╗
+     ██║   ██╔══██║██╔══╝  ██║╚██╔╝██║██╔══╝  ╚════██║
+     ██║   ██║  ██║███████╗██║ ╚═╝ ██║███████╗███████║
+     ╚═╝   ╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝╚══════╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 支持使用任意配色方案的自定义颜色主题。您可以创建自己的主题或使用预制的主题。
+
+## 主题结构 {#theme-structure}
+
+自定义主题在 JSON 文件中定义，通常映射到 [matugen 颜色关键字](https://github.com/InioX/matugen/wiki/Configuration#colors)。主题可以有单独的 `dark` 和 `light` 变体，或者对两种模式使用单一配色方案。
+
+### 完整主题示例 {#complete-theme-example}
+
+```json
+{
+  "dark": {
+    "name": "Cyberpunk Electric Dark",
+    "primary": "#00FFCC",
+    "primaryText": "#000000",
+    "primaryContainer": "#00CC99",
+    "secondary": "#FF4DFF",
+    "surface": "#0F0F0F",
+    "surfaceText": "#E0FFE0",
+    "surfaceVariant": "#1F2F1F",
+    "surfaceVariantText": "#CCFFCC",
+    "surfaceTint": "#00FFCC",
+    "background": "#000000",
+    "backgroundText": "#F0FFF0",
+    "outline": "#80FF80",
+    "surfaceContainer": "#1A2B1A",
+    "surfaceContainerHigh": "#264026",
+    "surfaceContainerHighest": "#33553F",
+    "error": "#FF0066",
+    "warning": "#CCFF00",
+    "info": "#00FFCC",
+    "matugen_type": "scheme-expressive"
+  },
+  "light": {
+    "name": "Cyberpunk Electric Light",
+    "primary": "#00B899",
+    "primaryText": "#FFFFFF",
+    "primaryContainer": "#66FFDD",
+    "secondary": "#CC00CC",
+    "surface": "#F0FFF0",
+    "surfaceText": "#1F2F1F",
+    "surfaceVariant": "#E6FFE6",
+    "surfaceVariantText": "#2D4D2D",
+    "surfaceTint": "#00B899",
+    "background": "#FFFFFF",
+    "backgroundText": "#000000",
+    "outline": "#4DCC4D",
+    "surfaceContainer": "#F5FFF5",
+    "surfaceContainerHigh": "#EBFFEB",
+    "surfaceContainerHighest": "#E1FFE1",
+    "error": "#B3004D",
+    "warning": "#99CC00",
+    "info": "#00B899",
+    "matugen_type": "scheme-expressive"
+  }
+}
+```
+
+### 单模式主题 {#single-mode-theme}
+
+对于没有明暗变体的主题，请在顶层定义颜色：
+
+```json
+{
+  "name": "Theme Name",
+  "primary": "#eeeeee",
+  "primaryText": "#000000",
+  "surface": "#ffffff",
+  "surfaceText": "#000000",
+  "background": "#f5f5f5",
+  "backgroundText": "#000000",
+  "outline": "#cccccc",
+  "matugen_type": "scheme-tonal-spot"
+}
+```
+
+## 所需的颜色属性 {#required-color-properties}
+
+### 原色 {#primary-colors}
+- `primary` - 按钮、突出显示和活动状态的主要强调色
+- `primaryText` - 文本颜色与主背景形成对比
+- `primaryContainer` - 容器初级变体
+
+### 辅助颜色 {#secondary-colors}
+- `secondary` - 支持强调色以实现多样性和层次结构
+- `surfaceTint` - 应用于表面的色调颜色（通常源自原色）
+
+### 表面颜色 {#surface-colors}
+
+<ThemedImage
+  alt="Surface Colors Hierarchy"
+  sources={{
+    light: useBaseUrl('/img/surfacecolorslight.jpg'),
+    dark: useBaseUrl('/img/surfacecolors.jpg'),
+  }}
+/>
+
+- `surface` - 卡和面板的默认表面颜色
+- `surfaceText` - 表面背景上的主要文本颜色
+- `surfaceVariant` - 用于细微差别的替代表面
+- `surfaceVariantText` - 表面文本颜色变体背景
+- `surfaceContainer` - 容器表面，与表面略有不同
+- `surfaceContainerHigh` - 用于分层接口的高架容器
+- `surfaceContainerHighest` - 用于顶层表面的最高标高容器
+
+### 背景颜色 {#background-colors}
+- `background` - 界面的主要背景颜色
+- `backgroundText` - 背景区域的文本颜色
+
+### 大纲 {#outline}
+- `outline` - 微妙边框、分隔线、静音图标和额外微妙文本的颜色
+
+## 可选属性 {#optional-properties}
+
+### 语义颜色 {#semantic-colors}
+- `error` - 错误状态、删除按钮、严重警告
+- `warning` - 警告状态和警告指示器
+- `info` - 信息状态和中性指示器
+
+### 马图根类型 {#matugen-type}
+
+`matugen_type` 属性控制用于系统应用程序主题的配色方案算法。如果未指定，则默认为 `scheme-tonal-spot`。
+
+可用选项：
+- `scheme-content` - 基于内容的颜色提取
+- `scheme-expressive` - 富有表现力、充满活力的配色方案
+- `scheme-fidelity` - 对源材料的高保真度
+- `scheme-fruit-salad` - 色彩缤纷、类似水果沙拉的方案
+- `scheme-monochrome` - 单色配色方案
+- `scheme-neutral` - 中性、柔和的配色方案
+- `scheme-rainbow` - 彩虹般的配色方案
+- `scheme-tonal-spot` - 色调专色方案（默认）
+
+## 示例主题 {#example-themes}
+
+[DankMaterialShell 存储库](https://github.com/AvengeMedia/DankMaterialShell/tree/master/docs) 中提供了预构建的示例主题：
+
+- [赛博朋克电动](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_cyberpunk_electric.json) - 霓虹绿和洋红色赛博朋克美学
+- [迈阿密热线](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_hotline_miami.json) - 复古 80 年代热粉色和蓝色
+- [迈阿密罪恶](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_miami_vice.json) - 经典的青色和粉色罪恶美学
+- [Synthwave Electric](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_synthwave_electric.json) - 电动紫色和青色合成波
+
+## 应用自定义主题 {#applying-custom-themes}
+
+### 通过设置 UI {#via-settings-ui}
+
+1. 打开**设置→主题和颜色**
+2. 从主题下拉列表中选择 **自定义**
+3.选择你的主题文件路径
+
+### 通过配置文件 {#via-configuration-file}
+
+编辑`~/.config/DankMaterialShell/settings.json`：
+
+```json
+{
+  "currentThemeName": "custom",
+  "customThemeFile": "/path/to/mytheme.json"
+}
+```
+
+### 实时编辑 {#live-editing}
+
+自定义主题文件是反应性的 - 如果它是当前活动的主题，则编辑 JSON 文件会自动更新 shell。
+
+## 主题开发技巧 {#theme-development-tips}
+
+- **从示例开始：** 使用预构建的主题作为模板
+- **逐步调整：** 一次更改一种颜色以查看影响
+- **测试两种模式：** 如果提供深色/浅色变体，请彻底测试两种模式
+- **考虑对比度：** 确保文本颜色与背景有足够的对比度
+- **使用 matugen_type 进行实验：** 不同的方案与不同的调色板配合得更好
+- **版本控制：** 将主题存储在点文件中以便于同步

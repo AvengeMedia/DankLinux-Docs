@@ -1,0 +1,1618 @@
+---
+title: 发展
+description: 为 DankMaterialShell 构建插件
+sidebar_position: 7
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗██╗   ██╗
+██╔══██╗██╔════╝██║   ██║
+██║  ██║█████╗  ██║   ██║
+██║  ██║██╔══╝  ╚██╗ ██╔╝
+██████╔╝███████╗ ╚████╔╝
+╚═════╝ ╚══════╝  ╚═══╝  `}
+  hideTitle={true}
+/>
+
+构建并发布 DankMaterialShell 插件。本指南涵盖了您将使用的实际模式和组件，以及插件库中的实际工作示例。
+
+## 开发环境 {#development-environment}
+
+对于 IDE 支持（自动完成、类型检查等），克隆 DMS 存储库并在那里开发插件：
+
+```bash
+mkdir -p ~/repos && cd ~/repos
+git clone https://github.com/AvengeMedia/DankMaterialShell.git
+cd DankMaterialShell/quickshell
+
+# Generate QML language server config
+touch .qmlls.ini
+qs -p .  # Press Ctrl+C after it starts
+
+# Create your plugins here
+mkdir -p dms-plugins/MyPlugin
+```
+
+### VSCode 设置 {#vscode-setup}
+
+1.安装【QML扩展】(https://marketplace.visualstudio.com/items?itemName=TheQtCompany.qt-qml)
+2.通过`Ctrl+Shift+P`配置qmlls路径→“首选项：打开用户设置（JSON）”：
+
+```json
+{
+  "qt-qml.doNotAskForQmllsDownload": true,
+  "qt-qml.qmlls.customExePath": "/usr/lib/qt6/bin/qmlls"
+}
+```
+
+3、打开`~/repos/DankMaterialShell/quickshell`目录下的VSCode
+
+### 实时开发 {#live-development}
+
+将您的插件符号链接到 DMS 插件目录以进行实时测试：
+
+```bash
+ln -sf ~/repos/DankMaterialShell/quickshell/dms-plugins/MyPlugin \
+       ~/.config/DankMaterialShell/plugins/MyPlugin
+```
+
+在运行时重新加载插件，无需重新启动 DMS：
+
+```bash
+dms ipc call plugins reload myPlugin
+```
+
+列出所有插件及其状态：
+
+```bash
+dms ipc call plugins list
+```
+
+:::tip
+使用[保存时运行](https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave) 在开发过程中自动重新加载您的插件。重新加载命令使用 `plugin.json` 中的插件 `id`。
+:::
+
+## 快速入门 {#quick-start}
+
+### 1.创建插件目录 {#1-create-plugin-directory}
+
+```bash
+mkdir -p ~/.config/DankMaterialShell/plugins/MyPlugin
+cd ~/.config/DankMaterialShell/plugins/MyPlugin
+```
+
+### 2. 创建清单 {#2-create-manifest}
+
+将其另存为 `plugin.json`：
+
+```json
+{
+  "id": "myPlugin",
+  "name": "My Plugin",
+  "description": "What this plugin does",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "icon": "widgets",
+  "type": "widget",
+  "component": "./MyWidget.qml",
+  "settings": "./MySettings.qml",
+  "permissions": ["settings_read", "settings_write"]
+}
+```
+
+### 3.创建Widget组件 {#3-create-widget-component}
+
+将其另存为 `MyWidget.qml`：
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Services
+import qs.Widgets
+import qs.Modules.Plugins
+
+PluginComponent {
+    id: root
+
+    property string displayText: pluginData.displayText || "Hello"
+
+    horizontalBarPill: Component {
+        Row {
+            spacing: Theme.spacingS
+
+            DankIcon {
+                name: "widgets"
+                size: Theme.iconSize
+                color: Theme.primary
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            StyledText {
+                text: root.displayText
+                font.pixelSize: Theme.fontSizeMedium
+                color: Theme.surfaceText
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
+    verticalBarPill: Component {
+        Column {
+            spacing: Theme.spacingXS
+
+            DankIcon {
+                name: "widgets"
+                size: Theme.iconSize
+                color: Theme.primary
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            StyledText {
+                text: root.displayText
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceText
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+    }
+}
+```
+
+### 4.创建设置组件 {#4-create-settings-component}
+
+将其另存为 `MySettings.qml`：
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Modules.Plugins
+import qs.Widgets
+
+PluginSettings {
+    id: root
+    pluginId: "myPlugin"
+
+    StyledText {
+        width: parent.width
+        text: "My Plugin Settings"
+        font.pixelSize: Theme.fontSizeLarge
+        font.weight: Font.Bold
+        color: Theme.surfaceText
+    }
+
+    StyledText {
+        width: parent.width
+        text: "Configure your plugin here"
+        font.pixelSize: Theme.fontSizeSmall
+        color: Theme.surfaceVariantText
+        wrapMode: Text.WordWrap
+    }
+
+    StringSetting {
+        settingKey: "displayText"
+        label: "Display Text"
+        description: "Text shown in the bar"
+        placeholder: "Enter text"
+        defaultValue: "Hello"
+    }
+}
+```
+
+### 5.加载它 {#5-load-it}
+
+1. 打开 DMS 设置 → 插件
+2.点击“扫描插件”
+3. 打开你的插件
+4. 添加到 DankBar 小部件列表
+5.重启shell：`dms restart`
+
+您现在有了一个可以工作的插件。
+
+## 小部件插件 {#widget-plugins}
+
+小部件插件显示在 DankBar 或控制中心中。他们使用 `PluginComponent` 作为基础。
+
+### DankBar 小部件 {#dankbar-widget}
+
+这是一个真彩色显示小部件：
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Services
+import qs.Widgets
+import qs.Modules.Plugins
+
+PluginComponent {
+    id: root
+
+    property color customColor: pluginData.customColor || Theme.primary
+
+    horizontalBarPill: Component {
+        Row {
+            spacing: Theme.spacingS
+
+            Rectangle {
+                width: 20
+                height: 20
+                radius: 4
+                color: root.customColor
+                border.color: Theme.outlineStrong
+                border.width: 1
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            StyledText {
+                text: root.customColor.toString()
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceText
+                anchors.verticalCenter: parent.verticalCenter
+            }
+        }
+    }
+
+    verticalBarPill: Component {
+        Column {
+            spacing: Theme.spacingXS
+
+            Rectangle {
+                width: 20
+                height: 20
+                radius: 4
+                color: root.customColor
+                border.color: Theme.outlineStrong
+                border.width: 1
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            StyledText {
+                text: root.customColor.toString()
+                font.pixelSize: Theme.fontSizeSmall
+                color: Theme.surfaceText
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+    }
+}
+```
+
+该小部件从 `pluginData` 中提取 `customColor`，它会自动与您的设置同步。无需手动加载。
+
+### 带弹出窗口的小部件 {#widget-with-popout}
+
+添加单击小部件时打开的弹出菜单。
+
+要将图层命名空间添加到您的插件中，只需添加 `layerNamespacePlugin: "<namespace for your plugin>"` 即可，如下所示。
+确保仅键入您想要的命名空间，并且不要添加前缀（例如 `dms:` 或 `dms:plugins:`），因为 shell 会自动添加 `dms:plugins:` 作为前缀。
+例如，下面插件的命名空间将为 `dms:plugins:emoji-launcher`。
+
+虽然您不必向小部件添加图层命名空间（它将回退到 `dms:plugins:plugin`），但最好这样做。
+:::warning
+
+截至目前，图层名称空间仅适用于弹出窗口小部件插件。
+
+:::
+```qml
+PluginComponent {
+    id: root
+
+    layerNamespacePlugin: "emoji-launcher"
+
+    property var displayedEmojis: ["😊", "😢", "❤️"]
+
+    horizontalBarPill: Component {
+        Row {
+            spacing: Theme.spacingXS
+            Repeater {
+                model: root.displayedEmojis
+                StyledText {
+                    text: modelData
+                    font.pixelSize: Theme.fontSizeLarge
+                }
+            }
+        }
+    }
+
+    verticalBarPill: Component {
+        Column {
+            spacing: Theme.spacingXS
+            Repeater {
+                model: root.displayedEmojis
+                StyledText {
+                    text: modelData
+                    font.pixelSize: Theme.fontSizeMedium
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+            }
+        }
+    }
+
+    popoutContent: Component {
+        PopoutComponent {
+            id: popoutColumn
+
+            headerText: "Emoji Picker"
+            detailsText: "Click an emoji to copy it"
+            showCloseButton: true
+
+            property var allEmojis: [
+                "😀", "😃", "😄", "😁", "😆", "🤣",
+                "❤️", "🧡", "💛", "💚", "💙", "💜"
+            ]
+
+            Item {
+                width: parent.width
+                implicitHeight: root.popoutHeight - popoutColumn.headerHeight -
+                               popoutColumn.detailsHeight - Theme.spacingXL
+
+                DankGridView {
+                    anchors.fill: parent
+                    cellWidth: 50
+                    cellHeight: 50
+                    model: popoutColumn.allEmojis
+
+                    delegate: StyledRect {
+                        width: 45
+                        height: 45
+                        radius: Theme.cornerRadius
+                        color: emojiMouse.containsMouse ?
+                               Theme.surfaceContainerHighest :
+                               Theme.surfaceContainerHigh
+
+                        StyledText {
+                            anchors.centerIn: parent
+                            text: modelData
+                            font.pixelSize: Theme.fontSizeXLarge
+                        }
+
+                        MouseArea {
+                            id: emojiMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            onClicked: {
+                                Quickshell.execDetached(["sh", "-c",
+                                    "echo -n '" + modelData + "' | wl-copy"])
+                                ToastService.showInfo("Copied " + modelData)
+                                popoutColumn.closePopout()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    popoutWidth: 400
+    popoutHeight: 500
+}
+```
+
+`PopoutComponent` 帮助程序为您提供一致的页眉/页脚和 `closePopout()` 函数。
+
+### 控制中心小部件 {#control-center-widget}
+
+添加一个切换到控制中心：
+
+```qml
+PluginComponent {
+    id: root
+
+    property bool isEnabled: pluginData.isEnabled || false
+    property int clickCount: pluginData.clickCount || 0
+
+    ccWidgetIcon: isEnabled ? "toggle_on" : "toggle_off"
+    ccWidgetPrimaryText: "Example Toggle"
+    ccWidgetSecondaryText: isEnabled ? `Active • ${clickCount} clicks` : "Inactive"
+    ccWidgetIsActive: isEnabled
+
+    onCcWidgetToggled: {
+        isEnabled = !isEnabled
+        clickCount += 1
+        if (pluginService) {
+            pluginService.savePluginData(pluginId, "isEnabled", isEnabled)
+            pluginService.savePluginData(pluginId, "clickCount", clickCount)
+        }
+        ToastService.showInfo(isEnabled ? "Enabled" : "Disabled")
+    }
+
+    horizontalBarPill: Component {
+        Row {
+            DankIcon {
+                name: root.isEnabled ? "toggle_on" : "toggle_off"
+                color: root.isEnabled ? Theme.primary : Theme.surfaceVariantText
+            }
+            StyledText {
+                text: `${root.clickCount} clicks`
+                color: Theme.surfaceText
+            }
+        }
+    }
+
+    verticalBarPill: Component {
+        Column {
+            DankIcon {
+                name: root.isEnabled ? "toggle_on" : "toggle_off"
+                color: root.isEnabled ? Theme.primary : Theme.surfaceVariantText
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+            StyledText {
+                text: `${root.clickCount}`
+                color: Theme.surfaceText
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+        }
+    }
+}
+```
+
+设置 `ccWidgetIcon`、`ccWidgetPrimaryText`、`ccWidgetSecondaryText` 和 `ccWidgetIsActive`。用于切换点击的手柄 `onCcWidgetToggled`。
+
+## 守护进程插件 {#daemon-plugins}
+
+守护进程插件在后台运行，无需 UI。他们监视事件、自动执行任务或提供服务。
+
+这是一个守护程序，每当壁纸更改时都会运行脚本：
+
+```qml
+import QtQuick
+import Quickshell
+import Quickshell.Io
+import qs.Common
+import qs.Services
+import qs.Modules.Plugins
+
+PluginComponent {
+    id: root
+
+    property string scriptPath: pluginData.scriptPath || ""
+
+    Connections {
+        target: SessionData
+        function onWallpaperPathChanged() {
+            if (scriptPath && scriptPath !== "") {
+                var process = scriptProcessComponent.createObject(root, {
+                    wallpaperPath: SessionData.wallpaperPath
+                })
+                process.running = true
+            }
+        }
+    }
+
+    Component {
+        id: scriptProcessComponent
+
+        Process {
+            property string wallpaperPath: ""
+            command: [scriptPath, wallpaperPath]
+
+            stdout: SplitParser {
+                onRead: line => console.log("Script:", line)
+            }
+
+            stderr: SplitParser {
+                onRead: line => {
+                    if (line.trim()) {
+                        ToastService.showError("Script error", line)
+                    }
+                }
+            }
+
+            onExited: (exitCode) => {
+                if (exitCode !== 0) {
+                    ToastService.showError("Script failed", "Exit code: " + exitCode)
+                }
+                destroy()
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        console.info("Wallpaper watcher daemon started")
+    }
+}
+```
+
+守护程序清单使用 `"type": "daemon"`：
+
+```json
+{
+  "id": "wallpaperWatcher",
+  "type": "daemon",
+  "component": "./WallpaperWatcher.qml"
+}
+```
+
+## 桌面插件 {/* #desktop-plugins */} {#desktop-plugins}
+
+桌面插件使用 Wayland 的 wlr-layer-shell 协议直接在桌面背景层上渲染。用户可以自由调整它们的位置和大小。
+
+### 基本桌面小部件 {#basic-desktop-widget}
+
+```qml
+import QtQuick
+import Quickshell
+import qs.Common
+import qs.Modules.Plugins
+
+DesktopPluginComponent {
+    id: root
+
+    // Size constraints
+    minWidth: 150
+    minHeight: 100
+
+    // Access saved settings via pluginData
+    property string displayText: pluginData.displayText ?? "Hello"
+    property real bgOpacity: (pluginData.backgroundOpacity ?? 80) / 100
+
+    Rectangle {
+        anchors.fill: parent
+        radius: Theme.cornerRadius
+        color: Theme.withAlpha(Theme.surfaceContainer, root.bgOpacity)
+
+        Text {
+            anchors.centerIn: parent
+            text: root.displayText
+            color: Theme.surfaceText
+            font.pixelSize: Theme.fontSizeLarge
+        }
+    }
+}
+```
+
+桌面清单使用 `"type": "desktop"`：
+
+```json
+{
+  "id": "myDesktopWidget",
+  "name": "My Desktop Widget",
+  "description": "A custom desktop widget",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "desktop",
+  "capabilities": ["desktop-widget"],
+  "component": "./MyWidget.qml",
+  "icon": "widgets",
+  "settings": "./MySettings.qml",
+  "requires_dms": ">=1.2.0",
+  "permissions": ["settings_read", "settings_write"]
+}
+```
+
+### DesktopPluginComponent 属性 {#desktopplugincomponent-properties}
+
+**自动注入**（不要声明这些）：
+
+|物业 |类型 |描述 |
+|----------|------|-------------|
+| `pluginService` |变量 |参考PluginService进行数据持久化 |
+| `pluginId` |字符串|您的插件的唯一标识符 |
+| `widgetWidth` |真实|当前小部件宽度 |
+| `widgetHeight` |真实|当前小部件高度 |
+| `pluginData` |变量 |包含所有已保存插件设置的对象 |
+
+**可选**（在您的组件上定义）：
+
+|物业 |类型 |默认|描述 |
+|----------|------|---------|-------------|
+| `minWidth` |真实| 100 | 100最小允许宽度 |
+| `minHeight` |真实| 100 | 100最低允许高度|
+| `defaultWidth` |真实| 200 | 200新小部件的初始宽度 |
+| `defaultHeight` |真实| 200 | 200新小部件的初始高度 |
+| `forceSquare` |布尔 |假 |约束为正方形纵横比 |
+
+**辅助功能：**
+
+```qml
+// Read a specific setting with default value
+function getData(key, defaultValue)
+
+// Write a setting (triggers pluginDataChanged signal)
+function setData(key, value)
+```
+
+### 用户交互 {#user-interaction}
+
+桌面小部件支持：
+
+|行动|触发|描述 |
+|--------|---------|-------------|
+|移动|右键单击 + 拖动任意位置 |重新定位小部件 |
+|调整大小 |右键单击+拖动右下角 |在最小/最大范围内调整大小 |
+
+### 响应式布局 {#responsive-layout}
+
+适应小部件尺寸：
+
+```qml
+GridLayout {
+    columns: {
+        if (root.widgetWidth < 200) return 1
+        if (root.widgetWidth < 400) return 2
+        return 3
+    }
+}
+```
+
+### 动态大小约束 {#dynamic-size-constraints}
+
+```qml
+DesktopPluginComponent {
+    id: root
+
+    property bool showAllTiles: pluginData.showAllTiles ?? true
+
+    minWidth: showAllTiles ? 200 : 100
+    minHeight: {
+        if (tileCount === 0) return 60
+        if (tileCount === 1) return 80
+        return 120 + (tileCount - 2) * 40
+    }
+}
+```
+
+### 基于时间的更新 {#time-based-updates}
+
+使用 `SystemClock` 进行高效的时间更新：
+
+```qml
+import Quickshell
+
+DesktopPluginComponent {
+    id: root
+
+    SystemClock {
+        id: clock
+        precision: SystemClock.Seconds  // or Minutes
+
+        onDateChanged: updateDisplay()
+    }
+
+    function updateDisplay() {
+        // Update widget content
+    }
+}
+```
+
+### 画布/图形性能 {#canvasgraph-performance}
+
+对于图形小部件：
+
+```qml
+Canvas {
+    id: graph
+    renderStrategy: Canvas.Cooperative
+
+    property var history: []
+
+    onHistoryChanged: requestPaint()
+
+    onPaint: {
+        var ctx = getContext("2d")
+        ctx.reset()
+        // Draw graph...
+    }
+}
+```
+
+### 完整示例：桌面时钟 {#complete-example-desktop-clock}
+
+具有模拟和数字模式的时钟小部件，演示动态组件加载和响应式大小调整。
+
+```qml
+// DesktopClock.qml
+import QtQuick
+import Quickshell
+import qs.Common
+import qs.Modules.Plugins
+
+DesktopPluginComponent {
+    id: root
+
+    minWidth: 120
+    minHeight: 120
+
+    property bool showSeconds: pluginData.showSeconds ?? true
+    property bool showDate: pluginData.showDate ?? true
+    property string clockStyle: pluginData.clockStyle ?? "analog"
+    property real backgroundOpacity: (pluginData.backgroundOpacity ?? 50) / 100
+
+    SystemClock {
+        id: systemClock
+        precision: root.showSeconds ? SystemClock.Seconds : SystemClock.Minutes
+    }
+
+    Rectangle {
+        id: background
+        anchors.fill: parent
+        radius: Theme.cornerRadius
+        color: Theme.surfaceContainer
+        opacity: root.backgroundOpacity
+    }
+
+    Loader {
+        anchors.fill: parent
+        anchors.margins: Theme.spacingM
+        sourceComponent: root.clockStyle === "digital" ? digitalClock : analogClock
+    }
+
+    Component {
+        id: analogClock
+
+        Item {
+            id: analogClockRoot
+
+            property real clockSize: Math.min(width, height) - (root.showDate ? 30 : 0)
+
+            Item {
+                id: clockFace
+                width: analogClockRoot.clockSize
+                height: analogClockRoot.clockSize
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: Theme.spacingS
+
+                // Hour markers
+                Repeater {
+                    model: 12
+
+                    Rectangle {
+                        required property int index
+                        property real markAngle: index * 30
+                        property real markRadius: clockFace.width / 2 - 8
+
+                        x: clockFace.width / 2 + markRadius * Math.sin(markAngle * Math.PI / 180) - width / 2
+                        y: clockFace.height / 2 - markRadius * Math.cos(markAngle * Math.PI / 180) - height / 2
+                        width: index % 3 === 0 ? 8 : 4
+                        height: width
+                        radius: width / 2
+                        color: index % 3 === 0 ? Theme.primary : Theme.outlineVariant
+                    }
+                }
+
+                // Hour hand
+                Rectangle {
+                    id: hourHand
+                    property int hours: systemClock.date?.getHours() % 12 ?? 0
+                    property int minutes: systemClock.date?.getMinutes() ?? 0
+
+                    x: clockFace.width / 2 - width / 2
+                    y: clockFace.height / 2 - height + 4
+                    width: 6
+                    height: clockFace.height * 0.25
+                    radius: 3
+                    color: Theme.primary
+                    antialiasing: true
+                    transformOrigin: Item.Bottom
+                    rotation: (hours + minutes / 60) * 30
+                }
+
+                // Minute hand
+                Rectangle {
+                    id: minuteHand
+                    property int minutes: systemClock.date?.getMinutes() ?? 0
+                    property int seconds: systemClock.date?.getSeconds() ?? 0
+
+                    x: clockFace.width / 2 - width / 2
+                    y: clockFace.height / 2 - height + 4
+                    width: 4
+                    height: clockFace.height * 0.35
+                    radius: 2
+                    color: Theme.onSurface
+                    antialiasing: true
+                    transformOrigin: Item.Bottom
+                    rotation: (minutes + seconds / 60) * 6
+                }
+
+                // Second hand
+                Rectangle {
+                    id: secondHand
+                    visible: root.showSeconds
+                    property int seconds: systemClock.date?.getSeconds() ?? 0
+
+                    x: clockFace.width / 2 - width / 2
+                    y: clockFace.height / 2 - height + 4
+                    width: 2
+                    height: clockFace.height * 0.4
+                    radius: 1
+                    color: Theme.error
+                    antialiasing: true
+                    transformOrigin: Item.Bottom
+                    rotation: seconds * 6
+                }
+
+                // Center dot
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: 10
+                    height: 10
+                    radius: 5
+                    color: Theme.primary
+                }
+            }
+
+            Text {
+                visible: root.showDate
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: Theme.spacingXS
+                text: systemClock.date?.toLocaleDateString(Qt.locale(), "ddd, MMM d") ?? ""
+                font.pixelSize: Theme.fontSizeSmall
+                font.weight: Font.Medium
+                color: Theme.surfaceText
+            }
+        }
+    }
+
+    Component {
+        id: digitalClock
+
+        Item {
+            id: digitalRoot
+
+            property real timeFontSize: Math.min(width * 0.16, height * (root.showDate ? 0.4 : 0.5))
+            property real dateFontSize: Math.max(Theme.fontSizeSmall, timeFontSize * 0.35)
+
+            Text {
+                id: timeText
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: root.showDate ? -digitalRoot.dateFontSize * 0.8 : 0
+                text: systemClock.date?.toLocaleTimeString(Qt.locale(), root.showSeconds ? "hh:mm:ss" : "hh:mm") ?? ""
+                font.pixelSize: digitalRoot.timeFontSize
+                font.weight: Font.Bold
+                font.family: "monospace"
+                color: Theme.primary
+            }
+
+            Text {
+                id: dateText
+                visible: root.showDate
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: timeText.bottom
+                anchors.topMargin: Theme.spacingXS
+                text: systemClock.date?.toLocaleDateString(Qt.locale(), "ddd, MMM d") ?? ""
+                font.pixelSize: digitalRoot.dateFontSize
+                color: Theme.surfaceText
+            }
+        }
+    }
+}
+```
+
+```qml
+// DesktopClockSettings.qml
+import QtQuick
+import qs.Common
+import qs.Modules.Plugins
+
+PluginSettings {
+    id: root
+    pluginId: "exampleDesktopClock"
+
+    SelectionSetting {
+        settingKey: "clockStyle"
+        label: I18n.tr("Clock Style")
+        options: [
+            { label: I18n.tr("Analog"), value: "analog" },
+            { label: I18n.tr("Digital"), value: "digital" }
+        ]
+        defaultValue: "analog"
+    }
+
+    ToggleSetting {
+        settingKey: "showSeconds"
+        label: I18n.tr("Show Seconds")
+        defaultValue: true
+    }
+
+    ToggleSetting {
+        settingKey: "showDate"
+        label: I18n.tr("Show Date")
+        defaultValue: true
+    }
+
+    SliderSetting {
+        settingKey: "backgroundOpacity"
+        label: I18n.tr("Background Opacity")
+        defaultValue: 50
+        minimum: 0
+        maximum: 100
+        unit: "%"
+    }
+}
+```
+
+### 桌面插件最佳实践 {#desktop-plugin-best-practices}
+
+1. **使用主题单例** - 切勿硬编码颜色、间距或字体大小
+2. **设置适当的 minWidth/minHeight** - 防止无法使用的小部件尺寸
+3. **处理空数据** - 对所有 `pluginData` 访问使用 `??` 运算符
+4. **优化Canvas重绘** - 使用`renderStrategy: Canvas.Cooperative`
+5. **响应式布局** - 动态适应小部件尺寸
+6. **透明度** - 提供不透明度控制，以便壁纸显示出来
+
+## 启动器插件 {#launcher-plugins}
+
+启动器插件与 DankLauncher 集成以提供可搜索的结果。它们使用 `QtObject` 作为根（不是 `Item` 或 `PluginComponent`），因为它们不直接渲染任何 UI。
+
+### 基本结构 {#basic-structure}
+
+```qml
+import QtQuick
+import Quickshell
+import qs.Common
+import qs.Services
+
+QtObject {
+    id: root
+
+    property var pluginService: null
+    property string pluginId: "myPlugin"
+    property string trigger: ""
+
+    signal itemsChanged
+
+    // Required: Return search results
+    function getItems(query) {
+        return [{
+            name: "Item Name",
+            icon: "material:icon_name",
+            comment: "Description shown below name",
+            action: "custom:data",
+            categories: ["My Plugin"],
+            imageUrl: "https://...",  // Optional: tile image
+            animated: false,          // Optional: for GIFs
+            attribution: "/path/to/attribution.svg"  // Optional
+        }];
+    }
+
+    // Required: Handle item selection
+    function executeItem(item) {
+        if (!item?.action) return;
+        const data = item.action.substring(7); // Remove "custom:" prefix
+        // Do something with data
+    }
+}
+```
+
+### 插件清单 {#plugin-manifest}
+
+```json
+{
+  "id": "myPlugin",
+  "name": "My Plugin",
+  "description": "Plugin description",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "icon": "extension",
+  "type": "launcher",
+  "trigger": "!mp",
+  "viewMode": "list",
+  "viewModeEnforced": false,
+  "component": "./MyPlugin.qml",
+  "settings": "./MyPluginSettings.qml",
+  "permissions": ["settings_read", "settings_write"]
+}
+```
+
+|领域 |描述 |
+|-------|-------------|
+| `trigger` |激活插件的前缀（例如，`gif`、`:s`、`!calc`）|
+| `viewMode` |默认视图：`"list"`、`"grid"` 或 `"tile"` |
+| `viewModeEnforced` |如果为 `true`，用户无法更改查看模式 |
+
+### 物品属性 {#item-properties}
+
+|物业 |类型 |描述 |
+|----------|------|-------------|
+| `name` |字符串|显示名称（必填）|
+| `icon` |字符串| `"material:icon_name"` 或 `"unicode:🚀"` |
+| `comment` |字符串|辅助文本/描述 |
+| `action` |字符串|操作标识符（例如，`"copy:text"`、`"custom:data"`）|
+| `categories` |数组|用于过滤的类别字符串 |
+| `keywords` |数组|附加搜索词 |
+| `imageUrl` |字符串|平铺/网格图像的 URL |
+| `animated` |布尔 |为 GIF 设置 `true` 以启用动画 |
+| `attribution` |字符串|归因图像的路径（例如，用于 API 品牌）|
+
+### 上下文菜单 {#context-menus}
+
+通过实施 `getContextMenuActions(item)` 添加右键单击/Tab 操作：
+
+```qml
+function getContextMenuActions(item) {
+    if (!item) return [];
+
+    return [
+        {
+            icon: "content_copy",
+            text: I18n.tr("Copy URL"),
+            action: () => {
+                Quickshell.execDetached(["dms", "cl", "copy", item.url]);
+                ToastService.showInfo(I18n.tr("Copied to clipboard"));
+            }
+        },
+        {
+            icon: "open_in_new",
+            text: I18n.tr("Open in Browser"),
+            action: () => Qt.openUrlExternally(item.url)
+        }
+    ];
+}
+```
+
+每个动作对象：
+
+|领域 |类型 |描述 |
+|-------|------|-------------|
+| `icon` |字符串|材质图标名称|
+| `text` |字符串|显示标签|
+| `action` |功能|选中时执行的回调 |
+| `closeLauncher` |布尔 |如果是 `true`，则在执行操作后关闭启动器（默认值：`false`）|
+
+使用 `closeLauncher: true` 进行需要焦点返回到上一个应用程序的操作，例如粘贴操作：
+
+```qml
+{
+    icon: "content_paste",
+    text: I18n.tr("Paste"),
+    closeLauncher: true,
+    action: () => {
+        Quickshell.execDetached(["dms", "cl", "paste"]);
+    }
+}
+```
+
+### 类别 {#categories}
+
+允许用户按类别过滤结果。当插件处于活动状态时，类别将显示为下拉列表。
+
+```qml
+property string currentCategory: ""
+
+function getCategories() {
+    return [
+        { id: "", name: I18n.tr("All"), searchTerm: "" },
+        { id: "happy", name: "Happy", searchTerm: "happy" },
+        { id: "sad", name: "Sad", searchTerm: "sad" }
+    ];
+}
+
+function setCategory(categoryId) {
+    if (currentCategory === categoryId) return;
+    currentCategory = categoryId;
+    searchDebounce.restart();
+}
+```
+
+|领域 |类型 |描述 |
+|-------|------|-------------|
+| `id` |字符串|唯一标识符（“全部”为空字符串）|
+| `name` |字符串|在下拉列表中显示名称 |
+| `searchTerm` |字符串|可选：用于此类别的搜索词 |
+
+对于从 API 获取的动态类别，发出 `itemsChanged` 或在类别准备就绪时调用 `pluginService.requestLauncherUpdate(pluginId)`。
+
+### 粘贴支持（Shift+Enter） {#paste-support-shiftenter}
+
+Launcher插件可以支持Shift+Enter直接粘贴内容。两个可选函数对此进行控制：
+
+**`getPasteText(item)`** - 返回要粘贴的文本：
+```qml
+function getPasteText(item) {
+    if (!item?.action?.startsWith("copy:")) return null;
+    return item.action.substring(5);  // "copy:hello" -> "hello"
+}
+```
+
+**`getPasteArgs(item)`** - 返回自定义剪贴板操作的命令数组：
+```qml
+function getPasteArgs(item) {
+    const text = getPasteText(item);
+    if (!text) return null;
+    // Download content to clipboard before pasting
+    return ["dms", "cl", "copy", "--download", text];
+}
+```
+
+**解决顺序：**
+1、如果`getPasteArgs`存在，则使用返回的命令数组
+2. 否则如果`getPasteText`存在，则使用`["dms", "cl", "copy", text]`
+3. 否则该项目不支持粘贴
+
+**示例 - 带有 URL 后备的图像粘贴：**
+```qml
+property bool pasteUrlOnly: pluginData.pasteUrlOnly ?? false
+
+function getPasteText(item) {
+    return item.imageUrl || null;
+}
+
+function getPasteArgs(item) {
+    const url = getPasteText(item);
+    if (!url) return null;
+    if (pasteUrlOnly)
+        return ["dms", "cl", "copy", url];
+    return ["dms", "cl", "copy", "--download", url];
+}
+```
+
+### 请求更新 {#requesting-updates}
+
+通知启动器在异步数据加载后刷新结果：
+
+```qml
+property Connections serviceConn: Connections {
+    target: MyService
+
+    function onResultsReady() {
+        if (pluginService)
+            pluginService.requestLauncherUpdate(pluginId);
+    }
+}
+```
+
+### 持久设置 {#persisting-settings}
+
+```qml
+Component.onCompleted: {
+    if (!pluginService) return;
+    trigger = pluginService.loadPluginData(pluginId, "trigger", "!default");
+}
+
+function saveSetting(key, value) {
+    if (pluginService)
+        pluginService.savePluginData(pluginId, key, value);
+}
+```
+
+### 示例：计算器插件 {#example-calculator-plugin}
+
+```qml
+import QtQuick
+import Quickshell
+import qs.Services
+import "calculator.js" as Calculator
+
+QtObject {
+    id: root
+
+    property var pluginService: null
+    property string trigger: ""
+
+    signal itemsChanged
+
+    Component.onCompleted: {
+        if (pluginService)
+            trigger = pluginService.loadPluginData("calculator", "trigger", "=");
+    }
+
+    function getItems(query) {
+        if (!query || query.trim().length === 0)
+            return [];
+
+        const trimmedQuery = query.trim();
+        if (!Calculator.isMathExpression(trimmedQuery))
+            return [];
+
+        const result = Calculator.evaluate(trimmedQuery);
+        if (!result.success)
+            return [];
+
+        return [{
+            name: result.result.toString(),
+            icon: "material:equal",
+            comment: trimmedQuery + " = " + result.result,
+            action: "copy:" + result.result,
+            categories: ["Calculator"]
+        }];
+    }
+
+    function executeItem(item) {
+        if (!item?.action) return;
+
+        const actionParts = item.action.split(":");
+        const actionType = actionParts[0];
+        const actionData = actionParts.slice(1).join(":");
+
+        if (actionType === "copy") {
+            Quickshell.execDetached(["sh", "-c", "echo -n '" + actionData + "' | wl-copy"]);
+            ToastService.showInfo("Calculator", "Copied to clipboard: " + actionData);
+        }
+    }
+}
+```
+
+### 启动器设置 {#launcher-settings}
+
+启动器插件使用 `PluginSettings` 就像小部件插件一样：
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+
+PluginSettings {
+    id: root
+    pluginId: "calculator"
+
+    StyledText {
+        width: parent.width
+        text: "Calculator Plugin"
+        font.pixelSize: Theme.fontSizeLarge
+        font.weight: Font.Bold
+        color: Theme.surfaceText
+    }
+
+    ToggleSetting {
+        id: noTriggerToggle
+        settingKey: "noTrigger"
+        label: "Always Active"
+        description: value ? "Type expressions directly" : "Use trigger prefix"
+        defaultValue: false
+        onValueChanged: {
+            if (value)
+                root.saveValue("trigger", "");
+            else
+                root.saveValue("trigger", triggerSetting.value || "=");
+        }
+    }
+
+    StringSetting {
+        id: triggerSetting
+        visible: !noTriggerToggle.value
+        settingKey: "trigger"
+        label: "Trigger"
+        description: "Prefix to activate calculator (e.g., =, calc)"
+        placeholder: "="
+        defaultValue: "="
+    }
+}
+```
+
+## 插件设置 {#plugin-settings}
+
+以`PluginSettings`为底座，放入设定元件。他们自动处理所有加载和保存。
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Modules.Plugins
+import qs.Widgets
+
+PluginSettings {
+    id: root
+    pluginId: "colorDemo"
+
+    StyledText {
+        width: parent.width
+        text: "Color Demo Settings"
+        font.pixelSize: Theme.fontSizeLarge
+        font.weight: Font.Bold
+        color: Theme.surfaceText
+    }
+
+    StyledText {
+        width: parent.width
+        text: "Pick colors for your widget"
+        font.pixelSize: Theme.fontSizeSmall
+        color: Theme.surfaceVariantText
+        wrapMode: Text.WordWrap
+    }
+
+    ColorSetting {
+        settingKey: "customColor"
+        label: "Widget Color"
+        description: "Color shown in the bar"
+        defaultValue: Theme.primary
+    }
+
+    SliderSetting {
+        settingKey: "updateInterval"
+        label: "Update Speed"
+        description: "How often to refresh"
+        defaultValue: 60
+        minimum: 10
+        maximum: 300
+        unit: "sec"
+    }
+
+    ToggleSetting {
+        settingKey: "showInBar"
+        label: "Show in Bar"
+        description: "Display widget in DankBar"
+        defaultValue: true
+    }
+
+    StringSetting {
+        settingKey: "apiKey"
+        label: "API Key"
+        description: "Your service API key"
+        placeholder: "Enter key"
+        defaultValue: ""
+    }
+
+    SelectionSetting {
+        settingKey: "theme"
+        label: "Theme"
+        description: "Widget appearance"
+        options: [
+            {label: "Light", value: "light"},
+            {label: "Dark", value: "dark"},
+            {label: "Auto", value: "auto"}
+        ]
+        defaultValue: "dark"
+    }
+}
+```
+
+可用的设置组件：
+- `ColorSetting` - 打开颜色选择器模式
+- `SliderSetting` - 数字滑块
+- `ToggleSetting` - 布尔开关
+- `StringSetting` - 文本输入
+- `SelectionSetting` - 下拉菜单
+
+通过 `pluginData` 访问小部件中的设置：
+
+```qml
+property color customColor: pluginData.customColor || Theme.primary
+property int updateInterval: pluginData.updateInterval || 60
+property bool showInBar: pluginData.showInBar !== undefined ? pluginData.showInBar : true
+property string apiKey: pluginData.apiKey || ""
+property string theme: pluginData.theme || "dark"
+```
+
+## 插件状态 {#plugin-state}
+
+设置非常适合用户首选项，但有时您需要保留运行时数据 - 命令历史记录、最近的项目、计数器、缓存结果。这就是状态 API 的用途。
+
+每个插件的状态存储在 `~/.local/state/DankMaterialShell/plugins/{pluginId}_state.json` 中，与共享的 `plugin_settings.json` 完全分开。无需任何权限。
+
+### 状态与设置 {#state-vs-settings}
+
+|使用设置（`savePluginData`）|使用状态（`savePluginState`）|
+|---|---|
+|用户配置的首选项 |运行时/瞬态数据 |
+|触发角色、主题、切换 |命令历史记录、最近项目 |
+|存储在共享 `plugin_settings.json` |存储于 `{pluginId}_state.json` |
+|在设置 UI 中显示/编辑 |使用过程中累积 |
+
+### API {#api}
+
+```qml
+// Save a value
+pluginService.savePluginState(pluginId, key, value)
+
+// Load a value (synchronous, returns defaultValue if key doesn't exist)
+pluginService.loadPluginState(pluginId, key, defaultValue)
+
+// Remove a key
+pluginService.removePluginStateKey(pluginId, key)
+
+// Wipe all state for a plugin
+pluginService.clearPluginState(pluginId)
+
+// Get the filesystem path to the state file
+pluginService.getPluginStatePath(pluginId)
+```
+
+每当任何状态键发生变化时，都会触发 `pluginStateChanged(pluginId)` 信号。
+
+### 用法 {#usage}
+
+在启动时加载状态和设置，然后在更改时保存：
+
+```qml
+Component.onCompleted: {
+    // Settings: user preferences (plugin_settings.json)
+    trigger = pluginService.loadPluginData("myPlugin", "trigger", "!");
+
+    // State: runtime data (myPlugin_state.json)
+    history = pluginService.loadPluginState("myPlugin", "history", []);
+}
+
+function addToHistory(entry) {
+    history.unshift(entry);
+    if (history.length > 50)
+        history = history.slice(0, 50);
+    pluginService.savePluginState("myPlugin", "history", history);
+}
+```
+
+### 设置组件中的状态 {#state-in-settings-components}
+
+`PluginSettings` 提供方便的包装，因此您不必直接触摸 `pluginService`：
+
+```qml
+PluginSettings {
+    id: settings
+    pluginId: "myPlugin"
+
+    // Settings helpers (plugin_settings.json)
+    // settings.saveValue(key, value)
+    // settings.loadValue(key, defaultValue)
+
+    // State helpers (myPlugin_state.json)
+    // settings.saveState(key, value)
+    // settings.loadState(key, defaultValue)
+    // settings.clearState()
+}
+```
+
+### 它的幕后工作原理 {#how-it-works-under-the-hood}
+
+- **读取是同步的** — `loadPluginState()` 立即返回值（由 `FileView` 和 `blockLoading` 支持）
+- **写入去抖** — 快速 `savePluginState()` 调用批量到单个磁盘写入（150 毫秒）
+- **写入是原子的** — 使用 `FileView` 和 `atomicWrites` 来防止损坏
+- **清理** — `FileView` 实例在卸载插件时被销毁
+- **不需要权限** - 状态在自己的文件上运行，独立于 `settings_write`
+
+请参阅 DMS 存储库中的 `PLUGINS/QuickNotesExample/`，了解使用状态 API 的完整启动器插件。
+
+## 常见模式 {#common-patterns}
+
+### 自动注入属性 {#auto-injected-properties}
+
+`PluginComponent` 自动提供这些属性 - 不要自己声明它们：
+
+- `pluginData` - 反应性设置对象
+- `pluginService` - 手动数据操作服务
+- `pluginId` - 您的插件 ID
+- `axis` - 条形轴信息
+- `section` - “左”、“中”或“右”
+- `parentScreen` - 屏幕参考
+- `widgetThickness` - 小部件高度/宽度
+- `barThickness` - 条形高度/宽度
+- `iconSize` - 当前栏上下文的推荐图标大小
+- `variants` - 变体实例
+
+使用 `iconSize` 实现一致的图标大小，以适应栏方向和用户首选项：
+
+```qml
+DankIcon {
+    name: "settings"
+    size: root.iconSize
+}
+```
+
+### 手动保存数据 {#saving-data-manually}
+
+大多数时候 `pluginData` 会处理所有事情，但如果您需要手动保存：
+
+```qml
+if (pluginService) {
+    pluginService.savePluginData(pluginId, "key", value)
+}
+```
+
+### 显示通知 {#showing-notifications}
+
+```qml
+ToastService.showInfo("Title", "Message")
+ToastService.showError("Title", "Error message")
+```
+
+### 复制到剪贴板 {#copying-to-clipboard}
+
+```qml
+Quickshell.execDetached(["sh", "-c", "echo -n 'text' | wl-copy"])
+```
+
+### 计时器 {#timers}
+
+```qml
+PluginComponent {
+    Timer {
+        interval: 1000
+        running: true
+        repeat: true
+        onTriggered: {
+            // Do something every second
+        }
+    }
+}
+```
+
+## 插件清单参考 {#plugin-manifest-reference}
+
+### 必填字段 {#required-fields}
+
+```json
+{
+  "id": "pluginId",
+  "name": "Plugin Name",
+  "description": "What it does",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "widget",
+  "component": "./Widget.qml"
+}
+```
+
+### 可选字段 {#optional-fields}
+
+```json
+{
+  "icon": "material_icon",
+  "settings": "./Settings.qml",
+  "trigger": "#",
+  "permissions": ["settings_read", "settings_write"],
+  "requires_dms": ">=0.1.18",
+  "requires": ["tool1", "tool2"]
+}
+```
+
+### 插件类型 {#plugin-types}
+
+- `"widget"` - DankBar 或控制中心小部件
+- `"daemon"` - 后台服务
+- `"launcher"` - 聚光灯扩展
+- `"desktop"` - 桌面层小部件
+
+### 权限 {#permissions}
+
+- `"settings_read"` - 读取插件设置
+- `"settings_write"` - 写入插件设置
+- `"process"` - 执行系统命令
+- `"network"` - 网络访问
+
+## 测试 {#testing}
+
+1. 启用插件：设置 → 插件 → 扫描 → 开启
+2. 添加到栏：设置 → DankBar → 添加小部件
+3. 检查控制台：查找 shell 输出中的错误
+4. 热重载您的插件：`dms ipc call plugins reload myPlugin`
+5.检查设置文件：`~/.config/DankMaterialShell/settings.json`
+
+### 热重载 {#hot-reloading}
+
+在开发过程中，您可以重新加载插件而无需重新启动 shell：
+
+```bash
+# Reload your plugin after making changes
+dms ipc call plugins reload myPlugin
+
+# Check if it's running
+dms ipc call plugins status myPlugin
+
+# List all plugins and their state
+dms ipc call plugins list
+```
+
+当您迭代代码时，这比 `dms restart` 快得多。
+
+## 出版 {#publishing}
+
+1. 创建 GitHub 仓库
+2. 包含`plugin.json`、README、截图
+3.标签发布：`git tag v1.0.0 && git push --tags`
+4.提交到注册表：[dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry)
+
+## 示例 {#examples}
+
+检查 DMS 存储库中的 `PLUGINS/` 目录以获取示例插件：
+
+- **ColorDemoPlugin** - 颜色选择器集成
+- **ExampleEmojiPlugin** - 带网格视图的弹出窗口
+- **控制中心示例** - 控制中心切换
+- **LauncherExample** - Spotlight 扩展
+- **WallpaperWatcherDaemon** - 后台事件观察程序
+
+**第一方插件**（现实世界模式的良好参考）：
+
+- [DankGifSearch](https://github.com/AvengeMedia/dms-plugins/tree/main/DankGifSearch) - 具有平铺视图和 API 集成的启动器
+- [DankStickerSearch](https://github.com/AvengeMedia/dms-plugins/tree/main/DankStickerSearch) - 具有动态类别的启动器
+
+**桌面小部件：**
+
+- **DesktopClockWidget** - 带日期显示和样式选项的数字/模拟时钟
+- **SystemMonitorWidget** - CPU、内存、网络、磁盘、GPU 块以及实时图表
+
+克隆它们并进行实验。

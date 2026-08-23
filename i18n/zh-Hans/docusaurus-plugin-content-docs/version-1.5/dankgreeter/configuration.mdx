@@ -1,0 +1,724 @@
+---
+title: 配置
+description: 配置 DankGreeter 登录屏幕外观
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║  ███╗██████╔╝█████╗  █████╗     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══╝     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗╚██████╔╝██║  ██║███████╗███████╗   ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+                                                                            `}
+/>
+
+# 配置 {#configuration}
+
+## 自定义合成器配置 {#custom-compositor-configuration}
+
+:::tip
+
+自定义合成器配置允许您专门为迎宾员配置显示（分辨率、刷新率、位置等）。
+
+:::
+
+### 尼里 {#niri}
+
+1. 在 `/etc/greetd/niri.kdl` 创建基线配置文件：
+  ```bash
+  sudo tee /etc/greetd/niri.kdl > /dev/null << 'EOF'
+  hotkey-overlay {
+      skip-at-startup
+  }
+
+  environment {
+      DMS_RUN_GREETER "1"
+  }
+
+  gestures {
+    hot-corners {
+      off
+    }
+  }
+
+  layout {
+    background-color "#000000"
+  }
+  EOF
+  ```
+
+2.更新`/etc/greetd/config.toml中的命令以使用此配置
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command niri -C /etc/greetd/niri.kdl"
+  #...existing configuration
+  ```
+
+3. 编辑 `/etc/greetd/niri.kdl` ，但您认为合适，欢迎程序将在此合成器配置下运行
+
+### 海普拉兰 {#hyprland}
+
+1. 在 `/etc/greetd/hypr.lua` 创建基线配置文件：
+  ```bash
+  sudo tee /etc/greetd/hypr.lua > /dev/null << 'EOF'
+  hl.env("DMS_RUN_GREETER", "1")
+
+  hl.config({
+      misc = {
+          disable_hyprland_logo = true
+      }
+  })
+  EOF
+  ```
+
+2.更新`/etc/greetd/config.toml中的命令以使用此配置
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command hyprland -C /etc/greetd/hypr.lua"
+  #...existing configuration
+  ```
+
+3. 编辑 `/etc/greetd/hypr.lua` ，但您认为合适，欢迎程序将在此合成器配置下运行
+
+
+### 摇摆 {#sway}
+
+1. 在 `/etc/greetd/sway` 创建基线配置文件：
+  ```bash
+  sudo tee /etc/greetd/sway > /dev/null << 'EOF'
+  # Sway greeter configuration
+  # The exec command to launch the greeter is automatically appended by dms-greeter
+  EOF
+  ```
+
+2.更新`/etc/greetd/config.toml中的命令以使用此配置
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command sway -C /etc/greetd/sway"
+  #...existing configuration
+  ```
+
+3. 编辑 `/etc/greetd/sway` 您认为合适的内容，欢迎程序将在此合成器配置下运行
+
+### 芒果 {#mango}
+
+1. 在 `/etc/greetd/mango.conf` 创建基线配置文件：
+  ```bash
+  sudo tee /etc/greetd/mango.conf > /dev/null << 'EOF'
+  # Mango greeter configuration
+  EOF
+  ```
+
+2.更新`/etc/greetd/config.toml中的命令以使用此配置
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command mango -C /etc/greetd/mango.conf"
+  #...existing configuration
+  ```
+
+3. 编辑 `/etc/greetd/mango.conf` ，但您认为合适，欢迎程序将在此合成器配置下运行
+
+### 奇迹WM {#miracle-wm}
+
+1. 在 `/etc/greetd/miracle-wm.yaml` 创建基线配置文件：
+  ```bash
+  sudo tee /etc/greetd/miracle-wm.yaml > /dev/null << 'EOF'
+  # Miracle WM greeter configuration
+  EOF
+  ```
+
+2.更新`/etc/greetd/config.toml中的命令以使用此配置
+  ```toml
+  #...existing configuration
+  command = "dms-greeter --command miracle-wm -C /etc/greetd/miracle-wm.yaml"
+  #...existing configuration
+  ```
+
+3.编辑`/etc/greetd/miracle-wm.yaml`，无论你认为合适，欢迎程序将在此合成器配置下运行
+
+## 与 DMS 同步 {#syncing-with-dms}
+
+您可以自动将系统问候语与登录用户的壁纸、主题、字体等同步。
+
+### 自动同步 {#automatic-sync}
+
+您可以使用 `dms greeter sync` 自动设置主题同步。该命令可用于：
+- dank安装用户
+- Arch AUR 用户
+- Fedora COPR 用户
+
+:::note
+
+**NixOS 用户：** `dms greeter sync` 命令在 NixOS 上不可用。请按照下面的手动同步步骤操作。
+
+:::
+
+```bash
+dms greeter sync
+```
+
+这将：
+- 将您的用户添加到 `greeter` 组（如果需要）
+- 在父目录上设置 ACL 权限以进行欢迎访问
+- 配置 DMS 配置目录的组权限
+- 创建符号链接来同步设置、壁纸和颜色主题
+- 将每用户主题槽复制到 `/var/cache/dms-greeter/users/<username>/`（用于多账户选择器预览）
+
+:::note
+
+运行 `dms greeter sync` 后，您需要注销并重新登录才能使组成员身份更改生效。重新登录后，您的问候语将自动反映您当前的 DMS 主题、壁纸和设置。
+
+:::
+
+### 多用户系统 {#multi-user-systems}
+
+在共享电脑上，每个账户都可以在登录屏幕上有自己的迎宾主题和个人资料照片。当存在多个本地账户时，DMS 会显示一个**用户选择器**（头像 + 内联列表）。
+
+**推荐的工作流程：** 一名主管理员运行 **`dms greeter sync`** 一次（系统设置）。所有其他账户（包括其他 sudo 管理员）仅使用 **`dms greeter sync --profile`**。多个账户的完全同步重新指向根缓存符号链接和greetd； `--profile` 仅更新该用户的登录屏幕槽。
+
+#### 角色 {#roles}
+
+|谁 |命令 |需要须藤吗？ |
+|-----|---------|-------------|
+|主管理（首次设置）| `dms greeter sync` |是的 |
+|所有其他用户（包括其他管理员）| `dms greeter sync --profile` |没有 |
+|将用户添加到欢迎组 | **设置 → 用户**（切换）或 `sudo usermod -aG greeter <user>` |是（Polkit 或 sudo）|
+
+完整 `dms greeter sync` 仅将**运行命令的用户**添加到 `greeter` 组。您必须明确添加其他账户。
+
+#### 将用户添加到欢迎组（管理员） {#adding-users-to-the-greeter-group-admin}
+
+**GUI（推荐）：** 在 DMS 中，打开 **设置 → 用户**。在每个账户上使用迎宾访问切换（登录图标），或在创建用户时启用**允许迎宾登录访问**。 DMS 运行 `usermod -aG` 以向用户授予管理员访问权限。
+
+:::note
+
+将某人添加到欢迎组后，他们必须在组成员资格申请之前**注销并重新登录**，然后在其账户上运行 `dms greeter sync --profile`。
+
+:::
+
+**CLI 替代方案：**
+
+```bash
+sudo usermod -aG greeter otheruser1 otheruser2
+```
+
+每个添加的用户必须**注销并重新登录**，然后同步自己的槽：
+
+```bash
+dms greeter sync --profile
+```
+
+#### 一次性设置（主管理员） {#one-time-setup-main-admin}
+
+```bash
+# Configure greetd, ACLs, and your own theme slot
+dms greeter sync
+```
+
+然后添加所有其他账户 - 在 **设置 → 用户**（问候语切换）中或从终端添加：
+
+```bash
+sudo usermod -aG greeter alice bob charlie
+```
+
+#### 每用户设置（除主管理员之外的所有人） {#per-user-setup-everyone-except-the-main-admin}
+
+注销并重新登录后（因此 `greeter` 组适用）：
+
+```bash
+dms greeter sync --profile
+```
+
+这仅写入 `/var/cache/dms-greeter/users/<your-username>/` — 设置、颜色、壁纸和个人资料照片 — 而不更改问候语或系统配置。主题更改后重新运行。
+
+#### 每个用户存储的内容 {#what-gets-stored-per-user}
+
+在 `/var/cache/dms-greeter/users/<username>/` 下：
+
+- `settings.json` — 主题、时钟、天气、字体
+- `session.json` — 壁纸配置（本地化到插槽中的路径）
+- `colors.json` — 配色方案
+- `profile.jpg`（或 `.png`）— 用户选择器的个人资料照片
+- 根据需要复制壁纸图像
+
+当不存在每用户插槽或尚未选择用户时，根缓存（`/var/cache/dms-greeter/settings.json` 等）仍然是**默认后备**。
+
+#### 开发者说明：`--local` {#developer-note---local}
+
+当从 DMS 结账进行开发时，只有 **主管理员** 应该使用：
+
+```bash
+dms greeter sync --local
+```
+
+所有其他账户均使用 `dms greeter sync --profile`。如果greetd已经配置了共享结帐的`-p`路径，则主管理员可以使用`--local`刷新该路径；其他用户应该不需要它。
+
+#### 与切换用户不同 {#not-the-same-as-switch-user}
+
+运行会话 (`dms switch-user`) 中的 DMS **切换用户** 在活动 Wayland 会话之间切换。迎宾用户选择器从系统密码数据库中列出**本地登录账户**，以便在注销或重新启动后登录。
+
+### 手动同步 {#manual-sync}
+
+如果您更喜欢手动设置同步：
+
+1. 将您的用户添加到 `greeter` 组：
+  ```bash
+  sudo usermod -aG greeter <username>
+  ```
+
+2. 设置父目录的ACL权限：
+  ```bash
+  setfacl -m u:greeter:x ~
+  setfacl -m u:greeter:x ~/.config
+  setfacl -m u:greeter:x ~/.local
+  setfacl -m u:greeter:x ~/.cache
+  setfacl -m u:greeter:x ~/.local/state
+  ```
+
+3. 设置 DMS 配置目录的组权限：
+  ```bash
+  sudo chgrp -R greeter ~/.config/DankMaterialShell
+  sudo chmod -R g+rX ~/.config/DankMaterialShell
+
+  sudo chgrp -R greeter ~/.local/state/DankMaterialShell
+  sudo chmod -R g+rX ~/.local/state/DankMaterialShell
+
+  sudo chgrp -R greeter ~/.cache/quickshell
+  sudo chmod -R g+rX ~/.cache/quickshell
+  ```
+
+4. 创建配置符号链接：
+  ```bash
+  sudo mkdir -p /var/cache/dms-greeter
+  sudo ln -sf ~/.config/DankMaterialShell/settings.json /var/cache/dms-greeter/settings.json
+  sudo ln -sf ~/.local/state/DankMaterialShell/session.json /var/cache/dms-greeter/session.json
+  sudo ln -sf ~/.cache/quickshell/dankshell/dms-colors.json /var/cache/dms-greeter/colors.json
+  ```
+
+:::note
+
+您必须注销或重新启动才能使组更改生效。
+
+:::
+
+## 登录验证 {#login-authentication}
+
+:::tip
+
+有关完整的设置和策略所有者指南，请参阅
+[DankGreeter 身份验证](./authentication)。锁屏因素是
+单独配置在
+[锁屏认证](../dankmaterialshell/lock-screen-authentication)。
+
+:::
+
+DankGreeter 可以通过系统使用指纹识别器和安全密钥
+PAM 堆栈。当您启用相应的 PAM 条目时，DMS 会配置 PAM 条目
+切换**设置 → 问候语**；它不安装驱动程序，注册一个
+指纹，或为您注册安全密钥。
+
+:::info[认证交互]
+
+DankGreeter 独立于锁定屏幕的 **Auto** 遵循问候语 PAM，
+**自定义**和**或**/**与**选择。使用 DMS 管理的问候 PAM，选择
+用户自动启动启用且可用的指纹或
+安全关键因素。通过 **使用系统 PAM 身份验证**，系统堆栈
+控制提示，可能需要在空密码字段中输入才能开始
+登录尝试。
+
+:::
+
+### 指纹 {#fingerprints}
+
+安装您的发行版的指纹服务/客户端和 PAM 集成，
+然后注册至少一根手指。包名称因发行版而异。对于
+例如，Fedora 的本机堆栈是：
+
+```bash
+sudo dnf install fprintd fprintd-pam
+fprintd-enroll
+```
+
+发行版 `fprintd` 包通常会自动拉入 `libfprint`；你
+通常不需要单独安装`libfprint`。
+
+通过以下方式确认注册成功：
+
+```bash
+fprintd-list "$USER"
+```
+
+要选择特定手指而不是默认手指，请传递其令牌，例如
+例如 `fprintd-enroll -f right-thumb`。
+
+然后在**设置 → 问候语**中启用**登录时指纹**。切换开关
+自动应用共享 PAM 配置；你不需要运行
+注册后单独同步。
+
+如果 `fprintd-enroll` 报告 **没有可用的设备**，则阅读器可能无法
+已安装的 `libfprint` 驱动程序支持。检查 [libfprint 支持
+设备列表]（https://fprint.freedesktop.org/supported-devices.html）第一。
+
+:::note[不支持的有效性/Synaptics 读卡器]
+
+某些笔记本电脑具有兼容的 Validity/Synaptics 传感器，但并非如此
+由本机 `libfprint` 堆栈支持，无论发行版如何。在
+在这种情况下，[open-fprintd](https://github.com/uunicorn/open-fprintd)
+具有 [python-validity](https://github.com/uunicorn/python-validity) 的服务
+司机可能会工作。遵循该项目的安装和固件
+说明；软件包名称和安装步骤因发行版和版本而异。
+
+备用驱动程序替换了库存 `fprintd` 服务，因此不要同时运行这两个服务
+守护进程同时执行。
+
+:::
+
+供应商特定的驱动程序可能需要固件提取和附加系统
+服务。仅安装适合您的读者的驱动程序堆栈。
+
+### 安全密钥 {#security-keys}
+
+安装并配置 `pam_u2f`，使用您的发行版注册密钥
+PAM 工具，然后在 **设置 → 问候语** 中启用 **登录时的安全密钥**。
+密钥必须先注册才能进行身份验证。
+
+### 外部管理的greet PAM {#externally-managed-greetd-pam}
+
+如果您使用`authselect`自行管理`/etc/pam.d/greetd`，
+`pam-auth-update`，NixOS模块，或者手写堆栈，打开**使用系统
+PAM 身份验证**位于**设置 → 问候语**。随着
+打开，DMS 永远不会写入 `/etc/pam.d/greetd`：下一次同步会删除
+任何现有的 DMS 管理的块，然后保持文件不变。的
+在此模式下，指纹和安全密钥切换被禁用，因为您的
+自己的 PAM 配置决定欢迎者采用哪种身份验证方法
+优惠。
+
+### 锁屏认证源码 {#lock-screen-authentication-source}
+
+锁定屏幕具有单独的主 PAM 源和安全密钥 PAM 源，以及
+在 DMS 管理的因素和系统 PAM 策略之间进行选择。参见
+[锁屏认证](../dankmaterialshell/lock-screen-authentication)
+完成设置。
+
+### 检查 PAM 服务 {#inspecting-pam-services}
+
+两个只读命令返回锁屏源选择器，可用于
+故障排除。既不写入任何文件，也不需要 root。
+
+列出系统上找到的候选 PAM 服务：
+
+```bash
+dms auth list-services --json
+```
+
+验证 PAM 服务文件以供锁定屏幕使用，它会报告是否
+已解析堆栈包含 `auth` 指令，无论是 `pam_fprintd`/`pam_u2f`
+显示内联，以及引用但未安装的任何模块：
+
+```bash
+dms auth validate --path /etc/pam.d/system-auth
+dms auth validate --service system-auth
+```
+
+当文件可用时，`validate` 退出 `0`，否则退出 `1`（使用 `--json`
+无论哪种方式都会打印结果）。
+
+### 修复身份验证配置 {#repairing-authentication-configuration}
+
+仅当需要修复或手动重新应用时才使用 `dms auth sync`
+DMS 管理的 PAM 配置（例如，编辑 PAM 文件或
+恢复备份）：
+
+```bash
+dms auth sync
+```
+
+正常切换更改会自动应用，不需要此命令。
+
+## 检查同步状态 {#checking-sync-status}
+
+要验证您的欢迎程序是否已正确配置并与您的用户设置同步，请运行：
+
+```bash
+dms greeter status
+```
+
+此命令可供所有用户使用，并将检查：
+- ✓ 群组成员身份（无论您的用户是否在 `greeter` 群组中）
+- ✓ 缓存目录存在
+- ✓ 配置符号链接（设置、壁纸、颜色）
+- ✓ 源文件是否存在且可读
+
+### 输出示例 {#example-output}
+
+```
+=== DMS Greeter Status ===
+
+Group Membership:
+  ✓ User is in greeter group
+
+Greeter Cache Directory:
+  ✓ /var/cache/dms-greeter exists
+
+Configuration Symlinks:
+  ✓ Settings: synced correctly
+  ✓ Session state: synced correctly
+  ✓ Color theme: synced correctly
+
+Per-user slots (multi-account):
+  ✓ users/alice/ — synced
+  ✓ users/bob/ — not synced (run: dms greeter sync --profile)
+
+✓ All checks passed! Greeter is properly configured.
+```
+
+### 故障排除 {#troubleshooting}
+
+如果 `dms greeter status` 显示问题：
+
+**用户不在迎宾组中：**
+```bash
+dms greeter sync
+# Then log out and log back in
+```
+
+**符号链接丢失或损坏：**
+```bash
+dms greeter sync
+```
+
+**辅助用户无法运行完全同步（不在 sudoers 中）：**
+```bash
+# Admin: Settings → Users → enable greeter access for that account
+# Or: sudo usermod -aG greeter <username>
+# User logs out/in, then:
+dms greeter sync --profile
+```
+
+**每用户主题未显示在选择器中：**
+```bash
+# Run on that user's account after group membership is active:
+dms greeter sync --profile
+# Log out to see the updated theme on the login screen
+```
+
+**ACL 权限问题（主题/壁纸未出现）：**
+```bash
+# Check if ACLs are set
+getfacl ~ ~/.config ~/.local ~/.cache ~/.local/state | grep "user:greeter"
+
+# If not, run sync again
+dms greeter sync
+```
+
+## 启动时自动登录 {#auto-login-on-startup}
+
+自动登录会在启动后跳过迎宾密码（类似于 SDDM 或 GDM 中的自动登录选项），直到您注销。它使用greetd的原生`[initial_session]`，所以：
+
+- 重新启动后，您可以直接进入会话，无需在迎宾处输入密码。
+- **注销**会将您返回到正常的问候语，其中需要密码。
+- 您的**锁定屏幕**不受影响——解锁始终需要您的密码。
+
+:::warning
+
+自动登录会降低物理安全性：任何打开或重新启动计算机的人都无需密码即可访问您的会话。仅在您物理上信任的计算机上启用它，最好使用全磁盘加密。
+
+:::
+
+### 要求 {#requirements}
+
+自动登录需要知道**哪个用户和会话**启动，因此需要**记住最后一个用户**和**记住最后一个会话**（默认情况下均启用）。首次登录始终是交互式的 — DMS 会记住您选择的用户和会话，然后在后续启动时自动登录。
+
+### 启用和禁用 {#enabling-and-disabling}
+
+**从设置（推荐）：**打开**设置 → 问候语**并切换**启动时自动登录**。 DMS 在后台更新并显示确认信息；该更改将在您**下次重新启动**时生效。关闭同一开关即可再次要求输入密码。
+
+**从登录屏幕：**在密码屏幕上，登录前点击 **自动登录** 芯片。到达桌面后即会启用自动登录。
+
+如果需要管理员访问权限并且未配置无密码 sudo，DMS 会打开一个终端，以便您可以输入 sudo 密码；完成后它会自动关闭。
+
+### 命令行界面 {#cli}
+
+这些开关在后台运行集中同步。您还可以仅从终端应用自动登录状态：
+
+```bash
+dms greeter sync --autologin
+```
+
+与完整的 `dms greeter sync` 不同，这**仅**greeted 的 `[initial_session]` 块 - 在启用时添加它（使用您记住的用户和会话），或在禁用时删除它 - 并跳过主题、ACL 和权限步骤。它从您的 DMS 配置中读取 `greeterAutoLogin` 设置，因此如果您需要手动重新应用问候语，请在更改该设置后运行它。
+
+## 手动配置 {#manual-configuration}
+
+迎宾程序使用位于 `/var/cache/dms-greeter/` 中的三个主要配置文件。如果您定义了自定义目录，它将位于 `DMS_GREET_CFG_DIR` 中。对于 NixOS 用户，它位于 `/var/lib/dms-greeter/` 下：
+
+- `settings.json` - 外观、行为和小部件设置
+- `session.json` - 壁纸配置
+- `colors.json` - 配色方案配置
+
+在多用户系统上，每个账户还可能在 `/var/cache/dms-greeter/users/<username>/` 下有一个复制的插槽，具有相同的文件名以及本地化壁纸和用于用户选取器的 `profile.*` 图像。请参阅上面的[多用户系统](#multi-user-systems)。
+
+:::note
+
+这些文件只能由迎宾员读取，不能写入或更新。
+
+:::
+
+### 颜色 {#colors}
+
+可以按照 [DankMaterialShell 自定义主题](/docs/dankmaterialshell/custom-themes) 中描述的完全相同的方式配置颜色
+
+### 设置 {#settings}
+
+`settings.json` 文件控制迎宾员的外观和行为。这是完整的参考：
+
+#### 时钟与时间 {#clock--time}
+
+```json
+{
+  "use24HourClock": true,
+  "showSeconds": false,
+  "lockDateFormat": ""
+}
+```
+
+- `use24HourClock`：使用 24 小时格式 (`true`) 或 12 小时格式 (`false`)
+- `showSeconds`：在时钟中显示秒
+- `lockDateFormat`：自定义Qt日期格式字符串（空= `Locale.LongFormat`）
+
+#### 天气 {#weather}
+
+```json
+{
+  "weatherEnabled": true,
+  "weatherLocation": "New York, NY",
+  "weatherCoordinates": "40.7128,-74.0060",
+  "useAutoLocation": false,
+  "useFahrenheit": false
+}
+```
+
+- `weatherEnabled`：在右上角显示天气小部件
+- `weatherLocation`：位置的显示名称
+- `weatherCoordinates`：`"latitude,longitude"` 字符串
+- `useAutoLocation`：通过IP地理定位自动检测位置
+- `useFahrenheit`：使用华氏度 (`true`) 或摄氏度 (`false`)
+
+#### 外观 {#appearance}
+
+```json
+{
+  "currentThemeName": "blue",
+  "customThemeFile": "",
+  "matugenScheme": "scheme-tonal-spot",
+  "iconTheme": "System Default",
+  "fontFamily": "Inter Variable",
+  "fontWeight": 400,
+  "fontScale": 1.0,
+  "cornerRadius": 12,
+  "widgetBackgroundColor": "sch",
+  "surfaceBase": "s",
+  "animationSpeed": 2
+}
+```
+
+- `currentThemeName`：内置主题名称（`"blue"`、`"red"`、`"green"`等）
+- `customThemeFile`：自定义 matugen JSON 主题文件的路径
+- `matugenScheme`：Matugen 配色方案变体
+- `iconTheme`：DankIcon 后备的图标主题名称
+- `fontFamily`：主要字体系列
+- `fontWeight`：字体粗细（`400` = 正常，`700` = 粗体）
+- `fontScale`：字体大小乘数（`1.0` =默认值）
+- `cornerRadius`：UI 元素的圆角半径（以像素为单位）
+- `widgetBackgroundColor`：小部件背景方案（`"sch"`、`"s"`、`"sv"`）
+- `surfaceBase`：表面基础配色方案（`"s"`、`"sv"`、`"sb"`）
+- `animationSpeed`：动画速度（`0` = 最快，`4` = 最慢，`2` = 默认）
+
+#### 完整示例 {#complete-example}
+
+`/var/cache/dms-greeter/settings.json`：
+
+```json
+{
+  "use24HourClock": true,
+  "showSeconds": false,
+  "lockDateFormat": "",
+  "lockScreenShowPowerActions": true,
+  "useFahrenheit": false,
+  "weatherLocation": "New York, NY",
+  "weatherCoordinates": "40.7128,-74.0060",
+  "useAutoLocation": false,
+  "weatherEnabled": true,
+  "currentThemeName": "blue",
+  "customThemeFile": "",
+  "matugenScheme": "scheme-tonal-spot",
+  "nightModeEnabled": false,
+  "iconTheme": "System Default",
+  "fontFamily": "Inter Variable",
+  "fontWeight": 400,
+  "fontScale": 1.0,
+  "cornerRadius": 12,
+  "widgetBackgroundColor": "sch",
+  "surfaceBase": "s",
+  "animationSpeed": 2
+}
+```
+
+### 壁纸 {#wallpapers}
+
+`session.json` 文件控制壁纸设置。
+
+#### 基本配置 {#basic-configuration}
+
+```json
+{
+  "wallpaperPath": "/path/to/wallpaper.jpg",
+  "wallpaperFillMode": "PreserveAspectCrop"
+}
+```
+
+- `wallpaperPath`：所有显示器的默认壁纸
+- `wallpaperFillMode`：Qt填充模式
+- `"PreserveAspectCrop"` - 裁剪以填充（默认）
+- `"PreserveAspectFit"` - 适合范围内
+- `"Stretch"` - 拉伸填充
+
+#### 每个显示器的壁纸 {#per-monitor-wallpapers}
+
+```json
+{
+  "wallpaperPath": "/path/to/default.jpg",
+  "wallpaperFillMode": "PreserveAspectCrop",
+  "monitorWallpapers": {
+    "DP-1": "/path/to/monitor1-wallpaper.jpg",
+    "DP-2": "/path/to/monitor2-wallpaper.jpg",
+    "HDMI-A-1": "#1a1a1a"
+  }
+}
+```
+
+- `monitorWallpapers`：每个显示器的壁纸覆盖
+- 键：`niri msg outputs` 或 `hyprctl monitors` 中的显示器名称
+- 值格式：
+- 文件路径：`/path/to/image.jpg`
+- 纯色：`#RRGGBB` 格式
+- 壁纸引擎：`we:workshop_id` 格式
+
+#### 完整示例 {#complete-example-1}
+
+`/var/cache/dms-greeter/session.json`：
+
+```json
+{
+  "wallpaperPath": "/usr/share/backgrounds/default.jpg",
+  "wallpaperFillMode": "PreserveAspectCrop",
+  "monitorWallpapers": {
+    "DP-1": "/home/user/Pictures/wallpaper-main.png",
+    "DP-2": "#2e3440",
+    "HDMI-A-1": "/home/user/Pictures/wallpaper-side.jpg"
+  }
+}
+```

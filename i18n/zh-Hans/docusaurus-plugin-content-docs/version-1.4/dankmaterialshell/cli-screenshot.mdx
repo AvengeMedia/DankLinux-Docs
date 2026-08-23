@@ -1,0 +1,139 @@
+---
+title: 截图
+description: 以多种模式和格式从 Wayland 显示屏捕获屏幕截图
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`███████╗ ██████╗██████╗ ███████╗███████╗███╗   ██╗
+██╔════╝██╔════╝██╔══██╗██╔════╝██╔════╝████╗  ██║
+███████╗██║     ██████╔╝█████╗  █████╗  ██╔██╗ ██║
+╚════██║██║     ██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
+███████║╚██████╗██║  ██║███████╗███████╗██║ ╚████║
+╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝`}
+  hideTitle={true}
+/>
+
+`dms screenshot` 命令从 Wayland 显示器捕获屏幕截图，支持多种捕获模式、输出格式和剪贴板集成。
+
+## 快速入门 {#quick-start}
+
+```bash
+# Region select, save file + clipboard
+dms screenshot
+
+# Full screen of focused output
+dms screenshot full
+
+# Clipboard only
+dms screenshot --no-file
+```
+
+按 **Escape** 可随时取消区域选择。
+
+## 捕捉模式 {#capture-modes}
+
+|模式|命令 |描述 |
+|------|---------|-------------|
+| `region` | `dms screenshot` |交互式选择区域（默认） |
+| `full` | `dms screenshot full` |捕获重点输出 |
+| `all` | `dms screenshot all` |捕获所有输出组合 |
+| `output` | `dms screenshot output -o NAME` |按名称捕获特定输出 |
+| `last` | `dms screenshot last` |捕获最后选择的区域 |
+
+### 列出可用输出 {#list-available-outputs}
+
+```bash
+dms screenshot list
+```
+
+## 输出格式 {#output-formats}
+
+使用 `--format` 或 `-f` 指定输出格式。默认值为 `png`。
+
+|格式|选项|笔记|
+|--------|------|-------|
+|巴布亚新几内亚 | `-f png` |默认，无损 |
+| JPEG | `-f jpg` |使用`-q`设置质量（1-100） |
+|项目管理 | `-f ppm` |原始格式|
+
+```bash
+# JPEG with custom quality
+dms screenshot -f jpg -q 85
+```
+
+## 选项 {#options}
+
+|选项|短|描述 |
+|------|-------|-------------|
+| `--cursor` | |在屏幕截图中包含光标：开/关（默认值：关）|
+| `--stdout` | |输出到标准输出（用于管道）|
+| `--dir` | `-d` |输出目录|
+| `--filename` | |输出文件名（如果为空则自动生成）|
+| `--format` | `-f` |输出格式：png、jpg、ppm（默认：png）|
+| `--quality` | `-q` | JPEG 质量 1-100（默认值：90）|
+| `--output` | `-o` | “输出”模式的输出名称 |
+| `--no-clipboard` | |不要复制到剪贴板|
+| `--no-file` | |不保存到文件 |
+| `--no-notify` | |不显示通知 |
+| `--config` | `-c` |自定义 DMS 配置目录路径 |
+| `--help` | `-h` |显示帮助 |
+
+## 示例 {#examples}
+
+### 区域选择 {#region-selection}
+
+```bash
+# Interactive selection, save file + clipboard
+dms screenshot
+
+# File only, no clipboard
+dms screenshot --no-clipboard
+
+# Clipboard only, no file
+dms screenshot --no-file
+```
+
+### 全屏捕获 {#full-screen-capture}
+
+```bash
+# Focused output
+dms screenshot full
+
+# All outputs combined
+dms screenshot all
+
+# Specific output
+dms screenshot output -o DP-1
+```
+
+### 重复上次捕获 {#repeat-last-capture}
+
+```bash
+# Capture the same region as before
+dms screenshot last
+```
+
+### 包含光标 {#include-cursor}
+
+```bash
+dms screenshot full --cursor on
+```
+
+### 管道到编辑器 {#pipe-to-editor}
+
+```bash
+# Send to swappy for annotation
+dms screenshot --stdout | swappy -f -
+```
+
+### 自定义输出位置 {#custom-output-location}
+
+```bash
+# Save to specific directory
+dms screenshot -d ~/Pictures/screenshots
+
+# Custom filename
+dms screenshot --filename my-screenshot.png
+```

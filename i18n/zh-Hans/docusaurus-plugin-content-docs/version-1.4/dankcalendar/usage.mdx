@@ -1,0 +1,67 @@
+---
+title: 用法
+description: 从 CLI 控制 DankCalendar 窗口、同步和提醒
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗
+██╔══██╗██╔════╝██╔══██╗██║
+██║  ██║██║     ███████║██║
+██║  ██║██║     ██╔══██║██║
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+# 用法 {#usage}
+
+DankCalendar 是一个带有附加窗口的守护进程。关闭窗口只会隐藏它。守护程序和托盘图标继续运行，因此同步和提醒将继续。从托盘图标、桌面条目或 `dcal show` 重新打开。
+
+## 窗口和守护进程 {#window--daemon}
+
+```bash
+dcal           # launch, or show/focus the window if already running
+dcal show      # show/focus the window
+dcal toggle    # toggle window visibility
+dcal run       # run in the foreground (logs to the terminal)
+dcal run -d    # run as a background daemon
+dcal run -d --hidden  # run hidden, tray only (used by autostart)
+dcal restart   # restart the running shell
+dcal kill      # stop everything
+```
+
+## 同步 {#sync}
+
+```bash
+dcal sync             # force a sync of all accounts
+dcal sync <account-id>  # sync a single account
+```
+
+有关连接和管理日历的信息，请参阅[账户](accounts)。
+
+## 提醒 {#reminders}
+
+列出您即将发生的事件提醒：
+
+```bash
+dcal reminders
+```
+
+提醒作为本机桌面通知触发。从 GUI 按事件或按日历配置它们。
+
+## JSON 输出 {#json-output}
+
+大多数命令接受 `--json` 进行脚本编写：
+
+```bash
+dcal account list --json
+dcal reminders --json
+dcal version --json
+```
+
+## 后续步骤 {#next-steps}
+
+- [IPC](ipc) - 从按键绑定和脚本驱动 dcal

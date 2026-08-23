@@ -1,0 +1,398 @@
+---
+title: 用法
+description: 使用 DankSearch 启动和搜索应用程序
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
+# 用法 {#usage}
+
+`dsearch` 提供 CLI 和 HTTP API 用于搜索文件系统。该 API 遵循 OpenAPI 3.1 规范，完整文档可在 `/docs` 端点获取。
+
+## API 使用 {#api-usage}
+
+`dsearch` API 提供了一个文档端点，其中包含 `http://localhost:43654/docs` 上提供的完整 OpenAPI 3.1 规范。
+
+它保证是最新的，因此它是参考 API 使用情况的最佳方式。
+
+## CLI 用法 {#cli-usage}
+
+DankSearch 提供了一个命令行界面来管理搜索索引和查询文件。
+
+### 启动服务器 {#starting-the-server}
+
+运行 HTTP API 服务器：
+
+```bash
+# Start server on default port (43654)
+dsearch serve
+
+# Access OpenAPI documentation at http://localhost:43654/docs
+```
+
+服务器运行搜索 API 和文件观察器以进行实时索引更新。
+
+### 基本搜索 {#basic-search}
+
+使用 `search` 命令搜索文件：
+
+```bash
+# Basic search - searches filename and content
+dsearch search "config"
+
+# Limit results
+dsearch search "README" --limit 5
+
+# Search all results (no limit)
+dsearch search "TODO" --limit 0
+```
+
+### 搜索过滤器 {#search-filters}
+
+#### 文件扩展名 {#file-extension}
+
+按文件扩展名过滤：
+
+```bash
+# Find all Python files
+dsearch search "main" --ext .py
+
+# Find all markdown files
+dsearch search "documentation" --ext .md
+
+# Find JavaScript/TypeScript files
+dsearch search "component" --ext .tsx
+```
+
+#### 文件大小 {#file-size}
+
+按文件大小（以字节为单位）过滤：
+
+```bash
+# Files larger than 1MB (1048576 bytes)
+dsearch search "video" --min-size 1048576
+
+# Files smaller than 100KB (102400 bytes)
+dsearch search "config" --max-size 102400
+
+# Files between 10KB and 500KB
+dsearch search "log" --min-size 10240 --max-size 512000
+```
+
+#### 特定领域的搜索 {#field-specific-search}
+
+在特定字段中搜索：
+
+```bash
+# Search only filenames
+dsearch search "config" --field filename
+
+# Search only file content
+dsearch search "TODO" --field body
+
+# Search titles (for supported file types)
+dsearch search "introduction" --field title
+
+# Search EXIF metadata in images
+dsearch search "mountain" --field body
+```
+
+#### 虚拟文件夹搜索 {#virtual-folder-search}
+
+在特定目录中搜索：
+
+```bash
+# Search all files in a specific folder
+dsearch search "*" --folder /home/user/Pictures
+
+# Combine with other filters
+dsearch search "vacation" --folder /home/user/Photos --ext .jpg
+```
+
+### 模糊匹配 {#fuzzy-matching}
+
+启用模糊匹配以容忍拼写错误：
+
+```bash
+# Find files even with typos
+dsearch search "confing" --fuzzy
+
+# Works with other filters
+dsearch search "readne" --fuzzy --ext .md
+```
+
+### 对结果进行排序 {#sorting-results}
+
+按不同标准对结果进行排序：
+
+```bash
+# Sort by relevance score (default)
+dsearch search "config" --sort score
+
+# Sort by modification time (newest first)
+dsearch search "log" --sort mtime
+
+# Sort by file size
+dsearch search "image" --sort size --ext .jpg
+
+# Sort by filename
+dsearch search "test" --sort filename
+
+# Sort ascending instead of descending
+dsearch search "config" --sort mtime --desc=false
+```
+
+### 输出格式 {#output-formats}
+
+#### JSON 输出 {#json-output}
+
+获取 JSON 格式的结果以进行脚本编写：
+
+```bash
+# JSON output
+dsearch search "config" --json
+
+# Pipe to jq for parsing
+dsearch search "README" --json | jq '.[].path'
+
+# Get file paths only
+dsearch search "*.go" --json | jq -r '.[].path'
+```
+
+#### 人类可读的输出 {#human-readable-output}
+
+默认输出以可读格式显示关键信息：
+
+```bash
+# Standard output format
+dsearch search "main"
+```
+
+## 索引管理 {#index-management}
+
+### 初始索引 {#initial-indexing}
+
+生成初始索引：
+
+```bash
+# Start indexing (runs asynchronously)
+dsearch index generate
+```
+
+这将爬网所有配置的路径并构建搜索索引。大型目录可能需要时间。
+
+### 索引状态 {#index-status}
+
+检查索引统计信息：
+
+```bash
+# View index stats
+dsearch index status
+
+# Example output:
+# Total Files: 15,432
+# Total Bytes: 2.3 GB
+# Last Index: 2025-10-28 14:30:00
+# Duration: 45s
+```
+
+### 增量同步 {#incremental-sync}
+
+使用新的/修改的文件更新索引：
+
+```bash
+# Sync changes
+dsearch index sync
+```
+
+这比完整重新索引更快 - 它只处理自上次同步以来的更改。
+
+### 文件观察器 {#file-watcher}
+
+当文件更改时，文件观察器会自动更新索引：
+
+```bash
+# Start watching (usually runs with serve)
+dsearch watch
+
+# Check watcher status
+dsearch watch status
+```
+
+运行`dsearch serve`时，观察器自动启动。
+
+## 常见用例 {#common-use-cases}
+
+### 查找最近的更改 {#find-recent-changes}
+
+```bash
+# Recently modified files, sorted by time
+dsearch search "" --sort mtime --limit 20
+```
+
+### 查找大文件 {#find-large-files}
+
+```bash
+# Files over 10MB
+dsearch search "" --min-size 10485760 --sort size
+```
+
+### 搜索代码 {#search-code}
+
+```bash
+# Find function definitions in Go files
+dsearch search "func main" --ext .go --field body
+
+# Find TODOs in source code
+dsearch search "TODO" --fuzzy
+```
+
+### 查找文档 {#find-documents}
+
+```bash
+# All markdown documentation
+dsearch search "" --ext .md --sort filename
+
+# PDFs with "report" in filename
+dsearch search "report" --ext .pdf --field filename
+```
+
+### 按 EXIF 元数据搜索照片 {#search-photos-by-exif-metadata}
+
+DankSearch 可以使用从图像中提取的 EXIF 元数据来过滤和搜索照片。
+
+#### 相机品牌和型号 {#camera-make-and-model}
+
+```bash
+# Find all photos from Canon cameras
+dsearch search "*" --ext .jpg --exif-make Canon
+
+# Find photos from a specific camera model
+dsearch search "*" --exif-model "Canon EOS 5D"
+
+# Combine with folder search
+dsearch search "*" --folder /home/user/Photos --exif-make Nikon
+```
+
+#### 按拍摄日期排序 {#sort-by-date-taken}
+
+```bash
+# Sort photos by date taken (newest first)
+dsearch search "*" --ext .jpg --sort exif_date --desc
+
+# Sort oldest first
+dsearch search "*" --ext .jpg --sort exif_date --desc=false
+```
+
+#### 相机设置 {#camera-settings}
+
+```bash
+# Find low-light shots (high ISO range)
+dsearch search "*" --exif-min-iso 1600 --exif-max-iso 6400
+
+# Find portrait shots (typical focal length range)
+dsearch search "*" --exif-min-focal-len 50 --exif-max-focal-len 135
+
+# Find wide aperture shots (shallow depth of field)
+dsearch search "*" --exif-min-aperture 1.4 --exif-max-aperture 2.8
+```
+
+#### 日期范围 {#date-range}
+
+```bash
+# Photos taken in a specific date range
+dsearch search "*" --exif-date-after "2024-06-01T00:00:00Z" --exif-date-before "2024-08-31T23:59:59Z"
+
+# Summer vacation photos from a specific location
+dsearch search "vacation" --folder /home/user/Photos/2024 \
+  --exif-date-after "2024-06-01T00:00:00Z" \
+  --exif-date-before "2024-08-31T23:59:59Z"
+```
+
+#### GPS 位置 {#gps-location}
+
+```bash
+# GPS location filtering (bounding box)
+# Example: Photos taken in New York City area
+dsearch search "*" --exif-lat-min 40.0 --exif-lat-max 41.0 \
+  --exif-lon-min -74.0 --exif-lon-max -73.0
+
+# Combine location with camera settings
+dsearch search "*" --exif-lat-min 40.7 --exif-lat-max 40.8 \
+  --exif-lon-min -74.0 --exif-lon-max -73.9 \
+  --exif-make Canon --sort exif_date
+```
+
+## 配置文件 {#configuration-file}
+
+覆盖默认配置位置：
+
+```bash
+# Use custom config
+dsearch -c /path/to/config.toml search "query"
+
+# Works with all commands
+dsearch -c ./dev-config.toml serve
+```
+
+## 全局标志 {#global-flags}
+
+所有命令都支持：
+
+- `-c, --config` - 配置文件的路径（默认：`~/.config/danksearch/config.toml`）
+- `-h, --help` - 显示任何命令的帮助
+
+## 版本信息 {#version-information}
+
+检查版本：
+
+```bash
+dsearch version
+```
+
+## 性能提示 {#performance-tips}
+
+**更快的搜索：**
+- 使用`--field filename`跳过内容匹配
+- 添加 `--ext` 过滤器以缩小结果范围
+- 对于大型结果集，保持 `--limit` 合理
+- 使用 `--folder` 将搜索范围限制为特定目录
+- 结合 EXIF 过滤器有效缩小照片搜索范围
+
+**高效索引：**
+- 使用 `index sync` 而不是 `generate` 进行更新
+- 配置 `exclude_dirs` 跳过不必要的目录
+- 根据CPU核心调整配置中的`worker_count`
+
+**照片搜索：**
+- 使用 `--folder` 将搜索限制为照片目录
+- 将 `--ext .jpg` 与 EXIF 过滤器相结合以获得更好的性能
+- 使用`--sort exif_date`按时间顺序浏览照片
+
+## 故障排除 {#troubleshooting}
+
+**搜索未返回结果：**
+- 运行`dsearch index status`检查索引是否完成
+- 尝试`dsearch index generate`重建索引
+- 验证文件是否位于配置的 `index_paths` 目录中
+
+**索引速度慢：**
+- 检查配置中的 `worker_count` - 如果有可用的 CPU 核心，则增加
+- 将大目录添加到`exclude_dirs`（例如，`node_modules`、`.git`）
+- 减少深层目录树的 `max_depth`
+
+**服务器无法启动：**
+- 检查端口43654是否可用：`netstat -tlnp | grep :43654`
+- 更改配置中的 `listen_addr` 以使用不同的端口
+- 检查日志是否有权限错误

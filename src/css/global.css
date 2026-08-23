@@ -171,8 +171,9 @@
   height: auto;
 }
 
-/* Smooth underline animation on hover */
-.navbar__link::after {
+/* Smooth underline animation on regular links. Dropdown triggers own their
+ * ::after pseudo-element for the caret, so they must not inherit this rule. */
+.navbar__item:not(.dropdown) > .navbar__link::after {
   content: '';
   position: absolute;
   bottom: 0.25rem;
@@ -190,7 +191,7 @@
   background: transparent;
 }
 
-.navbar__link:hover::after {
+.navbar__item:not(.dropdown) > .navbar__link:hover::after {
   transform: scaleX(1);
 }
 

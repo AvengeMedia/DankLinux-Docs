@@ -46,6 +46,12 @@ For installation guides, configuration, and detailed documentation, visit:
 
 **[https://danklinux.com](https://danklinux.com)**
 
+### Translating the documentation
+
+English is the source language, and translations can be added incrementally with
+Docusaurus i18n. See [the translation workflow](i18n/README.md) for locale setup,
+directory conventions, and preview commands.
+
 ---
 
 ## Community

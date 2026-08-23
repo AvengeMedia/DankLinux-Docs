@@ -1,0 +1,83 @@
+---
+title: 安装
+description: 安装 DankCalendar 并设置后台守护进程
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗     
+██╔══██╗██╔════╝██╔══██╗██║     
+██║  ██║██║     ███████║██║     
+██║  ██║██║     ██╔══██║██║     
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+# DankCalendar 安装 {#dankcalendar-installation}
+
+DankCalendar 安装单个 `dcal` 二进制文件、Quickshell UI 配置和桌面条目。
+
+## 要求 {#requirements}
+
+- [Quickshell](https://quickshell.org) (`qs`)
+- Qt 6 declarative，包括用于托盘图标的 `Qt.labs.platform`
+- Go 1.25+（仅构建时需要，二进制文件为纯 Go，无 CGO）
+
+## Arch Linux (AUR) {#arch-linux-aur}
+
+```bash
+# Prebuilt binary
+yay -S dankcalendar-bin
+
+# Build from latest git
+yay -S dankcalendar-git
+```
+
+## 从源码构建 {#from-source}
+
+```bash
+git clone https://github.com/AvengeMedia/dankcalendar
+cd dankcalendar
+sudo make install
+```
+
+这将安装：
+
+- `dcal` 二进制文件到 `/usr/local/bin`
+- Quickshell 配置到 `/usr/local/share/quickshell/dankcal`
+- 桌面条目 + 图标
+
+使用 `PREFIX=/usr sudo make install` 覆盖前缀。
+
+## 登录时运行 {#running-at-login}
+
+DankCalendar 作为后台守护进程运行，窗口只是它的一个视图。要让它在多次登录之间保持运行，请选择以下方式之一：
+
+### systemd 用户服务 {#systemd-user-service}
+
+```bash
+make install-systemd
+systemctl --user enable --now dcal
+```
+
+### 登录时启动（XDG autostart） {#start-at-login-xdg-autostart}
+
+从**设置 → 通用**中切换**登录时启动**。这会管理一个 XDG autostart 条目来启动 `dcal run -d --hidden`，这样守护进程将隐藏启动并在托盘中等待。
+
+## 验证 {#verification}
+
+```bash
+# Check version
+dcal version
+
+# Launch the calendar window
+dcal
+```
+
+## 后续步骤 {#next-steps}
+
+- [账户](accounts) - 连接您的日历
+- [用法](usage) - 了解 CLI 命令

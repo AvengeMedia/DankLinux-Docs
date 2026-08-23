@@ -1,0 +1,622 @@
+---
+title: 合成器设置
+sidebar_position: 8
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 可与任何 Wayland 合成器配合使用，但我们为 niri、Hyprland、Sway、MangoWC、labwc 和 Miracle WM 提供优化配置。这些配置包括 DMS 特定的键绑定、适当的层 shell 规则和推荐的设置。
+
+## 尼里配置 {#niri-configuration}
+
+niri 使用 KDL 配置格式。 DankMaterialShell 与 niri 的可滚动平铺布局无缝集成。
+
+
+### 关键配置部分 {#key-configuration-sections}
+
+如果您的 niri 配置中包含以下文件，DMS 将自动应用按键绑定、间隙、窗口半径和颜色。您可以在**设置 → 合成器**中自定义间隙、边框半径和窗口半径。
+
+
+```kdl
+// Add to the end of ~/.config/niri/config.kdl
+include "dms/colors.kdl"
+include "dms/layout.kdl"
+include "dms/alttab.kdl"
+include "dms/binds.kdl"
+```
+
+:::tip
+在将所有文件包含到 niri 配置中之前，请确保所有文件都存在。
+```bash
+mkdir -p ~/.config/niri/dms
+touch ~/.config/niri/dms/{colors,layout,alttab,binds}.kdl
+```
+:::
+
+有关手动配置建议，请继续下文。
+
+#### 布局 {#layout}
+
+niri 布局应具有透明背景，以便将壁纸集成到概览中。
+
+```kdl
+layout {
+    // You can tailor the gaps to fit dms spacing.
+    gaps 5
+    background-color "transparent"
+}
+```
+
+#### 图层规则 {#layer-rules}
+
+告诉 niri 将壁纸放在概览上。
+
+```kdl
+layer-rule {
+    match namespace="^quickshell$"
+    place-within-backdrop true
+}
+```
+
+如果启用“模糊图层”，您可以将模糊的壁纸放置在概览上。
+
+```kdl
+layer-rule {
+    match namespace="dms:blurwallpaper"
+    place-within-backdrop true
+}
+```
+有关图层规则的更多信息，请参阅[图层规则](./layers.mdx)。
+
+#### 启动 {#startup}
+
+对于systemd自启动设置，请参阅[安装指南](./installation#niri)。如果您不想使用 systemd，请将 DMS 直接添加到您的 niri 配置中：
+
+```kdl
+spawn-at-startup "dms" "run"
+
+// Optional: Clipboard history
+spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
+```
+
+#### 环境变量 {#environment-variables}
+
+```kdl
+environment {
+  XDG_CURRENT_DESKTOP "niri"
+  QT_QPA_PLATFORM "wayland"
+  ELECTRON_OZONE_PLATFORM_HINT "auto"
+  QT_QPA_PLATFORMTHEME "gtk3"
+  QT_QPA_PLATFORMTHEME_QT6 "gtk3"
+}
+```
+
+#### DMS 键绑定 {#dms-keybindings}
+
+有关可用 IPC 命令的完整列表，请参阅 [IPC](./keybinds-ipc.mdx)
+
+```kdl
+binds {
+    // Application Launchers
+    Mod+Space hotkey-overlay-title="Application Launcher" {
+        spawn "dms" "ipc" "call" "spotlight" "toggle";
+    }
+    Mod+V hotkey-overlay-title="Clipboard Manager" {
+        spawn "dms" "ipc" "call" "clipboard" "toggle";
+    }
+    Mod+M hotkey-overlay-title="Task Manager" {
+        spawn "dms" "ipc" "call" "processlist" "focusOrToggle";
+    }
+    Mod+Comma hotkey-overlay-title="Settings" {
+        spawn "dms" "ipc" "call" "settings" "focusOrToggle";
+    }
+    Mod+N hotkey-overlay-title="Notification Center" {
+        spawn "dms" "ipc" "call" "notifications" "toggle";
+    }
+    Mod+Y hotkey-overlay-title="Browse Wallpapers" {
+        spawn "dms" "ipc" "call" "dankdash" "wallpaper";
+    }
+
+    // Security
+    Mod+Alt+L hotkey-overlay-title="Lock Screen" {
+        spawn "dms" "ipc" "call" "lock" "lock";
+    }
+
+    // Audio Controls
+    XF86AudioRaiseVolume allow-when-locked=true {
+        spawn "dms" "ipc" "call" "audio" "increment" "3";
+    }
+    XF86AudioLowerVolume allow-when-locked=true {
+        spawn "dms" "ipc" "call" "audio" "decrement" "3";
+    }
+    XF86AudioMute allow-when-locked=true {
+        spawn "dms" "ipc" "call" "audio" "mute";
+    }
+
+    // Brightness Controls
+    XF86MonBrightnessUp allow-when-locked=true {
+       spawn "dms" "ipc" "call" "brightness" "increment" "5" "";
+    }
+    XF86MonBrightnessDown allow-when-locked=true {
+       spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
+    }
+}
+```
+
+### 窗口规则 {#window-rules}
+
+推荐的窗口规则，根据您的喜好量身定制：
+
+```kdl
+window-rule {
+    match app-id=r#"^org\.gnome\."#
+    draw-border-with-background false
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id=r#"^org\.wezfurlong\.wezterm$"#
+    match app-id="Alacritty"
+    match app-id="zen"
+    match app-id="com.mitchellh.ghostty"
+    match app-id="kitty"
+    draw-border-with-background false
+}
+
+window-rule {
+    match is-active=false
+    opacity 0.9
+}
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+// Open DMS windows as floating by default
+window-rule {
+    match app-id=r#"org.quickshell$"#
+    open-floating true
+}
+```
+
+## Hyprland 配置 {#hyprland-configuration}
+
+Hyprland 在 `~/.config/hypr/hyprland.lua` 使用基于 lua 的配置。
+
+### 关键配置部分 {#key-configuration-sections-1}
+
+如果您在 Hyprland 配置中包含以下文件，DMS 将自动应用间隙、窗口半径和颜色。您可以在**设置 → 合成器**中自定义间隙、边框半径和窗口半径。
+
+```lua
+-- Add to the end of ~/.config/hypr/hyprland.lua
+require("dms.colors")
+require("dms.layout")
+require("dms.outputs")
+```
+
+:::tip
+在将所有文件包含到 Hyprland 配置中之前，请确保所有文件都存在。
+```bash
+mkdir -p ~/.config/hypr/dms
+touch ~/.config/hypr/dms/{colors,layout,outputs}.lua
+```
+:::
+
+有关手动配置建议，请继续下文。
+
+#### 启动 {#startup-1}
+
+对于 systemd 自动启动设置（如果您有多个桌面环境，建议使用），请参阅[安装指南](./installation#hyprland)。如果您不想使用 systemd，请将 DMS 直接添加到您的 Hyprland 配置中：
+
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("dms run")
+
+    -- Optional: Clipboard history
+    hl.exec_cmd("bash -c "wl-paste --watch cliphist store &")
+end)
+```
+
+#### 杂项 {#miscellaneous}
+
+禁用 hyprland 背景/徽标
+
+```lua
+hl.config({
+    misc = {
+        disable_hyprland_logo = true,
+        disable_splash_rendering = true
+    }
+})
+```
+
+#### 环境变量 {#environment-variables-1}
+
+```lua
+hl.env("QT_QPA_PLATFORM", "wayland")
+hl.env("QT_QPA_PLATFORMTHEME", "gtk3")
+hl.env("QT_QPA_PLATFORMTHEME_QT6", "gtk3")
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
+```
+
+#### 图层规则 {#layer-rules-1}
+
+```lua
+hl.layer_rule({ match = { namespace = "dms" }, no_anim = true })
+```
+有关图层规则的更多信息，请参阅[图层规则](./layers.mdx)。
+
+#### 总体布局 {#general-layout}
+
+```lua
+hl.config({
+    general = {
+        gaps_in = 5,
+        gaps_out = 5,
+        border_size = 0,
+
+        col = {
+            active_border = "rgba(707070ff)",
+            inactive_border = "rgba(d0d0d0ff)"
+        },
+
+        layout = "dwindle"
+    }
+})
+```
+
+#### 装饰 {#decoration}
+
+```lua
+hl.config({
+    decoration = {
+        rounding = 12,
+
+        active_opacity = 1.0,
+        inactive_opacity = 0.9,
+
+        shadow = {
+            enabled = true,
+            range = 30,
+            render_power = 5,
+            offset = {0, 5},
+            color = "rgba(00000070)"
+        }
+    }
+})
+```
+
+#### DMS 键绑定 {#dms-keybindings-1}
+
+有关可用 IPC 命令的完整列表，请参阅 [IPC](./keybinds-ipc.mdx)
+
+```lua
+local mod = SUPER
+
+-- Application Launchers
+hl.bind(mod .. " + space", hl.dsp.exec_cmd("dms ipc call spotlight toggle")
+hl.bind(mod .. " + V", hl.dsp.exec_cmd("dms ipc call clipboard toggle")
+hl.bind(mod .. " + M", hl.dsp.exec_cmd("dms ipc call processlist focusOrToggle")
+hl.bind(mod .. " + comma", hl.dsp.exec_cmd("dms ipc call settings focusOrToggle")
+hl.bind(mod .. " + N", hl.dsp.exec_cmd("dms ipc call notifications toggle")
+hl.bind(mod .. " + Y", hl.dsp.exec_cmd("dms ipc call dankdash wallpaper")
+hl.bind(mod .. " + TAB", hl.dsp.exec_cmd("dms ipc call hypr toggleOverview")
+
+-- Security
+hl.bind(mod .. " + ALT + L", hl.dsp.exec_cmd("dms ipc call lock lock")
+
+-- Audio Controls
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("dms ipc call audio increment 3", { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("dms ipc call audio decrement 3", { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("dms ipc call audio mute", { locked = true })
+
+-- Brightness Controls
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("dms ipc call spotlight toggle", { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call spotlight toggle", { locked = true, repeating = true })
+```
+
+### 窗口规则 {#window-rules-1}
+
+```lua
+-- Opacity for inactive windows
+hl.window_rule({ match = { float = false, focus = false }, opacity = "0.9 0.9" })
+
+-- GNOME apps
+hl.window_rule({ match = { class = "^(org\\.gnome\\.)" }, border_size = 0, rounding = 12 })
+
+-- Terminal apps - no borders
+hl.window_rule({ match = { class = "^(org\\.wezfurlong\\.wezterm)$" }, border_size = 0 })
+hl.window_rule({ match = { class = "^(Alacritty)$" }, border_size = 0 })
+hl.window_rule({ match = { class = "^(zen)$" }, border_size = 0 })
+hl.window_rule({ match = { class = "^(com\\.mitchellh\\.ghostty)$" }, border_size = 0 })
+hl.window_rule({ match = { class = "^(kitty)$" }, border_size = 0 })
+
+-- Floating windows
+hl.window_rule({ match = { class = "^(gnome-calculator)$" }, floating = true })
+
+hl.window_rule({ match = { class = "^(blueman-manager)$" }, floating = true })
+
+hl.window_rule({ match = { class = "^(org\\.gnome\\.Nautilus)$" }, floating = true })
+
+-- Open DMS windows as floating by default
+hl.window_rule({ match = { class = "^(org.quickshell)$" }, floating = true })
+```
+
+## MangoWC 配置 {#mangowc-configuration}
+
+[MangoWC](https://github.com/DreamMaoMao/mangowc)是一个基于dwl(wlroots)的动态平铺Wayland合成器。配置位于 `~/.config/mango/config.conf`。
+
+### 关键配置部分 {#key-configuration-sections-2}
+
+如果您在 MangoWC 配置中包含以下文件，DMS 将自动应用间隙、窗口半径和颜色。您可以在**设置 → 合成器**中自定义间隙、边框半径和窗口半径。
+
+```conf
+# Add to the end of ~/.config/mango/config.conf
+source=~/.config/mango/dms/colors.conf
+source=~/.config/mango/dms/layout.conf
+source=~/.config/mango/dms/outputs.conf
+```
+
+:::tip
+在将所有文件包含到 MangoWC 配置中之前，请确保所有文件都存在。
+```bash
+mkdir -p ~/.config/mango/dms
+touch ~/.config/mango/dms/{colors,layout,outputs}.conf
+```
+:::
+
+有关手动配置建议，请继续下文。
+
+#### 启动 {#startup-2}
+
+对于 systemd 自动启动设置（如果您有多个桌面环境，建议使用），请参阅[安装指南](./installation#mangowc)。如果您不想使用 systemd，请将 DMS 直接添加到您的 MangoWC 配置中：
+
+```conf
+exec-once=dms run
+
+# Optional: Clipboard history
+exec-once=wl-paste --type text --watch cliphist store
+```
+
+#### 环境变量 {#environment-variables-2}
+
+```conf
+env=QT_QPA_PLATFORM,wayland
+env=ELECTRON_OZONE_PLATFORM_HINT,auto
+env=QT_QPA_PLATFORMTHEME,gtk3
+```
+
+#### 外观 {#appearance}
+
+DMS 集成的推荐外观设置：
+
+```conf
+# Window appearance
+border_radius=12
+borderpx=0
+focused_opacity=1.0
+unfocused_opacity=0.9
+
+# Gaps
+gappih=5
+gappiv=5
+gappoh=5
+gappov=5
+
+# Shadows (optional)
+shadows=1
+shadow_only_floating=1
+shadows_size=10
+shadows_blur=15
+```
+
+#### 图层规则 {#layer-rules-2}
+
+```conf
+# Disable animation on DMS layers
+layerrule=noanim:1,layer_name:^dms
+```
+
+有关图层规则的更多信息，请参阅[图层规则](./layers.mdx)。
+
+#### DMS 键绑定 {#dms-keybindings-2}
+
+有关可用 IPC 命令的完整列表，请参阅 [IPC](./keybinds-ipc.mdx)。
+
+```conf
+# Application Launchers
+bind=SUPER,space,spawn,dms ipc call spotlight toggle
+bind=SUPER,v,spawn,dms ipc call clipboard toggle
+bind=SUPER,m,spawn,dms ipc call processlist focusOrToggle
+bind=SUPER,comma,spawn,dms ipc call settings focusOrToggle
+bind=SUPER,n,spawn,dms ipc call notifications toggle
+bind=SUPER,y,spawn,dms ipc call dankdash wallpaper
+
+# Security
+bind=SUPER+ALT,l,spawn,dms ipc call lock lock
+
+# Audio Controls
+bind=NONE,XF86AudioRaiseVolume,spawn,dms ipc call audio increment 3
+bind=NONE,XF86AudioLowerVolume,spawn,dms ipc call audio decrement 3
+bind=NONE,XF86AudioMute,spawn,dms ipc call audio mute
+
+# Brightness Controls
+bind=NONE,XF86MonBrightnessUp,spawn,dms ipc call brightness increment 5
+bind=NONE,XF86MonBrightnessDown,spawn,dms ipc call brightness decrement 5
+```
+
+### 窗口规则 {#window-rules-2}
+
+```conf
+# GNOME apps
+windowrule=isnoborder:1,appid:^org\.gnome\.
+
+# Terminal apps - no borders
+windowrule=isnoborder:1,appid:^org\.wezfurlong\.wezterm$
+windowrule=isnoborder:1,appid:^Alacritty$
+windowrule=isnoborder:1,appid:^com\.mitchellh\.ghostty$
+windowrule=isnoborder:1,appid:^kitty$
+
+# Float DMS windows
+windowrule=isfloating:1,appid:^org\.quickshell$
+```
+
+## 摇摆配置 {#sway-configuration}
+
+[Sway](https://swaywm.org/) 是一个兼容 i3 的 Wayland 合成器。 DankMaterialShell 与 Sway 的平铺布局集成。
+
+### 关键配置部分 {#key-configuration-sections-3}
+
+:::info[即将推出]
+
+详细的 Sway 配置部分即将推出。 Sway 配置将包括：
+- 启动命令
+- 环境变量
+- DMS 键绑定
+- 图层规则
+- 窗口规则
+
+目前，请参阅下面“其他合成器”部分中的 [Sway 示例](#example-for-sway) 进行基本设置。
+
+:::
+
+#### 启动 {#startup-3}
+
+对于 systemd 自动启动设置（如果您有多个桌面环境，建议使用），请参阅[安装指南](./installation#sway)。否则，请将 DMS 直接添加到您的 Sway 配置中：
+
+```conf
+exec dms run
+
+# Optional: Clipboard history
+exec wl-paste --watch cliphist store
+```
+
+#### DMS 键绑定 {#dms-keybindings-3}
+
+有关可用 IPC 命令的完整列表，请参阅 [IPC](./keybinds-ipc.mdx)。下面的 [Sway 示例](#example-for-sway) 部分提供了基本的 Sway 键绑定示例。
+
+## labwc 配置 {#labwc-configuration}
+
+[labwc](https://labwc.github.io/) 是一个适用于 Wayland 的基于 wlroots 的窗口堆叠合成器，受到 Openbox 的启发。
+
+### 关键配置部分 {#key-configuration-sections-4}
+
+:::info[即将推出]
+
+详细的 labwc 配置部分即将推出。 labwc 配置将包括：
+- 启动命令
+- 环境变量
+- DMS 键绑定
+- 图层规则
+- 窗口规则
+
+目前，请参阅 [labwc 文档](https://labwc.github.io/manual.html) 了解基本设置。
+
+:::
+
+
+#### DMS 键绑定 {#dms-keybindings-4}
+
+有关可用 IPC 命令的完整列表，请参阅 [IPC](./keybinds-ipc.mdx)。 labwc 键绑定配置即将推出。
+
+## 奇迹 WM 配置 {#miracle-wm-configuration}
+
+[Miracle WM](https://github.com/miracle-wm-org/miracle-wm) 是一个基于 Mir 构建的平铺 Wayland 合成器。
+
+### 关键配置部分 {#key-configuration-sections-5}
+
+:::info[即将推出]
+
+详细的 Miracle WM 配置部分即将推出。 Miracle WM 配置将包括：
+- 启动命令
+- 环境变量
+- DMS 键绑定
+- 窗口规则
+
+:::
+
+#### 启动 {#startup-4}
+
+对于 systemd 自动启动设置（如果您有多个桌面环境，建议使用），请参阅[安装指南](./installation#miracle-wm)。否则，将 DMS 直接添加到您的 Miracle WM 配置中。
+
+#### DMS 键绑定 {#dms-keybindings-5}
+
+有关可用 IPC 命令的完整列表，请参阅 [IPC](./keybinds-ipc.mdx)。 Miracle WM 键绑定配置即将推出。
+
+## 其他合成器 {#other-compositors}
+
+DankMaterialShell 可与任何支持以下功能的 Wayland 合成器配合使用：
+- Layer shell 协议（用于面板和覆盖层）
+- 会话锁定协议（用于锁屏）
+- ext-workspace-v1 协议（用于工作区管理）
+- wlr-output-management-unstable-v1 协议（用于接口缩放+输出管理）
+
+**注意：** 某些特定于合成器的功能将不可用，例如工作区切换。
+
+### 基本集成 {#basic-integration}
+
+对于其他合成器，您需要：
+
+1. **自动启动DMS：**
+   ```bash
+   dms run
+   ```
+
+2. **使用 [按键绑定和 IPC](keybinds-ipc) 指南中的 IPC 命令配置按键绑定**
+
+3. **在 `~/.config/environment.d/90-dms.conf`（对于 systemd 用户）或您的合成器配置中设置环境变量**：
+   ```ini
+   QT_QPA_PLATFORM=wayland
+   ```
+您还可以使用 `systemctl --user edit dms` 并在 `[Service]` 下添加 `Environment=QT_QPA_PLATFORM=wayland`。这仅影响 DMS 及其启动的应用程序，而 `90-dms.conf` 适用于所有用户会话。
+
+### Sway 示例 {#example-for-sway}
+
+添加到`~/.config/sway/config`：
+
+```conf
+# DMS Keybindings
+bindsym $mod+space exec dms ipc call spotlight toggle
+bindsym $mod+v exec dms ipc call clipboard toggle
+bindsym $mod+m exec dms ipc call processlist focusOrToggle
+bindsym $mod+comma exec dms ipc call settings focusOrToggle
+
+# Audio controls
+bindsym XF86AudioRaiseVolume exec dms ipc call audio increment 3
+bindsym XF86AudioLowerVolume exec dms ipc call audio decrement 3
+bindsym XF86AudioMute exec dms ipc call audio mute
+
+# Brightness controls
+bindsym XF86MonBrightnessUp exec dms ipc call brightness increment 5
+bindsym XF86MonBrightnessDown exec dms ipc call brightness decrement 5
+```
+
+## 故障排除 {#troubleshooting}
+
+### DMS 不会自动启动 {#dms-doesnt-start-automatically}
+
+检查合成器的日志以确保 `spawn-at-startup` 或等效启动命令正在运行。您还可以使用 `dms run` 手动启动 DMS 以查看任何错误消息。
+
+### 按键绑定不起作用 {#keybindings-dont-work}
+
+验证：
+- DMS 正在运行 (`pgrep -f "dms run"`)
+- 您的键绑定语法与您的合成器的格式相匹配
+
+## 后续步骤 {#next-steps}
+
+- 在[主题]中自定义你的外壳外观(application-themes)
+- 探索[按键绑定和IPC]中所有可用的IPC命令(keybinds-ipc)
+- 使用[插件]添加功能(plugins-overview)

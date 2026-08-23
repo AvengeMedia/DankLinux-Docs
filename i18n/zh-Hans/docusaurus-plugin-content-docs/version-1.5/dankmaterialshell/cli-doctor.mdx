@@ -1,0 +1,337 @@
+---
+title: 系统诊断（博士）
+description: 诊断 DMS 安装、依赖项和系统配置
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+`dms doctor` 命令诊断 DMS 安装、验证依赖关系并检查系统配置。使用它来解决问题或验证您的设置是否完成。
+
+## 用法 {#usage}
+
+```bash
+dms doctor           # Standard output
+dms doctor -v        # Verbose output with paths and details
+dms doctor -j        # JSON output for scripting
+```
+
+## 状态指示器 {#status-indicators}
+
+|图标|状态 |意义|
+|------|--------|---------|
+| 🟢 |好的 |检查通过 |
+| 🟡 |警告|非关键问题，可能会影响某些功能 |
+| 🔴 |错误|需要关注的关键问题 |
+| ⚪ |信息 |提供信息，无需采取任何行动 |
+
+---
+
+## 系统检查 {#system-checks}
+
+### 操作系统 {#operating-system}
+
+支持所有 GNU/Linux 发行版 - 此信息仅供参考。
+
+### 架构 {#architecture}
+
+仅官方支持 amd64/arm64，尽管其他架构可以通过手动编译进行工作。
+
+### 显示服务器 {#display-server}
+
+DMS 仅支持 Wayland，此检查验证您没有使用 X11。
+
+---
+
+## 版本检查 {#version-checks}
+
+### DMS CLI {#dms-cli}
+
+DMS CLI 是 DMS 的后端和命令行界面。其版本应与 Quickshell 配置的版本匹配。
+
+### Quickshell {#quickshell}
+
+Quickshell 是 DMS 使用的框架。旧版本的 Quickshell 可能会导致 DMS 内的功能集减少。
+
+### DMS 外壳 {#dms-shell}
+
+shell 配置的版本，应与 DMS CLI 版本匹配。
+
+---
+
+## 安装检查 {#installation-checks}
+
+### DMS 配置 {#dms-configuration}
+
+默认情况下，DMS 将其配置、插件和主题安装在 `$XDG_CONFIG_HOME/.config/DankMaterialShell/` 中。此检查验证配置目录是否存在。
+
+### shell.qml {#shellqml}
+
+`shell.qml` 的位置是 DMS shell 配置的安装位置。
+
+### 安装类型 {#install-type}
+
+- `system`：通过系统包管理器安装（例如`apt`、`dnf`、`pacman`）
+- `user`：如果通过手动编译和安装手动安装
+- `nix`：如果通过 Nix 包管理器安装
+
+---
+
+## 合成器检查 {#compositor-checks}
+
+支持所有实现 [layer shell 协议](https://wayland.app/protocols/wlr-layer-shell-unstable-v1) 的 Wayland 合成器，并具有不同的功能集。
+
+### 支持的合成器 {#supported-compositors}
+
+|合成器|检测|版本解析 |
+|------------|-----------|-----------------|
+|尼里 | `niri` | `niri --version` |
+|海普拉兰 | `hyprland`，`Hyprland` | `hyprctl version` |
+|芒果 | `mangowc` | `mangowc --version` |
+|实验室厕所 | `labwc` | `labwc --version` |
+|摇摆| `sway` | `sway --version` |
+|奇迹WM | `miracle-wm` | `miracle-wm --version` |
+|河 | `river` | `river -version` |
+|路火 | `wayfire` | `wayfire --version` |
+
+### 主动合成器 {/* #compositor */} {#active-compositor}
+
+当前正在运行合成器。
+
+---
+
+## Quickshell 功能 {#quickshell-features}
+
+这些功能取决于 Quickshell 的构建方式。使用 `quickshell-git` 提供完整的功能支持，某些 Quickshell 版本可以根据编译选项排除功能。
+
+:::note
+所有这些功能当前都需要 Dank Linux 存储库（Fedora、Debian、Ubuntu、OpenSUSE）中的 `quickshell-git` 或 `quickshell`
+:::
+
+### 波尔基特 {#polkit}
+
+Polkit 用于升级提示、需要 root 授权的项目。
+
+### 空闲监视器 {#idlemonitor}
+
+用于自动锁定、关闭显示器电源、挂起或休眠。
+
+### 空闲抑制器 {#idleinhibitor}
+
+用于防止系统空闲或睡眠。
+
+### 快捷方式抑制剂 {#shortcutinhibitor}
+
+用于管理键盘快捷键，特定于 niri 合成器。
+
+---
+
+## 可选功能 {#optional-features}
+
+### 账户服务 {#accountsservice}
+
+需要保留用户个人资料更改，例如个人资料图片。
+
+### 电源配置文件守护进程 {#power-profiles-daemon}
+
+需要管理电源配置文件。 （例如性能、平衡、省电）
+
+`power-profiles-daemon` 或 `tuned` 与 `tuned-ppd` 一起满足此检查。 `tuned-ppd` 公开与 `power-profiles-daemon` 相同的 D-Bus 接口，因此 DMS 可以与其中任何一个一起使用。两者冲突，所以只安装其中之一。
+
+### cups-pk-helper {#cups-pk-helper}
+
+打印机管理（添加、删除和配置打印机）所需。提供`org.opensuse.CupsPkHelper.Mechanism` D-Bus接口。
+
+### I2C/DDC {#i2cddc}
+
+外部显示器亮度控制所需的，在大多数发行版上需要 `i2c-tools` 并且用户位于 `i2c` 组中。
+
+### qt6-图像格式 {#qt6-imageformats}
+
+Qt 图像格式插件添加了 WebP、TIFF、GIF、JP2 和 ICNS 支持 - 用于壁纸、通知图像和预览。
+
+|分销|套餐 |
+|------|---------|
+|拱门 | `qt6-imageformats` |
+|软呢帽| `qt6-qtimageformats` |
+| Debian/Ubuntu | `qt6-image-formats-plugins` |
+|开放SUSE | `qt6-imageformats` |
+|尼克斯操作系统 | `qt6.qtimageformats` |
+
+### kimageformats {#kimageformats}
+
+KDE 图像格式插件添加了 AVIF、HEIF、JXL 和 EXR 支持。
+
+|分销|套餐 |
+|------|---------|
+|拱门 | `kimageformats` |
+|软呢帽| `kf6-kimageformats` |
+| Debian/Ubuntu | `kimageformat6-plugins` |
+|开放SUSE | `kf6-kimageformats` |
+|尼克斯操作系统 | `kdePackages.kimageformats` |
+
+### 终端 {#terminal}
+
+检测到的端子（按优先顺序排列）：`ghostty`、`kitty`、`alacritty`、`foot`、`wezterm`
+
+### 松根 {#matugen}
+
+DMS 利用 matugen 和自定义颜色丰富 (dank16) 为自身以及各种应用程序、终端和 IDE 生成主题。
+
+### dgop {#dgop}
+
+需要使用系统监控小部件和小程序（CPU、RAM、磁盘、网络、进程）。有关更多信息，请参阅 [dgop 文档](../dgop/)。
+
+### 卡瓦酒 {#cava}
+
+媒体播放器中的音频可视化所需。
+
+### 卡哈 {#khal}
+
+需要使用来自本地、CalDAV 或 khal 支持的其他来源的事件来丰富日历。
+
+### 网络 {#network}
+
+检测到的后端：NetworkManager、iwd、systemd-networkd、iwd+systemd-networkd。
+
+DMS 支持不同的网络堆栈，建议在绝大多数用例中使用 NetworkManager，因为它还与 Gnome、KDE 等兼容。这纯粹是为了在 shell 本身内集成（例如连接到网络、查看网络状态等）
+
+- NetworkManager：支持所有功能（Wifi、以太网、VPN）
+- iwd：仅 Wifi，不支持以太网或 VPN
+- systemd-networkd ：仅以太网，不支持 Wifi 或 VPN
+- iwd+systemd-networkd ：支持 Wifi 和以太网，不支持 VPN
+
+### gp-saml-gui {#gp-saml-gui}
+
+对于使用 SAML（基于浏览器）身份验证的 GlobalProtect VPN 连接是必需的。当 GlobalProtect 连接需要 SAML 时，DMS 会启动 [gp-saml-gui](https://github.com/dlenski/gp-saml-gui) 打开浏览器窗口进行登录，然后捕获生成的身份验证 cookie。
+
+### 开放连接 {#openconnect}
+
+GlobalProtect SAML VPN 连接需要与 `gp-saml-gui` 一起使用。 `gp-saml-gui` 捕获 SAML 登录前 cookie 后，[openconnect](https://gitlab.com/openconnect/openconnect) 将其转换为 NetworkManager 可以使用的完整身份验证 cookie。
+
+:::note
+仅具有 SAML 身份验证的 GlobalProtect VPN 才需要 `gp-saml-gui` 和 `openconnect`。使用用户名/密码的标准 VPN 连接无需它们即可工作。
+:::
+
+### DankSearch {#danksearch}
+
+用于启动器中的索引文件系统搜索。使用 `/` 启动 fs 搜索。有关更多信息，请参阅 [DankSearch 文档](../danksearch/)。
+
+### 登录控制 {#loginctl}
+
+适用于使用 `systemd` 或 `elogind` 的系统。用于各种会话管理功能，例如锁定集成、挂起前锁定等。
+
+### fprintd {#fprintd}
+
+锁屏界面新增指纹认证支持。
+
+---
+
+## 配置文件 {/* #config-files */} {#configuration-files}
+
+|文件|地点 |目的|
+|------|----------|---------|
+| `settings.json` | `~/.config/DankMaterialShell/` |主要设置 |
+| `clsettings.json` | `~/.config/DankMaterialShell/` |剪贴板设置|
+| `plugin_settings.json` | `~/.config/DankMaterialShell/` |插件配置|
+| `session.json` | `~/.local/state/DankMaterialShell/` |会话状态|
+| `dms-colors.json` | `~/.cache/DankMaterialShell/` |缓存配色方案|
+
+---
+
+## 服务 {#services}
+
+### dms.服务 {#dmsservice}
+
+如果使用，DMS 生命周期将由 systemd 管理。这是可选的，DMS 也可以手动启动或通过其他初始化系统启动。
+
+### 打招呼 {#greetd}
+
+这是 DankGreeter 所必需的。（详情请参阅 [DankGreeter 文档](../dankgreeter/)。）
+
+---
+
+## 环境变量 {#environment-variables}
+
+### QT_QPA_PLATFORMTHEME {#qtqpaplatformtheme}
+
+用于设置 Qt 平台主题 - 通常为 `gtk3`、`qt6ct` 或 `kde` 之一。这将定义 QT 应用程序的主题方式。包括DMS的一些元素（例如图标主题）
+
+### QS_ICON_主题 {#qsicontheme}
+
+可选环境变量，仅设置 DMS 的图标主题。不会影响其他应用程序。
+
+### XDG_MENU_PREFIX {/* #xdg-menu-prefix */} {#xdgmenuprefix}
+
+非 Plasma 合成器下的 KDE 应用程序需要。没有它，`KService` 无法构建 XDG 菜单树，并且 Dolphin 的“打开方式...”对话框显示为空；双击文件也不会打开它们，如果打开，则说明应用程序错误。
+
+在您的合成器环境中设置 `plasma-`。配套的`/etc/xdg/menus/plasma-applications.menu`由`plasma-workspace`提供。
+
+niri 的 `config.kdl` 中的示例：
+
+```kdl
+environment {
+  XDG_MENU_PREFIX "plasma-"
+}
+```
+
+或者通过 `~/.config/environment.d/` 在全球范围内：
+
+```ini
+XDG_MENU_PREFIX=plasma-
+```
+
+更改后，重新登录以应用更改。
+
+:::tip
+要验证而不重新登录，请强制重建缓存：`XDG_MENU_PREFIX=plasma- kbuildsycoca6 --noincremental`。
+:::
+
+:::note
+还必须安装 `kde-cli-tools`（提供 `keditfiletype`），因为 Dolphin 的“打开方式...”对话框依赖于它。 Plasma 会话已经自动导出此变量，因此这仅适用于非 Plasma 合成器。
+:::
+---
+
+## JSON 输出 {#json-output}
+
+使用 `dms doctor -j` 进行机器可读输出：
+
+```json
+{
+  "summary": {
+    "errors": 0,
+    "warnings": 1,
+    "ok": 15,
+    "info": 5
+  },
+  "results": [
+    {
+      "category": "System",
+      "name": "Operating System",
+      "status": "ok",
+      "message": "Arch Linux",
+      "details": "ID: arch, Version: rolling, Arch: amd64"
+    }
+  ]
+}
+```
+
+## 欢迎向导集成 {#welcome-wizard-integration}
+
+医生检查也可以在欢迎向导的系统检查页面中找到。通过以下方式访问它：
+
+```bash
+dms ipc call welcome doctor
+```
+
+或者通过设置→关于→工具→系统检查。

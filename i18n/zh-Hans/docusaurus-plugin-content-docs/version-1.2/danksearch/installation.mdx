@@ -1,0 +1,123 @@
+---
+title: 安装
+description: 安装 DankSearch 应用程序启动器
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
+# DankSearch 安装 {#danksearch-installation}
+
+`dsearch` 零依赖并编译为单个静态二进制文件。
+
+:::tip[NixOS 用户]
+如果您使用 NixOS，请参阅专门的 [NixOS 安装指南](nixos-flake)，了解使用 flakes 或本机 nixpkgs 模块的声明式安装。
+:::
+
+## 安装方式 {#installation-methods}
+
+选择最适合您系统的安装方式：
+
+### NixOS {#nixos}
+
+对于 NixOS 用户，我们推荐使用声明式安装方式：
+
+- **[Flake 安装（home-manager）](nixos-flake)** - 推荐给大多数用户，通过 home-manager 提供按用户安装
+- **[NixOS 模块](nixos)** - 使用本机 nixpkgs 的系统级安装（可用时）
+
+### 发行版软件包 {#distribution-packages}
+
+#### Arch Linux (AUR) {#arch-linux-aur}
+```bash
+paru -S dsearch-bin
+
+# Development version
+paru -S dsearch-git
+```
+
+#### Fedora {#fedora}
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dsearch
+```
+
+发行版软件包包含 systemd 用户服务。启用它以自动更新索引：
+
+```bash
+systemctl --user enable --now dsearch
+```
+
+### 预构建二进制文件 {#pre-built-binaries}
+
+下载适用于您架构的最新版本：
+
+```bash
+# Download and install
+wget https://github.com/AvengeMedia/danksearch/releases/latest/download/dsearch-linux-amd64.gz
+gunzip dsearch-linux-amd64.gz
+chmod +x dsearch-linux-amd64
+sudo mv dsearch-linux-amd64 /usr/local/bin/dsearch
+```
+
+安装并启用 systemd 用户服务以自动更新索引：
+
+```bash
+mkdir -p ~/.config/systemd/user
+wget https://raw.githubusercontent.com/AvengeMedia/danksearch/refs/heads/master/assets/dsearch.service -O ~/.config/systemd/user/dsearch.service
+systemctl --user enable --now dsearch
+```
+
+该服务运行带文件监视的 API 服务器，在文件更改时自动更新索引。
+
+### 从源码构建 {#from-source}
+
+要求：Go 1.24+
+
+```bash
+git clone https://github.com/AvengeMedia/danksearch
+cd danksearch
+make
+sudo make install
+make install-service
+systemctl --user enable --now dsearch
+```
+
+## 验证 {#verification}
+
+测试安装：
+
+```bash
+# Check version
+dsearch version
+
+# Build initial index
+dsearch index generate
+```
+
+## 系统要求 {#system-requirements}
+
+- **操作系统**：基于 Unix，兼容大多数基于 Unix 的操作系统（Linux、MacOS、BSD）
+- **Go 版本**：1.24+（用于从源码构建）
+
+## 与 DMS 集成 {#integration-with-dms}
+
+:::tip
+
+安装 dsearch 后，DankMaterialShell 用户可以在启动器中键入 `/` 来启动文件系统搜索。
+
+:::
+
+## 后续步骤 {#next-steps}
+
+- [配置](configuration) - 配置 dsearch
+- [用法](usage) - 了解 CLI 命令和 API 用法

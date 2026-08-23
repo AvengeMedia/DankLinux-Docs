@@ -1,0 +1,183 @@
+---
+title: 用法
+description: 启动DGOP并管理系统电源
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
+# DGOP 用法 {#dgop-usage}
+
+## API 使用 {#api-usage}
+
+`dgop` API 提供文档端点，完整的 openapi 3.1 规范可在 `http://localhost:63484/docs` 获取
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="DGOP API Documentation"
+    sources={{
+      light: useBaseUrl('/img/dgopdoclight.png'),
+      dark: useBaseUrl('/img/dgopdoc.png'),
+    }}
+    style={{ maxWidth: '800px', width: '100%' }}
+  />
+<figcaption>交互式OpenAPI文档接口</figcaption>
+</figure>
+
+它保证是最新的，因此它是参考 API 使用情况的最佳方式。
+
+## CLI 用法 {#cli-usage}
+
+DGOP 提供了一个全面的命令行界面来查询系统指标。所有命令都通过 `--json` 标志支持 JSON 输出，以便于与脚本和应用程序集成。
+
+### 基本命令 {#basic-commands}
+
+使用单独的命令快速获取系统信息：
+
+```bash
+# View CPU usage and information
+dgop cpu
+
+# Check memory usage
+dgop memory
+
+# Monitor network interfaces
+dgop network
+
+# View disk information
+dgop disk
+
+# List running processes
+dgop processes
+
+# Get general system information
+dgop system
+```
+
+### 高级命令 {#advanced-commands}
+
+对于更专业的监控：
+
+```bash
+# Monitor disk I/O rates in real-time
+dgop disk-rate
+
+# Track network transfer rates
+dgop net-rate
+
+# View GPU information
+dgop gpu
+
+# Get GPU temperature readings
+dgop gpu-temp
+
+# Display hardware details (motherboard, BIOS)
+dgop hardware
+
+# Get all metrics at once
+dgop all
+```
+
+### 进程管理 {#process-management}
+
+`processes` 命令提供详细的进程信息以及排序和过滤选项：
+
+```bash
+# List top processes by CPU usage
+dgop processes --sort cpu --limit 20
+
+# List processes by memory usage
+dgop processes --sort memory --limit 10
+
+# Disable CPU calculation for faster listing
+dgop processes --no-cpu
+```
+
+### 元命令 {#meta-command}
+
+`meta` 命令旨在通过在一次调用中请求多个模块来实现高效轮询：
+
+```bash
+# Query multiple metrics at once
+dgop meta --modules cpu,memory,network
+
+# Get all metrics with specific GPU monitoring
+dgop meta --modules all --gpu-pci-ids 0000:01:00.0
+
+# Efficient CPU monitoring with cursor-based sampling
+dgop meta --modules cpu --cpu-cursor <previous-cursor>
+
+# Process monitoring with cursor for accurate percentages
+dgop meta --modules processes --proc-cursor <previous-cursor> --limit 100
+```
+
+#### 基于游标的采样 {#cursor-based-sampling}
+
+为了随着时间的推移获得准确的 CPU 和进程指标，DGOP 支持基于游标的采样。 meta 命令返回应在后续调用中传回的游标值：
+
+```bash
+# First call - no cursor needed
+dgop meta --modules cpu,processes --json
+
+# Subsequent calls - use returned cursors for accurate deltas
+dgop meta --modules cpu,processes --cpu-cursor abc123 --proc-cursor def456 --json
+```
+
+这可确保 CPU 百分比反映样本之间的实际使用情况，而不是系统范围的平均值。
+
+### 交互式监视器 {#interactive-monitor}
+
+启动实时、交互式系统监视器，类似于top、htop：
+
+```bash
+dgop
+```
+
+### API 服务器 {#api-server}
+
+启动 HTTP API 服务器以进行编程访问：
+
+```bash
+# Start server on default port (63484)
+dgop server
+
+# Access OpenAPI documentation at http://localhost:63484/docs
+```
+
+### 输出格式 {#output-formats}
+
+所有命令都支持 JSON 输出，以便与其他工具集成：
+
+```bash
+# Get CPU info in JSON format
+dgop cpu --json
+
+# Pipe to jq for parsing
+dgop memory --json | jq '.usage'
+```
+
+### 常用标志 {#common-flags}
+
+- `--json` - 以JSON格式输出结果
+- `--no-cpu` - 在进程列表中禁用CPU计算以获得更好的性能
+- `--help` - 显示任何命令的帮助
+
+### 列出可用模块 {#list-available-modules}
+
+查看可用的度量模块：
+
+```bash
+dgop modules
+```

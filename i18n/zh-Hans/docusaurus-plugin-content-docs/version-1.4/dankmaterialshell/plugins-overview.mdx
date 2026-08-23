@@ -1,0 +1,182 @@
+---
+title: 概述
+description: 为 DankMaterialShell 创建并安装插件
+sidebar_position: 6
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ██╗     ██╗   ██╗ ██████╗ ██╗███╗   ██╗███████╗
+██╔══██╗██║     ██║   ██║██╔════╝ ██║████╗  ██║██╔════╝
+██████╔╝██║     ██║   ██║██║  ███╗██║██╔██╗ ██║███████╗
+██╔═══╝ ██║     ██║   ██║██║   ██║██║██║╚██╗██║╚════██║
+██║     ███████╗╚██████╔╝╚██████╔╝██║██║ ╚████║███████║
+╚═╝     ╚══════╝ ╚═════╝  ╚═════╝ ╚═╝╚═╝  ╚═══╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 的插件系统允许通过 QML 组件使用自定义小部件、启动器、自动化和集成来扩展桌面。
+
+## 插件位置 {#plugin-location}
+
+插件安装到 `~/.config/DankMaterialShell/plugins/`。每个插件都是一个包含 `plugin.json` 清单和 QML 组件的目录。
+
+**官方插件：** [github.com/AvengeMedia/dms-plugins](https://github.com/AvengeMedia/dms-plugins)
+**插件注册表：** [plugins.danklinux.com](https://plugins.danklinux.com)
+**注册表来源：** [github.com/AvengeMedia/dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry)
+**示例插件：** [github.com/AvengeMedia/DankMaterialShell/tree/master/quickshell/PLUGINS](https://github.com/AvengeMedia/DankMaterialShell/tree/master/quickshell/PLUGINS)
+
+## 插件类型 {#plugin-types}
+
+DankMaterialShell 支持四种在 `plugin.json` 中定义的插件类型：
+
+### 1. 栏小部件 (`type: "widget"`) {#1-bar-widget-type-widget}
+
+DankBar 中出现的小部件。为不同的钢筋方向定义 `horizontalBarPill` 和 `verticalBarPill` 组件。
+
+**能力：**
+- `dankbar-widget` - 出现在 DankBar
+
+**用例示例：**系统监视器、媒体控件、天气小部件、时钟显示
+
+### 2. 控制中心小部件 (`type: "widget"`) {#2-control-center-widget-type-widget}
+
+显示在控制中心快速设置面板中的小部件。定义切换按钮和详细信息面板的 `ccWidget*` 属性。
+
+**能力：**
+- `control-center` - 出现在控制中心
+
+**用例示例：** VPN 切换、自定义快捷方式、服务控制
+
+### 3.启动器插件(`type: "launcher"`) {#3-launcher-plugin-type-launcher}
+
+使用自定义可搜索项目扩展应用程序启动器。定义 `getItems()` 和 `executeItem()` 函数。
+
+**能力：**
+- `launcher` - 将项目添加到 Spotlight 搜索
+
+**必填字段：**
+- `trigger` - 用于过滤的触发字符串（例如，`"#"`、`"!"`、`""` 表示始终可见）
+
+**示例用例：** 表情符号选择器、计算器、网络搜索、自定义操作
+
+### 4.守护进程（`type: "daemon"`） {#4-daemon-type-daemon}
+
+没有 UI 的后台服务。运行自动化、监控或为其他插件提供服务。
+
+**能力：**
+- `daemon` - 后台服务
+- `watch-events` - 对系统事件做出反应
+
+**示例用例：**电池警报、壁纸自动化、通知处理程序
+
+### 5. 桌面小部件 (`type: "desktop"`) {/* #desktop-plugin */} {#5-desktop-widget-type-desktop}
+
+使用 Wayland 的 wlr-layer-shell 协议直接在桌面背景层上渲染的小部件。用户可以将它们拖动到任何地方并通过角手柄调整大小。
+
+**能力：**
+- `desktop-widget` - 出现在桌面层
+
+**特点：**
+- 自由定位在桌面上的任何位置
+- 在最小尺寸限制下调整尺寸
+- 多显示器支持，每个屏幕具有独立位置
+- 跨会话的位置/尺寸持久性
+
+**用例示例：**桌面时钟、系统监视器、天气小部件、便签
+
+## 安装 {#installation}
+
+### 来自 GitHub {#from-github}
+
+```bash
+mkdir -p ~/.config/DankMaterialShell/plugins
+cd ~/.config/DankMaterialShell/plugins
+git clone https://github.com/author/plugin-name
+dms restart
+```
+
+### 来自插件注册表 {#from-plugin-registry}
+
+浏览 [plugins.danklinux.com](https://plugins.danklinux.com) 以获取安装链接和文档。
+
+### 启用插件 {#enable-plugin}
+
+1. 打开**设置→插件**
+2. 单击“**扫描插件**”
+3.打开插件
+4. 添加到 DankBar 布局（如果适用）
+5.重启shell：`dms restart`
+
+## 官方插件 {#official-plugins}
+
+由 DankMaterialShell 团队在 [dms-plugins](https://github.com/AvengeMedia/dms-plugins) 维护：
+
+- **Dank 操作** - 可编写脚本的栏按钮和控制中心图块
+- **Dank Hooks** - 基于事件的自动化触发器
+- **Dank Pomodoro Timer** - 带通知的焦点计时器
+- **干电池警报** - 电池阈值警告
+
+## 社区插件 {#community-plugins}
+
+第三方插件提交到注册表 [plugins.danklinux.com](https://plugins.danklinux.com)：
+
+- **WallpaperShuffler** - 自动壁纸旋转
+- **世界时钟** - 多时区时钟小部件
+- **PowerUsage** - 实时功耗监控
+- **计算器** - 基于启动器的计算器
+
+> 安装前务必检查插件源代码。插件以完整的桌面会话权限运行。
+
+## 发展 {#development}
+
+完整的开发指南请参见【插件开发】(plugin-development)，包括：
+
+- 插件清单结构（`plugin.json`）
+- 组件架构
+- 插件服务API
+- 设置组件
+- 酒吧和控制中心集成
+- 启动器插件开发
+- 全局变量和状态管理
+
+## 插件示例 {#example-plugins}
+
+主存储库中的参考实现：
+
+- [ExampleEmojiPlugin](https://github.com/AvengeMedia/DankMaterialShell/tree/master/quickshell/PLUGINS/ExampleEmojiPlugin) - 带有表情符号选择器的启动器插件
+- [LauncherExample](https://github.com/AvengeMedia/DankMaterialShell/tree/master/quickshell/PLUGINS/LauncherExample) - 基本启动器插件结构
+
+## 插件注册表提交 {#plugin-registry-submission}
+
+要将您的插件添加到注册表：
+
+1.创建公共GitHub仓库
+2. 包括`plugin.json`、README和屏幕截图
+3. 根据 `plugin-schema.json` 验证清单
+4. 提交PR到[dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry)
+5. 站点在合并时自动重建
+
+## 故障排除 {#troubleshooting}
+
+**未检测到插件：**
+- 使用 `jq .` 验证 `plugin.json` 语法
+- 检查目录是否在 `~/.config/DankMaterialShell/plugins/` 中
+- 单击“设置”中的“扫描插件”
+
+**插件无法加载：**
+- 从终端检查日志：`dms kill && dms run`
+- 验证 `plugin.json` 中的组件路径
+- 确保依赖项已安装
+
+**设置不起作用：**
+- 添加 `"permissions": ["settings_write"]` 到清单
+- 使用 `PluginSettings` 包装组件
+- 检查PluginService是否正确注入
+
+## 后续步骤 {#next-steps}
+
+- 在 [plugins.danklinux.com](https://plugins.danklinux.com) 浏览可用插件
+- 在【插件开发】中学习插件开发(plugin-development)
+- 查看[PLUGINS目录](https://github.com/AvengeMedia/DankMaterialShell/tree/master/PLUGINS)中的示例代码

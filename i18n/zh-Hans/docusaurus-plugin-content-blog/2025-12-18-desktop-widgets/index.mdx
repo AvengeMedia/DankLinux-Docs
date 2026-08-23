@@ -1,0 +1,211 @@
+---
+title: DMS 1.2 即将推出全新桌面小部件和插件
+description: 抢先了解 DMS 1.2 中的桌面小部件——以及为什么您应该构建一个。
+slug: desktop-widgets-1-2
+authors: danklinux
+tags: [announcement]
+---
+
+import styles from './styles.module.css';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+下一个 DMS 版本将带来一种全新的小部件和插件类型——**桌面小部件（Desktop Widgets）**。它们是驻留在您桌面上的小型应用，位于窗口下方、壁纸上方。
+
+我们提前宣布此功能，以突出插件生态系统并鼓励社区构建这些新型小部件。
+
+{/* truncate */}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Desktop Widgets"
+    sources={{
+      light: useBaseUrl('/img/blog/widgets/widgets_light.png'),
+      dark: useBaseUrl('/img/blog/widgets/widgets_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+</figure>
+
+## 什么是桌面小部件？ {#what-are-desktop-widgets}
+
+桌面小部件是位于窗口下方、桌面壁纸上方的交互式小组件。借助这些新小部件，您可以在桌面上添加有用的信息和工具，而不会弄乱您的工作区。
+
+它们可以按显示器定位、放置和调整大小。
+
+借助 DMS 插件系统，这些小部件非常容易构建，因此我们期待看到社区的创意！我们希望在下一个 1.2 版本中展示一些社区小部件。
+
+## 内置桌面小部件 {#built-in-desktop-widgets}
+
+DMS 1.2 将附带两个内置桌面小部件：
+
+### 时钟 {#clock}
+
+可配置的时钟，支持可配置的模拟和数字模式，以 Material 表现力时钟小部件为蓝本。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Desktop Clock Widget"
+    sources={{
+      light: useBaseUrl('/img/blog/widgets/clock_light.png'),
+      dark: useBaseUrl('/img/blog/widgets/clock_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+</figure>
+
+### 系统监视器（dgop） {#system-monitor-dgop}
+
+可配置的系统监视器，可以以多种格式显示 CPU、内存、GPU、磁盘、网络、进程、温度和其他系统信息。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="System Monitor Widget"
+    sources={{
+      light: useBaseUrl('/img/blog/widgets/dgop_light.png'),
+      dark: useBaseUrl('/img/blog/widgets/dgop_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+</figure>
+
+## 桌面小部件插件 {#desktop-widget-plugins}
+
+目前注册表上有一个第一方插件：*Dank Desktop Weather*（需要 DMS git/nightly）。此插件向您的桌面添加一个天气小部件，显示当前天气状况和预报。
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dank Desktop Weather Plugin"
+    sources={{
+      light: useBaseUrl('/img/blog/widgets/weather_light.png'),
+      dark: useBaseUrl('/img/blog/widgets/weather_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+</figure>
+
+## 构建您自己的 {#building-your-own}
+
+制作您自己的桌面小部件非常简单。如果您写过 JavaScript 和声明式布局（类似 react、vue、json 等），应该不会感到陌生。
+
+### 1. 创建插件文件夹 {#1-create-the-plugin-folder}
+
+```bash
+mkdir -p ~/.config/DankMaterialShell/plugins/MyDesktopWidget
+cd ~/.config/DankMaterialShell/plugins/MyDesktopWidget
+```
+
+### 2. 编写清单 {#2-write-the-manifest}
+
+保存为 `plugin.json`：
+
+```json
+{
+  "id": "myDesktopWidget",
+  "name": "My Desktop Widget",
+  "description": "A custom desktop widget",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "desktop",
+  "license": "<your-license-here>",
+  "component": "./MyWidget.qml",
+  "icon": "widgets",
+  "settings": "./MySettings.qml",
+  "requires_dms": ">=1.2.0"
+}
+```
+
+关键在于 `"type": "desktop"`——它告诉 DMS 这是一个桌面小部件，而不是栏小部件。
+
+### 3. 创建小部件 {#3-create-the-widget}
+
+保存为 `MyWidget.qml`：
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+
+DesktopPluginComponent {
+    id: root
+
+    minWidth: 150
+    minHeight: 100
+
+    property string displayText: pluginData.displayText ?? "Hello!"
+    property real bgOpacity: (pluginData.backgroundOpacity ?? 80) / 100
+
+    Rectangle {
+        anchors.fill: parent
+        radius: Theme.cornerRadius
+        color: Theme.withAlpha(Theme.surfaceContainer, root.bgOpacity)
+
+        StyledText {
+            anchors.centerIn: parent
+            text: root.displayText
+            color: Theme.surfaceText
+            font.pixelSize: Theme.fontSizeLarge
+        }
+    }
+}
+```
+
+用户可以右键拖动来移动或调整小部件大小。`minWidth`/`minHeight` 属性设置下限。
+
+### 4. 创建设置面板 {#4-create-the-settings-panel}
+
+保存为 `MySettings.qml`：
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Modules.Plugins
+
+PluginSettings {
+    id: root
+    pluginId: "myDesktopWidget"
+
+    StringSetting {
+        settingKey: "displayText"
+        label: "Display Text"
+        description: "Text shown in the widget"
+        placeholder: "Enter text"
+        defaultValue: "Hello!"
+    }
+
+    SliderSetting {
+        settingKey: "backgroundOpacity"
+        label: "Background Opacity"
+        defaultValue: 80
+        minimum: 0
+        maximum: 100
+        unit: "%"
+    }
+}
+```
+
+显示设置（位置、大小、哪些显示器）会自动注入——您无需自己处理。
+
+### 5. 加载它 {#5-load-it}
+
+1. 打开**设置 → 插件**
+2. 点击**扫描插件**
+3. 开启您的插件
+4. 打开**设置 → 小部件**并在您想要的显示器上启用小部件
+
+就是这样。关于设置面板、计时器、图表等更多内容——请查看完整的[插件开发指南](/docs/dankmaterialshell/plugin-development#desktop-plugins)。
+
+## 参与进来 {#get-involved}
+
+我们希望看到插件注册表随着新的桌面小部件不断壮大。一些适合作为桌面小部件的创意：
+- 媒体控制（mpris、spotify 等）
+- 待办事项列表
+- 股票/加密货币行情
+- 新闻订阅
+
+将插件提交到[插件注册表](https://github.com/AvengeMedia/dms-plugin-registry)——我们希望在下一个 DMS 版本中展示其中一些。
+
+---
+
+桌面小部件将在 **DMS 1.2** 中登陆。关注仓库并[加入 Discord](https://discord.gg/ppWTpKmPgT) 如果您想抢先体验。

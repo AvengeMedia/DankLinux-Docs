@@ -1,0 +1,101 @@
+---
+title: 系统更新器
+description: 使用 dms 系统更新检查并应用发行版更新
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`███████╗██╗   ██╗███████╗████████╗███████╗███╗   ███╗
+██╔════╝ ╚██╗██╔╝██╔════╝╚══██╔══╝██╔════╝████╗ ████║
+███████╗  ╚███╔╝ ███████╗   ██║   █████╗  ██╔████╔██║
+╚════██║   ██╔╝  ╚════██║   ██║   ██╔══╝  ██║╚██╔╝██║
+███████║   ██║   ███████║   ██║   ███████╗██║ ╚═╝ ██║
+╚══════╝   ╚═╝   ╚══════╝   ╚═╝   ╚══════╝╚═╝     ╚═╝`}
+  hideTitle={true}
+/>
+
+`dms system update` 命令检查挂起的更新，并有选择地使用计算机上实际安装的包管理器升级您的系统。它可以与 **APT**、**DNF** / **DNF5**、**Pacman**、**Paru**、**Yay**、**Zypper**、**rpm-ostree**（Atomic/Silverblue 式部署）和 **Flatpak**（无论可用的组合）进行通信，而无需通过 DMS 合成器守护程序进行正常检查和升级流程。
+
+:::info
+列出和应用更新针对这些工具在**本地**运行。您**不需要**需要 `dms` 作为 `dms system update` 或 `dms system update --check` 的服务器运行。可选的 `--interval` 标志是例外：它配置**运行** DMS 服务器轮询更新的频率。
+:::
+
+## 使用什么 {#what-gets-used}
+
+DMS 选择**一个主系统后端**（第一个报告自身可用的候选后端）加上**覆盖**后端：
+
+- **系统**：APT、DNF5/DNF 之一（当 `rpm-ostree` 指示 ostree 引导系统时跳过，以便事务后端可以接管）、Pacman、Paru、Yay、Zypper 或 rpm-ostree，具体取决于安装的内容和环境报告的内容。
+- **覆盖**：当 `flatpak` CLI 存在时，包含 **Flatpak**。
+
+在基于 Arch 的系统上，安装时首选 **Paru** 或 **Yay**，因此可以在一个流程中发现和升级存储库和 **AUR** 更新。普通 **Pacman** 仅涵盖官方存储库。
+
+来自每个后端的更新被合并到一个列表中；升级按顺序运行**每个后端**，仅适用于属于该后端的包。
+
+## 用法 {#usage}
+
+```bash
+dms system update --check              # list pending updates only
+dms system update                      # list, then prompt; upgrade if you confirm
+dms system update --noconfirm          # upgrade without a prompt (also -y)
+dms system update --dry                # simulation only (no persistent changes)
+dms system update --check --json       # machine-readable listing
+dms system update --no-flatpak         # skip Flatpak overlay
+dms system update --no-aur             # skip AUR targets when using Paru/Yay
+dms system update --ignore nvidia,docker  # skip specific packages for this run
+dms system update --interval 3600      # set server poll interval to 3600 seconds (needs running server)
+```
+
+## 选项 {#flags}
+
+|选项|效果|
+|------|--------|
+| `--check` |查询包管理器并打印可用的更新；从不安装升级。 |
+| `--noconfirm` / `-y` |应用升级，无需交互式确认提示。 |
+| `--dry` |在支持的情况下，以非破坏性/空运行模式运行升级命令。 |
+| `--json` |使用 `--check`，打印 JSON（`backends`、`packages`、`count`、`error`）。 |
+| `--no-flatpak` |从发现和升级中忽略 Flatpak。 |
+| `--no-aur` |使用 Paru 或 Yay 时，从计划中删除仅 AUR 的软件包（存储库更新仍然适用）。 |
+| `--ignore <names>` |按名称（可重复或以逗号分隔）跳过特定包。不包括在列表和升级中。 |
+| `--interval <seconds>` |调用运行服务器的`sysupdate.setInterval` RPC并退出；不会自行本地升级。 |
+
+## 忽略包 {#ignoring-packages}
+
+使用 `--ignore`（或 shell 的系统更新程序设置中的 **忽略的软件包** 列表）来固定特定的软件包。忽略的软件包将从更新列表中删除，并在升级运行时排除，使用每个后端的本机机制，因此不会在您背后升级任何内容：
+
+|后端 |如何应用排除条款 |
+|---------|------------------------------|
+|吃豆人 / 帕鲁 / 耶 | `--ignore name1,name2` 关于升级命令|
+| DNF / DNF5 | 地下城与勇士 (DNF) `--exclude=name1,name2` 关于升级命令|
+|亚太 |在升级期间，这些软件包被放置在临时 `apt-mark hold` 上，并在升级后释放（您自己设置的保持不变） |
+| Zypper|升级时添加临时包锁 (`zypper al`)，之后删除（您自己设置的锁保持不变） |
+|扁平包装|仅剩余的引用显式传递给 `flatpak update` |
+
+在 shell 设置中输入的包名称将被验证为字母、数字和 `@._+:-`。 CLI 值尽可能作为命令参数传递；需要 shell 命令构造的后端会丢弃不安全的名称。
+
+## 交互式运行与脚本运行 {#interactive-vs-scripted-runs}
+
+如果标准输入**不是** TTY（例如在 CI 或管道中），DMS **拒绝**应用升级，除非您传递 **`--noconfirm`** 或仅 **`--check`**。当您打算进行无人值守升级时，请使用 `--check` 作为清单脚本，并使用 `--noconfirm`。
+
+## 超时和权限 {#timeouts-and-privileges}
+
+- 检查更新使用**短超时**（大约几分钟），因此卡住的包管理器不会无限期地挂起 CLI。
+- 应用升级使用**更长的超时**（大约数十分钟）。
+- 当需要提升权限时，DMS 使用 **sudo**、**doas** 或 **run0**（无论它检测到哪一个合适），类似于其他特权 `dms` 操作。
+
+## 与DMS服务器的关系 {#relationship-to-the-dms-server}
+
+当合成器端服务器运行时，它会公开 IPC，例如 `sysupdate.getState`、`sysupdate.refresh`、`sysupdate.upgrade` 和 `sysupdate.setInterval`，以便 shell UI 可以显示更新状态并协调升级。 **`dms system update`** CLI 是针对终端和脚本的单独入口点； **`--interval`** 是在服务器在线时调整轮询时间表的桥梁。
+
+`sysupdate.upgrade` 接受这些可选参数，镜像 CLI 标志：
+
+|参数 |类型 |效果|
+|-------|------|--------|
+| `includeFlatpak` |布尔值（默认`true`）|在升级中包含 Flatpak 覆盖层。 |
+| `includeAUR` |布尔值（默认`true`）|使用 Paru/Yay 时包括 AUR 目标。 |
+| `ignored` |字符串数组 |要跳过的包名称；使用其本机机制从计划和每个后端的升级命令中排除（请参阅[忽略软件包](#ignoring-packages)）。 |
+| `dry` |布尔值（默认`false`）|在支持的情况下运行非破坏性试运行。 |
+| `terminal` |字符串|交互式升级后端的终端覆盖（AUR 帮助程序）。 |
+| `customCommand` |字符串|在终端中运行自定义命令而不是内置升级流程。 |
+
+使用内置更新程序时，shell 会从系统更新程序设置中的 **忽略的软件包** 列表中填充 `ignored`，因此 `Update All` 也会跳过这些软件包。自定义更新命令控制自己的排除。

@@ -1,0 +1,114 @@
+{
+  "version.label": {
+    "message": "1.2",
+    "description": "The label for version 1.2"
+  },
+  "sidebar.tutorialSidebar.category.DankMaterialShell (dms)": {
+    "message": "DankMaterialShell (dms)",
+    "description": "The label for category 'DankMaterialShell (dms)' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.dankmaterialshell-nixos-installation": {
+    "message": "安装 - NixOS",
+    "description": "The label for category 'Installation - NixOS' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Themes": {
+    "message": "主题",
+    "description": "The label for category 'Themes' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.CLI": {
+    "message": "CLI",
+    "description": "The label for category 'CLI' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Plugins": {
+    "message": "插件",
+    "description": "The label for category 'Plugins' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.DankLinux Repository": {
+    "message": "DankLinux 软件仓库",
+    "description": "The label for category 'DankLinux Repository' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.DankGreeter (dms-greeter)": {
+    "message": "DankGreeter (dms-greeter)",
+    "description": "The label for category 'DankGreeter (dms-greeter)' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.dankgreeter-nixos-installation": {
+    "message": "安装 - NixOS",
+    "description": "The label for category 'Installation - NixOS' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.DankGOP (dgop)": {
+    "message": "DankGOP (dgop)",
+    "description": "The label for category 'DankGOP (dgop)' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.DankSearch (dsearch)": {
+    "message": "DankSearch (dsearch)",
+    "description": "The label for category 'DankSearch (dsearch)' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.danksearch-nixos-installation": {
+    "message": "安装 - NixOS",
+    "description": "The label for category 'Installation - NixOS' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.doc.Overview & Architecture": {
+    "message": "概览与架构",
+    "description": "The label for the doc item 'Overview & Architecture' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/overview"
+  },
+  "sidebar.tutorialSidebar.doc.dankmaterialshell-nixos-module": {
+    "message": "NixOS 模块",
+    "description": "The label for the doc item 'NixOS module' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/nixos"
+  },
+  "sidebar.tutorialSidebar.doc.Flake (NixOS/home-manager)": {
+    "message": "Flake（NixOS/home-manager）",
+    "description": "The label for the doc item 'Flake (NixOS/home-manager)' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/nixos-flake"
+  },
+  "sidebar.tutorialSidebar.doc.Managing Your Installation": {
+    "message": "管理安装",
+    "description": "The label for the doc item 'Managing Your Installation' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/managing"
+  },
+  "sidebar.tutorialSidebar.doc.Dank16 (ANSI Colors)": {
+    "message": "Dank16（ANSI 颜色）",
+    "description": "The label for the doc item 'Dank16 (ANSI Colors)' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/cli-dank16"
+  },
+  "sidebar.tutorialSidebar.doc.Color Picker": {
+    "message": "取色器",
+    "description": "The label for the doc item 'Color Picker' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/cli-color-picker"
+  },
+  "sidebar.tutorialSidebar.doc.Clipboard Manager": {
+    "message": "剪贴板管理器",
+    "description": "The label for the doc item 'Clipboard Manager' in sidebar 'tutorialSidebar', linking to the doc dankmaterialshell/cli-clipboard"
+  },
+  "sidebar.tutorialSidebar.doc.danklinux-overview": {
+    "message": "概览",
+    "description": "The label for the doc item 'Overview' in sidebar 'tutorialSidebar', linking to the doc danklinux/index"
+  },
+  "sidebar.tutorialSidebar.doc.dankgreeter-overview": {
+    "message": "概览",
+    "description": "The label for the doc item 'Overview' in sidebar 'tutorialSidebar', linking to the doc dankgreeter/index"
+  },
+  "sidebar.tutorialSidebar.doc.dankgreeter-nixos-module": {
+    "message": "NixOS 模块",
+    "description": "The label for the doc item 'NixOS module' in sidebar 'tutorialSidebar', linking to the doc dankgreeter/nixos"
+  },
+  "sidebar.tutorialSidebar.doc.Flake": {
+    "message": "Flake",
+    "description": "The label for the doc item 'Flake' in sidebar 'tutorialSidebar', linking to the doc dankgreeter/nixos-flake"
+  },
+  "sidebar.tutorialSidebar.doc.dgop-overview": {
+    "message": "概览",
+    "description": "The label for the doc item 'Overview' in sidebar 'tutorialSidebar', linking to the doc dgop/index"
+  },
+  "sidebar.tutorialSidebar.doc.danksearch-overview": {
+    "message": "概览",
+    "description": "The label for the doc item 'Overview' in sidebar 'tutorialSidebar', linking to the doc danksearch/index"
+  },
+  "sidebar.tutorialSidebar.doc.Flake (home-manager)": {
+    "message": "Flake（home-manager）",
+    "description": "The label for the doc item 'Flake (home-manager)' in sidebar 'tutorialSidebar', linking to the doc danksearch/nixos-flake"
+  },
+  "sidebar.tutorialSidebar.doc.danksearch-nixos-module": {
+    "message": "NixOS 模块",
+    "description": "The label for the doc item 'NixOS module' in sidebar 'tutorialSidebar', linking to the doc danksearch/nixos"
+  },
+  "sidebar.tutorialSidebar.doc.Contributing Plugins & Themes": {
+    "message": "贡献插件与主题",
+    "description": "The label for the doc item 'Contributing Plugins & Themes' in sidebar 'tutorialSidebar', linking to the doc contributing-registry"
+  }
+}

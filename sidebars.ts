@@ -30,12 +30,14 @@ const sidebars: SidebarsConfig = {
         'dankmaterialshell/installation',
         {
           type: 'category',
+          key: 'dankmaterialshell-nixos-installation',
           label: 'Installation - NixOS',
           collapsed: true,
           items: [
             {
               type: 'doc',
               id: 'dankmaterialshell/nixos',
+              key: 'dankmaterialshell-nixos-module',
               label: 'NixOS module',
             },
             {
@@ -124,6 +126,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'danklinux/index',
+          key: 'danklinux-overview',
           label: 'Overview',
         },
       ],
@@ -136,17 +139,20 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'dankgreeter/index',
+          key: 'dankgreeter-overview',
           label: 'Overview',
         },
         'dankgreeter/installation',
         {
           type: 'category',
+          key: 'dankgreeter-nixos-installation',
           label: 'Installation - NixOS',
           collapsed: true,
           items: [
             {
               type: 'doc',
               id: 'dankgreeter/nixos',
+              key: 'dankgreeter-nixos-module',
               label: 'NixOS module',
             },
             {
@@ -168,6 +174,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'dgop/index',
+          key: 'dgop-overview',
           label: 'Overview',
         },
         'dgop/installation',
@@ -183,11 +190,13 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'danksearch/index',
+          key: 'danksearch-overview',
           label: 'Overview',
         },
         'danksearch/installation',
         {
           type: 'category',
+          key: 'danksearch-nixos-installation',
           label: 'Installation - NixOS',
           collapsed: true,
           items: [
@@ -199,6 +208,7 @@ const sidebars: SidebarsConfig = {
             {
               type: 'doc',
               id: 'danksearch/nixos',
+              key: 'danksearch-nixos-module',
               label: 'NixOS module',
             },
           ],
@@ -215,6 +225,7 @@ const sidebars: SidebarsConfig = {
         {
           type: 'doc',
           id: 'dankcalendar/index',
+          key: 'dankcalendar-overview',
           label: 'Overview',
         },
         'dankcalendar/installation',

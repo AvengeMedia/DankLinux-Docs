@@ -1,0 +1,306 @@
+---
+title: 管理您的安装
+description: 更新、配置和管理 DankMaterialShell
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+本指南介绍了如何在安装后管理、更新和配置 DankMaterialShell。
+
+## 服务管理 {#service-management}
+
+DMS 可以作为 systemd 用户服务运行或手动启动。 `dms` CLI 透明地处理这两种情况 - 无论 DMS 如何启动，诸如 `dms restart` 之类的命令都可以工作。
+
+:::tip[DankInstall 用户]
+
+如果您通过 [dankinstall](../dankinstall) 安装，DMS 默认配置为 systemd 服务。安装程序在安装过程中运行 `systemctl --user enable --now dms`。您不需要将 `dms run` 添加到您的合成器配置中。
+
+:::
+
+### Systemd（推荐） {#systemd-recommended}
+
+Systemd 提供自动启动、正确的会话集成以及通过journalctl 进行日志记录。
+
+**启用并启动：**
+
+```bash
+systemctl --user enable --now dms
+```
+
+**常用操作：**
+
+```bash
+# Check status
+systemctl --user status dms
+
+# View logs
+journalctl --user -u dms -f
+
+# Restart (or just use: dms restart)
+systemctl --user restart dms
+
+# Stop
+systemctl --user stop dms
+
+# Disable autostart
+systemctl --user disable dms
+```
+
+:::warning
+
+如果使用 systemd，请从合成器配置中删除任何 `dms run` / `spawn "dms" "run"` 行，以避免运行 DMS 两次。
+
+:::
+
+#### niri：每个会话控制 {#niri-per-session-control}
+
+niri 具有适当的 systemd 会话集成。您可以使 DMS 只在 niri 下启动（不是 Plasma、GNOME 等）：
+
+```bash
+systemctl --user add-wants niri.service dms
+```
+
+这会将 dms 服务与 niri 的会话联系起来，因此它不会在其他桌面环境下启动。
+
+#### 其他合成器 {#other-compositors}
+
+Hyprland、Sway 和 MangoWC 没有 systemd 会话目标。如果您使用多个桌面环境并且只想在其中之一上使用 DMS，请禁用 systemd 单元并从合成器配置启动 DMS：
+
+```bash
+systemctl --user disable dms
+```
+
+然后将 `dms run` 添加到合成器的自动启动中（请参阅下面的[手动启动](#manual-launch)）。
+
+### 手动启动 {#manual-launch}
+
+用于测试、调试，或者如果您更喜欢合成器管理的启动：
+
+**合成器自动启动：**
+
+```bash
+# Hyprland (~/.config/hypr/hyprland.conf)
+exec-once = dms run
+
+# Sway (~/.config/sway/config)
+exec dms run
+
+# niri (~/.config/niri/config.kdl)
+spawn-at-startup "dms" "run"
+```
+
+**手动控制：**
+
+```bash
+# Launch (foreground)
+dms run
+
+# Launch (background/daemon)
+dms run -d
+
+# Restart
+dms restart
+
+# Kill
+dms kill
+```
+
+### 在方法之间切换 {#switching-between-methods}
+
+**从手册到systemd：**
+
+1. 从合成器配置中删除 `dms run`
+2.启用服务：`systemctl --user enable --now dms`
+3. 重新启动您的合成器或注销/登录
+
+**从 systemd 到手册：**
+
+1.禁用服务：`systemctl --user disable --now dms`
+2. 将 `dms run` 添加到合成器的自动启动中
+3. 重新启动您的合成器或注销/登录
+
+## 环境变量 {#environment-variables}
+
+DMS 及其主题应用程序需要设置某些环境变量。这些文件所在的位置取决于您的设置。
+
+:::tip[DankInstall 用户]
+
+dankinstall 使用必要的变量创建 `~/.config/environment.d/90-dms.conf`。此文件由 systemd 为所有用户会话加载。如果您需要更改 Qt 主题（例如切换到 qt6ct），请编辑此文件。
+
+:::
+
+### 检查您的环境 {#checking-your-environment}
+
+```bash
+# See what's currently set
+env | grep -E "QT_|GTK|XDG"
+
+# Check dankinstall's environment file (if it exists)
+cat ~/.config/environment.d/90-dms.conf
+```
+
+### 手动配置 {#manual-configuration}
+
+如果您没有使用 dankinstall，请在合成器配置中设置环境变量：
+
+**尼里**（`~/.config/niri/config.kdl`）：
+```kdl
+environment {
+  QT_QPA_PLATFORM "wayland"
+  QT_QPA_PLATFORMTHEME "gtk3"
+  ELECTRON_OZONE_PLATFORM_HINT "auto"
+}
+```
+
+**海普拉兰** (`~/.config/hypr/hyprland.conf`):
+```conf
+env = QT_QPA_PLATFORM,wayland
+env = QT_QPA_PLATFORMTHEME,gtk3
+env = ELECTRON_OZONE_PLATFORM_HINT,auto
+```
+
+或者创建`~/.config/environment.d/90-dms.conf`：
+```ini
+QT_QPA_PLATFORM=wayland
+QT_QPA_PLATFORMTHEME=gtk3
+ELECTRON_OZONE_PLATFORM_HINT=auto
+```
+
+对 `environment.d` 的更改需要注销并重新登录（或重新启动）才能生效。
+
+## 更新中 {#updating}
+
+### 软件包安装 {#package-installations}
+
+**Arch Linux 及其衍生版：**
+
+```bash
+paru -Syu dms-shell-bin
+# or
+paru -Syu dms-shell-git
+```
+
+**Fedora 及其衍生版：**
+
+```bash
+sudo dnf upgrade dms
+```
+
+**Debian 和 Ubuntu：**
+
+```bash
+sudo apt update && sudo apt upgrade dms
+# or dms-git
+```
+
+**OpenSUSE：**
+
+```bash
+sudo zypper refresh && sudo zypper update dms
+```
+
+**尼克斯操作系统：**
+
+```bash
+# Update flake inputs, then:
+sudo nixos-rebuild switch
+```
+
+包更新后，重新启动 shell：
+
+```bash
+dms restart
+```
+
+### 手动安装 {#manual-installations}
+
+对于源版本或 dankinstall 设置：
+
+```bash
+dms update
+```
+
+对于手动编译的依赖项（quickshell、niri 等），请使用交互式 TUI：
+
+```bash
+dms
+# Navigate to Update → select packages to rebuild
+```
+
+## 更新后 {#after-updating}
+
+1.重启DMS：`dms restart`
+2. 检查[发行说明](https://github.com/AvengeMedia/DankMaterialShell/releases) 是否有重大更改
+3. 检查设置是否有新选项可用
+4. 如果需要更新插件
+
+## 卸载 {#uninstalling}
+
+### 软件包安装 {#package-installations-1}
+
+**Arch Linux 及其衍生版：**
+
+```bash
+# Whichever you have installed
+sudo pacman -Rns dms-shell-bin
+# or
+sudo pacman -Rns dms-shell-git
+```
+
+**Fedora、Debian、Ubuntu、OpenSUSE：**
+
+```bash
+# Stable
+sudo dnf remove dms      # Fedora
+sudo apt remove dms      # Debian/Ubuntu
+sudo zypper remove dms   # OpenSUSE
+
+# Or git version
+sudo dnf remove dms-git
+sudo apt remove dms-git
+sudo zypper remove dms-git
+```
+
+### 手动/源安装 {#manualsource-installs}
+
+```bash
+# Stop and disable the service
+systemctl --user disable --now dms
+
+# Remove the binary and shell config
+rm -rf ~/.config/quickshell/dms
+sudo rm /usr/local/bin/dms
+```
+
+## 故障排除 {#troubleshooting}
+
+**DMS 不会启动：**
+- 检查日志：`journalctl --user -u dms -n 50` (systemd) 或在终端中运行 `dms run`
+- 验证 Quickshell 是否已安装：`which qs`
+- 终止卡住的进程：`dms kill`
+
+**设置不适用：**
+- 备份并删除`~/.config/DankMaterialShell/settings.json`
+- 重新启动 DMS 以重新生成默认值
+
+**环境变量不起作用：**
+- 对于 `environment.d` 更改：注销并重新登录
+- 对于合成器配置更改：重新启动合成器
+- 使用 `echo $QT_QPA_PLATFORMTHEME` 进行验证
+
+**多个实例运行：**
+```bash
+dms kill
+dms restart
+```

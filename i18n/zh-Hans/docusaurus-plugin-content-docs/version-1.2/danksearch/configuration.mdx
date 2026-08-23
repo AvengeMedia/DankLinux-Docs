@@ -1,0 +1,292 @@
+---
+title: 配置
+description: 配置 DankSearch 的外观和行为
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+██╔══██╗██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+██║  ██║███████╗█████╗  ███████║██████╔╝██║     ███████║
+██║  ██║╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+██████╔╝███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+                                                        `}
+/>
+
+# 配置 {#configuration}
+
+`dsearch` 使用 TOML 配置文件来控制索引行为。第一次运行 DankSearch 时，它会在 `~/.config/danksearch/config.toml` 处创建一个默认配置文件。
+
+## 配置文件位置 {#configuration-file-location}
+
+默认路径：
+- Linux/macOS/BSD：`~/.config/danksearch/config.toml`
+
+使用 `-c` 标志覆盖：
+```bash
+dsearch -c /path/to/config.toml
+```
+
+## 基本设置 {#basic-settings}
+
+### `index_path` {#indexpath}
+DankSearch 存储索引数据库的位置。
+
+**默认值：**
+- Linux/macOS/BSD：`~/.cache/danksearch/index`
+
+### `listen_addr` {#listenaddr}
+HTTP 服务器地址和端口。
+
+**默认：** `:43654`
+
+```toml
+listen_addr = ":43654"
+```
+
+### `max_file_bytes` {#maxfilebytes}
+索引的最大文件大小（以字节为单位）。较大的文件将被跳过。
+
+**默认：** `2097152` (2MB)
+
+```toml
+max_file_bytes = 2097152  # 2MB
+```
+
+### `worker_count` {#workercount}
+并行索引工作器的数量。更多的工作线程 = 更快的索引速度，但索引操作期间的 CPU 使用率更高。
+
+**默认值：** CPU 核心的一半（至少 1 个）
+
+```toml
+worker_count = 4
+```
+
+### `index_all_files` {#indexallfiles}
+索引所有文件类型，而不仅仅是文本文件。启用后，二进制文件仅按文件名索引。
+
+**默认：** `true`
+
+```toml
+index_all_files = true
+```
+
+### `auto_reindex` {#autoreindex}
+如果间隔已过，则在启动时自动重新索引。
+
+**默认：** `false`
+
+```toml
+auto_reindex = false
+```
+
+### `reindex_interval_hours` {#reindexintervalhours}
+重新索引的频率（以小时为单位）。设置为 `0` 以禁用定期重新索引。
+
+**默认值：** `24`
+
+```toml
+reindex_interval_hours = 24
+```
+
+### `text_extensions` {#textextensions}
+用于从中提取文本内容的文件扩展名。其他文件仅按文件名索引。
+
+**默认值：**
+```toml
+text_extensions = [
+    ".txt", ".md", ".go", ".py", ".js", ".ts",
+    ".jsx", ".tsx", ".json", ".yaml", ".yml",
+    ".toml", ".html", ".css", ".rs", ".c",
+    ".cpp", ".h", ".java", ".rb", ".php", ".sh",
+]
+```
+
+## 索引路径 {#index-paths}
+
+使用 `[[index_paths]]` 块对具有单独设置的多个目录进行索引。每条路径可以有自己的深度限制和排除规则。
+
+### 基本示例 {#basic-example}
+
+```toml
+[[index_paths]]
+path = "/home/brandon"
+max_depth = 6
+exclude_hidden = true
+exclude_dirs = ["node_modules", "venv", "target"]
+```
+
+### 配置选项 {#configuration-options}
+
+#### `path` {#path}
+要索引的目录。
+
+#### `max_depth` {#maxdepth}
+要遍历的最大目录深度。设置为 `0` 以获得无限深度。
+
+**示例：**
+```toml
+max_depth = 6  # Go 6 levels deep
+max_depth = 0  # No limit
+```
+
+#### `exclude_hidden` {#excludehidden}
+跳过隐藏文件和目录（以 `.` 开头）。
+
+**默认：** `true`
+
+```toml
+exclude_hidden = true
+```
+
+#### `watch` {#watch}
+为此路径启用或禁用 inotify 文件监视程序。禁用时，路径会被索引，但不会自动检测到更改。
+
+**默认：** `true`
+
+```toml
+watch = false  # Disable watchers (useful for network mounts)
+```
+
+#### `exclude_dirs` {#excludedirs}
+索引期间要跳过的目录名称列表。
+
+**默认排除：**
+```toml
+exclude_dirs = [
+    # JavaScript/Node.js
+    "node_modules", "bower_components", ".npm", ".yarn",
+
+    # Python
+    "site-packages", "__pycache__", ".venv", "venv", ".tox",
+    ".pytest_cache", ".eggs",
+
+    # Build outputs
+    "dist", "build", "out", "bin", "obj",
+
+    # Rust
+    "target",
+
+    # Go
+    "vendor",
+
+    # Java/JVM
+    ".gradle", ".m2",
+
+    # Ruby
+    "bundle",
+
+    # Cache directories
+    ".cache", ".parcel-cache", ".next", ".nuxt",
+
+    # OS specific
+    "Library", ".Trash-1000",
+
+    # Databases
+    ".postgresql", ".mysql", ".mongodb", ".redis",
+
+    # Package manager caches
+    "go", ".cargo", ".pyenv", ".rbenv", ".nvm", ".rustup",
+
+    # IDE/Editor
+    ".idea", ".vscode",
+]
+```
+
+## 多个索引路径 {#multiple-index-paths}
+
+为不同的目录配置不同的索引策略：
+
+```toml
+# Index home with moderate depth
+[[index_paths]]
+path = "/home/brandon"
+max_depth = 6
+exclude_hidden = true
+exclude_dirs = ["node_modules", "venv", "target", "dist"]
+
+# Index repos with more depth, exclude VCS
+[[index_paths]]
+path = "/home/brandon/repos"
+max_depth = 8
+exclude_hidden = true
+exclude_dirs = ["node_modules", "venv", "target", ".git"]
+
+# Index documents fully, including hidden files
+[[index_paths]]
+path = "/home/brandon/Documents"
+max_depth = 0  # No limit
+exclude_hidden = false
+exclude_dirs = []
+
+# Index network mount without watchers
+[[index_paths]]
+path = "/mnt/nfs/documents"
+max_depth = 5
+watch = false  # Disable inotify (not supported on NFS)
+```
+
+## 配置示例 {#example-configuration}
+
+这是一个完整的示例配置：
+
+```toml
+# DankSearch Configuration
+index_path = "/home/brandon/.cache/danksearch/index"
+listen_addr = ":43654"
+max_file_bytes = 2097152  # 2MB
+worker_count = 4
+index_all_files = true
+auto_reindex = false
+reindex_interval_hours = 24
+
+text_extensions = [
+    ".txt", ".md", ".go", ".py", ".js", ".ts",
+    ".jsx", ".tsx", ".json", ".yaml", ".yml",
+    ".toml", ".html", ".css", ".rs", ".c",
+    ".cpp", ".h", ".java", ".rb", ".php", ".sh",
+]
+
+[[index_paths]]
+path = "/home/brandon"
+max_depth = 6
+exclude_hidden = true
+exclude_dirs = [
+    "node_modules", "__pycache__", "venv", "target",
+    "dist", "build", ".cache"
+]
+```
+
+## 提示 {#tips}
+
+**加快索引速度：** 如果您有空闲的 CPU 核心，请增加 `worker_count`。
+
+**减少索引大小：**降低`max_file_bytes`，向`exclude_dirs`添加更多目录，或限制`max_depth`。
+
+**索引所有内容：** 将 `max_depth = 0` 和 `exclude_dirs = []` 设置为您想要完全索引的路径。
+
+**跳过二进制文件：** 设置 `index_all_files = false` 以仅索引文本文件。
+
+## 故障排除 {#troubleshooting}
+
+**索引速度慢：**
+- 检查 `worker_count` - 尝试增加它
+- 将公共构建/缓存目录添加到 `exclude_dirs`
+- 减少大型目录树的 `max_depth`
+
+**搜索未找到文件：**
+- 运行 `dsearch index generate` 重建索引
+- 检查文件的目录是否在 `index_paths` 块中
+- 验证文件不在排除目录中
+- 如果搜索隐藏文件，请检查 `exclude_hidden = false`
+
+**端口已在使用：**
+- 将 `listen_addr` 更改为不同的端口
+- 检查什么正在使用端口：`netstat -tlnp | grep :43654`
+
+## 后续步骤 {#next-steps}
+
+- [用法](usage.mdx) - 学习 CLI 命令和 API 用法

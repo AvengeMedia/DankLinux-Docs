@@ -1,0 +1,307 @@
+---
+title: 安装
+description: 安装 DankCalendar 并设置后台守护进程
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗
+██╔══██╗██╔════╝██╔══██╗██║
+██║  ██║██║     ███████║██║
+██║  ██║██║     ██╔══██║██║
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+# DankCalendar 安装 {#dankcalendar-installation}
+
+DankCalendar 安装单个 `dcal` 二进制文件、Quickshell UI 配置和桌面条目。
+
+## 要求 {#requirements}
+
+- [Quickshell](https://quickshell.org) (`qs`) — 来自 [DankLinux 存储库](../danklinux/) 的 `quickshell-git` 或 `quickshell`
+- Qt 6 声明式，包括用于托盘图标的 `Qt.labs.platform`
+- Go 1.25+（仅从源代码构建；打包的二进制文件是纯 Go，没有 CGO）
+
+## 安装方法 {#installation-methods}
+
+选择最适合您的系统的安装方法。
+
+### 扁平包装 {#flatpak}
+
+DankCalendar 在 [Flathub](https://flathub.org/apps/com.danklinux.dankcalendar) 上可用，名称为 `com.danklinux.dankcalendar`。 Flatpak 捆绑了其运行时依赖项，因此您不需要在主机上单独安装 Quickshell。
+
+```bash
+flatpak install flathub com.danklinux.dankcalendar
+flatpak run com.danklinux.dankcalendar
+```
+
+:::note
+
+通知和凭据使用 XDG 桌面门户。要从主机同步 [DankMaterialShell](../dankmaterialshell/overview) 主题颜色，请授予对缓存的读取访问权限：
+
+```bash
+flatpak override --user \
+  --filesystem=xdg-cache/DankMaterialShell:ro \
+  com.danklinux.dankcalendar
+```
+
+本地 ICS 日历目录还需要显式文件系统授权（或 Flatseal 中的等效项）。
+
+:::
+
+### 分发包 {#distribution-packages}
+
+### Arch Linux 及其衍生版 {#arch--derivatives}
+
+<Tabs>
+<TabItem value="stable" label="Stable Release" default>
+
+```bash
+paru -S dankcalendar-bin
+```
+
+</TabItem>
+<TabItem value="git" label="Latest Development Build">
+
+```bash
+paru -S dankcalendar-git
+```
+
+</TabItem>
+</Tabs>
+
+### Fedora 和 CentOS {#fedora--centos}
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dankcalendar-git
+```
+
+### Debian 和 Ubuntu {#debian--ubuntu}
+
+#### Debian {#debian}
+
+软件包已发布在 OBS 上，用于 **Debian 13 (Trixie)**、**Debian 测试** 和 **Debian Sid**。
+
+选择您的版本：
+
+<Tabs groupId="debian-release">
+<TabItem value="trixie" label="Debian 13 (Trixie)" default>
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dankcalendar-git
+```
+
+</TabItem>
+<TabItem value="testing" label="Debian Testing">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dankcalendar-git
+```
+
+</TabItem>
+<TabItem value="sid" label="Debian Sid">
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dankcalendar-git
+```
+
+</TabItem>
+</Tabs>
+
+#### Ubuntu {#ubuntu}
+
+Ubuntu 26.04 LTS+ (Resolute Raccoon) 通过 Launchpad PPA 支持。
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+sudo apt install dankcalendar-git
+```
+
+### openSUSE 和衍生产品 {#opensuse--derivatives}
+
+DankCalendar 可通过 OpenSUSE Tumbleweed、Leap 16/16.1 和 Slowroll 的开放构建服务 (OBS) 获得。
+
+选择您的发行版：
+
+<Tabs groupId="opensuse-distro">
+<TabItem value="tumbleweed" label="Tumbleweed" default>
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dankcalendar-git
+```
+
+</TabItem>
+<TabItem value="leap16" label="Leap 16">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dankcalendar-git
+```
+
+</TabItem>
+<TabItem value="leap161" label="Leap 16.1">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dankcalendar-git
+```
+
+</TabItem>
+<TabItem value="slowroll" label="Slowroll">
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dankcalendar-git
+```
+
+</TabItem>
+</Tabs>
+
+### Void Linux {#void-linux}
+
+:::note
+
+从我们的 R2 支持的 XBPS 存储库安装 DankCalendar 或从源代码构建它。
+
+:::
+
+:::warning[存储库迁移]
+
+替换现有存储库文件中的旧 URL：
+
+```bash
+sudo sed -i 's|https://avengemedia.github.io/DankLinux/current|https://void.danklinux.com/danklinux/current|' /etc/xbps.d/danklinux.conf
+```
+
+冻结的 GitHub Pages 存储库不再接收更新，并将被
+**2026 年 7 月 24 日 22:27 UTC** 后退休。
+
+:::
+
+<Tabs groupId="void-install-method">
+<TabItem value="repo" label="DankLinux Repository" default>
+
+```bash
+echo "repository=https://void.danklinux.com/danklinux/current" | sudo tee /etc/xbps.d/danklinux.conf
+sudo xbps-install -Su
+sudo xbps-install -S dankcalendar
+```
+
+:::note
+
+第一次同步时，`xbps-install` 将输出我们的签名密钥指纹，并要求您输入 `y` 以信任并导入它。验证密钥是否与我们的官方签名指纹匹配。
+
+:::
+
+</TabItem>
+<TabItem value="source" label="Build from Source">
+
+如果您更喜欢使用 `xbps-src` 从源代码构建：
+
+```bash
+# Set up the Void packages tree (one time)
+git clone --depth 1 https://github.com/void-linux/void-packages.git
+cd void-packages
+./xbps-src binary-bootstrap
+
+# Copy in the templates (adjust paths as needed)
+cp -R ../DankLinux/distro/void/srcpkgs/dankcalendar* srcpkgs/
+
+# Build the package
+./xbps-src pkg dankcalendar
+
+# Install the results
+sudo xbps-install --repository=hostdir/binpkgs dankcalendar
+```
+
+</TabItem>
+</Tabs>
+
+分发包安装：
+
+- `dcal` 至 `/usr/bin/dcal`（Quickshell UI 嵌入在二进制文件中）
+- 桌面入口、图标、shell 补全以及 `/usr/lib/systemd/user/` 下的 `dcal.service`
+
+### 从源代码构建 {#from-source}
+
+Quickshell UI 在构建时嵌入到 `dcal` 二进制文件中，其中一部分位于 [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) 子模块中 - 使用 `--recurse-submodules` 进行克隆（或在现有克隆中运行 `git submodule update --init`）：
+
+```bash
+git clone --recurse-submodules https://github.com/AvengeMedia/dankcalendar
+cd dankcalendar
+make
+sudo make install
+```
+
+这将安装：
+
+- `dcal` 二进制到 `/usr/local/bin`（UI 嵌入）
+- 桌面入口+图标
+
+使用 `PREFIX=/usr sudo make install` 覆盖前缀。
+
+## 登录时运行 {#running-at-login}
+
+DankCalendar 作为后台守护进程运行，窗口只是它的一个视图。要保持其跨登录运行，请选择以下选项之一：
+
+### systemd 用户服务 {#systemd-user-service}
+
+分发包和`make install-systemd`都提供了一个用户单元。从分发包安装或从源代码构建后：
+
+```bash
+systemctl --user enable --now dcal
+```
+
+在没有 systemd 安装目标的情况下从源代码构建时：
+
+```bash
+make install-systemd
+systemctl --user enable --now dcal
+```
+
+### 登录时启动（XDG 自动启动） {#start-at-login-xdg-autostart}
+
+从 **设置 → 常规** 切换 **登录时开始**。这管理启动 `dcal run -d --hidden` 的 XDG 自动启动条目，因此守护进程会隐藏起来并在托盘中等待。
+
+## 验证 {#verification}
+
+```bash
+# Check version
+dcal version
+
+# Launch the calendar window
+dcal
+```
+
+## 后续步骤 {#next-steps}
+
+- [账户](accounts) - 连接您的日历
+- [用法](usage) - 学习 CLI 命令

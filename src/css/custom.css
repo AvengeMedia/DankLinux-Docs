@@ -1286,6 +1286,27 @@ a.navbar-version-dropdown.navbar__link::after {
   display: none !important;
 }
 
+/* Docusaurus renders version and locale dropdowns in the mobile sidebar too.
+ * Hide only their desktop-navbar copies at the mobile breakpoint; otherwise
+ * their parent containers remain visible and overlap each other. */
+@media (max-width: 996px) {
+  .navbar__items--right > .navbar__item.dropdown {
+    display: none !important;
+  }
+}
+
+/* On very narrow screens there is not enough room for search plus three
+ * social icons. All of these actions remain available from the sidebar. */
+@media (max-width: 480px) {
+  body.docs-page .navbar__items--right .navbar__search,
+  body.docs-page .navbar__items--right .navbarSearchContainer_Bca1,
+  .navbar__items--right .header-github-link,
+  .navbar__items--right .navbar-discord-link,
+  .navbar__items--right .navbar-kofi-link {
+    display: none !important;
+  }
+}
+
 /* Search results hover fix - use dark text on highlighted results */
 [data-theme='dark'] {
   --search-local-hit-active-color: #1a1a1a;

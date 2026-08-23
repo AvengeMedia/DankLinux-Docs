@@ -1,0 +1,219 @@
+---
+title: DankCalendar 介绍
+description: 一款统一本地、Google、Microsoft、CalDAV 和 iCloud 日历的独立日历应用。现已推出。
+slug: dankcalendar-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<div className={styles.blogHero}>
+  <div className={styles.tiles} aria-hidden="true">
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '14%', left: '4%', '--rot': '-12deg' }}>15</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '44%', left: '9%', '--rot': '8deg' }}>3</div>
+    <div className={`${styles.tile} ${styles.tileFloat3}`} style={{ top: '70%', left: '3%', '--rot': '15deg' }}>28</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '80%', left: '13%', '--rot': '-8deg' }}>9</div>
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '14%', left: '90%', '--rot': '10deg' }}>21</div>
+    <div className={`${styles.tile} ${styles.tileFloat3}`} style={{ top: '44%', left: '95%', '--rot': '-14deg' }}>6</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '70%', left: '88%', '--rot': '6deg' }}>17</div>
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '80%', left: '78%', '--rot': '12deg' }}>30</div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      Dank<span className={styles.gradientText}>Calendar</span>
+    </h1>
+    <p className={styles.heroSubtitle}>0.2 · 最新版本</p>
+  </div>
+</div>
+
+**DankCalendar** 是一款 Linux 上的日历管理解决方案，将本地、Google、Microsoft、CalDAV 和 iCloud 日历统一到单个日程中。它具有后台同步、原生事件提醒、安全凭据存储、全面的 GUI、键盘驱动的导航以及可编写脚本的 IPC 界面。现已在所有 DankLinux 支持的发行版上推出：Arch（AUR）、Fedora、Debian、Ubuntu 和 openSUSE。
+
+{/* truncate */}
+
+<figure style={{ textAlign: 'center' }}>
+  <img
+    src={useBaseUrl('/img/blog/dankcalendar/preview.png')}
+    alt="DankCalendar showing the month view, settings, and the add-account picker"
+    style={{ maxWidth: '520px', width: '100%', borderRadius: '12px' }}
+  />
+  <figcaption>DankCalendar 的月视图、设置和账户设置。</figcaption>
+</figure>
+
+<div className={styles.featureGrid}>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>所有日历，一个视图</h3>
+    <p>连接本地、Google、Microsoft、CalDAV 和 iCloud 账户，在单个统一日程中查看所有日历。</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>后台同步</h3>
+    <p>轻量级守护进程保持账户同步并提供通知。</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>事件提醒</h3>
+    <p>即将发生的事件的原生桌面通知，可按事件和按日历配置。</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>默认安全</h3>
+    <p>OAuth 令牌和账户机密存储在您的系统密钥环中，而不是明文配置文件中。</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>键盘优先</h3>
+    <p>完全键盘驱动的导航，带快捷方式覆盖层和聚光灯式事件搜索。</p>
+  </div>
+  <div className={styles.featureCard}>
+    <h3 className={styles.featureTitle}>可编写脚本的 IPC</h3>
+    <p>用于合成器按键绑定和自动化的完整 IPC 界面。从脚本切换、查询事件等。</p>
+  </div>
+</div>
+
+## 内置于 DMS v1.5 {#built-into-dms-v15}
+
+DMS v1.5 会检测运行中的 `dcal` 守护进程，并通过 IPC 将其用作日历后端，无需额外设置。
+
+- **DankDash 中的统一日程。** 日历卡片显示来自每个已连接账户的真实事件，按日历颜色编码。
+- **从 shell 创建和编辑事件。** 您可以直接在 DankDash 中添加、编辑和删除事件。旧的 khal 集成是只读的，所以这是全新的。
+- **全程键盘导航。** 在日程中移动、打开事件详情，全部通过键盘完成。
+- **原生提醒。** 即将发生的事件通知通过您已在使用的 DMS 通知系统送达。
+- **后端选择器**位于设置 > 时间和天气（自动、khal 或 DankCalendar），旁边还有启动 DankCalendar 按钮。
+
+如果 `dcal` 未运行，DMS 会回退到 khal，因此不会出问题。
+
+## 凭据和数据 {#credentials-and-data}
+
+不涉及任何 DankLinux 服务器。`dcal` 直接与 Google、Microsoft、您的 CalDAV 或 iCloud 主机或您的本地 `.ics` 文件通信，因此您的事件和令牌永远不会离开您的机器。对于 Google 和 Microsoft，您创建自己的 OAuth 应用，因此整个连接都是您的。
+
+- 凭据存储在您的系统密钥环（如 GNOME Keyring、KWallet）中，而不是配置文件中。如果没有可用的密钥环，`dcal` 会回退到加密的磁盘存储。
+- 同步的日历和事件缓存在 `~/.local/share/dankcal/` 下的本地 SQLite 数据库中，遵循 XDG 基本目录规范。一切都可以离线工作，恢复在线后同步会自动赶上。
+- 守护进程侦听 `$XDG_RUNTIME_DIR` 中的按用户 Unix 套接字，范围限定为您的登录会话。它不是网络端口。
+
+## 入门 {#getting-started}
+
+DankCalendar 以 **`dankcalendar-git`** 的形式在 DankLinux 各仓库中发布，这是来自 upstream `master` 的滚动构建。在 Arch 上，您也可以使用预构建的 **`dankcalendar-bin`** AUR 软件包。
+
+**Arch Linux (AUR)**
+
+```bash
+yay -S dankcalendar-bin    # prebuilt binary
+# or
+yay -S dankcalendar-git    # build from latest git
+```
+
+**Fedora 和 CentOS (COPR)**
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dankcalendar-git
+```
+
+**Debian (OBS)** 和 **Ubuntu (PPA)** 首先启用 [DankLinux 仓库](/docs/danklinux/)，然后：
+
+```bash
+sudo apt install dankcalendar-git
+```
+
+**openSUSE (OBS)**
+
+```bash
+sudo zypper install dankcalendar-git
+```
+
+各 Debian 版本、Ubuntu 和 openSUSE 变体的仓库设置命令见[安装指南](/docs/dankcalendar/installation)。您也可以通过 `git clone` 和 `make install` 从源码构建。
+
+您可以从 GUI 或 CLI 连接账户。
+
+
+```bash
+dcal run                  # Launch DankCalendar
+dcal account add google   # or microsoft, caldav, icloud, local
+```
+
+DankCalendar 作为守护进程运行，因此关闭窗口只会隐藏它，同步和提醒继续在托盘中运行——您可以在设置中更改关闭行为。从设置中启用**登录时启动**，或安装 systemd 用户服务。
+
+完整的安装、账户设置和 IPC 参考请参阅 [DankCalendar 文档](/docs/dankcalendar/)。
+
+## v0.1 以来的更新 {#updates-since-v01}
+
+DankCalendar 自初次发布以来进展迅速。[v0.2.0](https://github.com/AvengeMedia/dankcalendar/releases/tag/v0.2.0) 是最新版本；以下是 v0.1.1 到 v0.2.0 的主要新增内容。
+
+### 日历源 {#calendar-sources}
+
+- **iCal 源和 webcal URL** — 订阅公共日历源并直接打开 `webcal://` 链接。
+- **Evolution Data Server** — 读取已由 GNOME Evolution 管理的日历，无需重复账户设置。
+
+### 任务、事件和提醒 {#tasks-events-and-reminders}
+
+- **任务和提醒（VTODO）** — 从每个已连接的提供程序查看和管理任务，而不仅仅是日历事件。
+- **事件 RSVP** — 在 DankCalendar 内接受或拒绝邀请。
+- **会议链接** — 从事件中解析视频通话 URL，并显示在事件详情和提醒中。
+- **事件驱动的提醒** — 提醒调度器在即将发生的事件时唤醒，而不是按固定间隔轮询。
+
+### UI 和导航 {#ui-and-navigation}
+
+- **主题引擎** — 自定义主题加上遵循系统浅色/深色偏好的原生配色监视器。
+- **侧边栏** — 可调整大小、可折叠、可滚动，长日历名称干净地省略。
+- **月视图** — 滚动浏览密集的月份，当单元格溢出时展开一天以查看每个事件。
+- **日视图和周视图** — 时间指示器标记您在日程中的当前位置。
+- **视图快捷方式** — `Ctrl+1` 到 `Ctrl+5` 在日程视图之间切换。
+- **快速创建** — 双击时间段开始新事件。
+- **关闭行为** — 选择窗口关闭按钮是隐藏 DankCalendar 还是完全退出。
+
+### IPC 和集成 {#ipc-and-integration}
+
+- **以特定视图打开** — IPC 可以显示已聚焦于月、周、日或日程的日历。
+
+### 翻译 {#translations}
+
+- **更多语言** — 荷兰语、意大利语、越南语、西班牙语、希伯来语、俄语、乌克兰语（带 RTL）、波兰语和简体中文。
+
+逐版本说明请参阅 GitHub 上的完整[发布历史](https://github.com/AvengeMedia/dankcalendar/releases)。
+
+## 为什么要有新的 Linux 日历？ {#why-a-new-linux-calendar}
+
+它符合 Dank 专注于单一工具的理念（[dgop](/docs/dgop/)、[dsearch](/docs/danksearch/)）——做好一件事并相互集成，没有不必要的依赖或对您设置的假设。日历是用户体验的核心部分，因此它值得一个与 shell 和您现有账户良好配合的第一方解决方案。
+
+khal 和 vdirsyncer 可编写脚本且轻量，但它们是您需要自己拼接的两个工具。您编写 `vdirsyncer` 配置、手动设置 OAuth 令牌、在 cron 上运行同步，然后将 khal 指向输出。这不是一个用户友好或全面的解决方案。
+
+Evolution 和 Evolution Data Server 功能强大，但它们与 GNOME 桌面绑定，极难在其上构建或集成。日历只是共享 EDS 后端的庞大应用套件的一部分。
+
+- 日历被埋在 Outlook 风格的套件中，账户设置分散在 GNOME 设置、GNOME 在线账户和 Evolution 本身中，因此永远不清楚哪一个真正拥有日历。
+- EDS 是一个共享后端，这是个好主意，但它的 API 是 GObject/C 加异步 GLib，真实示例很少。针对它编写启动器小部件、shell 卡片或 CLI 意味着要深入研究 source-registry 概念和 `ECalClient`，而不是调用简单的东西。
+- 它拖入了沉重的 GTK 和 WebKitGTK 堆栈，并假设您使用 GNOME，这在 niri、Hyprland、Sway、KDE 或自定义 shell 上很尴尬。
+
+DankCalendar 保留了这个理念中好的部分——一个可以被很多东西读取的同步后端——但让它使用和构建起来都很愉快：登录式的账户设置、可离线工作的本地缓存、带 JSON 输出的有文档的 IPC API（`dcal ipc events.list`、`events.create` 等），以及在任何合成器上行为一致的守护进程加前端设计。
+
+## 资源 {#resources}
+
+<a href="/docs/dankcalendar/" className={styles.getStartedLink}>
+  阅读 DankCalendar 文档 <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/dankcalendar" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="/docs/dankcalendar/" className={styles.supportLink}>文档</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>在 Ko-fi 上支持</a>
+</div>
+
+<div className={styles.communityHero}>
+  <div className={styles.tiles} aria-hidden="true">
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '18%', left: '6%', '--rot': '-10deg' }}>12</div>
+    <div className={`${styles.tile} ${styles.tileFloat3}`} style={{ top: '62%', left: '9%', '--rot': '12deg' }}>5</div>
+    <div className={`${styles.tile} ${styles.tileFloat2}`} style={{ top: '20%', left: '89%', '--rot': '9deg' }}>24</div>
+    <div className={`${styles.tile} ${styles.tileFloat1}`} style={{ top: '64%', left: '86%', '--rot': '-12deg' }}>8</div>
+  </div>
+  <div className={styles.heroContent}>
+    <h2 className={styles.communityTitle}>
+      加入<span className={styles.gradientText}>社区</span>
+    </h2>
+    <p className={styles.communityText}>DankCalendar 全新推出，因此反馈和错误报告非常重要。欢迎来 niri Discord 的 <code>#dms</code> 频道闲逛，或在 GitHub 上提 issue。欢迎提供程序、小部件和翻译。</p>
+    <div className={styles.communityLinks}>
+      <a href="https://discord.gg/ppWTpKmPgT" className={styles.discordButton}>加入 Discord</a>
+      <a href="https://github.com/AvengeMedia/dankcalendar/issues" className={styles.ghostButton}>报告问题</a>
+    </div>
+  </div>
+</div>

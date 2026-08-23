@@ -1,0 +1,727 @@
+---
+title: DMS 1.4 "Saffron Bloom" 发布
+description: DMS 的第三个主要版本
+slug: v1-4-release
+authors: danklinux
+tags: [release, announcement]
+---
+
+import styles from './styles.module.css';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ThemedImage from '@theme/ThemedImage';
+
+{/* Saffron stigmas - botanically accurate with flared trumpet tips and color gradient */}
+export const SaffronStigma = ({ className, opacity = 0.5, mirror = false, variant = 0 }) => {
+  const id = `saffron-grad-${variant}-${Math.random().toString(36).slice(2,7)}`;
+  // Curves for natural variation
+  const paths = [
+    "M10 52 Q9 42 8 32 Q7 22 8 14 Q9 8 10 4",      // gentle S
+    "M10 52 Q11 44 9 34 Q7 24 8 14 Q10 6 11 3",    // slight lean
+    "M10 52 Q8 40 9 30 Q10 20 9 12 Q8 6 10 2",     // subtle wave
+  ];
+  const path = paths[variant % paths.length];
+  return (
+    <svg viewBox="0 0 20 56" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={id} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="35%" stopColor="#C65D3B" />
+          <stop offset="70%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(20,0) scale(-1,1)' : ''}>
+        {/* Main stigma thread */}
+        <path fill="none" stroke={`url(#${id})`} strokeWidth="2.2" strokeLinecap="round" d={path} />
+        {/* Flared trumpet tip - the characteristic stigma head */}
+        <ellipse cx="10" cy="2" rx="4" ry="2" fill="#6B1515" opacity="0.9" />
+        <path fill="none" stroke="#5A1212" strokeWidth="0.8" strokeLinecap="round" opacity="0.6"
+          d="M6 2 Q8 0 10 1 Q12 0 14 2" />
+      </g>
+    </svg>
+  );
+};
+
+export const SaffronBundle = ({ className, opacity = 0.5, mirror = false }) => {
+  const id = `bundle-grad-${Math.random().toString(36).slice(2,7)}`;
+  return (
+    <svg viewBox="0 0 32 60" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={`${id}-1`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="40%" stopColor="#C65D3B" />
+          <stop offset="75%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+        <linearGradient id={`${id}-2`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#D4912A" />
+          <stop offset="35%" stopColor="#B54E32" />
+          <stop offset="70%" stopColor="#7A1A1A" />
+          <stop offset="100%" stopColor="#5A1010" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(32,0) scale(-1,1)' : ''}>
+        {/* Three stigmas bundled at base, splaying at top */}
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M16 58 Q14 48 12 38 Q9 26 6 16 Q4 8 5 4" />
+        <path fill="none" stroke={`url(#${id}-2)`} strokeWidth="2.2" strokeLinecap="round"
+          d="M16 58 Q16 46 16 34 Q16 22 16 12 Q16 6 16 2" />
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M16 58 Q18 48 20 38 Q23 26 26 16 Q28 8 27 4" />
+        {/* Flared tips */}
+        <ellipse cx="5" cy="3" rx="3.5" ry="1.8" fill="#6B1515" opacity="0.85" />
+        <ellipse cx="16" cy="1.5" rx="4" ry="2" fill="#5A1010" opacity="0.9" />
+        <ellipse cx="27" cy="3" rx="3.5" ry="1.8" fill="#6B1515" opacity="0.85" />
+      </g>
+    </svg>
+  );
+};
+
+export const SaffronPair = ({ className, opacity = 0.5, mirror = false }) => {
+  const id = `pair-grad-${Math.random().toString(36).slice(2,7)}`;
+  return (
+    <svg viewBox="0 0 24 52" className={className} style={{ width: '100%', height: '100%', overflow: 'visible', opacity }}>
+      <defs>
+        <linearGradient id={`${id}-1`} x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stopColor="#E8A832" />
+          <stop offset="38%" stopColor="#C65D3B" />
+          <stop offset="72%" stopColor="#8B1E1E" />
+          <stop offset="100%" stopColor="#6B1515" />
+        </linearGradient>
+      </defs>
+      <g transform={mirror ? 'translate(24,0) scale(-1,1)' : ''}>
+        {/* Two stigmas curving apart */}
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2.2" strokeLinecap="round"
+          d="M12 50 Q10 40 8 30 Q5 20 4 12 Q3 6 4 3" />
+        <path fill="none" stroke={`url(#${id}-1)`} strokeWidth="2" strokeLinecap="round"
+          d="M12 50 Q14 40 16 30 Q19 20 20 12 Q21 6 20 3" />
+        {/* Flared tips */}
+        <ellipse cx="4" cy="2.5" rx="3.2" ry="1.6" fill="#6B1515" opacity="0.88" />
+        <ellipse cx="20" cy="2.5" rx="3.2" ry="1.6" fill="#6B1515" opacity="0.88" />
+      </g>
+    </svg>
+  );
+};
+
+<div className={styles.blogHero}>
+  <div className={styles.confetti} aria-hidden="true">
+    {/* Left edge - saffron stigmas scattered like harvested threads */}
+    <div style={{ position: 'absolute', top: '4%', left: '2%', width: '24px', height: '48px', transform: 'rotate(-20deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.55} />
+    </div>
+    <div style={{ position: 'absolute', top: '18%', left: '5%', width: '18px', height: '40px', transform: 'rotate(15deg)' }}>
+      <SaffronPair className={styles.stigmaAnim2} opacity={0.45} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '38%', left: '3%', width: '22px', height: '46px', transform: 'rotate(-35deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim3} opacity={0.5} />
+    </div>
+    <div style={{ position: 'absolute', top: '55%', left: '4%', width: '15px', height: '42px', transform: 'rotate(25deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.42} mirror variant={0} />
+    </div>
+    <div style={{ position: 'absolute', top: '72%', left: '2%', width: '18px', height: '40px', transform: 'rotate(-10deg)' }}>
+      <SaffronPair className={styles.stigmaAnim2} opacity={0.48} />
+    </div>
+    {/* Inner left */}
+    <div style={{ position: 'absolute', top: '8%', left: '12%', width: '14px', height: '38px', transform: 'rotate(30deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim3} opacity={0.35} variant={1} />
+    </div>
+    <div style={{ position: 'absolute', top: '65%', left: '10%', width: '15px', height: '40px', transform: 'rotate(-40deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.32} mirror variant={2} />
+    </div>
+    {/* Bottom */}
+    <div style={{ position: 'absolute', top: '80%', left: '22%', width: '22px', height: '46px', transform: 'rotate(-25deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim2} opacity={0.45} />
+    </div>
+    <div style={{ position: 'absolute', top: '78%', left: '42%', width: '17px', height: '40px', transform: 'rotate(20deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.38} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '82%', left: '58%', width: '14px', height: '38px', transform: 'rotate(-15deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim1} opacity={0.35} variant={0} />
+    </div>
+    <div style={{ position: 'absolute', top: '76%', left: '74%', width: '20px', height: '44px', transform: 'rotate(35deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim2} opacity={0.48} mirror />
+    </div>
+    {/* Right edge */}
+    <div style={{ position: 'absolute', top: '5%', left: '86%', width: '17px', height: '40px', transform: 'rotate(10deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.5} />
+    </div>
+    <div style={{ position: 'absolute', top: '22%', left: '92%', width: '23px', height: '48px', transform: 'rotate(-30deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.52} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '42%', left: '88%', width: '14px', height: '40px', transform: 'rotate(40deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim2} opacity={0.4} variant={1} />
+    </div>
+    <div style={{ position: 'absolute', top: '58%', left: '91%', width: '17px', height: '42px', transform: 'rotate(-18deg)' }}>
+      <SaffronPair className={styles.stigmaAnim3} opacity={0.45} mirror />
+    </div>
+    <div style={{ position: 'absolute', top: '74%', left: '90%', width: '22px', height: '46px', transform: 'rotate(22deg)' }}>
+      <SaffronBundle className={styles.stigmaAnim1} opacity={0.5} />
+    </div>
+    {/* Inner right */}
+    <div style={{ position: 'absolute', top: '12%', left: '78%', width: '13px', height: '36px', transform: 'rotate(-45deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim2} opacity={0.32} mirror variant={2} />
+    </div>
+    <div style={{ position: 'absolute', top: '35%', left: '82%', width: '15px', height: '40px', transform: 'rotate(8deg)' }}>
+      <SaffronStigma className={styles.stigmaAnim3} opacity={0.3} variant={0} />
+    </div>
+  </div>
+  <div className={styles.heroContent}>
+    <h1 className={styles.heroTitle}>
+      DMS <span className={styles.gradientText}>1.4</span>
+    </h1>
+    <p className={styles.heroSubtitle}>Saffron Bloom</p>
+  </div>
+</div>
+
+我们很高兴地宣布 DankMaterialShell (DMS) 1.4 "Saffron Bloom" 发布！此版本引入了全新的启动器、众多插件系统改进（支持 GIF、KDE Connect、Clight），以及大量扩展 DMS 功能和能力的新可能。
+
+{/* truncate */}
+
+<div className={styles.statsGrid} style={{ gridTemplateColumns: 'repeat(2, 1fr)', maxWidth: '600px' }}>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>3,100+</span>
+    <span className={styles.statLabel}>次提交</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>4.3k+</span>
+    <span className={styles.statLabel}>GitHub Stars</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>130+</span>
+    <span className={styles.statLabel}>位贡献者</span>
+  </div>
+  <div className={styles.statCard}>
+    <span className={styles.statNumber}>70</span>
+    <span className={styles.statLabel}>个插件</span>
+  </div>
+</div>
+
+## Dank Launcher V2 {#dank-launcher-v2}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dank Launcher V2"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/launcher_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/launcher_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>带平铺布局和插件集成的新 Dank Launcher V2。</figcaption>
+</figure>
+
+DMS 1.4 引入了受 vicinae 启发的新启动器，拥有更多选项、更紧密的扩展集成、更好的性能、可配置的选项卡操作、新的平铺布局选项，以及众多新的第一方插件（包括 GIF 和贴纸搜索）。
+
+- 插件可以定义上下文菜单和自定义选项卡操作、shift+enter 操作（如粘贴并关闭），以及动画图像等新型结果。
+- 启动器新增平铺布局选项。
+- 新的第一方插件，包括 GIF 和贴纸搜索。
+- 从"全部"选项卡隐藏或显示任何扩展，更改优先级顺序，保留自定义触发器，并在 DMS 设置中配置更多启动器选项。
+- 在启动器中内联编辑启动选项、环境或隐藏条目。
+
+## KDE Connect+Valent（手机连接）和 Clight 集成 {#kde-connectvalent-phone-connect-and-clight-integration}
+
+DMS v1.4 exposes a dbus client that enables plugins to interact with dbus services natively, which has enabled the development of KDE Connect+Valent and Clight plugins.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="KDE Connect and Valent integration"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/kdeconnect_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/kdeconnect_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>通过 KDE Connect / Valent 的手机连接。</figcaption>
+</figure>
+
+[手机连接](https://github.com/AvengeMedia/dms-plugins/tree/master/DankKDEConnect)插件允许您直接从 DMS 通过 KDE Connect 或 Valent（基于 GNOME 的等效产品）连接到手机。接收通知、发送和接收文件、同步剪贴板、在栏中查看手机电池百分比等。
+
+[Clight](https://github.com/AvengeMedia/dms-plugins/tree/master/DankClight)插件提供与自动亮度守护进程 [Clight](https://github.com/FedeDP/Clight) 的集成。
+
+新的 dbus 客户端允许创建可与任何 dbus 服务交互的全新插件类别，为需要与其他应用程序和系统服务集成的扩展开辟了巨大的可能性——以高效、事件驱动的方式。
+
+## 全新进程列表/系统监视器 {#new-process-listsystem-monitor}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="New System Monitor"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/sysmon_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/sysmon_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>带进程列表的全新内置系统监视器。</figcaption>
+</figure>
+
+[dgop](https://danklinux.com/docs/dgop/) 前端/进程监视器经过全面改进，采用功能更强的新设计。集成搜索、完整命令视图，以及单视图中的更多相关信息。
+
+## 窗口规则管理器（仅限 niri） {#window-rule-manager-niri-only}
+
+niri 用户现在可以直接从 DMS 管理窗口规则。可以使用可选按键绑定 `dms ipc call window-rules toggle` 为当前聚焦的窗口创建规则。所有规则都可以从 DMS 设置中重新排序、编辑和管理。
+
+<figure style={{ textAlign: 'center' }}>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'start' }}>
+    <div style={{ flex: '1.4', minWidth: 0 }}>
+      <ThemedImage
+        alt="Window Rules settings"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/windowrulesettings_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/windowrulesettings_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="New Window Rule modal"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/windowrulemodal_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/windowrulemodal_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+  </div>
+  <figcaption>窗口规则设置和规则创建模态。</figcaption>
+</figure>
+
+## Dock 增强和 Dank Bar Dock 小部件 {#dock-enhancements--dank-bar-dock-widget}
+
+### 智能自动隐藏 {#intelligent-auto-hide}
+
+Dock 现在可以仅在浮动窗口与其区域重叠时自动隐藏，并在不重叠时显示。您在需要时收回屏幕空间，同时不会失去快速访问。
+
+### Dank Bar 应用 Dock 小部件 {#dank-bar-apps-dock-widget}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dank Bar Apps Dock Widget settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/dms_apps_dock_widget_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/dms_apps_dock_widget_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>配置带溢出选项和视觉效果的单体应用 Dock 小部件。</figcaption>
+</figure>
+
+Dank Bar 的全新应用 Dock 小部件——直接嵌入栏中的单体 dock。如果您更喜欢仅面板的工作流而不需要完整 dock，这会在栏中为您带来固定和运行中的应用。
+
+### 最大固定和运行应用带溢出 {#max-pinned--running-apps-with-overflow}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Dock overflow and behavior settings"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/dms_dock_pinned_running_apps_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/dms_dock_pinned_running_apps_dark.png'),
+    }}
+    style={{ maxWidth: '500px', width: '100%' }}
+  />
+  <figcaption>新的 dock 行为控制，包括最大应用数和溢出设置。</figcaption>
+</figure>
+
+您现在可以分别为固定和运行中的应用设置最大数量。超出限制的内容会折叠到可展开的溢出区域，并带有徽章计数。适用于主 dock 和新的应用 Dock 小部件。
+
+## 音频设备别名 {#audio-device-aliases}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Audio Device Aliases"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/audio_device_aliases_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/audio_device_aliases_dark.png'),
+    }}
+    style={{ maxWidth: '600px', width: '100%' }}
+  />
+  <figcaption>直接从 DMS 重命名、隐藏和（可选）增强音频设备。</figcaption>
+</figure>
+
+由 WirePlumber 驱动的内置音频设备别名。从音频设置中重命名任何输入或输出、隐藏您从不使用的设备，如果需要——临时将设备推高到 100% 以上。保留原始名称，因此您随时可以恢复。
+
+- **重命名设备：**为您的设备起真正有用的名字。保留原始硬件名称。
+- **隐藏设备：**清除杂乱列表中未使用或重复的条目。
+- **增强超过 100%：**在需要时提高最大音量。**注意：**过度放大可能导致失真或硬件问题，请谨慎使用。
+
+## 自动浅色和深色模式 {#automatic-light-and-dark-mode}
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="Automatic Light and Dark Mode"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.4/automatic_light_dark_mode_light.png'),
+      dark: useBaseUrl('/img/blog/v1.4/automatic_light_dark_mode_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>带时间和基于位置的过渡的自动主题，以及 Gamma Control 同步。</figcaption>
+</figure>
+
+您的桌面主题现在可以在浅色和深色之间自动切换。设置简单的时间表，或让 DMS 根据您的位置（手动坐标或基于 IP）判断。位置模式会显示下次切换的预览。
+
+- **基于时间的模式：**设置日出/日落或自定义时间。
+- **基于位置的模式：**手动坐标或 IP 地理位置以计算本地日出/日落。
+- **Gamma Control 同步：**与 DMS Gamma Control 夜间模式绑定，使色温、亮度和主题一起切换。
+- **快速覆盖：**随时从外观菜单强制浅色或深色；之后自动规则会恢复生效。
+
+## 通知增强 {#notification-enhancements}
+
+<figure style={{ textAlign: 'center' }}>
+  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'start' }}>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="Notification Toasts"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/notification_toast_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/notification_toast_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+    <div style={{ flex: '1', minWidth: 0 }}>
+      <ThemedImage
+        alt="Notification Center"
+        sources={{
+          light: useBaseUrl('/img/blog/v1.4/notification_center_light.png'),
+          dark: useBaseUrl('/img/blog/v1.4/notification_center_dark.png'),
+        }}
+        style={{ width: '100%', borderRadius: '8px' }}
+      />
+    </div>
+  </div>
+  <figcaption>通知 toast（左）和重新设计的通知中心（右）。</figcaption>
+</figure>
+
+通知基于 Material 3 Expressive 进行了视觉全面改进——新阴影、动效和整体感觉。通知中心和 toast 的外观和行为都更好。
+
+新特性：
+
+- **独立动画速度：**通知动画现在与全局 UI 动效分离，因此您可以让它们更快或更慢，而不影响其他一切。
+- **隐私模式：**默认隐藏消息内容（仅显示发件人和应用），点击显示。适合共享屏幕或只想减少干扰的场景。
+- **右键操作：**右键单击任何通知可静音来源、创建规则或关闭。适用于 toast 和通知中心。
+
+敬请期待更多更新！
+
+## Miracle WM 支持 {#miracle-wm-support}
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+  <img src={useBaseUrl('/img/miraclewm.svg')} alt="Miracle WM" style={{ width: '64px', height: '64px' }} />
+  <span style={{ fontSize: '1.1em' }}>
+    <a href="https://miracle-wm.org/">Miracle WM</a> 现已是受支持的合成器。
+  </span>
+</div>
+
+DMS 1.4 带来对 [Miracle WM](https://miracle-wm.org/) 的完整支持，包括按键绑定备忘单、空闲监视器集成、工作区切换器以及其余核心 DMS 功能。
+
+这先于即将推出的 Fedora 44 版本，该版本将包含 [Dank Miracle 定制版](https://www.phoronix.com/news/Fedora-44-Dank-MiracleWM)，因此 Fedora 上的 Miracle WM 用户将开箱即用 DMS。
+
+## 可用发行版 {#available-distributions}
+
+<div className={styles.distroMashup}>
+  <div className={styles.distroOrbit}>
+    <img src={useBaseUrl('/img/path32.svg')} alt="DMS" className={styles.distroCenterLogo} />
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/arch.svg')} alt="Arch Linux" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/fedora.svg')} alt="Fedora" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/suse.svg')} alt="openSUSE" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/debian.svg')} alt="Debian" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/ubuntu.svg')} alt="Ubuntu" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/CentOS_color_logo.svg')} alt="CentOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/distros/NixOS.svg')} alt="NixOS" /></div>
+    <div className={styles.distroLogo}><img src={useBaseUrl('/img/gentoo-logo.svg')} alt="Gentoo" /></div>
+  </div>
+</div>
+
+DMS 适用于 Arch Linux、Fedora、openSUSE、Debian、Ubuntu、CentOS、NixOS、Gentoo 等。Gentoo 用户有三个社区 overlay 可选：[quilat-overlay](https://github.com/Graght/quilat-overlay)（跟踪 git master 的 live ebuild，OpenRC + systemd）、[tdgentoo](https://github.com/timdodge/tdgentoo)（固定到稳定版本的版本化 ebuild）和 [dacyberduck](https://codeberg.org/dacyberduck/gentoo-overlay)（`dank-base/dankmaterialshell`）。
+
+设置说明请参阅[安装指南](/docs/getting-started)。
+
+## 错误修复和改进 {#bug-fixes-and-improvements}
+
+<details style={{
+  border: '1px solid rgba(139, 30, 30, 0.3)',
+  borderRadius: '8px',
+  padding: '1rem',
+  margin: '1.5rem 0',
+  background: 'linear-gradient(135deg, rgba(139, 30, 30, 0.08) 0%, rgba(232, 168, 50, 0.04) 100%)',
+  backdropFilter: 'blur(8px)'
+}}>
+<summary style={{
+  cursor: 'pointer',
+  fontWeight: '600',
+  fontSize: '1.1em',
+  marginBottom: '1rem',
+  userSelect: 'none',
+  padding: '0.25rem 0.5rem',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.5rem',
+  listStyle: 'none'
+}} id="bug-fixes-summary">|- 查看详情（200+ 次提交）-|</summary>
+
+自 v1.2 发布以来，DMS 在所有组件中进行了大量的错误修复和稳定性改进：
+
+**Launcher V2**
+- 新的聚合"全部"选项卡，带插件/扩展结果、快速选项卡操作和平铺模式
+- 改进搜索结果响应性，带高亮匹配
+- 包括"全部"选项卡中的 ListView、文件系统缓存以加快首次启动等通用性能优化
+- 按 ID 对缓存条目去重
+- 支持异步启动器插件、缓存 GIF 和操作时粘贴
+- 允许插件中的类别、插件排序顺序偏好
+- 允许从"全部"模式禁用每个插件，添加用于切换特定模式的 IPC
+- 添加可见性防护、微型尺寸选项和视图模式持久化
+- 上下文菜单和键盘导航改进
+- 修复悬停效果、区域更改时的状态重置、dGPU 竞争条件和插件图标处理
+- 支持平铺中的 ScreenCopy 和图标渲染器中的 CachingImage
+- 为条目添加名称、图标、描述覆盖和隐藏/取消隐藏选项
+- 弃用 spotlight 启动器，改用 Dank Launcher V2
+
+**通知**
+- 基于 Material 3 Expressive 设计重构通知动画
+- 添加可配置的通知规则
+- 为当前/历史选项卡添加左/右键盘导航
+- 限制弹出中的最大动画速度
+- 修复模态崩溃和历史选项卡关闭时的键盘导航
+- 更新尺寸、文本展开逻辑和分组展开卡片动画
+- 处理 material 图标
+- 调整 toast 按钮内边距
+
+**Dock 和栏**
+- 智能 dock 自动隐藏行为
+- Dank Bar 的应用 Dock 小部件，带溢出和配置选项
+- 在 Dock 上实现带自定义图标/徽标的 Dank Launcher 按钮
+- 可固定的 DMS 核心应用，带颜色选项
+- 最大固定和运行应用，带溢出徽章计数
+- 修复 Hyprland 上的智能自动隐藏
+- 为预替换的应用 ID 解析图标
+- 修复使用自定义徽标和启动器按钮持久性的选项
+- 修复运行应用、dock 和系统托盘的间距缩放
+- 为 Dank Bar 添加点击穿透选项
+- 修复众多栏小部件的居中
+- 修复小部件中的属性保留
+- 如果小部件背景关闭则放大栏图标
+- 在边距设置中考虑 outlineThickness
+- 修复启用自动隐藏时的小部件上下文焦点
+
+**剪贴板**
+- 保存固定的剪贴板条目，带键盘导航
+- 为剪贴板小部件添加弹出变体
+- 添加按 Enter 粘贴选项
+- 为图像/视频添加带门户文件传输的 `cl copy --download` 选项
+- 为 mime 类型添加 `watch -m`
+- 修复行布局溢出、固定条目逻辑、哈希重复检查
+- 修复带 Flatpak 读取授权的文件传输和导出功能
+- 在历史记录中跳过 `application/vnd.portal.filetransfer` mime
+- 对更改做出反应，修复重复清除对话框
+- 触摸复制的条目将其移到顶部
+- 在 CopyFile 中向 offer 添加原始图像 mime 类型
+- 修复 watch 命令
+- 剪贴板小部件的快速上下文菜单
+
+**主题和外观**
+- 基于地区/时间段的自动浅色和深色模式，带过渡时间
+- 改进对带变体和强调色的自定义主题在浅色/深色模式下的处理
+- 支持 matugen v4
+- 按视觉相似度同步 adwaita 强调色
+- 添加 Cosmic 浅色/深色和图标主题支持
+- 允许覆盖颜色中心主题
+- 修复弹出透明度设置和选项按钮组的溢出
+- 修复浅色和深色主题的 emacs 模板
+- 添加 dank emacs 模板
+- 修复模板中 Zen Browser 主题背景色
+- 修复自定义主题下终端始终为深色
+- matugen 更改后 post-hook 重载 GTK4 和 qt6ct
+- 禁用时不同步终端
+- 更新 dank16 算法以获得更平滑的渐变
+- 修复 Vesktop 主题名称
+
+**音频和媒体**
+- 音频设备别名：通过 WirePlumber 重命名、隐藏和增强设备
+- 带更新设计的媒体播放 OSD
+- 添加按设备最大音量限制设置
+- 媒体小部件可配置的滚动音量
+- 通过 IPC 添加特定播放器的 MPRIS 音量控制
+- 反转媒体播放图标并处理屏幕更改
+- 修复垂直布局的音量 OSD 滑动 UI 更新
+- 封面：直接使用 URL
+- Cava：使用输入源 pipewire 和 auto，移除输入配置
+
+**显示和监视器配置**
+- 支持多个输出配置文件，带删除/隐藏断开显示器
+- 为 Hyprland 添加仅全屏选项，将 VRR 转换为下拉菜单
+- 在显示设置中添加禁用捕捉选项
+- 修复 Hyprland 上的 VRR=0 设置
+- 修复保存时丢失断开显示器的问题
+- 修复带缩放的预览居中
+- 更新 MangoWC 显示配置语法
+
+**窗口规则（niri）**
+- 用于创建、编辑、删除和重新排序窗口规则的设置 UI
+- 为当前聚焦的 toplevel 创建窗口规则的 IPC
+- 修复复选框对齐
+- 更新默认 Steam 窗口规则
+
+**动画**
+- 基于 Material 3 Expressive 的 Material 动画重构
+- 模态和弹出的细粒度动画设置
+- 修改 ListView 动画并调整列表视图过渡
+- 切换到帧动画以实现动能滚动
+- 清理波纹效果并更普遍地应用
+- 优化 DankRipple 中的 VRAM 使用
+
+**进程列表和系统监视器**
+- 全面改进系统监视器弹出和应用，采用新设计
+- 为进程列表添加完整键盘导航
+- 修复被裁剪的图表
+- 修复默认弹出焦点和默认排序方向
+- 更新仪表尺寸
+- 列表稳定前禁用动画
+- 修复 AppSearch 导致的进程列表弹出崩溃
+
+**工作区**
+- 添加工作区重命名对话框
+- niri 的拖放工作区重新排序
+- 显示 niri 工作区名称
+- 修复占用颜色覆盖
+- 修复分组应用和图标的溢出
+- 修复垂直栏上显示应用时的索引号动画
+- 添加图标大小偏移
+
+**设置**
+- DankCollapsible 组件
+- 优化侧边栏绑定和侧边栏缩放改进
+- 设置搜索索引更新
+- 修复壁纸循环按钮、主题风格按钮、电源和睡眠选项卡按钮组
+- 使 dock 位置与 Dank Bar 设置匹配
+- 从配置标签中移除 beta
+- 启动时不清除缓存或应用
+- 修复最新 quickshell 上模态无法打开的问题
+
+**锁屏和 Greeter**
+- DMS Greeter 与 niri 包含设置同步（光标、调试、输入、选项）
+- 修复 Hyprland 上的键盘布局
+- 添加启动时锁定操作
+- 添加锁屏上禁用媒体播放器的选项
+- 从 greeter 和锁屏中移除随机事实
+- 添加隐藏个人资料图像的选项
+- 修复 12 小时格式单位数小时
+- 锁屏激活时关闭显示器
+- 添加对 Debian greetd 用户/组名称的支持
+- NixOS 的 MangoWC 和 Scroll Greeter 支持
+- 恢复基准配置并修复 Cosmic 支持
+- 添加 niri 覆盖 kdl 包含
+- 修复 greeter 目录权限
+
+**插件**
+- 添加插件状态辅助和切换支持，带延迟守护进程实例化
+- 为弹出提供可自定义的头部操作
+- 修复失败时的重载 IPC
+- 确保守护进程插件不被实例化两次
+- 在内置浏览器中展示精选插件
+- 修复首次插件安装响应性并确认第三方仓库窗口
+
+**niri**
+- 通过 GUI 按键绑定编辑器公开 when-locked、inhibited、repeat 选项
+- 支持任何截图编辑器工具
+- 添加确保 colors.kdl 存在
+- 恢复延迟概览 spotlight 生命周期以减少空闲 VRAM
+- 替换 github ref
+- 添加屏幕录制指示器
+
+**网络和 VPN**
+- 添加对使用 SAML 认证流程的 GlobalProtect VPN 的支持
+- 简化连接处理
+- 修复 VPN 弹出和小部件工具提示位置
+- 默认不勾选"保存密码"
+
+**壁纸**
+- 支持更多图像格式，不区分大小写
+- 仅在屏幕锁定或活动窗口全屏时暂停循环
+- 修复每显示器视图模式
+
+**按键绑定**
+- 不在按键绑定中传递目录
+- 修复提供程序中的 MangoWC 配置遍历
+
+**小部件**
+- 添加按钮颜色设置和主题文本字段选择颜色
+- 清理弹出、模态、OSD 中的矩形
+- 移除弹出中的双重矩形伪影
+- 修复小部件的跨显示器处理
+- 记事本小部件，带快速上下文菜单、光标颜色和 QOL 更新
+- 插件加载时刷新布局
+- 为 Steam 应用小部件添加回退
+
+**i18n**
+- 设置、关于选项卡和 Dank Bar 的通用 RTL 修复
+- 捕获缺失字符串并包装在 I18n.tr() 中
+- 多个术语更新和同步
+
+**核心和后端**
+- 添加带 QML 客户端的通用 DBus 服务（subscribe/introspect/getprop/setprop/call）
+- 用于记事本的 DMS Chroma 语法高亮器
+- 默认将 Qt 平台设置为 wayland;xcb
+- 添加 DL 辅助和 gsettingsOrDconf 辅助
+- 添加屏幕保护程序内省 XML 方法
+- 替换 go-localereader 指令
+- 为取色器模态和托盘图标控制添加 IPC 处理器
+- 添加 toast IPC
+- 修复打印时 DMS chroma 挂起
+- 更智能的光标 Xresources 编辑
+- Doctor：添加 cups-pk-helper、MangoWC、labwc；使用 DBus 进行服务检查；添加 --copy 选项
+- Polkit：允许空密码
+- 系统托盘：允许重新排序项目，使用 id+title 作为标识符
+
+**合成器支持**
+- 添加 Miracle WM 支持
+- labwc 补丁改进
+- MangoWC 和 Scroll Greeter 支持
+
+**构建和分发**
+- 弃用 cliphist 依赖
+- 更新 NixOS 打包、vendorHash 和 home 模块
+- 支持为 NixOS 指定 systemd 目标
+- 将 qt-imageformats 添加到 NixOS 的 DMS QML 依赖项
+- 修复 Fedora 版本格式和动态版本控制
+- 更新 OBS 工作流和 Makefile
+- 通过 dankinstall 支持 XeroLinux
+- 更新 CI 中的 Go 版本和 golangci-lint
+
+</details>
+
+## 资源 {#resources}
+
+<a href="/docs/getting-started" className={styles.getStartedLink}>
+  开始使用 DMS <span>→</span>
+</a>
+
+<div className={styles.linksRow}>
+  <a href="https://github.com/AvengeMedia/DankMaterialShell" className={styles.supportLink}>GitHub</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://danklinux.com/docs/" className={styles.supportLink}>文档</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://plugins.danklinux.com" className={styles.supportLink}>插件</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://discord.gg/ppWTpKmPgT" className={styles.supportLink}>Discord</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://github.com/sponsors/AvengeMedia" className={styles.supportLink}>在 GitHub 上赞助</a>
+  <span className={styles.linkDivider}>•</span>
+  <a href="https://ko-fi.com/danklinux" className={styles.supportLink}>在 Ko-fi 上支持</a>
+</div>
+
+<div className={styles.niriThanks}>
+  <img src={useBaseUrl('/img/niri.svg')} alt="niri" />
+  <span>特别感谢 <a href="https://github.com/YaLTeR">YaLTeR</a> 与 DMS 团队合作，感谢 <a href="https://github.com/niri-wm/niri">niri</a>——启发 DMS 的合成器，并感谢在 <a href="https://discord.gg/ppWTpKmPgT">niri Discord</a> 上托管 DMS。</span>
+</div>
+<div className={styles.thankYouHero}>
+  <div className={styles.confetti} aria-hidden="true" />
+  <div className={styles.heroContent}>
+    <h2 className={styles.thankYouTitle}>
+      谢谢 <span className={styles.gradientText}>你们</span>
+    </h2>
+    <p className={styles.thankYouText}>感谢所有通过反馈、贡献、赞助、捐赠和打包支持 DMS 的人。</p>
+    <p className={styles.thankYouTagline}>Zan, Zendegi, Azadi</p>
+  </div>
+</div>

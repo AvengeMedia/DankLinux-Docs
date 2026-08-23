@@ -1,0 +1,14 @@
+{
+  "title": {
+    "message": "Dank Linux 项目动态",
+    "description": "The title for the blog used in SEO"
+  },
+  "description": {
+    "message": "Dank Linux 项目的新闻、版本发布与最新动态。",
+    "description": "The description for the blog used in SEO"
+  },
+  "sidebar.title": {
+    "message": "近期文章",
+    "description": "The label for the left sidebar"
+  }
+}

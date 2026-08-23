@@ -1,0 +1,349 @@
+---
+title: 安装
+description: 安装 DankGreeter 显示管理器
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║  ███╗██████╔╝█████╗  █████╗     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══╝     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗╚██████╔╝██║  ██║███████╗███████╗   ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+                                                                            `}
+/>
+
+# 安装 {#installation}
+
+## 安装方式 {#installation-methods}
+
+:::note[已经有 DankLinux 仓库？]
+
+如果已安装 DMS 或其他 DankLinux 软件包，则仓库已配置好。最简单的选择是：
+
+```bash
+dms greeter install
+```
+
+这会安装软件包并自动处理所有配置。
+
+> ⚠️ **[这将替换您当前的显示管理器。](#dankinstall-users)**
+
+或者手动安装软件包并继续[完成设置](#completing-setup)：
+- **Arch**：`paru -S greetd-dms-greeter-git` 或 `yay -S greetd-dms-greeter-git` *（`dms greeter install` 需要 paru 或 yay）*
+- **Fedora**：`sudo dnf install dms-greeter`
+- **Debian/Ubuntu**：`sudo apt install dms-greeter`
+- **openSUSE**：`sudo zypper install dms-greeter`
+
+:::
+
+## 发行版安装 {#distro-installation}
+
+### Arch Linux (AUR) {#arch-linux-aur}
+
+```bash
+paru -S greetd-dms-greeter-git
+# Or with yay
+yay -S greetd-dms-greeter-git
+```
+
+安装后，请继续下面的[完成设置](#completing-setup)。
+
+### Fedora {#fedora}
+
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dms-greeter
+```
+
+安装后，请继续下面的[完成设置](#completing-setup)。
+
+### Debian {#debian}
+
+**Debian 13 (Trixie)**：
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dms-greeter
+```
+
+**Debian Testing**：
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dms-greeter
+```
+
+**Debian Sid (Unstable)**：
+
+```bash
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+sudo apt update
+sudo apt install dms-greeter
+```
+
+安装后，请继续下面的[完成设置](#completing-setup)。
+
+### Ubuntu {#ubuntu}
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo apt update
+sudo apt install dms-greeter
+```
+
+安装后，请继续下面的[完成设置](#completing-setup)。
+
+### openSUSE {#opensuse}
+
+**Tumbleweed**：
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dms-greeter
+```
+
+**Leap 16**：
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dms-greeter
+```
+
+**Leap 16.1**：
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dms-greeter
+```
+
+**Slowroll**：
+
+```bash
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+sudo zypper refresh
+sudo zypper install dms-greeter
+```
+
+安装后，请继续下面的[完成设置](#completing-setup)。
+
+### Gentoo {#gentoo}
+
+:::note
+
+运行此命令之前，您的系统上必须已安装 DMS。greeter 包装器源自您本地的 DMS 安装。
+
+:::
+
+```bash
+dms greeter install
+```
+
+这将通过 Portage 自动安装 `greetd`，从您本地的 DMS 安装中复制 greeter 包装器，配置权限，并将 greetd 设置为使用 DMS。要在不重新启动的情况下立即启动 greeter，请运行 `sudo systemctl start greetd`。
+
+### NixOS {#nixos}
+
+:::tip
+
+NixOS 有专门的文档，提供两种安装方式：
+- [本机 nixpkgs 安装](./nixos) - **推荐**用于 NixOS 26.05+
+- [基于 Flake 的安装](./nixos-flake) - 用于更快的更新
+
+:::
+
+## 安装器和手动安装 {#installer--manual-installation}
+
+### DankInstall 用户 {#dankinstall-users}
+（仅限 Niri 和 Hyprland 用户）
+
+`dms-greeter` 是 DankInstaller 中的**选择性启用**组件。可以在安装过程中开启，但默认跳过，以确保用户有意识地选择启用它（因为它会替换您当前的显示管理器）。
+
+如果您在 DankInstall 中启用了 `dms-greeter`，完整的 greeter 设置（权限、ACL、greetd 配置、服务启用）将在安装过程结束时自动运行。无需进一步的步骤。
+
+如果您在 dankinstall 期间跳过了它并想稍后添加，请为您的发行版安装软件包（参见上面的章节），然后继续[完成设置](#completing-setup)。
+
+:::warning
+
+启用 `dms-greeter` 将替换您当前的显示管理器。
+
+:::
+
+### 手动安装（已安装 DMS） {#manual-installation-dms-already-installed}
+
+如果您已安装 DMS 但需要手动设置 greeter，请安装 `greetd` 然后安装 greeter 包装器：
+
+```bash
+sudo wget https://raw.githubusercontent.com/AvengeMedia/DankMaterialShell/refs/heads/master/quickshell/Modules/Greetd/assets/dms-greeter -O /usr/local/bin/dms-greeter
+sudo chmod +x /usr/local/bin/dms-greeter
+```
+
+然后继续下面的[完成设置](#completing-setup)，在 `/etc/greetd/config.toml` 中使用以下命令：
+
+```toml
+command = "dms-greeter --command niri -p /usr/share/quickshell/dms"
+```
+
+### 手动安装（无 DMS） {#manual-installation-without-dms}
+
+对于没有 DMS 的非 dankinstall 用户，安装 `greetd`、`quickshell`，然后安装 greeter：
+
+```bash
+sudo mkdir -p /etc/xdg/quickshell
+sudo git clone https://github.com/AvengeMedia/DankMaterialShell.git /etc/xdg/quickshell/dms-greeter
+sudo mkdir /var/cache/dms-greeter
+sudo chown greeter:greeter /var/cache/dms-greeter
+```
+
+:::note
+
+某些发行版的 greetd 用户可能有不同的用户/组名。
+
+:::
+
+#### 主题同步的前提条件 {#prerequisites-for-theme-syncing}
+
+需要 ACL（访问控制列表）来允许 greeter 用户遍历您的主目录并访问配置文件。当您运行 `dms greeter sync` 或 `dms greeter install` 时，`acl` 软件包会自动安装，因此在受支持的发行版上无需手动操作。
+
+## 完成设置 {#completing-setup}
+
+### 如果您使用了 `dms greeter install` {#if-you-used-dms-greeter-install}
+
+这适用于任何您运行了 `dms greeter install` 的发行版，包括 **Arch Linux**（需要 paru 或 yay）、**Ubuntu**、**Fedora**、**Debian**、**openSUSE** 和 **Gentoo**。
+
+配置、权限、主题同步和 greetd 服务启用都已自动处理。要在不重新启动的情况下立即启动 greeter：
+
+```bash
+sudo systemctl start greetd
+```
+
+您可以随时使用 `dms greeter status` 验证您的设置。`dms greeter sync` 可以在主题更改后重新运行。
+
+### 如果您手动安装了软件包 {#if-you-installed-the-package-manually}
+
+这适用于：**Arch Linux**，以及任何您使用上述命令手动安装软件包的发行版。
+
+安装软件包后，运行以下两个命令来完成设置：
+
+#### 1. 启用 Greeter {#1-enable-the-greeter}
+
+```bash
+dms greeter enable
+```
+
+这将：
+- 使用正确的合成器命令配置 `/etc/greetd/config.toml`
+- 禁用冲突的显示管理器（gdm、lightdm、sddm）
+- 启用并启动 greetd 服务
+
+#### 2. 与您的用户主题同步 {#2-sync-with-your-user-theme}
+
+```bash
+dms greeter sync
+```
+
+这将：
+- 安装 `acl`（如果尚未安装）
+- 将您的用户添加到 `greeter` 组（如果需要）
+- 为 greeter 访问设置父目录的 ACL 权限
+- 配置 DMS 配置目录的组权限
+- 创建符号链接以同步设置、壁纸和颜色主题
+
+:::note
+
+运行 `dms greeter sync` 后，您需要注销并重新登录，组成员身份更改才能生效。
+
+:::
+
+:::note
+
+**NixOS 用户：**`dms greeter enable` 和 `dms greeter sync` 命令在 NixOS 上不可用。请按照下面的手动步骤操作或参阅 [NixOS 安装指南](./nixos)。
+
+:::
+
+### 对于所有用户 {#for-all-users}
+
+您可以随时检查您的 greeter 配置：
+
+```bash
+dms greeter status
+```
+
+这将验证您的 greeter 设置和同步状态。详细信息请参阅[配置指南](/docs/dankgreeter/configuration#checking-sync-status)。
+
+#### PAM 模块 {#pam-modules}
+
+DMS Greeter 会自动配置 PAM，但某些功能（例如钥匙串解锁）可能需要额外的 PAM 模块，具体取决于您的发行版：
+
+| 发行版  一些模块的软件包 |
+|---|---|
+| Arch Linux | PAM 模块已由各自的软件包提供（例如 `gnome-keyring` |
+| Fedora | `gnome-keyring-pam`、`pam-kwallet`、`fprintd-pam`|
+| Debian/Ubuntu |`libpam-gnome-keyring`、`libpam-kwallet-common`、`libpam-fprintd` |
+| openSUSE | `gnome-keyring-pam`、`pam_kwallet`、`fprintd-pam` |
+| Gentoo | `kwallet-pam`，或 gnome-keyring 和 fprint 软件包的 `pam` USE 标志 |
+| NixOS | `kdePackages.kwallet-pam`，gnome-keyring 和 fprint 包含其 PAM 模块 |
+
+安装相关软件包后，下次登录时解锁即可正常工作
+
+---
+
+### 手动设置（所有发行版） {#manual-setup-all-distros}
+
+如果您更愿意手动设置 greeter，请按照以下步骤操作：
+
+:::tip
+
+**所有用户：**您可以使用 `dms greeter enable` 来自动化此过程，而不是按照下面的手动步骤操作。
+
+:::
+
+1. 编辑 `/etc/greetd/config.toml` 并将 `command =` 设置为使用 dms-greeter：
+  ```toml
+  [terminal]
+  vt = 1
+
+  [default_session]
+  user = "greeter"
+  command = "dms-greeter --command niri"
+  ### Uncomment the below line to run the greeter on Hyprland
+  # command = "dms-greeter --command Hyprland"
+  ### Uncomment to run the greeter on sway
+  # command = "dms-greeter --command sway"
+  ### Uncomment to run the greeter on Miracle WM
+  # command = "dms-greeter --command miracle-wm"
+  ```
+
+2. 禁用任何现有的冲突 greeter：
+
+:::warning
+
+在该 greeter 下登录时禁用它将使您注销并进入非图形 TTY。
+
+:::
+
+  ```bash
+  sudo systemctl disable gdm lightdm sddm
+  ```
+
+3. 启用并启动 greeter：
+  ```bash
+  sudo systemctl enable greetd
+  sudo systemctl start greetd
+  ```

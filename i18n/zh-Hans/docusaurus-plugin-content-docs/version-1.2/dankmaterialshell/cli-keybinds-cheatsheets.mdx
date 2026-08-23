@@ -1,0 +1,566 @@
+---
+title: 按键绑定和备忘单
+description: 管理和显示各种应用程序的按键绑定和备忘单
+---
+
+import Hero from '@site/src/components/Hero';
+import ThemedImage from '@theme/ThemedImage';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+<Hero
+  asciiArt={`██╗  ██╗███████╗██╗   ██╗██████╗ ██╗███╗   ██╗██████╗ ███████╗
+██║ ██╔╝██╔════╝╚██╗ ██╔╝██╔══██╗██║████╗  ██║██╔══██╗██╔════╝
+█████╔╝ █████╗   ╚████╔╝ ██████╔╝██║██╔██╗ ██║██║  ██║███████╗
+██╔═██╗ ██╔══╝    ╚██╔╝  ██╔══██╗██║██║╚██╗██║██║  ██║╚════██║
+██║  ██╗███████╗   ██║   ██████╔╝██║██║ ╚████║██████╔╝███████║
+╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═════╝ ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝`}
+  hideTitle={true}
+/>
+
+`dms keybinds` 命令提供了一个统一的界面，用于跨不同应用程序查看和管理按键绑定。它可以解析特定于应用程序的配置（如 Hyprland）并以一致的格式显示用户定义的备忘单。
+
+## 概述 {#overview}
+
+键绑定框架提供：
+- **自动发现**：自动从应用程序配置中查找按键绑定
+- **自定义备忘单**：为任何应用程序创建 JSON 文件
+- **多个提供商**：内置支持 Hyprland、Sway、MangoWC 和 labwc，并可扩展其他应用程序
+- **XDG 合规性**：配置位置遵循 XDG 基本目录标准
+
+## 快速入门 {#quick-start}
+
+列出所有可用的按键绑定提供程序：
+
+```bash
+dms keybinds list
+# Alias options:
+dms cheatsheet list
+dms chsht list
+```
+
+显示特定应用程序的按键绑定：
+
+```bash
+dms keybinds show hyprland
+dms keybinds show sway
+dms keybinds show mangowc
+dms keybinds show tmux
+dms keybinds show firefox
+```
+
+:::tip[在 Shell 中显示]
+您还可以使用 IPC 直接在 DMS 中显示按键绑定：
+```bash
+dms ipc call keybinds toggle hyprland
+dms ipc call keybinds toggle sway
+dms ipc call keybinds toggle <provider>
+```
+这将打开一个模式覆盖层，显示 shell 界面中的按键绑定。
+:::
+
+<ThemedImage
+  alt="DMS Keybinds UI display"
+  sources={{
+    light: useBaseUrl('/img/keybinds_light.png'),
+    dark: useBaseUrl('/img/keybinds.png'),
+  }}
+  style={{ maxWidth: '800px', width: '100%', marginTop: '1rem', marginBottom: '1rem' }}
+/>
+
+## 内置提供程序 {#built-in-providers}
+
+### 海普拉兰 {#hyprland}
+
+Hyprland 提供程序会自动解析您的 Hyprland 配置文件并提取按键绑定。
+
+**特点**：
+- 解析 Hyprland 配置目录中的所有 `*.conf` 文件
+- 支持带有 `##!`（类别）和 `###!`（子类别）的节标题
+- 自动生成常见调度员的描述
+- 尊重 `[hidden]` 注释以排除某些绑定
+- 按类型（窗口、工作区、执行等）对绑定进行分类
+
+**用法**：
+
+```bash
+# Use default Hyprland config path (~/.config/hypr)
+dms keybinds show hyprland
+
+# Specify custom path
+dms keybinds show hyprland --path /path/to/hypr/config
+```
+
+**描述优先级**：
+
+提供者按以下顺序生成描述：
+1. 配置中的自定义注释（例如，`bind = SUPER, T, exec, kitty # Open terminal`）
+2. 为已知调度程序自动生成（例如，`killactive` →“关闭窗口”）
+3. 显示调度程序和参数的后备格式（例如，`togglegroup`）
+
+**类别逻辑**：
+
+绑定会根据其调度程序自动分类：
+- **工作区**：工作区导航和管理
+- **监控**：监控相关操作
+- **窗口**：窗口管理（移动、调整大小、聚焦、终止等）
+- **执行**：启动应用程序和脚本
+- **系统**：系统操作（退出、dpms 等）
+- **其他**：杂项调度员
+
+**Hyprland 配置示例**：
+
+```conf
+##! Window Management
+bind = SUPER, Q, killactive
+bind = SUPER, F, fullscreen, 0
+
+###! Movement
+bind = SUPER, left, movefocus, l
+bind = SUPER, right, movefocus, r
+
+##! Workspaces
+bind = SUPER, 1, workspace, 1
+bind = SUPER, 2, workspace, 2
+
+##! Applications
+bind = SUPER, T, exec, kitty # Open terminal
+bind = SUPER, E, exec, thunar # File manager
+```
+
+### 摇摆 {#sway}
+
+Sway 提供程序会自动解析您的 Sway 配置文件并提取按键绑定。
+
+**特点**：
+- 解析 Sway 配置文件（通常为 `~/.config/sway/config`）
+- 支持`##!`（类别）和`###!`（子类别）的部分评论
+- 自动生成常见 Sway 命令的描述
+- 尊重 `[hidden]` 注释以排除某些绑定
+- 按类型（窗口、工作区、执行等）对绑定进行分类
+
+**用法**：
+
+```bash
+# Use default Sway config path (~/.config/sway/config)
+dms keybinds show sway
+
+# Specify custom path
+dms keybinds show sway --path /path/to/sway/config
+```
+
+**Sway 配置示例**：
+
+```conf
+##! Window Management
+bindsym $mod+q kill
+bindsym $mod+f fullscreen toggle
+
+###! Movement
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+
+##! Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+
+##! Applications
+bindsym $mod+Return exec kitty # Open terminal
+```
+
+### 芒果WC {#mangowc}
+
+MangoWC 提供程序会自动解析您的 MangoWC (dwl) 配置并提取按键绑定。
+
+**特点**：
+- 解析 MangoWC 键绑定定义
+- 支持`##!`（类别）和`###!`（子类别）的部分评论
+- 自动生成常见 MangoWC 操作的描述
+- 尊重 `[hidden]` 注释以排除某些绑定
+- 按类型对绑定进行分类
+
+**用法**：
+
+```bash
+# Use default MangoWC config path
+dms keybinds show mangowc
+
+# Specify custom path
+dms keybinds show mangowc --path /path/to/mangowc/config
+```
+
+### 尼里 {#niri}
+
+Niri 提供程序解析 KDL 格式的 Niri 配置文件并提取按键绑定。与其他提供商不同，Niri 是**可写的** — 您可以通过 DMS 创建和管理按键绑定覆盖。
+
+**特点**：
+- 解析 KDL 格式的配置文件
+- 遵循 `include` 指令合并所有按键绑定源
+- 支持通过 `~/.config/niri/dms/binds.kdl` 覆盖 DMS
+- 检测 DMS 默认值和您的绑定之间的冲突
+- 使用 `niri validate` 写入之前验证配置
+- 支持绑定选项：`repeat`、`cooldown-ms`、`allow-when-locked`
+
+**用法**：
+
+```bash
+# Use default Niri config path (~/.config/niri)
+dms keybinds show niri
+
+# Specify custom config directory
+dms keybinds show niri --path /path/to/niri/config
+```
+
+#### 编写按键绑定 {#writing-keybinds}
+
+设置写入 `~/.config/niri/dms/binds.kdl` 的覆盖：
+
+```bash
+# Basic keybind
+dms keybinds set niri "Mod+T" "spawn kitty"
+
+# With description (shown in hotkey overlay)
+dms keybinds set niri "Mod+T" "spawn kitty" --desc "Open terminal"
+
+# With options
+dms keybinds set niri "Mod+V" "spawn pavucontrol" \
+  --desc "Volume control" \
+  --allow-when-locked
+
+# Disable key repeat
+dms keybinds set niri "Mod+Q" "close-window" --no-repeat
+
+# Set cooldown between activations
+dms keybinds set niri "Mod+Print" "screenshot" --cooldown-ms 500
+
+# Replace an existing keybind with a new key
+dms keybinds set niri "Mod+Shift+T" "spawn kitty" \
+  --desc "Open terminal" \
+  --replace-key "Mod+T"
+```
+
+删除按键绑定：
+
+```bash
+dms keybinds remove niri "Mod+T"
+```
+
+#### Niri 配置设置 {#niri-config-setup}
+
+将 DMS 绑定文件包含在您的 Niri 配置中：
+
+```kdl
+// ~/.config/niri/config.kdl
+
+// Include DMS keybind overrides
+include "~/.config/niri/dms/binds.kdl"
+
+binds {
+    Mod+Q { close-window; }
+    Mod+T { spawn "kitty"; }
+}
+```
+
+:::tip[包括订单事宜]
+- DMS 在您的绑定之前包含：您的绑定覆盖 DMS 默认值
+- DMS 包括**之后**您的绑定：DMS 绑定优先
+
+备忘单输出包括冲突检测，显示哪些绑定被覆盖。
+:::
+
+#### 绑定选项 {#bind-options}
+
+|选项|选项|描述 |
+|--------|------|-------------|
+|重复| `--no-repeat` |禁用按键重复（默认：启用）|
+|冷却时间 MS | `--cooldown-ms <ms>` |激活之间的最短时间 |
+|锁定时允许 | `--allow-when-locked` |屏幕锁定时允许绑定 |
+|热键叠加标题 | `--desc <text>` | Niri 的热键叠加中显示的说明 |
+
+#### 动作格式 {#action-formats}
+
+```bash
+# Simple action
+dms keybinds set niri "Mod+F" "fullscreen"
+
+# Action with argument
+dms keybinds set niri "Mod+1" "focus-workspace 1"
+
+# Spawn with simple command
+dms keybinds set niri "Mod+T" "spawn kitty"
+
+# Spawn with shell command
+dms keybinds set niri "Mod+P" "spawn sh -c \"wofi --show drun\""
+```
+
+#### 类别逻辑 {#category-logic}
+
+绑定根据其操作自动分类：
+
+|类别 |行动|
+|----------|---------|
+| Alt-Tab | `next-window`，`previous-window` |
+|截图|任何包含“屏幕截图”的内容 |
+|概述 | `show-hotkey-overlay`，`toggle-overview` |
+|系统| `quit`、`power-off-monitors`、DPMS 动作 |
+|执行 | `spawn` 命令 |
+|工作空间 |包含“工作区”的操作 |
+|监控| `focus-monitor-*`，`move-*-to-monitor-*` |
+|窗口|聚焦、移动、交换、调整大小、列操作 |
+|其他|其他一切|
+
+## 自定义备忘单 {#custom-cheatsheets}
+
+您可以通过将 JSON 文件添加到 cheatsheets 目录来为任何应用程序创建自定义备忘单。
+
+### 目录位置 {#directory-locations}
+
+该框架遵循 XDG 基本目录标准：
+
+**默认位置**（未设置 XDG 变量时）：
+```
+~/.config/DankMaterialShell/cheatsheets/
+```
+
+**设置 XDG_CONFIG_HOME**：
+```
+$XDG_CONFIG_HOME/DankMaterialShell/cheatsheets/
+```
+
+**设置 XDG_CONFIG_DIRS** （NixOS 兼容性）：
+框架按以下顺序搜索：
+1.`$XDG_CONFIG_HOME/DankMaterialShell/cheatsheets/`
+2、`$XDG_CONFIG_DIRS/DankMaterialShell/cheatsheets/`中各目录
+
+### JSON 格式 {#json-format}
+
+创建一个以您的应用程序命名的文件（例如，`vim.json`、`tmux.json`）：
+
+```json
+{
+  "title": "Vim Keybinds",
+  "provider": "vim",
+  "binds": {
+    "Mode": [
+      {
+        "key": "i",
+        "desc": "Enter insert mode",
+        "subcat": "Insert"
+      },
+      {
+        "key": "Esc",
+        "desc": "Exit insert mode",
+        "subcat": "Normal"
+      }
+    ],
+    "Editing": [
+      {
+        "key": "dd",
+        "desc": "Delete current line",
+        "subcat": "Delete"
+      },
+      {
+        "key": "yy",
+        "desc": "Copy current line",
+        "subcat": "Yank"
+      },
+      {
+        "key": "p",
+        "desc": "Paste after cursor",
+        "subcat": "Paste"
+      }
+    ],
+    "Navigation": [
+      {
+        "key": "gg",
+        "desc": "Go to first line"
+      },
+      {
+        "key": "G",
+        "desc": "Go to last line"
+      }
+    ]
+  }
+}
+```
+
+### 字段参考 {#field-reference}
+
+- **`title`**（必填）：查看备忘单时显示的显示名称
+- **`provider`**（可选）：命令中使用的提供程序标识符（默认为不带扩展名的文件名）
+- **`binds`**（必需）：其中键是类别名称、值是键绑定数组的对象
+- **`key`**（必填）：组合键（例如“Ctrl+Alt+J”、“SUPER+T”）
+- **`desc`**（必需）：按键绑定功能的描述
+- **`subcat`**（可选）：子类别用于在类别内进行更精细的组织
+
+### 示例：tmux 备忘单 {#example-tmux-cheatsheet}
+
+文件：`~/.config/DankMaterialShell/cheatsheets/tmux.json`
+
+```json
+{
+  "title": "tmux Keybinds",
+  "provider": "tmux",
+  "binds": {
+    "Sessions": [
+      {
+        "key": "Ctrl+B, $",
+        "desc": "Rename session"
+      },
+      {
+        "key": "Ctrl+B, d",
+        "desc": "Detach from session"
+      }
+    ],
+    "Windows": [
+      {
+        "key": "Ctrl+B, c",
+        "desc": "Create new window"
+      },
+      {
+        "key": "Ctrl+B, ,",
+        "desc": "Rename window"
+      },
+      {
+        "key": "Ctrl+B, n",
+        "desc": "Next window"
+      },
+      {
+        "key": "Ctrl+B, p",
+        "desc": "Previous window"
+      }
+    ],
+    "Panes": [
+      {
+        "key": "Ctrl+B, %",
+        "desc": "Split vertically",
+        "subcat": "Split"
+      },
+      {
+        "key": "Ctrl+B, \"",
+        "desc": "Split horizontally",
+        "subcat": "Split"
+      },
+      {
+        "key": "Ctrl+B, x",
+        "desc": "Close pane",
+        "subcat": "Management"
+      }
+    ]
+  }
+}
+```
+
+创建文件后，会自动发现：
+
+```bash
+dms keybinds list
+# Shows: hyprland, mangowc, sway, firefox, tmux, vim, ...
+
+dms keybinds show tmux
+# Displays your custom tmux cheatsheet
+```
+
+## 命令参考 {#command-reference}
+
+### `dms keybinds list` {#dms-keybinds-list}
+
+列出所有可用的按键绑定提供程序（内置和自定义）。
+
+**别名**：`dms cheatsheet list`、`dms chsht list`
+
+```bash
+dms keybinds list
+```
+
+**输出示例**：
+```
+Available providers:
+  - hyprland
+  - mangowc
+  - sway
+  - firefox
+  - tmux
+  - vim
+```
+
+### `dms keybinds show <provider>` {#dms-keybinds-show}
+
+显示指定提供程序的按键绑定。
+
+**别名**：`dms cheatsheet show`、`dms chsht show`
+
+```bash
+dms keybinds show <provider> [flags]
+```
+
+**标志**：
+- `--path <path>`：覆盖任何提供程序的默认配置位置
+- `-h, --help`：显示命令的帮助
+
+**示例**：
+
+```bash
+# Show Hyprland keybinds from default location
+dms keybinds show hyprland
+
+# Show Hyprland keybinds from custom location
+dms keybinds show hyprland --path /custom/path/to/hypr
+
+# Show Sway keybinds with custom config
+dms keybinds show sway --path /etc/sway/config
+
+# Show MangoWC keybinds with custom config
+dms keybinds show mangowc --path /custom/mangowc/config
+
+# Show custom cheatsheet
+dms keybinds show vim
+```
+
+## 提示和最佳实践 {#tips--best-practices}
+
+### 组织 Hyprland 配置 {#organizing-hyprland-configs}
+
+使用节标题来组织您的按键绑定：
+
+```conf
+##! Window Management
+###! Focus
+bind = SUPER, left, movefocus, l
+bind = SUPER, right, movefocus, r
+
+###! Layout
+bind = SUPER, F, fullscreen, 0
+bind = SUPER, V, togglefloating
+
+##! Applications
+bind = SUPER, T, exec, kitty
+bind = SUPER, B, exec, firefox
+```
+
+### 隐藏内部绑定 {#hiding-internal-binds}
+
+使用 `[hidden]` 从显示中排除绑定：
+
+```conf
+# This won't appear in the keybinds list
+bind = SUPER, X, exec, secret-script # [hidden]
+```
+
+### 描述性评论 {#descriptive-comments}
+
+添加清晰的注释以覆盖自动生成的描述：
+
+```conf
+# Auto-generated: "Launch application: kitty"
+bind = SUPER, T, exec, kitty
+
+# Custom: "Open terminal"
+bind = SUPER, T, exec, kitty # Open terminal
+```
+
+### 一致的命名 {#consistent-naming}
+
+创建自定义备忘单时，请使用一致的命名：
+- 文件名：`application.json`（小写，无空格）
+- 提供者：匹配文件名或使用通用标识符
+- 标题：使用应用程序的正确名称

@@ -1,0 +1,253 @@
+---
+title: 层命名空间
+description: 图层命名空间DMS组件
+sidebar_position: 7
+---
+
+# Wayland 图层外壳和图层规则 {#wayland-layer-shell--layer-rules}
+
+为 Wayland 图层壳配置模糊可能很棘手，因为每个合成器处理它的方式都不同。
+
+## 概述 {#overview}
+
+DMS 对所有 UI 组件使用 Wayland 的层 shell 协议：栏、弹出窗口、模式、OSD 和通知。每个组件类型都有自己的命名空间，允许您的合成器单独针对它们以获得模糊效果。
+
+层外壳表面与常规窗口不同，它们是位于特定层（背景、底部、顶部、覆盖层）的 UI 覆盖层。通过为每个组件类型分配唯一的命名空间，您可以有选择地应用模糊（例如，“模糊所有模态”或“模糊所有弹出窗口”），而不会影响其他元素。
+
+## 组件命名空间 {#component-namespaces}
+
+每个组件命名空间都以 `dms:` 开头，后跟命名空间的其余部分，DMS 对层 shell 组件使用以下命名空间：
+
+### 情态动词 {#modals}
+全屏模式对话框，包括设置、电源菜单和剪贴板历史记录。它们覆盖整个屏幕并可选择使背景变暗。
+
+|组件|命名空间|
+| -------------------- | ------------------------------- |
+|剪贴板历史记录| `dms:clipboard` |
+|文件浏览器| `dms:file-browser` |
+|设置| `dms:settings` |
+|发射器| `dms:spotlight` |
+|蓝牙配对| `dms:bluetooth-pairing` |
+|颜色选择器 | `dms:color-picker` |
+|超键绑定 | `dms:hyprkeybinds` |
+|网络资讯 | `dms:network-info` |
+|网络信息（有线）| `dms:network-info-wired` |
+|通知 | `dms:notification-center-modal` |
+|波尔基特 | `dms:polkit` |
+|电源菜单| `dms:power-menu` |
+|进程列表 | `dms:process-list-modal` |
+|无线网络密码| `dms:wifi-password` |
+|确认模态 | `dms:confirm-modal` |
+|后备命名空间 | `dms:modal` |
+
+### 弹出窗口 {#popouts}
+由控制中心、应用程序抽屉和通知中心等栏小部件触发的弹出面板。它们固定在杆上并相应地滑出。
+
+|组件|命名空间 |
+| ------------------------- | -------------------------------- |
+|应用程序抽屉 | `dms:app-launcher` |
+|控制中心| `dms:control-center` |
+|电池| `dms:battery` |
+| VPN | `dms:vpn` |
+| DankDash | `dms:dash` |
+|通知中心 | `dms:notification-center-popout` |
+|进程列表| `dms:process-list-popout` |
+|后备命名空间 | `dms:popout` |
+|插件 | `dms:plugins:<namespace>` |
+|后备插件命名空间 | `dms:plugins:plugin` |
+
+
+### 桌面小部件 {#desktop-widgets}
+桌面小部件（内置插件和插件）以及与桌面小部件相关的其他层。
+
+|组件|命名空间 |
+| -------------- | -------------------------------- |
+|桌面小部件| `dms:desktop-widget:<plugin id>` |
+|预览 | `dms:desktop-widget-preview` |
+|网格| `dms:desktop-widget-grid` |
+|帮手| `dms:desktop-widget-helper` |
+
+### 其他组件 {#misc-components}
+非模态或弹出窗口的其他组件的命名空间。
+
+|组件|命名空间 |使用 |
+| ------------------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| DankBar | `dms:bar` | 主面板，可位于屏幕顶部、底部、左侧或右侧边缘。 |
+|码头| `dms:dock` |应用程序底座（可选组件）。                                                                                               |
+|工作区概述 | `dms:workspace-overview` | hyprland 的工作区概述。                                                                                                 |
+|通知弹出窗口 | `dms:notification-popup` |当应用程序请求用户注意时显示 Toast 通知。                                                              |
+|屏幕显示| `dms:osd` |屏幕上显示音量和亮度指示器。它们会短暂出现以显示状态信息并自动淡出。 |
+|滑出式| `dms:slideout` |从屏幕边缘滑动面板（可选组件）。                                                                               |
+|工具提示| `dms:tooltip` |例如，将应用程序悬停在扩展坞上时显示的工具提示。                                                                          |
+|停靠上下文菜单 | `dock-context-menu` |右键单击扩展坞上的应用程序时的上下文菜单。                                                                                 |
+|吐司| `dms:toast` | Toast 出现在屏幕的顶部中间。                                                                                         |
+|托盘菜单窗口 | `dms:tray-menu-window` |右键单击系统托盘中的小程序时出现的菜单。                                                                     |
+
+> **提示：** 如果您不确定组件的命名空间，您可以使用合成器的工具进行检查：
+> - **Hyprland**：在图层打开的情况下运行 `hyprctl layers`
+> - **Niri**：运行 `niri msg layers` 列出活动层表面
+
+如果您是插件开发人员，请参阅[插件开发](./plugin-development.mdx#widget-with-popout)页面来添加您的图层命名空间。
+## 合成器示例 {#compositor-examples}
+
+每个合成器都有自己的图层规则语法。
+
+### 海普拉兰 {#hyprland}
+
+:::info
+
+为了实现某些图层规则（例如 `animation`、`blur` 和 `dimaround`），您必须禁用外壳的动画和暗淡效果。
+
+- 您可以在**设置**>**个性化**>**动画速度**中禁用动画并设置为**无**。
+- 您可以在**主题和颜色**>**小部件样式**中禁用暗淡并取消切换**变暗模态背景**。
+
+:::
+
+#### 模糊设置 {#blur-settings}
+
+```conf
+decoration {
+    blur {
+        enabled = true
+        size = 10
+        passes = 4
+
+        ignore_opacity = true
+        new_optimizations = true
+        xray = false
+
+        noise = 0.02
+        contrast = 1.1
+        vibrancy = 0.2
+        vibrancy_darkness = 0.3
+    }
+
+    drop_shadow = true
+    shadow_range = 20
+    shadow_render_power = 3
+    col.shadow = rgba(00000099)
+}
+```
+
+#### 图层规则 {#layer-rules}
+
+添加这些图层规则以启用 DMS 组件的模糊：
+
+```conf
+# Animations
+layerrule {
+    animation = slide right
+    match:namespace = dms:control-center
+}
+
+layerrule {
+    animation = slide top
+    match:namespace = dms:workspace-overview
+}
+# You can find all available animations here: https://wiki.hypr.land/Configuring/Animations/#animation-tree
+
+# Blur
+# You can use match:namespace with regex to target multiple layers
+layerrule {
+    blur = on
+    ignore_alpha = 0
+    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
+}
+
+# Dim (if you prefer a dim instead of a blur effect)
+layerrule {
+    dimaround = on
+    match:namespace = dms:(color-picker|clipboard|spotlight|settings)
+}
+```
+#### 示例 {#examples}
+
+<details>
+<summary>示例</summary>
+##### 在 shell 的组件上添加模糊效果 {#add-a-blur-effect-on-the-shells-components}
+
+在**主题和颜色**>**小部件样式**中降低外壳组件的不透明度。
+```conf
+# Modals
+layerrule {
+    blur = on
+    ignore_alpha = 0
+    match:namespace = dms:(polkit|notification-center-modal|workspace-overview|color-picker|clipboard|spotlight|settings|process-list-modal)
+}
+
+# Shell components (bar, popouts, etc.)
+layerrule {
+    blur = on
+    ignore_alpha = 0
+    match:namespace = dms:(bar|tooltip|toast|dock-context-menu|tray-menu-window|control-center|notification-center-popout|dash|system-update|process-list-popout|battery|popout|app-launcher)
+}
+```
+</details>
+#### 性能调整 {#performance-tuning}
+
+如果模糊影响系统性能，请按顺序尝试这些优化：
+
+1. **减少遍数**：设置 `passes = 2` 而不是 4
+2. **减小尺寸**：设置 `size = 6` 而不是 10
+4. **使用 xray 模式**：设置 `xray = true` 以减少堆叠层上的模糊
+
+您可以实时测试模糊影响：
+```bash
+hyprctl keyword decoration:blur:enabled false
+# Test performance
+hyprctl keyword decoration:blur:enabled true
+```
+
+您可以在[此处](https://wiki.hypr.land/Configuring/Window-Rules/#layer-rules)找到有关 Hyprland 图层规则的更多信息。
+
+### 尼里 {#niri}
+
+Niri 对 `layer-rule` 块使用不同的配置格式。每个规则都可以使用正则表达式模式匹配命名空间。
+
+#### 图层规则 {#layer-rules-1}
+
+```kdl
+// Block out sensitive components from screencasts
+layer-rule {
+    match namespace="^dms:clipboard$"
+
+    block-out-from "screencast"
+}
+
+// Match all DMS layers with a regex
+layer-rule {
+    match namespace=r#"^dms:.*"#
+
+    // Apply rules to all DMS components
+}
+```
+
+#### 阴影设置 {#shadow-settings}
+
+```kdl
+layer-rule {
+    match namespace="^dms:bar$"
+    match namespace="^dms:dock$"
+
+    shadow {
+        on
+        // off
+        softness 40
+        spread 5
+        offset x=0 y=5
+        draw-behind-window true
+        color "#00000064"
+        // inactive-color "#00000064"
+    }
+}
+```
+
+您可以在[此处](https://github.com/niri-wm/niri/wiki/Configuration:-Layer-Rules)找到有关 Niri 图层规则的更多信息。
+
+## 其他合成器 {#other-compositors}
+
+并非所有合成器都支持模糊或图层规则。检查合成器的文档以获取可用选项。
+
+DMS 与合成器无关——它只设置命名空间并让合成器处理效果。一旦确定了适合合成器的图层规则语法，您就可以针对上面列出的相同命名空间。
+
+- [MangoWC 的图层规则 wiki 页面](https://github.com/DreamMaoMao/mangowc/wiki#layer-rules)

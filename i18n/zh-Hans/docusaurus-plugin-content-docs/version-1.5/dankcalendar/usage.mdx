@@ -1,0 +1,87 @@
+---
+title: 用法
+description: 从 CLI 控制 DankCalendar 窗口、同步和提醒
+sidebar_position: 4
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗
+██╔══██╗██╔════╝██╔══██╗██║
+██║  ██║██║     ███████║██║
+██║  ██║██║     ██╔══██║██║
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+# 用法 {#usage}
+
+DankCalendar 是一个带有附加窗口的守护进程。关闭窗口只会隐藏它。守护程序和托盘图标继续运行，因此同步和提醒将继续。从托盘图标、桌面条目或 `dcal show` 重新打开。
+
+## 窗口和守护进程 {#window--daemon}
+
+```bash
+dcal                  # launch, or show/focus the window if already running
+dcal show             # show/focus the window
+dcal show --view week # show the window on a specific view (month|week|day|agenda)
+dcal toggle           # toggle window visibility
+dcal toggle --view day  # toggle, opening on a specific view
+dcal open <url>       # open a webcal:// subscription link (no url just shows the window)
+dcal run              # run in the foreground (logs to the terminal)
+dcal run -d           # run as a background daemon
+dcal run -d --hidden  # run hidden, tray only (used by autostart)
+dcal restart          # restart the running instance
+dcal kill             # stop everything
+```
+
+`dcal run` 还接受 `--session`（对于 systemd 管理的单元）、`--log-level <debug|info|warn|error|fatal>` 和 `--log-file <path>`。在任何命令上使用 `--config <dir>` 来指向自定义 UI 配置目录而不是嵌入式目录。
+
+## 同步 {#sync}
+
+```bash
+dcal sync             # force a sync of all accounts
+dcal sync <account-id>  # sync a single account
+```
+
+有关连接和管理日历的信息，请参阅[账户](accounts)。
+
+## 提醒 {#reminders}
+
+列出您即将发生的事件提醒：
+
+```bash
+dcal reminders            # list upcoming reminders (default 20)
+dcal reminders --limit 5  # cap the list
+dcal reminders test       # send a test desktop notification
+```
+
+提醒作为本机桌面通知触发。从 GUI 全局、按日历或按事件配置它们（**设置 → 通知**，以及每个日历的提醒覆盖）。
+
+## 邀请函 {#invitations}
+
+响应来自 CLI 的会议邀请。传递活动 ID（来自 `dcal ipc events.list`）和您的回复：
+
+```bash
+dcal events rsvp <event-id> accept
+dcal events rsvp <event-id> decline
+dcal events rsvp <event-id> tentative
+```
+
+您的回复将被推送回提供商。您还可以从 GUI 中的活动详细信息窗口进行响应，该窗口显示完整的与会者列表及其状态。
+
+## JSON 输出 {#json-output}
+
+大多数命令接受 `--json` 进行脚本编写：
+
+```bash
+dcal account list --json
+dcal reminders --json
+dcal version --json
+```
+
+## 后续步骤 {#next-steps}
+
+- [键盘和导航](navigation) - 视图、快捷键和快速跳转
+- [IPC](ipc) - 从按键绑定和脚本驱动 dcal

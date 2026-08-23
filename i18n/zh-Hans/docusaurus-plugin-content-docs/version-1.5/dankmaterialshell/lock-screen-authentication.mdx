@@ -1,0 +1,96 @@
+---
+title: 锁屏认证
+description: 为DMS配置密码、指纹和安全密钥解锁
+sidebar_position: 4
+---
+
+# 锁屏认证 {#lock-screen-authentication}
+
+在**设置→锁定屏幕→锁定屏幕身份验证**中进行配置。
+更改会自动应用，并且可能会在 sudo 身份验证时打开终端
+是必需的。
+
+## 选择保单所有者 {#choose-the-policy-owner}
+
+|模式|主要 PAM 来源 |要素政策|
+| --- | --- | --- |
+| DMS 管理（默认）|仅密码 DMS 服务，或您的定制服务 | DMS 指纹/安全密钥切换和 OR/AND 模式 |
+| **使用系统 PAM 身份验证** | `/etc/pam.d/login`，或您的定制服务|选定的 PAM 堆栈 |
+
+当 `authselect`、`pam-auth-update`、NixOS、LDAP、
+Kerberos、`systemd-homed` 或其他管理员拥有的堆栈已
+定义因素。在此模式下，DMS 会抑制其单独的因素提示。
+
+## 预期交互 {#intended-interaction}
+
+通过 DMS 管理的身份验证，**自动** 意味着安全的源选择：DMS
+使用经过清理的仅密码主要服务和已安装或捆绑的
+仅密钥安全密钥服务。启用并准备就绪的指纹因素启动
+自动，因此用户只需触摸读卡器。在 **OR** 模式下，用户
+使用密钥按钮启动一次性安全密钥检查，然后触摸
+关键。在 **AND** 模式下，DMS 在经过一段时间后启动专用安全密钥检查
+密码或指纹检查成功。
+
+选择 **自定义…** 替换经过验证的主要服务或仅密钥服务
+不改变交互模型； DMS 仅抑制单独的因素
+当自定义主要服务已经提供它时。 **使用系统PAM
+身份验证**而是委托完整的因素策略、排序和
+与所选系统堆栈的交互，因此 DMS 因子会切换并
+OR/AND 模式不适用。
+
+## 主要 PAM 源 {#primary-pam-source}
+
+**自动** 使用经过清理的仅密码 DMS 服务。未安装时
+`dankshell`服务存在，DMS在其用户状态目录中生成一个，
+包括 NixOS 上。它不会修改以声明方式管理的系统 PAM 文件。
+
+选择检测到的服务或**自定义…**作为特定的绝对路径。数据管理系统
+在应用之前验证包含的堆栈并抑制单独的堆栈
+当自定义主堆栈已包含 `pam_fprintd` 或
+`pam_u2f`。
+
+```bash
+dms auth list-services --json
+dms auth validate --service system-auth
+dms auth validate --path /etc/pam.d/system-auth
+```
+
+## 指纹解锁 {#fingerprint-unlock}
+
+安装并配置`fprintd`，注册手指，并启用**启用
+指纹认证**。
+
+## 安全密钥解锁 {#security-key-unlock}
+
+安装`pam_u2f`，注册密钥，并启用**启用安全密钥
+身份验证**。
+
+- **或 - 密码或安全密钥：** 任一因素都可以解锁。启动钥匙
+使用锁定屏幕上的密钥按钮按需检查。
+- **和 - 密码然后安全密钥：** 随后进行成功的初步检查
+通过所需的密钥检查。
+
+### 安全密钥 PAM 源 {#security-key-pam-source}
+
+**自动** 在可用时使用 `/etc/pam.d/dankshell-u2f`，否则捆绑
+DMS 仅密钥服务。 **自定义...**接受另一个专用绝对路径。
+
+该服务必须仅限密钥。 DMS 拒绝混合密码/登录堆栈，因为
+OR/AND 策略属于 DMS：
+
+```pam
+#%PAM-1.0
+auth required pam_u2f.so cue authfile=/etc/u2f-mappings
+account required pam_permit.so
+```
+
+```bash
+dms auth validate --purpose u2f --path /etc/pam.d/dankshell-u2f
+```
+
+在 NixOS 上，以声明方式定义此专用的仅 U2F 服务并选择其
+生成的路径。请勿使用通用 `login` 服务作为安全密钥
+PAM 源。
+
+Greeter 登录是单独的；看到
+[DankGreeter 身份验证](../dankgreeter/authentication)。

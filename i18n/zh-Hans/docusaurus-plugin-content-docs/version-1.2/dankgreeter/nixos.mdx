@@ -1,0 +1,143 @@
+---
+title: NixOS安装
+description: 使用本机 nixpkgs 在 NixOS 上安装和配置 DankGreeter
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
+██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+██║  ██║███████║██╔██╗ ██║█████╔╝ ██║  ███╗██████╔╝█████╗  █████╗     ██║
+██║  ██║██╔══██║██║╚██╗██║██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══╝     ██║
+██████╔╝██║  ██║██║ ╚████║██║  ██╗╚██████╔╝██║  ██║███████╗███████╗   ██║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝
+                                                                            `}
+  hideTitle={true}
+/>
+
+DankGreeter 可以使用本机 nixpkgs 模块安装在 NixOS 上。这是 NixOS unstable 用户的推荐安装方法。
+
+:::info[需要 NixOS Unstable]
+DankGreeter 目前仅在 nixpkgs 的 **unstable** 分支中可用。如果您使用 NixOS stable（当前版本 25.11），则需要改用 [Flake 安装](nixos-flake) 方法。
+:::
+
+## 安装 {#installation}
+
+### 1.启用 NixOS Unstable {#1-enable-nixos-unstable}
+
+通过设置您的 channel 或 flake 输入来确保您使用 NixOS unstable：
+
+**使用 channels：**
+```bash
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+sudo nix-channel --update
+```
+
+**使用 flakes（在 `flake.nix` 中）：**
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  };
+}
+```
+
+### 2.启用 DankGreeter {#2-enable-dankgreeter}
+
+在 NixOS 配置中启用并配置欢迎程序：
+
+```nix
+services.displayManager.dms-greeter = {
+  enable = true;
+  compositor.name = "niri";  # Or "hyprland" or "sway"
+};
+```
+
+:::warning
+
+合成器必须通过 NixOS 配置安装才能出现在 DankGreeter 中，而不是通过 home-manager。
+
+:::
+
+## 配置选项 {#configuration-options}
+
+```nix
+services.displayManager.dms-greeter = {
+  compositor = {
+    name = "niri"; # Required. Can be also "hyprland" or "sway"
+    customConfig = ''
+      # Optional custom compositor configuration
+    '';
+  };
+
+  # Sync your user's DankMaterialShell theme with the greeter. You'll probably want this
+  configHome = "/home/yourusername";
+
+  # Custom config files for non-standard config locations
+  configFiles = [
+    "/home/yourusername/.config/DankMaterialShell/settings.json"
+  ];
+
+  # Save the logs to a file
+  logs = {
+    save = true;
+    path = "/tmp/dms-greeter.log";
+  };
+
+  # Custom Quickshell Package
+  quickshell.package = pkgs.quickshell;
+};
+```
+
+### 将 Flake 包与 NixOS 模块结合使用 {#using-flake-package-with-nixos-module}
+
+您可以使用 DankMaterialShell flake 中的包，同时仍然使用本机 NixOS 模块。这使您可以在保留模块配置的同时获得更快的更新：
+
+首先，将 flake 输入添加到 `flake.nix`：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+:::tip[使用不稳定版本]
+如果您想使用 master 分支中的不稳定 (-git) 版本来加快更新速度，请从 URL 中删除 `/stable`：
+```nix
+dms.url = "github:AvengeMedia/DankMaterialShell";
+```
+但是，请注意，不稳定版本可能无法正常工作，并且可能包含重大更改。该文档可能无法反映不稳定版本中的最新更改。
+:::
+
+然后将 flake 包与本机模块一起使用：
+
+```nix
+services.displayManager.dms-greeter = {
+  enable = true;
+  compositor.name = "niri";
+  package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+};
+```
+
+:::warning
+
+当将 flake 包与本机 nixpkgs 模块一起使用时，默认情况下某些依赖项可能不会自动启用，并且某些配置可能会丢失。您可能需要手动安装可选依赖项或调整设置以满足您的需求。
+
+:::
+
+## 重建 {#rebuilding}
+
+进行配置更改后，不要忘记重建配置：
+
+```bash
+sudo nixos-rebuild switch
+```

@@ -1,0 +1,52 @@
+---
+title: DankCalendar
+description: 一个独立应用程序中的本地、Google、Microsoft、CalDAV 和 iCloud 日历
+sidebar_position: 1
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗
+██╔══██╗██╔════╝██╔══██╗██║
+██║  ██║██║     ███████║██║
+██║  ██║██║     ██╔══██║██║
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+/>
+
+# DankCalendar {#dankcalendar}
+
+`dcal` 是一款独立日历应用程序，可将您的本地、[Google](https://calendar.google.com/)、[Microsoft](https://outlook.com/)、[CalDAV](https://en.wikipedia.org/wiki/CalDAV) 和 [iCloud](https://www.icloud.com/calendar/) 日历集中在一处。它作为带有托盘图标的轻量级守护程序运行，使您的账户在后台保持同步，并提醒您有关事件，一切都具有 [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) 的外观和感觉。
+
+使用 [Quickshell](https://quickshell.org/) 和 [Go](https://go.dev/) 构建。
+
+## 特点 {#features}
+
+- **多个提供商**：连接本地、Google、Microsoft、CalDAV 和 iCloud 账户，并在单个统一议程中查看每个日历。
+- **后台同步**：轻量级守护进程使您的账户保持同步并通过 IPC 提供 UI。关闭窗口只会隐藏它。同步和提醒继续运行。
+- **事件提醒**：即将发生的事件的本机桌面通知，具有每个事件和每个日历提醒配置。
+- **托盘集成**：用于显示、隐藏和退出应用程序的系统托盘图标，以及快速访问即将发生的事件。
+- **安全凭证**：OAuth 令牌和账户机密存储在您的系统密钥环中，而不是存储在纯文本配置文件中。
+- **键盘导航**：完全键盘驱动的导航，具有快捷方式覆盖，以及跨事件的聚光灯式搜索。
+- **可编写脚本的 IPC**：用于按键绑定和自动化的可编写脚本的 IPC 界面。
+- **本地化**：面向用户的字符串可通过 POEditor 进行翻译和管理。
+
+## 文档 {#documentation}
+
+- [安装](installation) - 安装 dcal 并设置后台守护进程
+- [账户](accounts) - 连接本地、Google、Microsoft、CalDAV 和 iCloud 日历
+- [用法](usage) - 用于窗口、同步和提醒的 CLI 命令
+- [IPC](ipc) - 用于按键绑定和自动化的可编写脚本的 IPC 界面
+
+## 贡献 {#contributing}
+
+`dcal` 是开源的，欢迎贡献。错误修复、小部件、功能、提供程序和翻译都有帮助：
+
+- **源代码**：[GitHub 存储库](https://github.com/AvengeMedia/dankcalendar)
+- **问题**：在 GitHub 上报告错误并请求功能
+- **翻译**：字符串通过 POEditor 管理。请参阅 [CONTRIBUTING.md](https://github.com/AvengeMedia/dankcalendar/blob/master/CONTRIBUTING.md)
+
+## 许可证 {#license}
+
+`dcal` 在 MIT 许可证下发布。有关详细信息，请参阅 [许可证](https://github.com/AvengeMedia/dankcalendar/blob/master/LICENSE) 文件。

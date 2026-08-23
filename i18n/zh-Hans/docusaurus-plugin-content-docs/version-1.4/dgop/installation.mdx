@@ -1,0 +1,123 @@
+---
+title: 安装
+description: 安装 DGOP 电源菜单
+sidebar_position: 2
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗  ██████╗ ██████╗
+██╔══██╗██╔════╝ ██╔═══██╗██╔══██╗
+██║  ██║██║  ███╗██║   ██║██████╔╝
+██║  ██║██║   ██║██║   ██║██╔═══╝
+██████╔╝╚██████╔╝╚██████╔╝██║
+╚═════╝  ╚═════╝  ╚═════╝ ╚═╝
+                                  `}
+/>
+
+# DGOP 安装 {#dgop-installation}
+
+:::note
+
+`dgop` 零依赖并编译为单个静态二进制文件。
+
+:::
+
+### 发行版软件包 {#distribution-packages}
+
+#### Arch Linux {#arch-linux}
+```bash
+sudo pacman -S dgop
+```
+
+#### Fedora {#fedora}
+```bash
+sudo dnf copr enable avengemedia/danklinux
+sudo dnf install dgop
+```
+
+#### Gentoo {#gentoo}
+
+`gui-apps/dgop` 可在官方 [guru](https://wiki.gentoo.org/wiki/Project:GURU) 社区 overlay 中获取。
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/dgop
+```
+
+:::note
+
+guru overlay 软件包的关键字为 `~amd64`，因此您可能需要接受 testing 关键字：
+
+```bash
+echo "gui-apps/dgop ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/dgop
+```
+
+:::
+
+### 预构建二进制文件 {#pre-built-binaries}
+
+下载适用于您架构的最新版本：
+
+```bash
+# Download and install
+wget https://github.com/AvengeMedia/dgop/releases/latest/download/dgop-linux-amd64.gz
+gunzip dgop-linux-amd64.gz
+chmod +x dgop-linux-amd64
+sudo mv dgop-linux-amd64 /usr/local/bin/dgop
+```
+
+### 从源码构建 {#from-source}
+
+要求：Go 1.24+
+
+```bash
+git clone https://github.com/AvengeMedia/dgop
+cd dgop
+make
+sudo make install
+```
+
+## 验证 {#verification}
+
+测试安装：
+
+```bash
+# Check version
+dgop version
+
+# Get system metrics
+dgop system
+
+# Run API server
+dgop server
+
+# See available commands
+dgop --help
+```
+
+## 系统要求 {#system-requirements}
+
+- **操作系统**：Linux（使用 `/proc` 和 `/sys` 文件系统）
+- **Go 版本**：1.24+（用于从源码构建）
+
+### 可选依赖项 {#optional-dependencies}
+
+用于增强功能：
+
+- `nvidia-smi` - NVIDIA GPU 监控
+
+## 与 DMS 集成 {#integration-with-dms}
+
+:::tip
+
+安装 dgop 后，DankMaterialShell 用户可以使用系统小部件（CPU、RAM、GPU、磁盘、网络）和进程监控。
+
+:::
+
+## 后续步骤 {#next-steps}
+
+- [配置](configuration) - 配置 dgop
+- [用法](usage) - 了解 CLI 命令和 API 用法

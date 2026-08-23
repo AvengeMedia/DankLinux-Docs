@@ -1,0 +1,98 @@
+---
+title: IPC
+description: 用于按键绑定和自动化的可编写脚本的 IPC 界面
+sidebar_position: 5
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗  ██████╗ █████╗ ██╗     
+██╔══██╗██╔════╝██╔══██╗██║     
+██║  ██║██║     ███████║██║     
+██║  ██║██║     ██╔══██║██║     
+██████╔╝╚██████╗██║  ██║███████╗
+╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+# IPC {#ipc}
+
+dcal 守护进程公开了一个可编写脚本的 IPC 界面，便于合成器按键绑定和自动化。调用方法并以 `key=value` 对的形式传递参数：
+
+```bash
+dcal ipc ui.toggle
+dcal ipc events.list from=2026-06-01T00:00:00Z to=2026-06-30T23:59:59Z
+dcal ipc reminders.upcoming limit=5
+```
+
+列出每个可用方法及其参数：
+
+```bash
+dcal ipc list
+```
+
+结果以 JSON 打印，因此可以干净地通过管道传入 `jq` 等工具。
+
+## 常用方法 {#common-methods}
+
+### UI {#ui}
+
+| 方法         | 描述                       |
+| ------------ | -------------------------- |
+| `ui.show`    | 显示日历窗口               |
+| `ui.hide`    | 隐藏日历窗口               |
+| `ui.toggle`  | 切换日历窗口               |
+| `ui.quit`    | 退出正在运行的守护进程      |
+
+### 事件 {#events}
+
+| 方法             | 参数                                                                        |
+| --------------- | ------------------------------------------------------------------------- |
+| `events.list`   | `query`、`from` (RFC3339)、`to` (RFC3339)、`limit`、`offset`（均为可选） |
+| `events.create` | `calendarId*`、`summary*`、`start*`、`end*`、`description`、`location`、`allDay`、`status`、`reminders` |
+| `events.update` | `id*`，加上任何 create 字段                                                |
+| `events.delete` | `id*`                                                                      |
+
+### 日历 {#calendars}
+
+| 方法                 | 参数                                 |
+| -------------------- | ------------------------------------ |
+| `calendars.list`     | —                                    |
+| `calendars.setHidden`| `calendarId*`、`hidden*`（`true\|false`） |
+| `calendars.rename`   | `calendarId*`、`name`（空则清除）     |
+
+### 账户 {#accounts}
+
+| 方法               | 参数                            |
+| ------------------ | ------------------------------- |
+| `accounts.list`    | —                               |
+| `accounts.refresh` | `accountId`（空则同步全部）      |
+
+### 提醒 {#reminders}
+
+| 方法                 | 参数                  |
+| -------------------- | --------------------- |
+| `reminders.upcoming` | `limit`（默认 20）    |
+| `reminders.test`     | 触发测试通知          |
+
+### 系统 {#system}
+
+| 方法                  | 参数                        |
+| ----------------------- | --------------------------- |
+| `system.autostart.get`  | 报告自动启动状态            |
+| `system.autostart.set`  | `enabled*`（`true\|false`） |
+
+:::tip
+`*` 表示必填参数。运行 `dcal ipc list` 可获取您安装版本中完整且始终最新的方法集。
+:::
+
+## 按键绑定示例 {#keybind-example}
+
+在合成器中绑定一个键来切换日历。以 niri 为例：
+
+```kdl
+binds {
+    Mod+Shift+C { spawn "dcal" "ipc" "ui.toggle"; }
+}
+```

@@ -1,0 +1,687 @@
+---
+title: 安装
+description: 在您的系统上安装 DankMaterialShell
+sidebar_position: 2
+image: img/dankinstall.png
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+本指南介绍在不同 Linux 发行版和不同方式下安装 DankMaterialShell。
+
+## 依赖项 {#dependencies}
+
+- [**Quickshell**](https://github.com/quickshell-mirror/quickshell)（必需）- 核心框架
+- [**cava**](https://github.com/karlstav/cava)（可选）- 音频可视化小部件
+- [**cliphist**](https://github.com/sentriz/cliphist) + [**wl-clipboard**](https://github.com/bugaevc/wl-clipboard)（可选）- 剪贴板历史
+- [**dgop**](https://github.com/AvengeMedia/dgop)（可选）- 用于资源小部件的系统遥测
+- [**dsearch**](https://github.com/AvengeMedia/danksearch)（可选）- 文件系统搜索引擎
+- [**matugen**](https://github.com/InioX/matugen)（可选）- Material Design 调色板生成
+- [**niri**](https://github.com/niri-wm/niri)（可选）- DMS 团队选择的 Wayland 合成器
+- [**qt6-multimedia**](https://github.com/qt/qtmultimedia)（可选）- 系统声音反馈
+
+有关 Fedora、Debian、Ubuntu 和 OpenSUSE 的预构建软件包，请参阅 [DankLinux 仓库](../danklinux) 页面。
+
+:::note
+
+只有 **Quickshell** 是必需的。所有其他依赖项都是可选的，用于启用特定功能。
+
+:::
+
+## Arch 及衍生版 {#arch--derivatives}
+
+`dms` 可在 Arch 官方仓库（extra）中获取。
+
+```bash
+sudo pacman -S dms-shell
+```
+
+这些软件包提供 shell、小部件和 CLI。将它们与官方仓库中的 `niri`、`hyprland`、`sway`、`mangowc`、`labwc` 或 `miracle-wm` 软件包配对，即可获得完整的桌面堆栈。
+
+## Fedora 和 CentOS {#fedora--centos}
+
+DankMaterialShell 可通过 COPR 仓库用于 Fedora 41/42/43 rawhide 和 CentOS 10。启用团队管理的 COPR 仓库来安装预构建软件包：
+
+### 稳定版 {#stable-release}
+
+```bash
+sudo dnf copr enable avengemedia/dms
+sudo dnf install dms
+```
+
+### 最新开发构建 {#latest-development-build}
+
+```bash
+sudo dnf copr enable avengemedia/dms-git
+sudo dnf install dms
+```
+
+COPR 仓库还提供配套软件包，如 `quickshell-git`、`cliphist`、`matugen` 以及默认配置使用的其他实用程序。
+
+## Debian 和 Ubuntu {#debian--ubuntu}
+
+DankMaterialShell 可通过 Open Build Service (OBS) 用于 Debian，通过 Launchpad PPA 用于 Ubuntu。
+
+### Debian {#debian}
+
+对于 **Debian 13 (Trixie)**：
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS stable repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+
+# DMS development repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_13/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
+sudo apt update
+```
+
+对于 **Debian Testing**：
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS stable repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+
+# DMS development repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Testing/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
+sudo apt update
+```
+
+对于 **Debian Sid**：
+
+```bash
+# DankLinux repository
+curl -fsSL https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg
+echo "deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/danklinux.list
+
+# DMS stable repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms.list
+
+# DMS development repository
+curl -fsSL https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Unstable/Release.key | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/avengemedia-dms-git.gpg
+echo "deb [signed-by=/etc/apt/keyrings/avengemedia-dms-git.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/Debian_Unstable/ /" | \
+  sudo tee /etc/apt/sources.list.d/avengemedia-dms-git.list
+sudo apt update
+```
+
+#### 安装软件包 {#install-packages}
+
+安装**稳定版**：
+
+```bash
+sudo apt install dms
+```
+
+安装**最新开发构建**：
+
+```bash
+sudo apt install dms-git
+```
+
+### Ubuntu {#ubuntu}
+
+Ubuntu 25.10+ (Questing) 通过 Launchpad PPA 支持。
+
+#### 稳定版 {#stable-release-1}
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo add-apt-repository ppa:avengemedia/dms
+sudo apt update
+sudo apt install dms
+```
+
+#### 最新开发构建 {#latest-development-build-1}
+
+```bash
+sudo add-apt-repository ppa:avengemedia/danklinux
+sudo add-apt-repository ppa:avengemedia/dms-git
+sudo apt update
+sudo apt install dms-git
+```
+
+:::tip
+
+访问 [DankLinux 仓库](../danklinux) 页面获取 OBS 和 PPA 链接以及可用软件包的更多信息。\
+将 **niri** 或 **niri-git** 添加到您的系统以获得最佳体验。
+
+:::
+
+## OpenSUSE 及衍生版 {#opensuse--derivatives}
+
+DankMaterialShell 可通过 Open Build Service (OBS) 用于 OpenSUSE Tumbleweed、Leap 16/16.1 和 Slowroll。
+
+### OpenSUSE Tumbleweed {#opensuse-tumbleweed}
+
+#### 稳定版 {#stable-release-2}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Tumbleweed/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### 最新开发构建 {#latest-development-build-2}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Tumbleweed/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+### OpenSUSE Leap 16 {#opensuse-leap-16}
+
+#### 稳定版 {#stable-release-3}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/16.0/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### 最新开发构建 {#latest-development-build-3}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.0/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/16.0/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+### OpenSUSE Leap 16.1 {#opensuse-leap-161}
+
+#### 稳定版 {#stable-release-4}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/16.1/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### 最新开发构建 {#latest-development-build-4}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/16.1/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/16.1/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+### OpenSUSE Slowroll {#opensuse-slowroll}
+
+#### 稳定版 {#stable-release-5}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms/openSUSE_Slowroll/home:AvengeMedia:dms.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms
+```
+
+#### 最新开发构建 {#latest-development-build-5}
+
+```bash
+# DankLinux repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Slowroll/home:AvengeMedia:danklinux.repo
+
+# DMS repository
+sudo zypper addrepo https://download.opensuse.org/repositories/home:/AvengeMedia:/dms-git/openSUSE_Slowroll/home:AvengeMedia:dms-git.repo
+sudo zypper refresh
+
+# Install DMS
+sudo zypper install dms-git
+```
+
+## Gentoo（社区） {#gentoo-community}
+
+:::warning[社区维护]
+
+这些 overlay 由社区维护，而非 DMS 团队。对于 ebuild 的问题，请向相应的 overlay 仓库报告。
+
+:::
+
+Gentoo 的推荐选择是官方 [guru](https://wiki.gentoo.org/wiki/Project:GURU) 社区 overlay，它打包了 DMS（`gui-apps/dankmaterialshell`）以及配套工具 `gui-apps/dgop` 和 `gui-apps/danksearch`。
+
+### guru（推荐） {#guru-recommended}
+
+启用 guru overlay 并安装 DMS：
+
+```bash
+sudo eselect repository enable guru
+sudo emaint sync -r guru
+sudo emerge --ask gui-apps/dankmaterialshell
+```
+
+安装可选的配套工具：
+
+```bash
+sudo emerge --ask gui-apps/dgop gui-apps/danksearch
+```
+
+:::note
+
+guru overlay 软件包的关键字为 `~amd64`，因此您可能需要接受 testing 关键字。例如：
+
+```bash
+echo "gui-apps/dankmaterialshell ~amd64" | sudo tee -a /etc/portage/package.accept_keywords/dankmaterialshell
+```
+
+:::
+
+### quilat-overlay {#quilat-overlay}
+
+[quilat-overlay](https://github.com/Graght/quilat-overlay) 提供支持 OpenRC 和 systemd 的 live ebuild（`gui-shell/dms-9999`）。它跟踪 git master，因此更新通过 `emerge --sync && emerge -uDN @world` 进行。
+
+```bash
+sudo eselect repository add quilat-overlay git https://github.com/Graght/quilat-overlay.git
+sudo emaint sync -r quilat-overlay
+```
+
+或在 `/etc/portage/repos.conf/quilat-overlay.conf` 中手动配置：
+
+```ini
+[quilat-overlay]
+location = /var/db/repos/quilat-overlay
+sync-type = git
+sync-uri = https://github.com/Graght/quilat-overlay.git
+```
+
+然后同步并安装：
+
+```bash
+sudo emaint sync -r quilat-overlay
+
+# With systemd
+sudo emerge --ask gui-shell/dms
+
+# With OpenRC (elogind)
+sudo USE="-systemd" emerge --ask gui-shell/dms
+```
+
+### tdgentoo {#tdgentoo}
+
+[tdgentoo](https://github.com/timdodge/tdgentoo) overlay 提供固定到稳定版本的版本化 ebuild（`gui-wm/DankMaterialShell`）。
+
+```bash
+sudo eselect repository add tdgentoo git https://github.com/timdodge/tdgentoo.git
+sudo emaint sync -r tdgentoo
+```
+
+或在 `/etc/portage/repos.conf/tdgentoo.conf` 中手动配置：
+
+```ini
+[tdgentoo]
+location = /var/db/repos/tdgentoo
+sync-type = git
+sync-uri = https://github.com/timdodge/tdgentoo.git
+```
+
+然后同步并安装：
+
+```bash
+sudo emaint sync -r tdgentoo
+sudo emerge --ask gui-wm/DankMaterialShell
+```
+
+### dacyberduck overlay {#dacyberduck-overlay}
+
+[dacyberduck overlay](https://codeberg.org/dacyberduck/gentoo-overlay) 以 `dank-base/dankmaterialshell` 提供 DMS。
+
+```bash
+sudo eselect repository add dacyberduck git https://codeberg.org/dacyberduck/gentoo-overlay.git
+sudo emaint sync -r dacyberduck
+```
+
+或在 `/etc/portage/repos.conf/dacyberduck.conf` 中手动配置：
+
+```ini
+[dacyberduck]
+location = /var/db/repos/dacyberduck
+sync-type = git
+sync-uri = https://codeberg.org/dacyberduck/gentoo-overlay.git
+```
+
+然后同步并安装：
+
+```bash
+sudo emaint sync -r dacyberduck
+sudo emerge --ask dank-base/dankmaterialshell
+```
+
+## NixOS {#nixos}
+
+:::tip
+
+NixOS 有专门的文档，提供两种安装方式：
+- [本机 nixpkgs 安装](./nixos) - **推荐**用于 NixOS 26.05+
+- [基于 Flake 的安装](./nixos-flake) - 用于 home-manager、按用户安装或更快的更新
+
+:::
+
+## 所有其他发行版 {#all-other-distributions}
+
+:::warning
+
+本指南不包括合成器安装。您需要一个兼容的 Wayland 合成器（niri、Hyprland、sway、dwl/MangoWC、Miracle WM 等）。
+
+:::
+
+### 1. 安装必要依赖项 {#1-install-essential-dependencies}
+
+#### Quickshell {#quickshell}
+
+如果您的发行版不提供 quickshell 软件包，则需要从源码构建。Quickshell 需要：
+
+**基础依赖项：**
+- cmake、qt6base、qt6declarative、qtshadertools、pkg-config、cli11
+- qt6declarative 的 Qt 私有头文件（Qt < 6.10 时还需要 qt6wayland）
+- Qt 6.6 或更新版本
+
+**关键功能及其依赖项：**
+- **Wayland 支持**（默认启用）- qt6wayland、wayland、wayland-protocols
+- **崩溃报告器**（推荐）- google-breakpad
+- **Jemalloc**（推荐用于更好的内存管理）- jemalloc
+- **系统托盘** - qt6dbus
+- **PAM 身份验证** - pam
+
+完整的构建说明和功能标志，请参阅 [Quickshell BUILD.md](https://git.outfoxxed.me/quickshell/quickshell/raw/branch/master/BUILD.md)。
+
+#### AccountsService {#accountsservice}
+
+:::note
+
+需要 AccountsService 来持久化用户个人资料配置（如个人资料图片）。在大多数仓库中以 `accountsservice` 提供。
+
+:::
+
+```bash
+# Arch + Friends
+sudo pacman -S accountsservice
+# Fedora + Friends
+sudo dnf install accountsservice
+# Debian, Ubuntu + Friends
+sudo apt install accountsservice
+# openSUSE + Friends
+sudo zypper install accountsservice
+# Gentoo
+sudo emerge --ask sys-apps/accountsservice
+```
+
+### 2. 克隆 DMS 仓库 {#2-clone-the-dms-repository}
+
+```bash
+git clone https://github.com/AvengeMedia/DankMaterialShell.git ~/dms
+```
+
+### 3. 编译并安装 DMS 后端 {#3-compile--install-the-dms-backend}
+
+*需要 GO 1.24+*
+
+```bash
+cd ~/dms
+sudo make install
+```
+
+:::note
+
+要卸载源码构建，请在仓库目录中运行 `sudo make uninstall`。
+
+:::
+
+### 4. 安装可选集成 {#4-install-optional-integrations}
+
+使用您发行版的软件包管理器安装可选组件以获得完整功能：
+
+- `dgop` - 详细的系统指标和进程列表
+- `dsearch` - 文件系统搜索引擎
+- `matugen` - Material Design 调色板生成
+- `i2c-tools` - ddc 显示器背光控制
+- `wl-clipboard` + `cliphist` - 剪贴板历史
+- `cava` - 音频可视化小部件
+- `qt6-multimedia` - 系统声音反馈
+
+## 安装后 {#post-install}
+
+完成安装后：
+
+1. **生成合成器配置**（仅限 niri/Hyprland）：运行 `dms setup` 创建带有 DMS 按键绑定和自动启动的入门配置。支持其他合成器（sway、MangoWC、labwc、Miracle WM），但需要手动配置。
+2. 启用 systemd 服务（推荐）或将 `dms run` 添加到您的合成器配置中
+3. 配置您的合成器按键绑定 - 请参阅[按键绑定和 IPC](keybinds-ipc) 指南
+4. 通过[主题](application-themes)自定义外观
+5. 使用[插件](plugins-overview)扩展功能
+
+有关服务管理、环境变量和更新的详细指导，请参阅[管理您的安装](managing)。
+
+### Systemd 集成（推荐） {#systemd-integration-recommended}
+
+:::tip[DankInstall 用户]
+
+如果您使用了 [dankinstall](../dankinstall)，这已经配置好了。安装程序在设置期间运行 `systemctl --user enable --now dms`。
+
+:::
+
+**启用自动启动：**
+
+```bash
+systemctl --user enable dms
+```
+
+**手动控制：**
+
+```bash
+# Start DMS now
+systemctl --user start dms
+
+# Check status
+systemctl --user status dms
+
+# View logs
+journalctl --user -u dms -f
+
+# Restart DMS
+systemctl --user restart dms
+
+# Disable autostart
+systemctl --user disable dms
+```
+
+:::warning
+
+如果使用 systemd 自动启动，请从合成器配置中删除 `dms run` / `spawn "dms" "run"` / `exec-once=dms run`，以避免运行两个 DMS 实例。
+
+:::
+
+### 特定合成器的 Systemd 设置 {#compositor-specific-systemd-setup}
+
+不同的合成器有不同程度的 systemd 会话集成。选择与您的合成器匹配的章节。
+
+:::tip[为什么使用 add-wants？]
+
+如果您安装了多个桌面环境（例如 Plasma、GNOME、niri），使用 `systemctl --user enable dms` 会在*所有*桌面环境中启动 DMS。使用 `add-wants` 将 DMS 绑定到特定合成器的服务或会话目标，因此它只在您需要的地方运行。当您登录 Plasma 或 GNOME 时，DMS 不会启动。
+
+:::
+
+#### niri {#niri}
+
+niri 具有原生的 systemd 会话集成。将 DMS 绑定到 niri 的服务：
+
+```bash
+systemctl --user add-wants niri.service dms
+```
+
+DMS 在 niri 启动时启动，在 niri 退出时停止。它不会在其他会话中运行。
+
+#### Hyprland {#hyprland}
+
+Hyprland 默认不初始化 systemd 用户会话。您需要将环境导出到 systemd 才能使 userService 工作。
+
+创建会话目标：
+
+```ini title="~/.config/systemd/user/hyprland-session.target"
+[Unit]
+Description=Hyprland Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+添加到您的 Hyprland 配置中（在任何 `env =` 行之后）：
+
+```conf title="~/.config/hypr/hyprland.conf"
+exec-once = dbus-update-activation-environment --systemd --all
+exec-once = systemctl --user start hyprland-session.target
+```
+
+将 DMS 绑定到会话目标：
+
+```bash
+systemctl --user add-wants hyprland-session.target dms
+```
+
+#### MangoWC {#mangowc}
+
+[MangoWC](https://github.com/DreamMaoMao/mangowc) 是基于 dwl (wlroots) 的动态平铺合成器。与其他 wlroots 合成器一样，它需要为 systemd 用户服务手动导出环境。
+
+创建会话目标：
+
+```ini title="~/.config/systemd/user/mango-session.target"
+[Unit]
+Description=MangoWC Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+添加到您的 MangoWC 配置中：
+
+```conf title="~/.config/mango/config.conf"
+exec-once=dbus-update-activation-environment --systemd --all
+exec-once=systemctl --user start mango-session.target
+```
+
+将 DMS 绑定到会话：
+
+```bash
+systemctl --user add-wants mango-session.target dms
+```
+
+#### Sway {#sway}
+
+Sway（基于 wlroots）需要为 systemd 服务导出环境。
+
+创建会话目标：
+
+```ini title="~/.config/systemd/user/sway-session.target"
+[Unit]
+Description=Sway Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+添加到您的 Sway 配置中：
+
+```conf title="~/.config/sway/config"
+exec dbus-update-activation-environment --systemd --all
+exec systemctl --user start sway-session.target
+```
+
+将 DMS 绑定到会话：
+
+```bash
+systemctl --user add-wants sway-session.target dms
+```
+
+#### Miracle WM {#miracle-wm}
+
+[Miracle WM](https://github.com/miracle-wm-org/miracle-wm) 是基于 Mir 构建的平铺 Wayland 合成器。与其他没有原生 systemd 会话集成的合成器一样，它需要手动导出环境。
+
+创建会话目标：
+
+```ini title="~/.config/systemd/user/miracle-wm-session.target"
+[Unit]
+Description=Miracle WM Session Target
+Requires=graphical-session.target
+After=graphical-session.target
+```
+
+将 DMS 绑定到会话：
+
+```bash
+systemctl --user add-wants miracle-wm-session.target dms
+```

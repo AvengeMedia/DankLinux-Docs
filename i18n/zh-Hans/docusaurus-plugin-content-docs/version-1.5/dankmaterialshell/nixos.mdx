@@ -1,0 +1,284 @@
+---
+title: NixOS安装
+description: 使用本机 nixpkgs 在 NixOS 上安装和配置 DankMaterialShell
+sidebar_position: 3
+---
+
+import Hero from '@site/src/components/Hero';
+
+<Hero
+  asciiArt={`██████╗ ███╗   ███╗███████╗
+██╔══██╗████╗ ████║██╔════╝
+██║  ██║██╔████╔██║███████╗
+██║  ██║██║╚██╔╝██║╚════██║
+██████╔╝██║ ╚═╝ ██║███████║
+╚═════╝ ╚═╝     ╚═╝╚══════╝`}
+  hideTitle={true}
+/>
+
+DankMaterialShell 可以使用 NixOS 模块安装在 NixOS 上。本指南涵盖了本机 nixpkgs 安装方法。
+
+## 安装 {#installation}
+
+### 1.启用 DankMaterialShell {#1-enable-dankmaterialshell}
+
+在 NixOS 配置中，启用 DankMaterialShell：
+
+```nix
+programs.dms-shell.enable = true;
+```
+
+就是这样！重建您的系统，DankMaterialShell 将使用合理的默认值进行安装。
+
+## 配置选项 {#configuration-options}
+
+DankMaterialShell 提供了大量配置选项来自定义您的安装。以下是主要选项：
+
+### 功能切换 {#feature-toggles}
+
+```nix
+programs.dms-shell = {
+  enable = true;
+
+  systemd = {
+    enable = true;             # Systemd service for auto-start
+    restartIfChanged = true;   # Auto-restart dms.service when dms-shell changes
+  };
+
+  # Core features
+  enableSystemMonitoring = true;     # System monitoring widgets (dgop)
+  enableVPN = true;                  # VPN management widget
+  enableDynamicTheming = true;       # Wallpaper-based theming (matugen)
+  enableAudioWavelength = true;      # Audio visualizer (cava)
+  enableCalendarEvents = true;       # Calendar integration (khal)
+};
+```
+
+### 自定义 Quickshell 包 {#custom-quickshell-package}
+
+如果您需要特定版本的 Quickshell：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  quickshell.package = pkgs.quickshell; # or your custom package
+};
+```
+
+#### 从源代码中使用 Quickshell {#using-quickshell-from-source}
+
+:::info
+
+这不是必要的步骤。目前，Quickshell 的最新版本 v0.3.0 涵盖了 DankMaterialShell 所需的所有功能，从源代码设置将导致更长的编译时间。
+
+:::
+
+要从源代码使用 Quickshell，请将其添加为 flake 输入：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    quickshell = {
+      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+然后在您的配置中使用它：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
+};
+```
+
+### 将 Flake 包与 NixOS 模块结合使用 {#using-flake-package-with-nixos-module}
+
+您可以使用 DankMaterialShell flake 中的包，同时仍然使用本机 NixOS 模块。这使您可以在保留模块配置的同时获得更快的更新：
+
+首先，将 flake 输入添加到 `flake.nix`：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell/stable";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+:::tip[使用-git版本]
+如果您想使用 master 分支中的 -git 版本来加快更新速度，请从 URL 中删除 `/stable`：
+```nix
+dms.url = "github:AvengeMedia/DankMaterialShell";
+```
+但是，请注意 -git 版本可能无法正常工作，并且可能包含重大更改。该文档可能无法反映 -git 版本中的最新更改。
+:::
+
+然后将 flake 包与本机模块一起使用：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default;
+};
+```
+
+:::warning
+
+当将 flake 包与本机 nixpkgs 模块一起使用时，默认情况下某些依赖项可能不会自动启用，并且某些配置可能会丢失。您可能需要手动安装可选依赖项或调整功能切换以满足您的需求。
+
+:::
+
+### 插件 {#plugins}
+
+以声明方式安装 DankMaterialShell 插件。有两种方法：
+
+#### 方法 1：使用插件注册表（推荐） {#method-1-using-the-plugin-registry-recommended}
+
+[dms-plugin-registry](https://github.com/AvengeMedia/dms-plugin-registry) flake 提供所有社区插件作为每日更新的包。这是安装插件的最简单方法。
+
+首先，将插件注册表添加为 flake 输入：
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+
+    dms-plugin-registry = {
+      url = "github:AvengeMedia/dms-plugin-registry";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+然后导入模块并启用插件：
+
+```nix
+{
+  imports = [ inputs.dms-plugin-registry.nixosModules.default ];
+
+  programs.dms-shell = {
+    enable = true;
+
+    plugins = {
+      # Simply enable plugins by their ID (from the registry)
+      dankBatteryAlerts.enable = true;
+      dockerManager.enable = true;
+    };
+  };
+}
+```
+
+插件 ID 可以在 [插件商店](https://danklinux.com/plugins) 中找到 - 它是安装 URL 的最后部分。例如，`dms://plugin/install/dankBatteryAlerts` 的 ID 为 `dankBatteryAlerts`。
+
+#### 方法 2：从源手动安装 {#method-2-manual-installation-from-source}
+
+如果您不想使用注册表片，可以通过提供源来手动安装插件：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+
+  plugins = {
+    dockerManager = {
+      src = pkgs.fetchFromGitHub {
+        owner = "LuckShiba";
+        repo = "DmsDockerManager";
+        rev = "v1.2.0";
+        sha256 = "sha256-VoJCaygWnKpv0s0pqTOmzZnPM922qPDMHk4EPcgVnaU=";
+      };
+    };
+    anotherPlugin = {
+      enable = true;
+      src = pkgs.another-plugin;
+    };
+  };
+};
+```
+
+## 合成器配置文件 {#compositor-config-files}
+
+NixOS 模块安装 DMS，但不生成特定于合成器的配置文件（按键绑定、颜色、布局等）。使用 [`dms setup`](cli-setup) 部署合成器的默认设置，或生成单独的配置：
+
+```bash
+# Deploy all defaults
+dms setup
+
+# Or pick and choose
+dms setup binds
+dms setup colors
+dms setup layout
+```
+
+有关子命令的完整列表，请参阅[安装 CLI 参考](cli-setup)。
+
+## 锁屏验证 (PAM) {#lock-screen-authentication-pam}
+
+在NixOS上，`/etc/pam.d`是由模块系统生成的，因此DMS的自动PAM管理不适用于锁屏。默认情况下，它会根据 `/etc/pam.d/login` 验证密码，并且您的系统 PAM 策略保持权威。仅当您想要覆盖该密码堆栈（例如，添加故障锁）时才声明 `security.pam.services.dankshell`。
+
+对于安全密钥 (FIDO2/U2F) 解锁，捆绑后备无法在 NixOS 上加载 `pam_u2f`，因此声明 DMS 查找的专用仅密钥服务：
+
+```nix
+security.pam.services."dankshell-u2f".text = ''
+  auth     required ${pkgs.pam_u2f}/lib/security/pam_u2f.so cue
+  account  required pam_permit.so
+'';
+```
+
+如果存在，DMS 会自动使用 `/etc/pam.d/dankshell-u2f`。重建后重新启动 DMS，首先添加它，在 `~/.config/Yubico/u2f_keys` 中注册您的密钥（通过 `pamu2fcfg`），然后在设置→锁定屏幕中启用**安全密钥身份验证**。请参阅[锁屏验证](lock-screen-authentication) 了解 OR/AND 因子模式的工作原理。
+
+:::tip[DMS 薄片模块]
+如果您使用 DMS flake 中的 NixOS 模块，则只需一个选项即可为您声明相同的服务：
+
+```nix
+programs.dank-material-shell.lockscreen.securityKey.enable = true;
+```
+
+使用 `lockscreen.securityKey.moduleArgs` 更改 pam_u2f 参数（默认 `[ "cue" ]`）并使用 `lockscreen.securityKey.package` 覆盖 pam_u2f 包。
+:::
+
+## 高级配置 {#advanced-configuration}
+
+有关可用选项的完整列表，请检查 nixpkgs 中的[模块文件](https://github.com/NixOS/nixpkgs/blob/nixos-26.05/nixos/modules/programs/wayland/dms-shell.nix)。
+
+## 重建 {#rebuilding}
+
+进行配置更改后，重建系统：
+
+```bash
+sudo nixos-rebuild switch
+```
+
+## 故障排除 {#troubleshooting}
+
+### DMS 不会自动启动 {#dms-doesnt-start-automatically}
+
+确保您设置了 `systemd.enable = true`：
+
+```nix
+programs.dms-shell = {
+  enable = true;
+  systemd.enable = true;
+};
+```
+
+### 缺少依赖项 {#missing-dependencies}
+
+每个功能都有自己的依赖项集。如果某功能不起作用，请确保相应的 `enable` 选项设置为 `true`。
+
+## 后续步骤 {#next-steps}
+
+- 通过[主题](application-themes)配置您的偏好
+- 在[Keybinds & IPC](keybinds-ipc)中设置合成器键绑定
+- 使用[插件]扩展功能(plugins-overview)
