@@ -63,6 +63,23 @@ DMS CLI is the backend and command-line interface for DMS. Its version should ma
 
 Quickshell is the framework used by DMS. Older versions of quickshell may result in a reduced feature set within DMS.
 
+If the version check fails, run:
+
+```bash
+qs --version
+```
+
+An `undefined symbol` error mentioning `Qt_6_PRIVATE_API` means Quickshell was built against different Qt libraries than those currently installed. Rebuild or reinstall Quickshell against the current Qt version, then restart DMS.
+
+On Arch Linux, rebuild the AUR package:
+
+```bash
+paru -S quickshell-git --rebuild
+# or
+yay -S quickshell-git --rebuild
+systemctl --user restart dms.service
+```
+
 ### DMS Shell
 
 The version of the shell configuration, which should match the DMS CLI version.
