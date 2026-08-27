@@ -217,6 +217,25 @@ Required for audio visualization in media players.
 
 Required to enrich calendar with events from local, CalDAV, or other sources supported by khal.
 
+### adw-gtk3
+
+Required for dynamic GTK3 theming: DMS copies the theme (light and dark variants) into `~/.local/share/themes` and patches the copies with your generated colors, so GTK3 apps follow the system color-scheme live. The row shows which mode is active:
+
+- **Installed** (user copy) — dynamic theming is active.
+- **Installed** (system copy) — installed via your package manager; DMS creates the user copy the next time GTK theming applies.
+- **Missing adw-gtk3(-dark)** — only one variant found; dynamic theming needs both.
+- **Not installed** — GTK3 falls back to a global `dank-colors.css` import; colors still apply, without live light/dark switching.
+
+| Distribution | Package |
+|------|---------|
+| Arch | `adw-gtk-theme` |
+| Fedora | `adw-gtk3-theme` |
+| NixOS | `adw-gtk3` |
+
+Debian, Ubuntu, and openSUSE do not package it; extract an [upstream release](https://github.com/lassekongo83/adw-gtk3/releases) into `~/.local/share/themes` instead — DMS uses it from there directly.
+
+See [Application Themes](application-themes#gtk-applications) for details.
+
 ### Network
 
 Detected backends: NetworkManager, iwd, systemd-networkd, iwd+systemd-networkd.

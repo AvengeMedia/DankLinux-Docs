@@ -143,6 +143,9 @@ sudo pacman -S adw-gtk-theme
 
 # Fedora
 sudo dnf install adw-gtk3-theme
+
+# NixOS
+environment.systemPackages = [ pkgs.adw-gtk3 ];
 ```
 
 ### Enable via Settings
@@ -150,7 +153,11 @@ sudo dnf install adw-gtk3-theme
 1. Open **Settings → Theme & Colors**
 2. Toggle **Apply GTK Themes**
 
-This creates symlinks from `dank-colors.css` to `gtk.css`, enabling dynamic theming for GTK 3 and GTK 4 applications.
+With adw-gtk3 installed, DMS copies the theme (light and dark variants) into `~/.local/share/themes` and patches the copies with your generated colors. GTK3 applications then follow the system color-scheme, switching between light and dark live without a restart. When the system theme updates, the copy refreshes on the next theme apply; a copy you created yourself is never touched.
+
+Without adw-gtk3, GTK3 falls back to a global `dank-colors.css` import in `~/.config/gtk-3.0/gtk.css`, and GTK4 uses the same import mechanism in `~/.config/gtk-4.0`.
+
+`dms doctor` reports which mode is active under **Optional Features → adw-gtk3**.
 
 ### Manual Integration
 

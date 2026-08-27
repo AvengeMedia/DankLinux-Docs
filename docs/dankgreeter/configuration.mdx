@@ -163,7 +163,7 @@ This will:
 - Set up ACL permissions on parent directories for greeter access
 - Configure group permissions on DMS config directories
 - Create symlinks to sync settings, wallpapers, and color themes
-- Copy your per-user theme slot to `/var/cache/dms-greeter/users/<username>/` (for multi-account picker preview)
+- Link your per-user theme slot at `/var/cache/dms-greeter/users/<username>/` to your live DMS state (for the multi-account picker)
 
 :::note
 
@@ -230,17 +230,18 @@ After logging out and back in (so the `greeter` group applies):
 dms-greeter sync --profile
 ```
 
-This writes only to `/var/cache/dms-greeter/users/<your-username>/` - settings, colors, wallpapers, and profile photo - without changing greetd or system configuration. Re-run after theme changes.
+This writes only to `/var/cache/dms-greeter/users/<your-username>/` and grants the greeter group read access to your DMS state and wallpaper folders, without changing greetd or system configuration. The slot links to your live settings, so later wallpaper and theme changes show up at the login screen without re-running sync. Re-run only if you move wallpapers to a new folder the greeter cannot read yet.
 
 #### What gets stored per user
 
 Under `/var/cache/dms-greeter/users/<username>/`:
 
-- `settings.json` - theme, clock, weather, fonts
-- `session.json` - wallpaper configuration (paths localized into the slot)
-- `colors.json` - color scheme
-- `profile.jpg` (or `.png`) - profile photo for the user picker
-- Wallpaper image copies as needed
+- `settings.json` - symlink to `~/.config/DankMaterialShell/settings.json` (theme, clock, weather, fonts)
+- `session.json` - symlink to `~/.local/state/DankMaterialShell/session.json` (wallpaper configuration)
+- `colors.json` - symlink to the DMS color scheme
+- `greeter_wallpaper_override.jpg` - copy of the fixed greeter wallpaper, when one is configured
+
+The profile photo is read directly from `~/.face`, `~/.face.icon`, or AccountsService. If `setfacl` is unavailable or the greeter cannot be granted read access, sync falls back to a point-in-time snapshot (copied files) and `dms-greeter status` reports the slot as `snapshot`; re-run sync after installing the `acl` package to link it live.
 
 The root cache (`/var/cache/dms-greeter/settings.json`, etc.) remains the **default fallback** when no per-user slot exists or no user is selected yet.
 
@@ -466,8 +467,9 @@ Configuration Symlinks:
   ✓ Color theme: synced correctly
 
 Per-user slots (multi-account):
-  ✓ users/alice/ - synced
-  ✓ users/bob/ - not synced (run: dms-greeter sync --profile)
+  ✓ users/alice/ - live (linked to DMS state)
+  ⚠ users/bob/ - snapshot (wallpaper and theme changes need a re-sync)
+    Run 'dms-greeter sync --profile' as bob to link it live
 
 ✓ All checks passed! Greeter is properly configured.
 ```
@@ -505,10 +507,18 @@ dms-greeter sync --profile
 **ACL permission issues (themes/wallpapers not appearing):**
 ```bash
 # Check if ACLs are set
-getfacl ~ ~/.config ~/.local ~/.cache ~/.local/state | grep "user:greeter"
+getfacl ~ ~/.config ~/.local ~/.cache ~/.local/state | grep "group:greeter"
 
 # If not, run sync again
 dms-greeter sync
+```
+
+**Greeter shows an old wallpaper after changing it in DMS:**
+```bash
+# A slot reported as "snapshot" is a point-in-time copy; link it live:
+dms-greeter status
+dms-greeter sync --profile
+# If the slot is already live, grant access to the new wallpaper folder by re-running the same command
 ```
 
 ## Auto-login on startup
