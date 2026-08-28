@@ -38,15 +38,22 @@ Pass `--compositor`, `--term`, and `--yes` to run `dankinstall` unattended — n
 sudo -v && curl -fsSL https://install.danklinux.com | sh -s -- -c niri -t ghostty -y
 ```
 
-Headless mode needs cached `sudo` credentials. Run `sudo -v` first, or configure passwordless sudo for your user — otherwise it errors out before doing anything.
+Headless mode needs cached credentials or a passwordless rule for your privilege escalation tool (sudo, doas, or run0) — otherwise it errors out before doing anything. With sudo, run `sudo -v` first.
 
 ### Flags
 
 | Flag | Short | Description |
 |------|-------|-------------|
-| `--compositor <niri\|hyprland>` | `-c` | Compositor to install. Required for headless. |
+| `--compositor <niri\|hyprland\|mango>` | `-c` | Compositor to install. Required for headless. |
 | `--term <ghostty\|kitty\|alacritty>` | `-t` | Terminal to install. Required for headless. |
 | `--yes` | `-y` | Required for headless — confirms installation without prompts. |
+| `--privesc <sudo\|doas\|run0>` | | Privilege escalation tool. Autodetected by default. |
+| `--git` | | Install the git version of every dep that has one. |
+| `--git-deps <name,...>` | | Install the git version of specific deps (e.g. `niri,quickshell`). |
+| `--all-features` | | Enable all optional deps (`dms-greeter`, `danksearch`, `dankcalendar`). |
+| `--dms-greeter` | | Install dms-greeter. |
+| `--danksearch` | | Install danksearch and enable its user indexing service. |
+| `--dankcalendar` | | Install dankcalendar. |
 | `--include-deps <name,...>` | | Enable optional deps that are off by default (e.g. `dms-greeter`). |
 | `--exclude-deps <name,...>` | | Skip specific deps. |
 | `--replace-configs <name,...>` | | Replace only the listed configs: `niri`, `hyprland`, `ghostty`, `kitty`, `alacritty`. |
@@ -54,11 +61,20 @@ Headless mode needs cached `sudo` credentials. Run `sudo -v` first, or configure
 
 By default, existing compositor and terminal configs are left alone — pass one of the `--replace-configs` flags to change that. Missing configs are always deployed. Existing files are backed up before any replacement.
 
+Deps already installed as stable are reinstalled when `--git` or `--git-deps` selects their git variant.
+
 Example with greeter enabled and all configs replaced:
 
 ```bash
 sudo -v && curl -fsSL https://install.danklinux.com | sh -s -- \
-  -c hyprland -t kitty --include-deps dms-greeter --replace-configs-all -y
+  -c hyprland -t kitty --dms-greeter --replace-configs-all -y
+```
+
+Example with git niri and quickshell plus all optional deps:
+
+```bash
+sudo -v && curl -fsSL https://install.danklinux.com | sh -s -- \
+  -c niri -t ghostty --git-deps niri,quickshell --all-features -y
 ```
 
 :::info[Logs]
