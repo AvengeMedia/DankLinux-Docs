@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
+import LandingBackground from '../components/LandingBackground';
 import styles from './index.module.css';
 
 declare global {
@@ -222,10 +223,11 @@ export default function Home() {
           }
         `}</style>
         <div className="noscript-warning">
-          JavaScript is disabled. Some interactive features on this site require JavaScript.
+          ⚠️ JavaScript is disabled. Some interactive features and animations on this site require JavaScript to function properly.
         </div>
       </noscript>
       <div className={styles.container}>
+        <LandingBackground />
         <div className={styles.content}>
           <section className={styles.hero}>
             <div className={styles.heroContent}>
@@ -340,7 +342,7 @@ export default function Home() {
                       <span className={styles.success}>✓ Configuring DankMaterialShell</span>
                     </div>
                     <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.9s' }}>
-                      <span className={styles.success}>✓ Install complete</span>
+                      <span className={styles.success}>✓ Ready to rock!</span>
                     </div>
                   </div>
                 </div>
@@ -387,7 +389,7 @@ export default function Home() {
           <section className={styles.screenshotGallery}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
-                See it <span className={styles.accentText}>in action</span>
+                See it <span className={styles.gradientText}>in action</span>
               </h2>
               <p className={styles.sectionDesc}>
                 Beautiful, functional, and ready to use
@@ -544,7 +546,7 @@ export default function Home() {
           <section className={styles.features}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
-                Everything <span className={styles.accentText}>you need</span>
+                Everything <span className={styles.gradientText}>you need</span>
               </h2>
               <p className={styles.sectionDesc}>
                 A complete desktop experience, out of the box
@@ -596,7 +598,7 @@ export default function Home() {
             <div className={styles.showcaseGrid}>
               <div className={styles.showcaseText}>
                 <h2 className={styles.showcaseTitle}>
-                  Beautiful by <span className={styles.accentText}>default</span>
+                  Beautiful by <span className={styles.gradientText}>default</span>
                 </h2>
                 <p className={styles.showcaseDesc}>
                   Dynamic theming powered by matugen extracts colors from your wallpaper
@@ -631,10 +633,10 @@ export default function Home() {
               </div>
               <div className={styles.showcaseVisual}>
                 <div className={styles.colorGrid}>
-                  <div className={styles.colorBlock} style={{ background: '#805AD5' }}></div>
-                  <div className={styles.colorBlock} style={{ background: '#D0BCFF' }}></div>
-                  <div className={styles.colorBlock} style={{ background: '#B794F4' }}></div>
-                  <div className={styles.colorBlock} style={{ background: '#553C9A' }}></div>
+                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #805AD5, #6B46C1)' }}></div>
+                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #D0BCFF, #9F7AEA)' }}></div>
+                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #B794F4, #805AD5)' }}></div>
+                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #6B46C1, #553C9A)' }}></div>
                 </div>
               </div>
             </div>

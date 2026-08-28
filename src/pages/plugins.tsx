@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
 import { useLocation, useHistory } from '@docusaurus/router';
+import LandingBackground from '../components/LandingBackground';
 import styles from './plugins.module.css';
 
 interface Plugin {
@@ -638,10 +639,11 @@ export default function Plugins() {
         />
       </Head>
       <div className={styles.container}>
+        <LandingBackground />
         <div className={styles.content}>
           <section className={styles.header}>
             <h1 className={styles.title}>
-              Explore <span className={styles.accentText}>{activeTab === 'plugins' ? 'Plugins' : 'Themes'}</span>
+              Explore <span className={styles.gradientText}>{activeTab === 'plugins' ? 'Plugins' : 'Themes'}</span>
             </h1>
             <p className={styles.subtitle}>
               {activeTab === 'plugins'

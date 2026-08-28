@@ -1,0 +1,124 @@
+.background {
+  --mouse-x: 50vw;
+  --mouse-y: 50vh;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.orb1,
+.orb2,
+.orb3 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.3;
+  animation: float 20s ease-in-out infinite;
+}
+
+.orb1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, #805ad5 0%, #d0bcff 50%, transparent 70%);
+  top: -200px;
+  left: -200px;
+}
+
+.orb2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, #d0bcff 0%, #b794f4 50%, transparent 70%);
+  bottom: -150px;
+  right: -150px;
+  animation-delay: 7s;
+}
+
+.orb3 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #6b46c1 0%, #9f7aea 50%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: 14s;
+}
+
+[data-theme='light'] .orb1 {
+  background: radial-gradient(circle, #b794f4 0%, #e9dfff 50%, transparent 70%);
+  opacity: 0.5;
+}
+
+[data-theme='light'] .orb2 {
+  background: radial-gradient(circle, #e9dfff 0%, #d0bcff 50%, transparent 70%);
+  opacity: 0.5;
+}
+
+[data-theme='light'] .orb3 {
+  background: radial-gradient(circle, #9f7aea 0%, #d0bcff 50%, transparent 70%);
+  opacity: 0.5;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(50px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
+}
+
+.pattern {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .pattern {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(208, 188, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(208, 188, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+[data-theme='light'] .grid {
+  background-image:
+    linear-gradient(rgba(128, 90, 213, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(128, 90, 213, 0.08) 1px, transparent 1px);
+}
+
+/* Brighter copy of the grid, revealed in a circle around the cursor */
+.grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(208, 188, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(208, 188, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle 500px at var(--mouse-x) var(--mouse-y), black 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle 500px at var(--mouse-x) var(--mouse-y), black 0%, transparent 100%);
+}
+
+[data-theme='light'] .grid::before {
+  background-image:
+    linear-gradient(rgba(128, 90, 213, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(128, 90, 213, 0.2) 1px, transparent 1px);
+}
+
+@media (hover: none) and (pointer: coarse), (max-width: 768px) {
+  .grid::before {
+    display: none;
+  }
+}
