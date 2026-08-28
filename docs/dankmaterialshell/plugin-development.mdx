@@ -1668,6 +1668,40 @@ PluginComponent {
 }
 ```
 
+### Running Commands
+
+`Proc.runCommand` (from `qs.Common`) runs an external command with debouncing and a timeout, and delivers stdout plus the exit code to a callback:
+
+```qml
+Proc.runCommand(id, command, callback, debounceMs, timeoutMs, owner)
+```
+
+- `id` — a fixed string (use `"pluginId.purpose"`) coalesces rapid calls into one run and reuses one debounce timer. Pass `null` for a one-shot with no coalescing.
+- `command` — argv array, e.g. `["sh", "-c", "cat /proc/loadavg"]`.
+- `callback(stdout, exitCode)` — invoked after the process exits.
+- `debounceMs` — wait before launching; another call within the window replaces the pending command. Default 50.
+- `timeoutMs` — kill the process after this long (exit code 124). Default 10000, `Proc.noTimeout` disables.
+- `owner` — pass your component root. If the owner is destroyed while a run is pending, the command is not launched and the callback is never invoked — without it, a pending command still fires after your instance is gone (a reload or monitor disconnect mid-poll).
+
+```qml
+PluginComponent {
+    id: root
+
+    Timer {
+        interval: 2000
+        running: true
+        repeat: true
+        onTriggered: Proc.runCommand("myPlugin.load", ["cat", "/proc/loadavg"], (stdout, exitCode) => {
+            if (exitCode !== 0)
+                return
+            root.load = stdout.split(" ")[0]
+        }, 100, undefined, root)
+    }
+}
+```
+
+`Proc.release(id)` drops a fixed id's pending work and its timer explicitly — call it from `Component.onDestruction` if you don't pass `owner`. Both `owner` and `release` require DMS 1.6+; on older versions guard your callback with `if (!root) return` instead.
+
 ## Plugin Manifest Reference
 
 ### Required Fields
