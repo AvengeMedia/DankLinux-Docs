@@ -4,7 +4,6 @@ import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
 import styles from './index.module.css';
 
-// Declare medium-zoom and playerjs types
 declare global {
   interface Window {
     mediumZoom?: (target: string | HTMLElement | NodeListOf<HTMLElement>, options?: any) => any;
@@ -19,7 +18,7 @@ const compositors = [
   { name: 'Sway', logo: '/img/sway.svg', duration: 600 },
   { name: 'labwc', logo: '/img/labwc.png', duration: 600 },
   { name: 'Miracle', logo: '/img/miraclewm.svg', duration: 600 },
-  { name: 'Wayland', logo: null, duration: 0 }, // End state - stays forever
+  { name: 'Wayland', logo: null, duration: 0 },
 ];
 
 const compositorLinks: Record<string, string> = {
@@ -50,16 +49,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useEffect(() => {
     if (typed.length < fullText.length) {
       const timeout = setTimeout(() => {
         setTyped(fullText.slice(0, typed.length + 1));
@@ -75,7 +64,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Initialize image zoom for screenshots and feature cards
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -99,17 +87,17 @@ export default function Home() {
         if (!mediumZoom) return;
 
         const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-        const background = isLight 
-          ? 'rgba(248, 247, 251, 0.95)' 
+        const background = isLight
+          ? 'rgba(248, 247, 251, 0.95)'
           : 'rgba(17, 17, 17, 0.95)';
 
         let zoomableImages = document.querySelectorAll('img[data-zoom]');
-        
+
         if (zoomableImages.length < 10) {
           await new Promise(resolve => setTimeout(resolve, 500));
           zoomableImages = document.querySelectorAll('img[data-zoom]');
         }
-        
+
         if (zoomableImages.length > 0) {
           mediumZoom(zoomableImages, {
             background,
@@ -138,13 +126,11 @@ export default function Home() {
   useEffect(() => {
     const timeouts: NodeJS.Timeout[] = [];
 
-    // Show niri sooner - right after "for" starts animating
     const showFirstTimeout = setTimeout(() => {
       setCurrentCompositor(0);
     }, 800);
     timeouts.push(showFirstTimeout);
 
-    // Start rotation sequence - use a fixed rhythm for all
     let cumulativeDelay = 800;
     compositors.forEach((compositor, index) => {
       if (index < compositors.length - 1) {
@@ -161,13 +147,11 @@ export default function Home() {
     };
   }, []);
 
-  // Autoplay video when scrolled into view
   useEffect(() => {
     if (!videoRef.current || typeof window === 'undefined') return;
 
     let player: any = null;
 
-    // Load player.js library
     const script = document.createElement('script');
     script.src = '//assets.mediadelivery.net/playerjs/playerjs-latest.min.js';
     script.async = true;
@@ -179,7 +163,6 @@ export default function Home() {
         player = new window.playerjs.Player(videoRef.current);
 
         player.on('ready', () => {
-          // Set up intersection observer after player is ready
           const observer = new IntersectionObserver(
             (entries) => {
               entries.forEach((entry) => {
@@ -239,26 +222,11 @@ export default function Home() {
           }
         `}</style>
         <div className="noscript-warning">
-          ⚠️ JavaScript is disabled. Some interactive features and animations on this site require JavaScript to function properly.
+          JavaScript is disabled. Some interactive features on this site require JavaScript.
         </div>
       </noscript>
       <div className={styles.container}>
-        {/* Background pattern overlay */}
-        <div className={styles.backgroundPattern}></div>
-
-        {/* Animated gradient background orbs */}
-        <div className={styles.gradientBackground}>
-          <div className={styles.gradientOrb1}></div>
-          <div className={styles.gradientOrb2}></div>
-          <div className={styles.gradientOrb3}></div>
-        </div>
-
-        {/* Animated grid overlay with basic mouse tracking */}
-        <div className={styles.gridOverlay}></div>
-
-        {/* Main Content */}
         <div className={styles.content}>
-          {/* Hero Section with massive gradient title */}
           <section className={styles.hero}>
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
@@ -292,7 +260,6 @@ export default function Home() {
                 </span>
               </h1>
 
-              {/* Call to action buttons */}
               <div className={styles.heroCTA}>
                 <Link to="/docs/getting-started" className={styles.primaryCTA}>
                   <span>Get Started</span>
@@ -305,7 +272,6 @@ export default function Home() {
                 </Link>
               </div>
 
-              {/* Floating terminal window */}
               <div className={styles.terminalFloat}>
                 <div className={styles.terminalWindow} onClick={handleCopyCommand}>
                   {copied && (
@@ -313,7 +279,7 @@ export default function Home() {
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ marginRight: '0.5rem' }}>
                         <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      Copied!
+                      Copied
                     </div>
                   )}
                   <div className={styles.terminalHeader}>
@@ -374,13 +340,12 @@ export default function Home() {
                       <span className={styles.success}>✓ Configuring DankMaterialShell</span>
                     </div>
                     <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.9s' }}>
-                      <span className={styles.success}>✓ Ready to rock!</span>
+                      <span className={styles.success}>✓ Install complete</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Pre-configured flavors */}
               <div className={styles.preconfiguredRow}>
                 <span className={styles.preconfiguredLabel}>Pre-configured flavors</span>
                 <div className={styles.preconfiguredCards}>
@@ -419,11 +384,10 @@ export default function Home() {
             </div>
           </section>
 
-                    {/* Screenshot Gallery */}
-                    <section className={styles.screenshotGallery}>
+          <section className={styles.screenshotGallery}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
-                See it <span className={styles.gradientText}>in action</span>
+                See it <span className={styles.accentText}>in action</span>
               </h2>
               <p className={styles.sectionDesc}>
                 Beautiful, functional, and ready to use
@@ -431,7 +395,6 @@ export default function Home() {
             </div>
 
             <div className={styles.screenshotsGrid}>
-              {/* Featured Video - DankMaterialShell Overview */}
               <div className={`${styles.screenshotCard} ${styles.large}`}>
                 <div className={styles.screenshotFrame}>
                   <iframe
@@ -578,11 +541,10 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Features section with cards */}
           <section className={styles.features}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>
-                Everything <span className={styles.gradientText}>you need</span>
+                Everything <span className={styles.accentText}>you need</span>
               </h2>
               <p className={styles.sectionDesc}>
                 A complete desktop experience, out of the box
@@ -591,35 +553,30 @@ export default function Home() {
 
             <div className={styles.featuresGrid}>
               <FeatureCard
-                icon=""
                 title="DankMaterialShell"
                 description="A modern and beautiful desktop shell with dynamic theming and smooth animations."
                 imageDark="/img/desktop.png"
                 imageLight="/img/desktoplight.png"
               />
               <FeatureCard
-                icon=""
                 title="Dank Install"
                 description="One line installer for an automated quick and easy setup."
                 imageDark="/img/dankinstall.png"
                 imageLight="/img/dankinstalallight.png"
               />
               <FeatureCard
-                icon=""
                 title="Dank GOP"
                 description="Stateless system and process monitoring for CPU, memory, GPU, disks, and network interfaces."
                 imageDark="/img/dgop.png"
                 imageLight="/img/dgoplight.png"
               />
               <FeatureCard
-                icon=""
                 title="Dank Greeter"
                 description="An aesthetically pleasing greetd greeter for your desktop."
                 imageDark="/img/dgreet.png"
                 imageLight="/img/dgreetlight.png"
               />
               <FeatureCard
-                icon=""
                 title="Dank Search"
                 description="Blazingly fast and efficient file system search tool."
                 imageDark="/img/dsearch.png"
@@ -627,7 +584,6 @@ export default function Home() {
                 imageAlign="top"
               />
               <FeatureCard
-                icon=""
                 title="Fully Customizable"
                 description="Plugins, widgets, themes, and configs to make it yours"
                 imageDark="/img/homepage/plugins_dark.png"
@@ -636,12 +592,11 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Showcase with gradient visualization */}
           <section className={styles.showcase}>
             <div className={styles.showcaseGrid}>
               <div className={styles.showcaseText}>
                 <h2 className={styles.showcaseTitle}>
-                  Beautiful by <span className={styles.gradientText}>default</span>
+                  Beautiful by <span className={styles.accentText}>default</span>
                 </h2>
                 <p className={styles.showcaseDesc}>
                   Dynamic theming powered by matugen extracts colors from your wallpaper
@@ -676,24 +631,21 @@ export default function Home() {
               </div>
               <div className={styles.showcaseVisual}>
                 <div className={styles.colorGrid}>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #805AD5, #6B46C1)' }}></div>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #D0BCFF, #9F7AEA)' }}></div>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #B794F4, #805AD5)' }}></div>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #6B46C1, #553C9A)' }}></div>
+                  <div className={styles.colorBlock} style={{ background: '#805AD5' }}></div>
+                  <div className={styles.colorBlock} style={{ background: '#D0BCFF' }}></div>
+                  <div className={styles.colorBlock} style={{ background: '#B794F4' }}></div>
+                  <div className={styles.colorBlock} style={{ background: '#553C9A' }}></div>
                 </div>
               </div>
             </div>
-
           </section>
-
         </div>
       </div>
     </Layout>
   );
 }
 
-function FeatureCard({ icon, title, description, imageDark, imageLight, imageAlign = 'center' }: {
-  icon: string;
+function FeatureCard({ title, description, imageDark, imageLight, imageAlign = 'center' }: {
   title: string;
   description: string;
   imageDark?: string;
@@ -718,12 +670,8 @@ function FeatureCard({ icon, title, description, imageDark, imageLight, imageAli
           />
         </div>
       )}
-      {!imageDark && !imageLight && icon && (
-        <div className={styles.cardIcon}>{icon}</div>
-      )}
       <h3 className={styles.cardTitle}>{title}</h3>
       <p className={styles.cardDesc}>{description}</p>
-      <div className={styles.cardGlow}></div>
     </div>
   );
 }

@@ -377,7 +377,7 @@ const config: Config = {
       id: 'v1-5-release',
       content:
         '<b>DMS 1.5 "The Wolverine" is here</b> — Frame Mode, DankCalendar integration, Hyprland Lua, and a lot more. <a href="/blog/v1-5-release">Read the announcement</a>',
-      backgroundColor: '#C77B3B',
+      backgroundColor: '#6B46C1',
       textColor: '#ffffff',
       isCloseable: true,
     },

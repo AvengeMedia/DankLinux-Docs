@@ -22,33 +22,15 @@
   opacity: 1;
 }
 
-/* Brand text styling */
 .brandText {
-  font-family: var(--ifm-font-family-base);
   font-size: 1.4rem;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.95);
+  font-weight: 700;
+  color: var(--ifm-heading-color);
   letter-spacing: 0.08em;
   opacity: 0.95;
-  transition: opacity 0.2s ease, text-shadow 0.2s ease;
+  transition: opacity 0.2s ease;
   white-space: nowrap;
   text-transform: uppercase;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   line-height: 1;
   padding-top: 0.15rem;
-}
-
-/* Light mode text */
-[data-theme='light'] .brandText {
-  color: rgba(0, 0, 0, 0.95);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-/* Hide text on very small screens to save space */
-@media (max-width: 480px) {
-  .brandText {
-    display: none;
-  }
 }

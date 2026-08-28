@@ -20,7 +20,7 @@
   "dependencies": {
     "@acid-info/docusaurus-og": "^1.0.3",
     "@actinc/docusaurus-plugin-panzoom": "^1.0.1",
-    "@dipakparmar/docusaurus-plugin-umami": "^2.4.0",
+    "@dipakparmar/docusaurus-plugin-umami": "^3.0.0",
     "@docusaurus/core": "^3.10.1",
     "@docusaurus/faster": "^3.10.1",
     "@docusaurus/plugin-client-redirects": "^3.10.1",
@@ -39,7 +39,7 @@
     "@docusaurus/tsconfig": "^3.10.1",
     "@docusaurus/types": "^3.10.1",
     "patch-package": "^8.0.1",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "browserslist": {
     "production": [
@@ -57,6 +57,7 @@
     "node": ">=20.0"
   },
   "overrides": {
+    "sharp": "^0.35.4",
     "lodash-es": "^4.17.21",
     "webpack-dev-server": "^5.2.1",
     "serialize-javascript": "^7.0.5",

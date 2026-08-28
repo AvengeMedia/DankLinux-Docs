@@ -34,7 +34,7 @@ export default function LogoWrapper(props: Props): React.JSX.Element {
           className={styles.logo}
         />
       </div>
-      <span className={styles.brandText}>DANK LINUX</span>
+      <span className={`${styles.brandText} navbar-brand-text`}>DANK LINUX</span>
     </Link>
   );
 }

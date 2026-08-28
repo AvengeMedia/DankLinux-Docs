@@ -507,21 +507,6 @@ export default function Plugins() {
     setFilteredThemes(filtered);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-  };
-
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-    };
-
-    document.addEventListener('mousemove', handleGlobalMouseMove);
-    return () => document.removeEventListener('mousemove', handleGlobalMouseMove);
-  }, []);
-
   useEffect(() => {
     if (!lightboxPlugin) return;
     const handleKey = (e: KeyboardEvent) => {
@@ -652,21 +637,11 @@ export default function Plugins() {
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </Head>
-      <div className={styles.container} onMouseMove={handleMouseMove}>
-        <div className={styles.backgroundPattern}></div>
-
-        <div className={styles.gradientBackground}>
-          <div className={styles.gradientOrb1}></div>
-          <div className={styles.gradientOrb2}></div>
-          <div className={styles.gradientOrb3}></div>
-        </div>
-
-        <div className={styles.gridOverlay}></div>
-
+      <div className={styles.container}>
         <div className={styles.content}>
           <section className={styles.header}>
             <h1 className={styles.title}>
-              Explore <span className={styles.gradientText}>{activeTab === 'plugins' ? 'Plugins' : 'Themes'}</span>
+              Explore <span className={styles.accentText}>{activeTab === 'plugins' ? 'Plugins' : 'Themes'}</span>
             </h1>
             <p className={styles.subtitle}>
               {activeTab === 'plugins'
@@ -997,7 +972,6 @@ export default function Plugins() {
                       )}
                     </div>
                   </div>
-                  {viewMode === 'grid' && <div className={styles.cardGlow}></div>}
                 </div>
               ))}
             </section>
@@ -1154,7 +1128,6 @@ export default function Plugins() {
                       </a>
                     </div>
                   </div>
-                  <div className={styles.cardGlow}></div>
                 </div>
               ))}
             </section>

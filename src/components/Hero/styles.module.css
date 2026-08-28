@@ -8,45 +8,8 @@
   align-items: center;
   overflow: hidden;
   background-color: var(--ifm-background-color);
-  background-image:
-    radial-gradient(circle at 20% 50%, rgba(128, 90, 213, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(128, 90, 213, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(208, 188, 255, 0.08) 0%, transparent 40%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(128, 90, 213, 0.03) 2px,
-      rgba(128, 90, 213, 0.03) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(128, 90, 213, 0.03) 2px,
-      rgba(128, 90, 213, 0.03) 4px
-    );
-}
-
-[data-theme='dark'] .hero {
-  background-image:
-    radial-gradient(circle at 20% 50%, rgba(208, 188, 255, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(128, 90, 213, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(208, 188, 255, 0.1) 0%, transparent 40%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(208, 188, 255, 0.05) 2px,
-      rgba(208, 188, 255, 0.05) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 2px,
-      rgba(208, 188, 255, 0.05) 2px,
-      rgba(208, 188, 255, 0.05) 4px
-    );
+  background-image: radial-gradient(circle at 50% 0%, var(--dank-tint) 0%, transparent 70%);
+  border-bottom: 1px solid var(--dank-border);
 }
 
 .heroContent {

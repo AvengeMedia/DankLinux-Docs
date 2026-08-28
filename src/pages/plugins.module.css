@@ -1,149 +1,15 @@
 .container {
   min-height: 100vh;
-  background: #000000;
   color: #ffffff;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
   overflow-x: hidden;
-  position: relative;
   padding-top: 4rem;
 }
 
 [data-theme='light'] .container {
-  background: #f8f7fb;
   color: #1a1625;
 }
 
-.gradientBackground {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.gradientOrb1,
-.gradientOrb2,
-.gradientOrb3 {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.3;
-  animation: float 20s ease-in-out infinite;
-}
-
-.gradientOrb1 {
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, #805AD5 0%, #D0BCFF 50%, transparent 70%);
-  top: -200px;
-  left: -200px;
-  animation-delay: 0s;
-}
-
-.gradientOrb2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #D0BCFF 0%, #B794F4 50%, transparent 70%);
-  bottom: -150px;
-  right: -150px;
-  animation-delay: 7s;
-}
-
-.gradientOrb3 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #6B46C1 0%, #9F7AEA 50%, transparent 70%);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation-delay: 14s;
-}
-
-[data-theme='light'] .gradientOrb1 {
-  background: radial-gradient(circle, #B794F4 0%, #E9DFFF 50%, transparent 70%);
-  opacity: 0.5;
-}
-
-[data-theme='light'] .gradientOrb2 {
-  background: radial-gradient(circle, #E9DFFF 0%, #D0BCFF 50%, transparent 70%);
-  opacity: 0.5;
-}
-
-[data-theme='light'] .gradientOrb3 {
-  background: radial-gradient(circle, #9F7AEA 0%, #D0BCFF 50%, transparent 70%);
-  opacity: 0.5;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(50px, -50px) scale(1.1);
-  }
-  66% {
-    transform: translate(-30px, 30px) scale(0.9);
-  }
-}
-
-.backgroundPattern {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  background: rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-}
-
-[data-theme='light'] .backgroundPattern {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.gridOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  background-image:
-    linear-gradient(rgba(208, 188, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(208, 188, 255, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none;
-}
-
-[data-theme='light'] .gridOverlay {
-  background-image:
-    linear-gradient(rgba(128, 90, 213, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(128, 90, 213, 0.08) 1px, transparent 1px);
-}
-
-.gridOverlay::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(208, 188, 255, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(208, 188, 255, 0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  pointer-events: none;
-  mask-image: radial-gradient(
-    circle 500px at var(--mouse-x) var(--mouse-y),
-    black 0%,
-    transparent 100%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle 500px at var(--mouse-x) var(--mouse-y),
-    black 0%,
-    transparent 100%
-  );
-}
-
-[data-theme='light'] .gridOverlay::before {
-  background-image:
-    linear-gradient(rgba(128, 90, 213, 0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(128, 90, 213, 0.2) 1px, transparent 1px);
-}
-
 .content {
-  position: relative;
-  z-index: 10;
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
@@ -162,18 +28,12 @@
   letter-spacing: -0.02em;
 }
 
-.gradientText {
-  background: linear-gradient(135deg, #D0BCFF, #805AD5);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.accentText {
+  color: var(--dank-purple-light);
 }
 
-[data-theme='light'] .gradientText {
-  background: linear-gradient(135deg, #805AD5, #6B46C1);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+[data-theme='light'] .accentText {
+  color: var(--dank-purple-dark);
 }
 
 .subtitle {
@@ -226,28 +86,26 @@
 }
 
 .tabButton.activeTab {
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   border-color: transparent;
   color: #ffffff;
 }
 
 [data-theme='light'] .tabButton.activeTab {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
   color: #ffffff;
 }
 
 .filters {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(208, 188, 255, 0.1);
-  border-radius: 20px;
+  background: #141218;
+  border: 1px solid var(--dank-border);
+  border-radius: 16px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  backdrop-filter: blur(10px);
 }
 
 [data-theme='light'] .filters {
-  background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(128, 90, 213, 0.2);
+  background: #ffffff;
 }
 
 .topControls {
@@ -439,12 +297,10 @@
   margin: 0;
   padding: 0.375rem;
   list-style: none;
-  background: rgba(12, 10, 18, 0.95);
+  background: #141218;
   border: 1px solid rgba(208, 188, 255, 0.2);
   border-radius: 12px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 
 [data-theme='light'] .sortDropdownMenu {
@@ -483,23 +339,23 @@
 }
 
 .sortDropdownOptionActive {
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   color: #ffffff;
   font-weight: 600;
 }
 
 [data-theme='light'] .sortDropdownOptionActive {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
   color: #ffffff;
 }
 
 .sortDropdownOptionActive:hover {
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   color: #ffffff;
 }
 
 [data-theme='light'] .sortDropdownOptionActive:hover {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
   color: #ffffff;
 }
 
@@ -540,14 +396,14 @@
 }
 
 .filterButton.active {
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   border-color: transparent;
   color: #ffffff;
   font-weight: 600;
 }
 
 [data-theme='light'] .filterButton.active {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
   color: #ffffff;
 }
 
@@ -667,47 +523,25 @@
 
 .pluginCard {
   position: relative;
-  background: rgba(12, 10, 18, 0.72);
-  border: 1px solid rgba(208, 188, 255, 0.1);
+  background: #141218;
+  border: 1px solid var(--dank-border);
   border-radius: 16px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: border-color 0.2s ease;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 [data-theme='light'] .pluginCard {
-  background: rgba(255, 255, 255, 0.78);
-  border-color: rgba(128, 90, 213, 0.2);
+  background: #ffffff;
 }
 
 .pluginCard:hover {
-  transform: translateY(-4px);
-  background: rgba(12, 10, 18, 0.92);
-  border-color: rgba(208, 188, 255, 0.3);
-  box-shadow: 0 12px 40px rgba(208, 188, 255, 0.15);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-[data-theme='light'] .pluginCard:hover {
-  background: rgba(255, 255, 255, 0.94);
-  border-color: rgba(128, 90, 213, 0.4);
-  box-shadow: 0 12px 40px rgba(128, 90, 213, 0.15);
-}
-
-.pluginCard:hover .cardGlow {
-  opacity: 1;
+  border-color: var(--dank-border-strong);
 }
 
 .pluginCard.listCard {
   border-radius: 10px;
-}
-
-.pluginCard.listCard:hover {
-  transform: translateY(-2px);
 }
 
 .pluginCard.listCard .pluginContent {
@@ -832,31 +666,17 @@
   color: #6B46C1;
 }
 
-.cardGlow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(208, 188, 255, 0.08), transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
 .pluginImage {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(208, 188, 255, 0.05), rgba(128, 90, 213, 0.05));
+  background: var(--dank-tint);
 }
 
 .pluginImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.pluginCard:hover .pluginImage img {
-  transform: scale(1.05);
 }
 
 .pluginContent {
@@ -907,7 +727,7 @@
 .officialBadge {
   display: inline-block;
   padding: 0.25rem 0.625rem;
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   color: #ffffff;
   font-size: 0.75rem;
   font-weight: 600;
@@ -917,7 +737,7 @@
 }
 
 [data-theme='light'] .officialBadge {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
   color: #ffffff;
 }
 
@@ -1171,7 +991,7 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   border: none;
   border-radius: 8px;
   color: #ffffff;
@@ -1188,12 +1008,11 @@
 }
 
 [data-theme='light'] .installButton {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
 }
 
 .installButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(128, 90, 213, 0.4);
+  background: #553c9a;
   text-decoration: none;
   color: #ffffff;
 }
@@ -1226,7 +1045,6 @@
   border-color: rgba(208, 188, 255, 0.4);
   color: #ffffff;
   text-decoration: none;
-  transform: translateY(-2px);
 }
 
 [data-theme='light'] .repoButton:hover {
@@ -1267,7 +1085,6 @@
   border-color: rgba(208, 188, 255, 0.4);
   color: #ffffff;
   text-decoration: none;
-  transform: translateY(-2px);
 }
 
 [data-theme='light'] .discussButton:hover {
@@ -1309,7 +1126,7 @@
 .retryButton,
 .resetButton {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #805AD5, #D0BCFF);
+  background: #805ad5;
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -1320,15 +1137,9 @@
   margin-top: 1rem;
 }
 
-[data-theme='light'] .retryButton,
-[data-theme='light'] .resetButton {
-  color: #1a1625;
-}
-
 .retryButton:hover,
 .resetButton:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(128, 90, 213, 0.3);
+  background: #6b46c1;
 }
 
 @media (max-width: 768px) {
@@ -1405,23 +1216,13 @@
     grid-column: 2;
     grid-row: 1;
   }
-
-  .gridOverlay::before {
-    display: none;
-  }
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .gridOverlay::before {
-    display: none;
-  }
 }
 
 .themePreview {
   width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(208, 188, 255, 0.05), rgba(128, 90, 213, 0.05));
+  background: var(--dank-tint);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1431,11 +1232,6 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.pluginCard:hover .themePreview img {
-  transform: scale(1.05);
 }
 
 .themeColors {
@@ -1542,13 +1338,13 @@
 }
 
 .variantButton.active {
-  background: linear-gradient(135deg, #6B46C1, #805AD5);
+  background: #6b46c1;
   border-color: transparent;
   color: #ffffff;
 }
 
 [data-theme='light'] .variantButton.active {
-  background: linear-gradient(135deg, #805AD5, #9F7AEA);
+  background: #805ad5;
   color: #ffffff;
 }
 
