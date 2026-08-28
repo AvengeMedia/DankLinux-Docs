@@ -62,6 +62,14 @@ Disables layer effects on popout widgets for performance or compatibility reason
 DMS_DISABLE_LAYER=true dms run
 ```
 
+### DMS_NO_DDC
+
+Disables DDC/CI brightness control for external monitors. DMS probes i2c buses to discover DDC-capable displays and rescans them on hotplug and resume; some monitors handle DDC poorly (brightness commands ignored, or wake behavior disturbed by probe traffic). Set to `1` to skip the DDC backend entirely - laptop backlight control is unaffected.
+
+```bash
+DMS_NO_DDC=1 dms run
+```
+
 ### Shadow & Elevation Migration Notes (Power Users)
 
 If you manually edit `settings.json`, use:
