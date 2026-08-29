@@ -619,3 +619,50 @@ Disabling a greeter while logged in under that greeter will log you out and brin
   sudo systemctl enable greetd
   sudo systemctl start greetd
   ```
+
+### Manual Setup (Void Linux / runit)
+
+The steps above assume systemd. On Void the greeter user is `_greeter`, the seat is managed by elogind, and greetd needs extra pieces that logind provides for free elsewhere. `dms-greeter enable` does all of this for you, this is the manual equivalent:
+
+1. Edit `/etc/greetd/config.toml`:
+  ```toml
+  [terminal]
+  vt = 1
+
+  [default_session]
+  user = "_greeter"
+  command = "env LIBSEAT_BACKEND=logind DMS_VOID=1 dms-greeter --command niri --cache-dir /var/cache/dms-greeter"
+  ```
+  Swap `niri` for `hyprland` or `sway` as needed. The `LIBSEAT_BACKEND=logind` prefix is required, without it the greeter compositor tries seatd and hangs.
+
+2. Enable dbus and elogind, and disable seatd if it is enabled (elogind manages the seat):
+  ```bash
+  sudo ln -sf /etc/sv/dbus /var/service/
+  sudo ln -sf /etc/sv/elogind /var/service/
+  sudo rm -f /var/service/seatd
+  ```
+
+3. Make greetd wait for dbus and elogind at boot. Replace `/etc/sv/greetd/run` with:
+  ```sh
+  #!/bin/sh
+  sv check dbus >/dev/null || exit 1
+  sv check elogind >/dev/null || exit 1
+  exec greetd
+  ```
+  Without this, greetd can race elogind on boot and the first session hangs. greetd package updates restore the stock run script, re-apply this (or re-run `dms-greeter enable`) afterwards.
+
+4. Add `_greeter` to the video and input groups:
+  ```bash
+  sudo usermod -aG video,input _greeter
+  ```
+
+5. Add pam_rundir to `/etc/pam.d/greetd` so sessions get an `XDG_RUNTIME_DIR`:
+  ```
+  session    optional    pam_rundir.so
+  ```
+
+6. Enable greetd:
+  ```bash
+  sudo ln -sf /etc/sv/greetd /var/service/
+  ```
+  runit starts it within a few seconds. If you still land on a tty login, check `sudo sv status greetd dbus elogind`: greetd stuck in a restart loop means dbus or elogind is not running.
