@@ -51,6 +51,30 @@ Running `dms setup` with no subcommand deploys all of the above.
 If you installed DMS from packages (not through the interactive installer), run `dms setup` after install to get working compositor and terminal configs right away.
 :::
 
+## Headless
+
+`dms setup headless` deploys configs without any prompts, for installers and scripts.
+
+```bash
+dms setup headless --compositor niri
+```
+
+| Flag | Description |
+|---|---|
+| `--compositor` | Required. `niri`, `hyprland`, or `mango` |
+| `--terminal` | Also deploy a terminal config and wire it into the keybinds: `ghostty`, `kitty`, or `alacritty` |
+| `--force` | Overwrite existing configs. Existing files get timestamped backups first |
+| `--skip-existing` | Log a warning and skip anything that already has a config, instead of failing |
+| `--no-systemd` | Deploy the session config without systemd integration |
+
+If a config already exists and you pass neither `--force` nor `--skip-existing`, the command fails with a non-zero exit so scripts notice. The two flags can't be combined.
+
+`dms` refuses to run as root, so from an install hook run it as the target user:
+
+```bash
+runuser -u youruser -- dms setup headless --compositor niri --skip-existing
+```
+
 ## NixOS Home-Manager Users
 
 If you manage your niri or Hyprland config through home-manager, you probably don't want `dms setup` writing files that conflict with your declarative config. Instead, use the individual subcommands to generate only the pieces you need.
