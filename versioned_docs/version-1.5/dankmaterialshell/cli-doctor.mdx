@@ -264,8 +264,15 @@ Required for the Dank Greeter. (See [DankGreeter documentation](../dankgreeter/)
 ## Environment Variables
 
 ### QT_QPA_PLATFORMTHEME
+### QT_QPA_PLATFORMTHEME
 
 Used to set the Qt platform theme - usually one of `gtk3`, `qt6ct`, or `kde`. This will define how QT applications are themed. Including some elements of DMS (such as icon themes)
+
+:::warning[qt6ct vs qt6ct-kde]
+`qt6ct-kde` is the **package name** (AUR), not a theme value — the value Qt expects is `qt6ct`. With `qt6ct-kde` set as the value, Qt apps load no platform theme at all: palettes stay unstyled and icon lookups fail, which shows up in Quickshell tray menus as black/magenta placeholder icons. `dms doctor` flags this misconfiguration and prints the fix.
+:::
+
+When the variable is set, `dms doctor` also verifies that the plugin it names actually exists in the plugin directory Qt searches (asked via `qmake`/`qtpaths`), warning with the expected path on a miss. Without Qt development tools installed, the check reports "Cannot verify" instead of guessing.
 
 ### QS_ICON_THEME
 
