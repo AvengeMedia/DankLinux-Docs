@@ -170,6 +170,16 @@ const dankPurpleLight: PrismTheme = {
   ],
 };
 
+const proseOnly = (content: string) =>
+  content
+    .replace(/^export const[\s\S]*?^};$/gm, '')
+    .replace(/^import .*$/gm, '')
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/^\s*(light|dark|sources|style|alt)[:=].*$/gm, '')
+    .replace(/^\|.*$/gm, '')
+    .replace(/```[\s\S]*?```/g, '');
+
 const config: Config = {
   title: 'Dank Linux',
   tagline: 'A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, labwc, and Sway.',
@@ -305,6 +315,8 @@ const config: Config = {
         },
         blog: {
           showReadingTime: true,
+          readingTime: ({content, locale, defaultReadingTime}) =>
+            defaultReadingTime({content: proseOnly(content), locale}),
           blogTitle: 'Dank Linux Updates',
           blogDescription: 'News, releases, and updates from the Dank Linux project.',
           blogSidebarTitle: 'Recent Posts',

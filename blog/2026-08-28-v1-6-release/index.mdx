@@ -54,7 +54,7 @@ export const MarbleVeins = ({ className, opacity = 0.6 }) => {
   </div>
 </div>
 
-DankMaterialShell (DMS) 1.6 "Marble Tabby" is here! This release brings a deep performance pass across the shell and CLI, Dank Island - a new island-style bar instance, spring-based motion across the whole shell, an auth rework, GTK3 dynamic theming, a standalone greeter, unified versioning across the Dank Desktop, a big plugin ecosystem push, and hundreds of fixes and improvements across DMS.
+DankMaterialShell (DMS) 1.6 "Marble Tabby" is here! This release brings significant performance improvements and resource optimizations across the shell and CLI, Dank Island - a new island-style bar instance, spring-based motion across the whole shell, GTK3 dynamic theming, a standalone greeter, unified versioning across the Dank Desktop, a big plugin ecosystem push, and hundreds of fixes and improvements across DMS.
 
 {/* truncate */}
 
@@ -101,17 +101,18 @@ DankMaterialShell (DMS) 1.6 "Marble Tabby" is here! This release brings a deep p
   </div>
 </div>
 
-1.6 puts a lot of this cycle into making the shell and CLI faster and lighter - less waiting on the things you do all day, less memory and CPU the rest of the time:
+1.6 puts a lot of this cycle into making the shell and its companion tools faster and lighter:
 
-- **IPC**: `dms ipc call` used to launch a whole quickshell process just to deliver one message. Now it talks to the shell directly, and the median call dropped from 49.8 ms to 9.6 ms. Every keybind and script that goes through dms gets this for free.
+- **IPC**: `dms ipc call` used to launch a whole quickshell process just to deliver one message. Now it talks to the shell directly, and the median call dropped from 49.8 ms to 9.6 ms. Every keybind and script that goes through dms gets this for free. `dms ipc` is now even faster than calling `quickshell ipc` directly.
 - **Screenshots**: saving is 4-8x faster. A full 1440p screen writes in 25 ms instead of 94 ms, JPEG in 29 ms instead of 75 ms, and re-capturing a saved region in 12 ms instead of 106 ms.
 - **Region selector**: dragging a selection used to redraw the entire screen on every pointer move, so it couldn't keep up with the display. Now only the edges of the rectangle redraw, and drags feel instant at any refresh rate.
 - **Color picker**: same story for the eyedropper - it stopped copying the whole screen every time the pointer moves, so it stays smooth on big and multi-monitor setups and stops burning CPU while you drag.
-- **Memory**: the shell uses ~76 MB less memory (-19%) on a clean two-monitor setup, with no change in smoothness.
+- **Memory**: the shell uses ~76 MB less idle memory (-19%) on a clean two-monitor setup.
+  - There is additional work in DMS 1.6 that will further improve startup times and memory usage once [QML Caching](https://github.com/quickshell-mirror/quickshell/pull/1049) is implemented in Quickshell.
 
 ### vs other tools
 
-dms, grim, and hyprpicker all grab the screen from the compositor the same way, so the differences below come down to what each tool does after that.
+dms, grim, and hyprpicker all grab the screen from the compositor the same way, so the differences below mostly come down to what each tool does after that (Image encoding, compression, etc.).
 
 Screenshots vs grim:
 
@@ -121,7 +122,7 @@ Screenshots vs grim:
 | both outputs | 344.3 ms | 71.7 ms |
 | 800x600 region | 26.0 ms | 12.1 ms |
 
-grim writes its PNG on a single core; dms uses all of them, and still writes a 680 KB file where grim writes 11 MB.
+grim writes its PNG on a single core; dms uses all of them. The new PNG encoder in DMS outperforms grim even with compression enabled.
 
 Color picker vs hyprpicker: with the picker open and the pointer sitting still, hyprpicker keeps redrawing at ~59% of a CPU core on this setup; `dms color pick` sits at 0% and only redraws when the pointer actually moves.
 
@@ -131,50 +132,175 @@ Color picker vs hyprpicker: with the picker open and the pointer sitting still, 
 
 1.6 introduces Dank Island, a new bar instance built around a central island with satellite widgets.
 
-- **Satellites**: areas for widgets on either side of the central island.
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="dank island idle"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/island_light.png'),
+      dark: useBaseUrl('/img/blog/v1.6/island_dark.png'),
+    }}
+    style={{ maxWidth: '900px', width: '100%' }}
+  />
+  <figcaption>The island idle state, satellites on both sides.</figcaption>
+</figure>
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="island faces"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/island_faces_light.png'),
+      dark: useBaseUrl('/img/blog/v1.6/island_faces_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>Idle, a notification, and media playing.</figcaption>
+</figure>
+
+<figure style={{ textAlign: 'center' }}>
+  <img src={useBaseUrl('/img/blog/v1.6/island_faces.gif')} alt="island faces animated" style={{ maxWidth: '900px', width: '100%' }} />
+  <figcaption>A notification comes in, then media takes the face.</figcaption>
+</figure>
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="island expanding"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/island_expand_light.gif'),
+      dark: useBaseUrl('/img/blog/v1.6/island_expand_dark.gif'),
+    }}
+    style={{ maxWidth: '900px', width: '100%' }}
+  />
+  <figcaption>The island opens into the dash and control center in place, on the spring. Notifications, launcher, wallpaper and weather open the same way.</figcaption>
+</figure>
+
+- **Satellites**: areas for widgets on either side of the central island. The island itself hijacks the center section of the bar, and the left and right section become the "satellites."
 - **Live faces**: The face of the island reacts dynamically to user interactions and system events - such as notifications, media playback, and OSD triggers.
-- **Spring physics**: the island paces its transitions from a spring instead of fixed animation curves.
+- **Spring physics**: the island uses new spring-based animations that are built into DMS 1.6
 
 <small>Enable the Island in Settings -> Primary Bar -> Island</small>
-
-## Spring Motion
-
-The island's motion system is not island-only. 1.6 swaps fixed animation curves for spring physics across the shell: popouts, modals, the dock, OSDs, notification popups, the workspace switcher, and both the niri and Hyprland overviews move on springs now.
-
-Typography & Motion in settings was reorganized around it, with a bounce control for how much the spring overshoots and a reduce motion switch that takes it back out. Content that is already open still resizes on bezier curves; springs are for things arriving and leaving.
 
 ## Unified Versioning
 
 1.6 changes how the Dank Desktop is versioned: dsearch, dgop, dcal, and dgreeter are now versioned and released together with DMS. One version number covers the whole desktop.
 
-## Standalone Greeter
+## Rest of the Desktop Suite
 
-The greeter moved out of the shell into its own project, [dank-greeter](https://github.com/AvengeMedia/dank-greeter). It ships as a standalone package with its own release cycle instead of riding along inside DMS.
+### dank-greeter
+
+The greeter is its own repo now, [dank-greeter](https://github.com/AvengeMedia/dank-greeter). This is the first release.
+
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="dank-greeter"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/greeter_light.png'),
+      dark: useBaseUrl('/img/blog/v1.6/greeter_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>dank-greeter, same theme as the session behind it.</figcaption>
+</figure>
+
+- Face unlock starts on its own if pam_howdy is in the stack
+- Launched sessions get the desktop env vars, like GDM does (fixes issue with launching GNOME sessions)
+- Follows your live DMS config instead of a copy of it (fixes issues with out-of-sync settings)
+
+### dgop
+
+
+<figure style={{ textAlign: 'center' }}>
+  <img src={useBaseUrl('/img/blog/v1.6/dgop_tui.png')} alt="dgop tui" style={{ maxWidth: '700px', width: '100%' }} />
+  <figcaption>dgop with process search open.</figcaption>
+</figure>
+
+- Process CPU% is per sample interval now ([cwelsys](https://github.com/cwelsys))
+- GPU reclaimable memory no longer counted as used
+- Falls back to per-core temps when there is no package sensor
+- TUI search and custom keybinds
+- FreeBSD support
+
+### dsearch
+
+- Survives a corrupted index or metastore db instead of dying
+- Fixed watcher churn and a few search panics
+- FreeBSD support
+
+### dcal
+
+
+<figure style={{ textAlign: 'center' }}>
+  <img src={useBaseUrl('/img/blog/v1.6/dcal_drag.png')} alt="dcal drag to create" style={{ maxWidth: '700px', width: '100%' }} />
+  <figcaption>Dragging out a new event in week view.</figcaption>
+</figure>
+
+- Drag to create events in day and week views
+- Multi-select, context actions, copy/paste ([artrixdotdev](https://github.com/artrixdotdev))
+- RSVP to one occurrence of a recurring invite, chips show RSVP state
+- Completing a recurring task moves it to the next occurrence
+- Default calendar, date/time locale override, ctrl+n for a new event
+- CalDAV fixes for non-compliant servers ([JCapucho](https://github.com/JCapucho))
+- Fixed rescheduled series on Microsoft and all-day events on Google
+- All-day events and exported ics keep the right timezone
+- French and Bulgarian translations
 
 ## Screenshots & Capture
 
 Beyond the encoder speedups above, capture itself got better:
 
-- Drag a region across outputs, alt to restrict to one output, ctrl to drag the selection
-- Native cursor shapes in the selector
+<figure style={{ textAlign: 'center' }}>
+  <img src={useBaseUrl('/img/blog/v1.6/screenshot_region.png')} alt="region across two outputs" style={{ maxWidth: '900px', width: '100%' }} />
+  <figcaption>One region across two monitors.</figcaption>
+</figure>
+
+- Drag a region across outputs, alt to restrict to one output, ctrl to drag the selection or resize it from any corner ([hthienloc](https://github.com/hthienloc))
+- Native cursor shapes in the selector ([hthienloc](https://github.com/hthienloc))
 - Initial scroll capture mode
 - 10-bit color/HDR support via `wp_color_manager_v1`
 - `--json` flag for capture metadata
 
 ## Theming
 
-- **GTK3 dynamic theming**: with adw-gtk3 installed, DMS copies the light and dark variants into `~/.local/share/themes` and patches the copies with your generated colors. GTK3 apps then follow the system color scheme and switch live, no restart. Without adw-gtk3 it falls back to the `dank-colors.css` import. A `gtk.css` or dconf `gtk-theme` you set yourself is no longer overwritten.
-- **Qt**: qtengine works as a platform theme, and so does `QT_PLATFORMTHEME=kde`.
-- **matugen**: smart mode and scheme type are configurable, dank16 emits the full matugen color format, and there are new templates for Fcitx5 and Vesktop.
-- **Contrast**: the theme browser shows WCAG data with per-theme breakdowns, so you can see what a theme does to legibility before you apply it.
-- Settings -> Theme Color has an Extract button that writes the live theme out as one dark and light JSON file.
+- **GTK3 dynamic theming**: with adw-gtk3 installed, DMS copies the light and dark variants into `~/.local/share/themes` and patches the copies with your generated colors. GTK3 apps then follow the system color scheme and switch live, no restart. Without adw-gtk3 it falls back to the `dank-colors.css` import. A `gtk.css` or dconf `gtk-theme` you set yourself is no longer overwritten. ([euletheia](https://github.com/euletheia))
+
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="thunar and nautilus themed"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/gtk3_light.png'),
+      dark: useBaseUrl('/img/blog/v1.6/gtk3_dark.png'),
+    }}
+    style={{ maxWidth: '900px', width: '100%' }}
+  />
+  <figcaption>Thunar is GTK3, Nautilus is libadwaita. Same folder, same colors.</figcaption>
+</figure>
+- **Qt**: qtengine works as a platform theme ([Conava](https://github.com/Conava)), and so does `QT_PLATFORMTHEME=kde`.
+- **matugen**: smart mode and scheme type are configurable ([haikalllp](https://github.com/haikalllp)), dank16 emits the full matugen color format ([pdf](https://github.com/pdf)), and there are new templates for Fcitx5 and Vesktop ([hthienloc](https://github.com/hthienloc)).
+- **Contrast**: registry themes ship a contrast report and the theme browser badges each one AA or AAA. The levels are [WCAG](https://www.w3.org/TR/WCAG22/#contrast-minimum), the W3C accessibility spec: AA is body text at 4.5:1 or better against its background, AAA is 7:1. The report covers body text, accents, and non-text bits like borders and icons in both dark and light, and the badge is the worst of them.
+
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="theme browser contrast"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/contrast_light.png'),
+      dark: useBaseUrl('/img/blog/v1.6/contrast_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>WCAG badges on each theme in the browser.</figcaption>
+</figure>
+- Settings -> Theme Color has an Extract button that writes the live theme out as one dark and light JSON file. ([hthienloc](https://github.com/hthienloc))
 
 ## Network
 
-- **WiFi hotspot**: share the machine's connection from the shell
-- **Cellular**: modem support on the NetworkManager backend
+- **WiFi hotspot**: share the machine's connection from the shell ([ronharel02](https://github.com/ronharel02))
+- **WiFi list**: refresh button in the control center ([YewFence](https://github.com/YewFence))
+- **Cellular**: modem support on the NetworkManager backend ([kmf](https://github.com/kmf))
 - **OWE**: open networks with opportunistic wireless encryption connect, including transition mode
-- **Fortinet**: password profiles authenticate inside DMS with `openconnect --authenticate` and hand the short-lived cookie to NetworkManager. An untrusted server certificate shows its fingerprint for confirmation, and the fingerprint is only saved once the tunnel actually connects
+- **Fortinet**: password profiles authenticate inside DMS with `openconnect --authenticate` and hand the short-lived cookie to NetworkManager. An untrusted server certificate shows its fingerprint for confirmation, and the fingerprint is only saved once the tunnel actually connects ([Grant07](https://github.com/Grant07))
 - **802.1x**: EAP method selection, and credential persistence works again
 
 ## Config & Backup
@@ -198,47 +324,56 @@ settings.json and session.json only store what differs from the defaults now, so
 - The build requires a git submodule to be checked out as part of the build process. `git submodule update --init --recursive` should be run before building.
 - Release binaries and all -git packages build with the embedded shell.
 - The greeter is its own package now, [dank-greeter](https://github.com/AvengeMedia/dank-greeter), with its own release artifacts. `dms greeter install` expects the dms-greeter binary from that package.
-- dgop and curl are no longer external dependencies.
 - dsearch, dgop, dcal, and dgreeter tag and release together with DMS from this release on.
 
 ## Plugins
 
 The plugin ecosystem got numerous updates this cycle
 
-- **New grid-style plugin browser**, and runtime plugins are searchable from settings
-- **Portable plugin lockfile** for reproducing a plugin set across machines
-- **Support for multiple plugin & theme registries**: `dms registry add <name> <git-url>`, or Settings → Plugins → Registries. Themes resolve from extra registries too
+- **New grid-style plugin browser**, and runtime plugins are searchable from settings ([hthienloc](https://github.com/hthienloc))
+
+
+<figure style={{ textAlign: 'center' }}>
+  <ThemedImage
+    alt="plugin browser"
+    sources={{
+      light: useBaseUrl('/img/blog/v1.6/plugin_browser_light.png'),
+      dark: useBaseUrl('/img/blog/v1.6/plugin_browser_dark.png'),
+    }}
+    style={{ maxWidth: '700px', width: '100%' }}
+  />
+  <figcaption>The plugin browser, now a grid.</figcaption>
+</figure>
+- **Portable plugin lockfile** for reproducing a plugin set across machines ([artrixdotdev](https://github.com/artrixdotdev))
+- **Support for multiple plugin & theme registries**: `dms registry add <name> <git-url>`, or Settings → Plugins → Registries. Themes resolve from extra registries too. Started by [louzt](https://github.com/louzt) via env vars
 - **Plugin translations**: drop a `translations/` directory next to `plugin.json` and wrap strings in `I18n.trFor("myPlugin", "...")`. Nothing has to land in the DMS repo, users get your translations by installing the plugin
-- **Desktop widgets**: Added a runtime resize API. For example, a widget can now change its size in response to user interactions or some internal conditions.
+- **Desktop widgets**: runtime resize API, so a widget can change its own size ([SunPodder](https://github.com/SunPodder))
 - Plugins are a step in the first-start wizard now, and the launcher's power options moved to a built-in plugin
 
-The [registry](https://plugins.danklinux.com) is past 335 plugins and 42 themes, 86 of the plugins added this cycle. Two standouts:
-
-- **[Quick Capture](https://github.com/hthienloc/dms-quick-capture)** by Loc Huynh: screen capture with drawing and annotation tools, plus OCR and QR decoding
-- **[Dank Software Depot](https://github.com/vinceecniv/DankSoftwareDepot)** by Vincent Blok: a full software and updates center - update cards with release notes, an app store covering system repos, Flathub, and AppImage, installed-software management, and firmware updates. Fedora first, Debian/Ubuntu and Arch experimental.
+The [registry](https://plugins.danklinux.com) is past 335 plugins and 42 themes, 86 of the plugins added this cycle. The directory ranks them by 👍 on each plugin's tracking issue in the [registry repo](https://github.com/AvengeMedia/dms-plugin-registry/issues). If a plugin earned a spot in your setup, go upvote it so other people find it.
 
 ## Translations
 
-DMS ships 21 languages besides English. The term catalog got an overhaul this cycle: around 160 dead terms deleted, context added where one English word was doing two jobs, and a mechanism for carrying the same term under different contexts. Arabic and Ukrainian are new. Time and date formatting can follow the system locale instead of the DMS format options.
+DMS ships 22 languages besides English. The term catalog got an overhaul this cycle: around 160 dead terms deleted, context added where one English word was doing two jobs, and a mechanism for carrying the same term under different contexts. Arabic, Bulgarian, and Ukrainian are new. Time and date formatting can follow the system locale instead of the DMS format options.
 
 Plugins carry their own catalogs on top of that, so a plugin can be translated without anything landing in the DMS repo.
 
 ## Everything Else
 
 - **Bluetooth**: multi-adapter support, soft rfkill unblock
-- **Notifications**: DnD bypass globally and per-app, an option to ignore app-requested timeouts, and running the default action on body click instead of expanding the text
-- **Launcher**: ctrl-tab to cycle modes, a spotlight style for the niri overview, and IPC parity between spotlight-bar and the full launcher
-- **Dock**: separate pinned and running apps, cycle grouped windows, minimize support
-- **Clipboard**: drop content in to store it, an overlay layer option, and clearing only what the filter matches
-- **Bar**: corner style and length padding, a focused window details popout, configurable tray icon spacing, popout variants for the power menu and color picker
-- **Lock screen**: vertical clock style, a separate text input for IMEs, an option to hide weather
-- **Settings**: Niri keyboard and mouse/touchpad tabs, location search for theme and gamma coordinates
+- **Notifications**: DnD bypass globally and per-app, an option to ignore app-requested timeouts ([tkroll-ionos](https://github.com/tkroll-ionos)), and running the default action on body click instead of expanding the text
+- **Launcher**: ctrl-tab to cycle modes, a spotlight style for the niri overview, and IPC parity between spotlight-bar and the full launcher ([hthienloc](https://github.com/hthienloc))
+- **Dock**: separate pinned and running apps, cycle grouped windows ([hthienloc](https://github.com/hthienloc)), minimize support
+- **Clipboard**: drop content in to store it, an overlay layer option ([hthienloc](https://github.com/hthienloc)), clearing only what the filter matches ([Mario-Mohar](https://github.com/Mario-Mohar)), and copy as plain text for entries that have one
+- **Bar**: corner style and length padding, a focused window details popout ([hthienloc](https://github.com/hthienloc)), configurable tray icon spacing ([tassiovirginio](https://github.com/tassiovirginio)), popout variants for the power menu and color picker
+- **Lock screen**: vertical clock style ([hthienloc](https://github.com/hthienloc)), a separate text input for IMEs, an option to hide weather
+- **Settings**: Niri keyboard and mouse/touchpad tabs ([hthienloc](https://github.com/hthienloc)), location search for theme and gamma coordinates ([Curious-r](https://github.com/Curious-r))
 - **Gamma**: configurable transition duration for time-based night mode, values below 2500k, a suspend-aware scheduler that stops losing track across sleep, and gamma and contrast sliders that work with night mode off
-- **Power menu**: user-defined custom buttons, soft reboot on systemd
-- **Battery**: optionally lower refresh rate on battery, estimated end time, charge and discharge rate in the bar widget
-- **Wallpaper**: folder-based selection, shuffle, random cycling order
-- **Install**: `dms setup headless` and a non-interactive dankinstall script
-- **IPC**: `settings dump` for the full live config as JSON, `dumpSession`, notification dismiss, tray menu open, and `openAt`/`toggleAt` for opening popouts at a location
+- **Power menu**: user-defined custom buttons ([FormalSnake](https://github.com/FormalSnake)), soft reboot on systemd
+- **Battery**: optionally lower refresh rate on battery ([atimofeev](https://github.com/atimofeev)), estimated end time ([hthienloc](https://github.com/hthienloc)), charge and discharge rate in the bar widget ([SpyrosPsarras](https://github.com/SpyrosPsarras))
+- **Wallpaper**: folder-based selection, shuffle ([greenbugx](https://github.com/greenbugx)), random cycling order ([hthienloc](https://github.com/hthienloc))
+- **Install**: `dms setup headless` and a non-interactive dankinstall script ([JDKamalakar](https://github.com/JDKamalakar))
+- **IPC**: `settings dump` for the full live config as JSON ([sweenu](https://github.com/sweenu)), `dumpSession`, notification dismiss ([euletheia](https://github.com/euletheia)), tray menu open ([lankong0522](https://github.com/lankong0522)), and `openAt`/`toggleAt` for opening popouts at a location
 
 ## What's Next
 
@@ -252,11 +387,11 @@ In development for upcoming releases:
 
 ## Community Contributions
 
-502 commits from 61 contributors this cycle. One deserves a callout:
+522 commits from 63 contributors this cycle. One deserves a callout:
 
-**[Huỳnh Thiện Lộc](https://github.com/hthienloc)** landed 55 commits, including two of the performance wins above: the direct-socket IPC path and the region selector overlay cache. Also the cross-output region capture, native cursor shapes, the dock pinned/running split and grouped window cycling, Niri keyboard and mouse/touchpad settings tabs, the QR generator launcher, and battery end-time estimates. On top of that, the Quick Capture and Emoji Picker plugins in the registry are his.
+**[Huỳnh Thiện Lộc](https://github.com/hthienloc)** landed 60 commits, including two of the performance wins above: the direct-socket IPC path and the region selector overlay cache. Also the cross-output region capture, native cursor shapes, the dock pinned/running split and grouped window cycling, Niri keyboard and mouse/touchpad settings tabs, the QR generator launcher, and battery end-time estimates. On top of that, the Quick Capture and Emoji Picker plugins in the registry are his.
 
-Also: GTK3 dynamic theming (euletheia), custom power menu buttons and Apple Music animated covers (FormalSnake), WiFi hotspot (Ron Harel).
+Also: GTK3 dynamic theming ([euletheia](https://github.com/euletheia)), custom power menu buttons and Apple Music animated covers ([FormalSnake](https://github.com/FormalSnake)), WiFi hotspot ([ronharel02](https://github.com/ronharel02)).
 
 ### All Contributions
 
@@ -286,11 +421,12 @@ Also: GTK3 dynamic theming (euletheia), custom power menu buttons and Apple Musi
 | **[feng-yifan](https://github.com/feng-yifan)** | Fix(settings): reset AppBrowserPopup model on close to avoid crash ([PR #2925](https://github.com/AvengeMedia/DankMaterialShell/pull/2925)) |
 | **[fluxwrk](https://github.com/fluxwrk)** | Fix: update Mango named scratchpad keybind ([PR #3118](https://github.com/AvengeMedia/DankMaterialShell/pull/3118)) |
 | **[FormalSnake](https://github.com/FormalSnake)** | • Location: add missing subscribe fan-out for location events ([PR #2914](https://github.com/AvengeMedia/DankMaterialShell/pull/2914))<br/>• Powermenu: support user-defined custom power buttons ([PR #2916](https://github.com/AvengeMedia/DankMaterialShell/pull/2916))<br/>• Media: add opt-in Apple Music animated album covers ([PR #2918](https://github.com/AvengeMedia/DankMaterialShell/pull/2918)) |
+| **[fromelicks](https://github.com/fromelicks)** | Fix(lint-qml): explain how to actually create the tooling VFS config ([PR #3249](https://github.com/AvengeMedia/DankMaterialShell/pull/3249)) |
 | **[Grant07](https://github.com/Grant07)** | Fix(network): authenticate Fortinet VPNs natively ([PR #2959](https://github.com/AvengeMedia/DankMaterialShell/pull/2959)) |
 | **[greenbugx](https://github.com/greenbugx)** | Feat(wallpaper): add folder-based wallpaper selection and shuffle ([PR #2990](https://github.com/AvengeMedia/DankMaterialShell/pull/2990)) |
 | **[haikalllp](https://github.com/haikalllp)** | Feat(theme): add support for matugen smart mode and type ([PR #3109](https://github.com/AvengeMedia/DankMaterialShell/pull/3109)) |
 | **[hecknt](https://github.com/hecknt)** | Systemlogo: Add Zirconium ([PR #2881](https://github.com/AvengeMedia/DankMaterialShell/pull/2881)) |
-| **[hthienloc](https://github.com/hthienloc)** | • Feat(media): add toggle for album art accent colors (#2831) ([PR #2832](https://github.com/AvengeMedia/DankMaterialShell/pull/2832))<br/>• Fix(dash): resolve pointer cursor hover issue in connected mode ([PR #2845](https://github.com/AvengeMedia/DankMaterialShell/pull/2845))<br/>• Fix(Modal): respect targetScreen property instead of always using focused screen ([PR #2861](https://github.com/AvengeMedia/DankMaterialShell/pull/2861))<br/>• Fix(slideout): yield keyboard focus when modal is open on same screen ([PR #2902](https://github.com/AvengeMedia/DankMaterialShell/pull/2902))<br/>• Feat(settings): add Mouse & Touchpad settings tab for Niri ([PR #2905](https://github.com/AvengeMedia/DankMaterialShell/pull/2905))<br/>• Feat(settings): add option to suppress config reload toast (#2730) ([PR #2915](https://github.com/AvengeMedia/DankMaterialShell/pull/2915))<br/>• Feat(wallpaper): support random cycling order ([PR #2936](https://github.com/AvengeMedia/DankMaterialShell/pull/2936))<br/>• Feat(settings): add keyboard configuration tab for Niri ([PR #2937](https://github.com/AvengeMedia/DankMaterialShell/pull/2937))<br/>• Feat: add QR Generator launcher ([PR #2941](https://github.com/AvengeMedia/DankMaterialShell/pull/2941))<br/>• Fix(launcher): honor source badge setting in grid mode ([PR #3002](https://github.com/AvengeMedia/DankMaterialShell/pull/3002))<br/>• Fix(settings): hide removed widget tooltip ([PR #3003](https://github.com/AvengeMedia/DankMaterialShell/pull/3003))<br/>• Feat(theme): add extract dynamic theme to JSON file ([PR #3009](https://github.com/AvengeMedia/DankMaterialShell/pull/3009))<br/>• Fix(dock): skip creating dock layers when dock is disabled ([PR #3014](https://github.com/AvengeMedia/DankMaterialShell/pull/3014))<br/>• Feat(filebrowser): expose folder mode on surface modal ([PR #3022](https://github.com/AvengeMedia/DankMaterialShell/pull/3022))<br/>• Feat(dock): cycle grouped app windows ([PR #3023](https://github.com/AvengeMedia/DankMaterialShell/pull/3023))<br/>• Feat(dock): add option to separate pinned and running apps ([PR #3025](https://github.com/AvengeMedia/DankMaterialShell/pull/3025))<br/>• Feat(clock): add widget date order option ([PR #3028](https://github.com/AvengeMedia/DankMaterialShell/pull/3028))<br/>• Fix(dock): preserve overview-only visibility ([PR #3029](https://github.com/AvengeMedia/DankMaterialShell/pull/3029))<br/>• Fix(brightness): initialize display state ([PR #3035](https://github.com/AvengeMedia/DankMaterialShell/pull/3035))<br/>• Feat(clipboard): add overlay layer option ([PR #3037](https://github.com/AvengeMedia/DankMaterialShell/pull/3037))<br/>• Fix(dock): cycle niri overview groups ([PR #3038](https://github.com/AvengeMedia/DankMaterialShell/pull/3038))<br/>• Fix(frame): align connected chrome layer ([PR #3039](https://github.com/AvengeMedia/DankMaterialShell/pull/3039))<br/>• Perf(screenshot): cache overlay background ([PR #3061](https://github.com/AvengeMedia/DankMaterialShell/pull/3061))<br/>• Fix(dock): close grouped app on middle click ([PR #3064](https://github.com/AvengeMedia/DankMaterialShell/pull/3064))<br/>• Fix(dock): animate overview reveal in frame mode ([PR #3065](https://github.com/AvengeMedia/DankMaterialShell/pull/3065))<br/>• Fix(osd): clamp vertical brightness slider ([PR #3067](https://github.com/AvengeMedia/DankMaterialShell/pull/3067))<br/>• Fix(launcher): hide spotlight placeholder during IME input ([PR #3071](https://github.com/AvengeMedia/DankMaterialShell/pull/3071))<br/>• Fix(matugen): support Vesktop Flatpak themes ([PR #3075](https://github.com/AvengeMedia/DankMaterialShell/pull/3075))<br/>• Feat(matugen): add Fcitx5 theme template ([PR #3076](https://github.com/AvengeMedia/DankMaterialShell/pull/3076))<br/>• Perf(ipc): call Quickshell directly ([PR #3081](https://github.com/AvengeMedia/DankMaterialShell/pull/3081))<br/>• Feat(dankbar): corner style & bar length padding ([PR #3085](https://github.com/AvengeMedia/DankMaterialShell/pull/3085))<br/>• Fix(lock): handle ctrl-backspace ([PR #3087](https://github.com/AvengeMedia/DankMaterialShell/pull/3087))<br/>• Feat(chooser): edit and copy target ([PR #3094](https://github.com/AvengeMedia/DankMaterialShell/pull/3094))<br/>• Fix(notifications): keep popup above frame chrome ([PR #3099](https://github.com/AvengeMedia/DankMaterialShell/pull/3099))<br/>• Fix(frame): preserve connected popout chrome ([PR #3101](https://github.com/AvengeMedia/DankMaterialShell/pull/3101))<br/>• Feat(settings): improve battery status layout ([PR #3103](https://github.com/AvengeMedia/DankMaterialShell/pull/3103))<br/>• Fix(settings): restore control center menu ([PR #3113](https://github.com/AvengeMedia/DankMaterialShell/pull/3113))<br/>• Feat(battery): show estimated end time ([PR #3117](https://github.com/AvengeMedia/DankMaterialShell/pull/3117))<br/>• Fix(displays): restore scale after revert ([PR #3124](https://github.com/AvengeMedia/DankMaterialShell/pull/3124))<br/>• Fix(launcher): clip tile labels to rounded corners ([PR #3126](https://github.com/AvengeMedia/DankMaterialShell/pull/3126))<br/>• Fix(dankbar): consume empty-area right clicks ([PR #3127](https://github.com/AvengeMedia/DankMaterialShell/pull/3127))<br/>• Fix(screenshot): support multi-monitor region capture ([PR #3132](https://github.com/AvengeMedia/DankMaterialShell/pull/3132))<br/>• Feat(settings): search runtime plugins ([PR #3136](https://github.com/AvengeMedia/DankMaterialShell/pull/3136))<br/>• Feat(bar): add focused window details popout ([PR #3139](https://github.com/AvengeMedia/DankMaterialShell/pull/3139))<br/>• Feat(screenshot): use native cursor shapes ([PR #3155](https://github.com/AvengeMedia/DankMaterialShell/pull/3155))<br/>• Feat(screenshot): drag region with ctrl ([PR #3157](https://github.com/AvengeMedia/DankMaterialShell/pull/3157))<br/>• Fix(frame): consume gutter clicks ([PR #3158](https://github.com/AvengeMedia/DankMaterialShell/pull/3158))<br/>• Feat(launcher): cycle modes with ctrl-tab ([PR #3204](https://github.com/AvengeMedia/DankMaterialShell/pull/3204))<br/>• Feat(spotlight): align tab navigation with full launcher ([PR #3205](https://github.com/AvengeMedia/DankMaterialShell/pull/3205))<br/>• Fix(clipboard): stack clear dialog above modal ([PR #3207](https://github.com/AvengeMedia/DankMaterialShell/pull/3207))<br/>• Fix(settings): keep search result visible ([PR #3209](https://github.com/AvengeMedia/DankMaterialShell/pull/3209))<br/>• Feat(clipboard): accept dropped content ([PR #3211](https://github.com/AvengeMedia/DankMaterialShell/pull/3211))<br/>• Feat(lock): add vertical clock style ([PR #3220](https://github.com/AvengeMedia/DankMaterialShell/pull/3220))<br/>• Fix(popouts): close hover surface on click ([PR #3223](https://github.com/AvengeMedia/DankMaterialShell/pull/3223))<br/>• Fix(dock): hide overlay dock over fullscreen ([PR #3224](https://github.com/AvengeMedia/DankMaterialShell/pull/3224)) |
+| **[hthienloc](https://github.com/hthienloc)** | • Feat(media): add toggle for album art accent colors (#2831) ([PR #2832](https://github.com/AvengeMedia/DankMaterialShell/pull/2832))<br/>• Fix(dash): resolve pointer cursor hover issue in connected mode ([PR #2845](https://github.com/AvengeMedia/DankMaterialShell/pull/2845))<br/>• Fix(Modal): respect targetScreen property instead of always using focused screen ([PR #2861](https://github.com/AvengeMedia/DankMaterialShell/pull/2861))<br/>• Fix(slideout): yield keyboard focus when modal is open on same screen ([PR #2902](https://github.com/AvengeMedia/DankMaterialShell/pull/2902))<br/>• Feat(settings): add Mouse & Touchpad settings tab for Niri ([PR #2905](https://github.com/AvengeMedia/DankMaterialShell/pull/2905))<br/>• Feat(settings): add option to suppress config reload toast (#2730) ([PR #2915](https://github.com/AvengeMedia/DankMaterialShell/pull/2915))<br/>• Feat(wallpaper): support random cycling order ([PR #2936](https://github.com/AvengeMedia/DankMaterialShell/pull/2936))<br/>• Feat(settings): add keyboard configuration tab for Niri ([PR #2937](https://github.com/AvengeMedia/DankMaterialShell/pull/2937))<br/>• Feat: add QR Generator launcher ([PR #2941](https://github.com/AvengeMedia/DankMaterialShell/pull/2941))<br/>• Fix(launcher): honor source badge setting in grid mode ([PR #3002](https://github.com/AvengeMedia/DankMaterialShell/pull/3002))<br/>• Fix(settings): hide removed widget tooltip ([PR #3003](https://github.com/AvengeMedia/DankMaterialShell/pull/3003))<br/>• Feat(theme): add extract dynamic theme to JSON file ([PR #3009](https://github.com/AvengeMedia/DankMaterialShell/pull/3009))<br/>• Fix(dock): skip creating dock layers when dock is disabled ([PR #3014](https://github.com/AvengeMedia/DankMaterialShell/pull/3014))<br/>• Feat(filebrowser): expose folder mode on surface modal ([PR #3022](https://github.com/AvengeMedia/DankMaterialShell/pull/3022))<br/>• Feat(dock): cycle grouped app windows ([PR #3023](https://github.com/AvengeMedia/DankMaterialShell/pull/3023))<br/>• Feat(dock): add option to separate pinned and running apps ([PR #3025](https://github.com/AvengeMedia/DankMaterialShell/pull/3025))<br/>• Feat(clock): add widget date order option ([PR #3028](https://github.com/AvengeMedia/DankMaterialShell/pull/3028))<br/>• Fix(dock): preserve overview-only visibility ([PR #3029](https://github.com/AvengeMedia/DankMaterialShell/pull/3029))<br/>• Fix(brightness): initialize display state ([PR #3035](https://github.com/AvengeMedia/DankMaterialShell/pull/3035))<br/>• Feat(clipboard): add overlay layer option ([PR #3037](https://github.com/AvengeMedia/DankMaterialShell/pull/3037))<br/>• Fix(dock): cycle niri overview groups ([PR #3038](https://github.com/AvengeMedia/DankMaterialShell/pull/3038))<br/>• Fix(frame): align connected chrome layer ([PR #3039](https://github.com/AvengeMedia/DankMaterialShell/pull/3039))<br/>• Perf(screenshot): cache overlay background ([PR #3061](https://github.com/AvengeMedia/DankMaterialShell/pull/3061))<br/>• Fix(dock): close grouped app on middle click ([PR #3064](https://github.com/AvengeMedia/DankMaterialShell/pull/3064))<br/>• Fix(dock): animate overview reveal in frame mode ([PR #3065](https://github.com/AvengeMedia/DankMaterialShell/pull/3065))<br/>• Fix(osd): clamp vertical brightness slider ([PR #3067](https://github.com/AvengeMedia/DankMaterialShell/pull/3067))<br/>• Fix(launcher): hide spotlight placeholder during IME input ([PR #3071](https://github.com/AvengeMedia/DankMaterialShell/pull/3071))<br/>• Fix(matugen): support Vesktop Flatpak themes ([PR #3075](https://github.com/AvengeMedia/DankMaterialShell/pull/3075))<br/>• Feat(matugen): add Fcitx5 theme template ([PR #3076](https://github.com/AvengeMedia/DankMaterialShell/pull/3076))<br/>• Perf(ipc): call Quickshell directly ([PR #3081](https://github.com/AvengeMedia/DankMaterialShell/pull/3081))<br/>• Feat(dankbar): corner style & bar length padding ([PR #3085](https://github.com/AvengeMedia/DankMaterialShell/pull/3085))<br/>• Fix(lock): handle ctrl-backspace ([PR #3087](https://github.com/AvengeMedia/DankMaterialShell/pull/3087))<br/>• Feat(chooser): edit and copy target ([PR #3094](https://github.com/AvengeMedia/DankMaterialShell/pull/3094))<br/>• Fix(notifications): keep popup above frame chrome ([PR #3099](https://github.com/AvengeMedia/DankMaterialShell/pull/3099))<br/>• Fix(frame): preserve connected popout chrome ([PR #3101](https://github.com/AvengeMedia/DankMaterialShell/pull/3101))<br/>• Feat(settings): improve battery status layout ([PR #3103](https://github.com/AvengeMedia/DankMaterialShell/pull/3103))<br/>• Fix(settings): restore control center menu ([PR #3113](https://github.com/AvengeMedia/DankMaterialShell/pull/3113))<br/>• Feat(battery): show estimated end time ([PR #3117](https://github.com/AvengeMedia/DankMaterialShell/pull/3117))<br/>• Fix(displays): restore scale after revert ([PR #3124](https://github.com/AvengeMedia/DankMaterialShell/pull/3124))<br/>• Fix(launcher): clip tile labels to rounded corners ([PR #3126](https://github.com/AvengeMedia/DankMaterialShell/pull/3126))<br/>• Fix(dankbar): consume empty-area right clicks ([PR #3127](https://github.com/AvengeMedia/DankMaterialShell/pull/3127))<br/>• Fix(screenshot): support multi-monitor region capture ([PR #3132](https://github.com/AvengeMedia/DankMaterialShell/pull/3132))<br/>• Feat(settings): search runtime plugins ([PR #3136](https://github.com/AvengeMedia/DankMaterialShell/pull/3136))<br/>• Feat(bar): add focused window details popout ([PR #3139](https://github.com/AvengeMedia/DankMaterialShell/pull/3139))<br/>• Feat(screenshot): use native cursor shapes ([PR #3155](https://github.com/AvengeMedia/DankMaterialShell/pull/3155))<br/>• Feat(screenshot): drag region with ctrl ([PR #3157](https://github.com/AvengeMedia/DankMaterialShell/pull/3157))<br/>• Fix(frame): consume gutter clicks ([PR #3158](https://github.com/AvengeMedia/DankMaterialShell/pull/3158))<br/>• Feat(launcher): cycle modes with ctrl-tab ([PR #3204](https://github.com/AvengeMedia/DankMaterialShell/pull/3204))<br/>• Feat(spotlight): align tab navigation with full launcher ([PR #3205](https://github.com/AvengeMedia/DankMaterialShell/pull/3205))<br/>• Fix(clipboard): stack clear dialog above modal ([PR #3207](https://github.com/AvengeMedia/DankMaterialShell/pull/3207))<br/>• Fix(settings): keep search result visible ([PR #3209](https://github.com/AvengeMedia/DankMaterialShell/pull/3209))<br/>• Feat(clipboard): accept dropped content ([PR #3211](https://github.com/AvengeMedia/DankMaterialShell/pull/3211))<br/>• Feat(lock): add vertical clock style ([PR #3220](https://github.com/AvengeMedia/DankMaterialShell/pull/3220))<br/>• Fix(popouts): close hover surface on click ([PR #3223](https://github.com/AvengeMedia/DankMaterialShell/pull/3223))<br/>• Fix(dock): hide overlay dock over fullscreen ([PR #3224](https://github.com/AvengeMedia/DankMaterialShell/pull/3224))<br/>• Feat(dock): sync background and icons in frame overview ([PR #3252](https://github.com/AvengeMedia/DankMaterialShell/pull/3252))<br/>• Fix(dock): layout & indicator misalignment on orientation switch ([PR #3256](https://github.com/AvengeMedia/DankMaterialShell/pull/3256))<br/>• Fix(bar): prevent focused app widget from blanking and live-sync ([PR #3258](https://github.com/AvengeMedia/DankMaterialShell/pull/3258))<br/>• Feat(screenshot): support 4-corner resizing while holding Ctrl ([PR #3259](https://github.com/AvengeMedia/DankMaterialShell/pull/3259))<br/>• Fix(powermenu): close on escape key, dedup action shortcuts ([PR #3262](https://github.com/AvengeMedia/DankMaterialShell/pull/3262)) |
 | **[jack-mil](https://github.com/jack-mil)** | Fix(mpris): remove required non-null artist/title from idle condition ([PR #2993](https://github.com/AvengeMedia/DankMaterialShell/pull/2993)) |
 | **[JDKamalakar](https://github.com/JDKamalakar)** | Dankinstall: add non-interactive install script ([PR #3063](https://github.com/AvengeMedia/DankMaterialShell/pull/3063)) |
 | **[kanghengliu](https://github.com/kanghengliu)** | • Fix(player): combine trackid with text identity ([PR #2808](https://github.com/AvengeMedia/DankMaterialShell/pull/2808))<br/>• Fix(processlist): stop polling when the popout is closed ([PR #3159](https://github.com/AvengeMedia/DankMaterialShell/pull/3159)) |
@@ -321,6 +457,7 @@ Also: GTK3 dynamic theming (euletheia), custom power menu buttons and Apple Musi
 | **[tassiovirginio](https://github.com/tassiovirginio)** | SystemTrayBar: add configurable icon spacing ([PR #3183](https://github.com/AvengeMedia/DankMaterialShell/pull/3183)) |
 | **[tkroll-ionos](https://github.com/tkroll-ionos)** | • Fix(lock): hold sleep inhibitor until compositor confirms lock ([PR #2907](https://github.com/AvengeMedia/DankMaterialShell/pull/2907))<br/>• Add option to ignore app-requested notification timeout ([PR #2909](https://github.com/AvengeMedia/DankMaterialShell/pull/2909))<br/>• Fix(system-update): apply saved updaterIntervalSeconds on daemon connect ([PR #3093](https://github.com/AvengeMedia/DankMaterialShell/pull/3093)) |
 | **[wongcallum](https://github.com/wongcallum)** | • Feat(audio): add output port selection ([PR #2779](https://github.com/AvengeMedia/DankMaterialShell/pull/2779))<br/>• Smooth battery time remaining estimate ([PR #2854](https://github.com/AvengeMedia/DankMaterialShell/pull/2854)) |
+| **[YewFence](https://github.com/YewFence)** | Feat(controlcenter): add wifi refresh button ([PR #3245](https://github.com/AvengeMedia/DankMaterialShell/pull/3245)) |
 | **[z1-0](https://github.com/z1-0)** | Fix(launcher): DankLauncherV2 was missing id and genericName search ([PR #3122](https://github.com/AvengeMedia/DankMaterialShell/pull/3122)) |
 
 ## Resources
