@@ -39,12 +39,12 @@ Where DankSearch stores the index database.
 - Linux/macOS/BSD: `~/.cache/danksearch/index`
 
 ### `listen_addr`
-HTTP server address and port.
+HTTP server address and port. The API has no authentication, so keep it bound to localhost unless you know what you are doing.
 
-**Default:** `:43654`
+**Default:** `127.0.0.1:43654`
 
 ```toml
-listen_addr = ":43654"
+listen_addr = "127.0.0.1:43654"
 ```
 
 ### `max_file_bytes`
@@ -72,24 +72,6 @@ Index all file types, not just text files. When enabled, binary files are indexe
 
 ```toml
 index_all_files = true
-```
-
-### `auto_reindex`
-Automatically re-index on startup if the interval has passed.
-
-**Default:** `false`
-
-```toml
-auto_reindex = false
-```
-
-### `reindex_interval_hours`
-How often to re-index (in hours). Set to `0` to disable periodic re-indexing.
-
-**Default:** `24`
-
-```toml
-reindex_interval_hours = 24
 ```
 
 ### `text_extensions`
@@ -149,6 +131,15 @@ Enable or disable inotify file watchers for this path. When disabled, the path i
 
 ```toml
 watch = false  # Disable watchers (useful for network mounts)
+```
+
+#### `extract_exif`
+Extract EXIF metadata (camera, date taken, GPS, ISO, aperture, focal length) from images under this path.
+
+**Default:** `true`
+
+```toml
+extract_exif = false  # Skip EXIF parsing for code repos
 ```
 
 #### `exclude_dirs`
@@ -267,12 +258,10 @@ Here's a complete example config:
 ```toml
 # DankSearch Configuration
 index_path = "/home/brandon/.cache/danksearch/index"
-listen_addr = ":43654"
+listen_addr = "127.0.0.1:43654"
 max_file_bytes = 2097152  # 2MB
 worker_count = 4
 index_all_files = true
-auto_reindex = false
-reindex_interval_hours = 24
 
 text_extensions = [
     ".txt", ".md", ".go", ".py", ".js", ".ts",
@@ -313,6 +302,7 @@ exclude_dirs = [
 - Check if the file's directory is in an `index_paths` block
 - Verify the file isn't in an excluded directory
 - Check that `exclude_hidden = false` if searching for hidden files
+- Run `dsearch index check <path>` to see why a path is excluded
 
 **Port already in use:**
 - Change `listen_addr` to a different port
