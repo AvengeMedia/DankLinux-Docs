@@ -233,6 +233,18 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightness decrem
 hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightness toggleExponential"))
 ```
 
+## Gamma and Contrast
+
+`dms brightness` only drives hardware backlights, LEDs and DDC. It does not touch the gamma ramp. If a panel looks washed out and backlight or temperature changes do not help, adjust gamma and contrast instead. Both live under the `night` IPC target but apply whether night mode is on or off:
+
+```bash
+dms ipc call night gamma 1.2
+dms ipc call night contrast 1.1
+dms ipc call night gamma        # print the current value
+```
+
+Values range from 0.5 to 2.0, 1.0 is neutral. The same sliders are in Settings > Displays > Gamma Control. Setting both back to 1.0 with night mode off releases the gamma protocol so tools like wl-gammarelay can bind it again.
+
 ## Comparison with Other Tools
 
 ### vs brightnessctl

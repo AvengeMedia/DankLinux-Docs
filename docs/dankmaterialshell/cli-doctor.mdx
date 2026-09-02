@@ -296,6 +296,50 @@ Adds fingerprint authentication support to the lock screen.
 
 If in use, DMS lifecycle will be managed by systemd. This is optional, DMS can also be started manually or via other init systems.
 
+### graphical-session.target
+
+Only reported when `dms.service` is installed and enabled. Warns with `Inactive` when the target exists but is not active in the current session.
+
+`dms.service` is tied to `graphical-session.target` (`WantedBy`, `PartOf`, `Requisite`), and systemd never activates that target on its own. The compositor session has to start it. If nothing does, `dms.service` is enabled but never autostarts, and `systemctl --user start dms` fails on the `Requisite` dependency.
+
+Check the current state:
+
+```bash
+systemctl --user status graphical-session.target
+```
+
+Compositors with native systemd session integration (niri) activate the target themselves. Others need a compositor-specific session target that pulls it in, started from the compositor config.
+
+On Hyprland, `hyprland-session.target` must exist and Hyprland must start it. `dankinstall` writes this unit; a hand-written one is left alone:
+
+```ini title="~/.config/systemd/user/hyprland-session.target"
+[Unit]
+Description=Hyprland Session Target
+BindsTo=graphical-session.target
+Before=graphical-session.target
+Wants=graphical-session-pre.target
+After=graphical-session-pre.target
+```
+
+Hyprland then needs to export its environment and start the target:
+
+```lua title="~/.config/hypr/hyprland.lua"
+hl.on("hyprland.start", function()
+  hl.exec_cmd("dbus-update-activation-environment --systemd --all")
+  hl.exec_cmd("systemctl --user start hyprland-session.target")
+end)
+```
+
+Starting it by hand confirms the wiring before relogging:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user start hyprland-session.target
+systemctl --user status graphical-session.target dms
+```
+
+See [Installation](installation#compositor-specific-systemd-setup) for the equivalent setup on Sway, MangoWC, and Miracle WM.
+
 ### greetd
 
 Required for the Dank Greeter. (See [DankGreeter documentation](../dankgreeter/) for more information.)

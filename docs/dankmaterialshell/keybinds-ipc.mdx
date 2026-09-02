@@ -118,12 +118,16 @@ dms ipc call brightness toggleExponential
 
 Night mode (gamma/color temperature) control.
 
+`gamma` and `contrast` are separate from night mode. They stay applied when night mode is off, and setting both back to 1.0 releases the gamma protocol so other tools can bind it again. Both need DMS API v34.
+
 | Function | Description | Parameters |
 | --- | --- | --- |
 | `toggle` | Toggle night mode on/off | - |
 | `enable` | Enable night mode | - |
 | `disable` | Disable night mode | - |
 | `status` | Get night mode status | - |
+| `gamma [value]` | Get/set display gamma, applied with or without night mode | 0.5-2.0, 1.0 is neutral (optional) |
+| `contrast [value]` | Get/set display contrast around mid-gray, applied with or without night mode | 0.5-2.0, 1.0 is neutral (optional) |
 | `getCurrentTemp` | Get live gamma temperature | - |
 | `getTargetTemp` | Get configured night temperature | - |
 | `getDayTemp` | Get configured day temperature | - |
@@ -137,6 +141,8 @@ Night mode (gamma/color temperature) control.
 **Examples:**
 ```bash
 dms ipc call night toggle
+dms ipc call night gamma 1.2
+dms ipc call night contrast 1.1
 dms ipc call night getCurrentTemp
 dms ipc call night setTargetTemp 4000
 dms ipc call night setDayTemp 5500
