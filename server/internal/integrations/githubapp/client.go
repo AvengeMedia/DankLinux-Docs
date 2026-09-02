@@ -3,6 +3,7 @@ package githubapp
 import (
 	"context"
 	"crypto/rsa"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -247,4 +248,23 @@ func (c *Client) findAuditComment(ctx context.Context, gh *github.Client, owner,
 		}
 		opts.Page = resp.NextPage
 	}
+}
+
+func (c *Client) Dispatch(ctx context.Context, owner, repo, eventType string, payload any) error {
+	gh, err := c.authedClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	raw, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("failed to encode dispatch payload: %w", err)
+	}
+	body := json.RawMessage(raw)
+
+	_, _, err = gh.Repositories.Dispatch(ctx, owner, repo, github.DispatchRequestOptions{
+		EventType:     eventType,
+		ClientPayload: &body,
+	})
+	return err
 }

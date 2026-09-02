@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"strconv"
+	"strings"
 )
 
 type Config struct {
@@ -23,6 +24,11 @@ type Config struct {
 	UploadDir              string
 	CacheDir               string
 	PublicBaseURL          string
+	FedoraMessagingEnabled bool
+	FedoraMessagingURL     string
+	FedoraMessagingTLSDir  string
+	QtRebuildRepo          string
+	QtRebuildPackages      []string
 }
 
 func NewConfig() *Config {
@@ -74,6 +80,20 @@ func NewConfig() *Config {
 		publicBaseURL = "https://api.danklinux.com"
 	}
 
+	fedoraMessagingEnabled, _ := strconv.ParseBool(os.Getenv("FEDORA_MESSAGING_ENABLED"))
+	fedoraMessagingURL := os.Getenv("FEDORA_MESSAGING_URL")
+	fedoraMessagingTLSDir := os.Getenv("FEDORA_MESSAGING_TLS_DIR")
+
+	qtRebuildRepo := os.Getenv("QT_REBUILD_REPO")
+	if qtRebuildRepo == "" {
+		qtRebuildRepo = "AvengeMedia/danklinux"
+	}
+
+	qtRebuildPackages := os.Getenv("QT_REBUILD_PACKAGES")
+	if qtRebuildPackages == "" {
+		qtRebuildPackages = "qt6-qtbase,qt6-qtdeclarative,qt6-qtwayland"
+	}
+
 	return &Config{
 		Port:                   port,
 		Environment:            env,
@@ -92,5 +112,10 @@ func NewConfig() *Config {
 		UploadDir:              uploadDir,
 		CacheDir:               cacheDir,
 		PublicBaseURL:          publicBaseURL,
+		FedoraMessagingEnabled: fedoraMessagingEnabled,
+		FedoraMessagingURL:     fedoraMessagingURL,
+		FedoraMessagingTLSDir:  fedoraMessagingTLSDir,
+		QtRebuildRepo:          qtRebuildRepo,
+		QtRebuildPackages:      strings.Split(qtRebuildPackages, ","),
 	}
 }

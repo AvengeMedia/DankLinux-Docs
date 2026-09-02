@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -21,10 +22,12 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/webhooks"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/fedoramessaging"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/githubapp"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/previews"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/qtrebuild"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
@@ -272,6 +275,10 @@ func startAPI(cfg *config.Config) {
 		}, webhooksGroup)
 	})
 
+	if cfg.FedoraMessagingEnabled {
+		startQtRebuildWatcher(ctx, cfg)
+	}
+
 	addr := ":" + cfg.Port
 	log.Infof("Starting server on %s", addr)
 
@@ -330,6 +337,44 @@ func startAPI(cfg *config.Config) {
 	}
 
 	log.Info("Server gracefully stopped")
+}
+
+func newGithubDispatcher(cfg *config.Config, owner, repo string) (qtrebuild.Dispatcher, error) {
+	switch {
+	case cfg.GithubAppID != 0 && cfg.GithubAppPrivateKey != "":
+		return githubapp.NewApp(cfg.GithubAppID, cfg.GithubAppPrivateKey, owner, repo)
+	case cfg.GithubModToken != "":
+		return githubapp.NewToken(cfg.GithubModToken, owner, repo), nil
+	}
+	return nil, nil
+}
+
+func startQtRebuildWatcher(ctx context.Context, cfg *config.Config) {
+	owner, repo, ok := strings.Cut(cfg.QtRebuildRepo, "/")
+	if !ok {
+		log.Error("QT_REBUILD_REPO must be owner/repo", "value", cfg.QtRebuildRepo)
+		return
+	}
+
+	dispatcher, err := newGithubDispatcher(cfg, owner, repo)
+	if err != nil {
+		log.Error("Failed to init GitHub dispatcher for qt rebuilds", "err", err)
+		return
+	}
+	if dispatcher == nil {
+		log.Warn("Fedora messaging enabled but no GitHub App or GITHUB_MOD_TOKEN configured, qt rebuild dispatch disabled")
+		return
+	}
+
+	watcher := qtrebuild.NewWatcher(owner, repo, cfg.QtRebuildPackages, dispatcher)
+	consumer, err := fedoramessaging.New(cfg.FedoraMessagingURL, cfg.FedoraMessagingTLSDir, []string{qtrebuild.Topic}, watcher.Handle)
+	if err != nil {
+		log.Error("Failed to init Fedora messaging consumer", "err", err)
+		return
+	}
+
+	log.Info("Starting Fedora messaging qt rebuild watcher", "repo", cfg.QtRebuildRepo, "packages", cfg.QtRebuildPackages)
+	go consumer.Run(ctx)
 }
 
 func main() {
