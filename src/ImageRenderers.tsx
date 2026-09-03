@@ -486,8 +486,8 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
   let isV1Release = false
   let isV12Release = false
   let isV14Release = false
-  let isV15Release = false
   let isDankCalendar = false
+  let hasStaticImage = false
 
   if (data.pageType === 'post' && data.data) {
     const postData = data.data as Record<string, unknown>
@@ -499,7 +499,8 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     isV1Release = id === 'v1-release' || permalink.includes('v1-release') || title.includes('1.0')
     isV12Release = id === 'v1-2-release' || permalink.includes('v1-2-release') || title.includes('1.2')
     isV14Release = id === 'v1-4-release' || permalink.includes('v1-4-release') || title.includes('1.4')
-    isV15Release = id === 'v1-5-release' || permalink.includes('v1-5-release') || title.includes('1.5')
+    const frontMatter = metadata?.frontMatter as Record<string, unknown> | undefined
+    hasStaticImage = Boolean(frontMatter?.image)
     isDankCalendar = id === 'dankcalendar-release' || permalink.includes('dankcalendar-release') || title.includes('DankCalendar')
   } else if (data.pageType === 'tag' && 'label' in data.data) {
     title = `Tag: ${String(data.data.label)}`
@@ -507,6 +508,11 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     title = 'Blog Archive'
   } else if (data.pageType === 'tags') {
     title = 'Blog Tags'
+  }
+
+  // returning undefined tells the OG plugin to keep the post's own `image` frontmatter card
+  if (hasStaticImage) {
+    return undefined
   }
 
   // Special OG image for v1 release - matches blog hero with bats and confetti
@@ -811,13 +817,6 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
         fonts,
       },
     ]
-  }
-
-  // v1.5 "The Wolverine" uses a hand-rendered static social card
-  // (static/img/blog/v1.5/og.png), set via the post's `image` frontmatter.
-  // Returning undefined tells the OG plugin to skip generation and keep it.
-  if (isV15Release) {
-    return undefined
   }
 
   // Special OG image for v1.2 release - Spicy Miso
