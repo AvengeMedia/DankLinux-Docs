@@ -392,7 +392,7 @@ const config: Config = {
     announcementBar: {
       id: 'v1-6-release',
       content:
-        '<b>DMS 1.6 "Marble Tabby" is here</b> - Dank Island, a massive performance pass, standalone greeter, and a lot more. <a href="/blog/v1-6-release">Read the announcement</a>',
+        '<b>DMS 1.6 "Marble Tabby" is here</b> - Dank Island, numerous performance & resource optimizations, standalone greeter, and a lot more. <a href="/blog/v1-6-release">Read the announcement</a>',
       backgroundColor: '#6B46C1',
       textColor: '#ffffff',
       isCloseable: true,
