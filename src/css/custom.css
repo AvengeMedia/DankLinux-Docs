@@ -163,6 +163,11 @@ div[class*='announcementBar'] {
   font-weight: 500;
 }
 
+div[class*='announcementBar_'] {
+  height: auto;
+  min-height: var(--docusaurus-announcement-bar-height);
+}
+
 div[class*='announcementBar'] a {
   color: inherit;
   text-decoration: underline;
