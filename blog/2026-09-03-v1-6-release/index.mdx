@@ -326,7 +326,8 @@ settings.json and session.json only store what differs from the defaults now, so
 ## Notes for Package Maintainers
 
 - The quickshell UI is embedded in the dms binary and mounted at runtime. Packages no longer install `/usr/share/quickshell/dms`, and XDG auto-discovery of `~/.config/quickshell/dms` is removed: `-c` or `DMS_SHELL_DIR` explicitly override the embedded config.
-- The build requires a git submodule to be checked out as part of the build process. `git submodule update --init --recursive` should be run before building.
+- Shared widgets live in the dank-qml-common git submodule. Building from a clone needs `git submodule update --init --recursive` first. GitHub's auto-generated "Source code" archive never contains submodule content, so build from `dms-source.tar.gz` on the release instead: it ships with DankCommon bundled and needs no submodule step. `dms-cli-<version>.tar.gz` carries the Go source with vendored modules.
+- The embedded shell is staged into `core/internal/shellembed/dist` by `make sync-shell`. `make dist` and `make build` run it for you. If you call `go build` directly, run `make sync-shell` first or the `withshell` tag fails with `pattern all:dist: no matching files found`. Pass tags as one list: `-tags 'distro_binary,withshell'`.
 - Release binaries and all -git packages build with the embedded shell.
 - The greeter is its own package now, [dank-greeter](https://github.com/AvengeMedia/dank-greeter), with its own release artifacts. `dms greeter install` expects the dms-greeter binary from that package.
 - dsearch, dgop, dcal, and dgreeter tag and release together with DMS from this release on.
