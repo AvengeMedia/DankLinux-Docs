@@ -23,7 +23,7 @@ const ListComponent = ({ items }: any) => {
 
 function BlogSidebarDesktop({ sidebar }: any): React.JSX.Element {
   const items = useVisibleBlogSidebarItems(sidebar.items);
-  let versionLabel = '1.5';
+  let versionLabel = '1.6';
   let changelogUrl = '/docs/dankmaterialshell/changelog';
 
   try {

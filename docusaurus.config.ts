@@ -170,6 +170,16 @@ const dankPurpleLight: PrismTheme = {
   ],
 };
 
+const proseOnly = (content: string) =>
+  content
+    .replace(/^export const[\s\S]*?^};$/gm, '')
+    .replace(/^import .*$/gm, '')
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/^\s*(light|dark|sources|style|alt)[:=].*$/gm, '')
+    .replace(/^\|.*$/gm, '')
+    .replace(/```[\s\S]*?```/g, '');
+
 const config: Config = {
   title: 'Dank Linux',
   tagline: 'A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, dwl, labwc, and Sway.',
@@ -282,16 +292,20 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/AvengeMedia/DankLinux-Docs/tree/master',
-          lastVersion: '1.5',
+          lastVersion: '1.6',
           versions: {
             current: {
-              label: '1.6',
-              path: '1.6',
+              label: '1.7',
+              path: '1.7',
               banner: 'unreleased',
+            },
+            '1.6': {
+              label: '1.6',
+              path: '',
             },
             '1.5': {
               label: '1.5',
-              path: '',
+              path: '1.5',
             },
             '1.4': {
               label: '1.4',
@@ -305,6 +319,8 @@ const config: Config = {
         },
         blog: {
           showReadingTime: true,
+          readingTime: ({content, locale, defaultReadingTime}) =>
+            defaultReadingTime({content: proseOnly(content), locale}),
           blogTitle: 'Dank Linux Updates',
           blogDescription: 'News, releases, and updates from the Dank Linux project.',
           blogSidebarTitle: 'Recent Posts',
@@ -374,9 +390,9 @@ const config: Config = {
     // Replace with your project's social card (fallback for pages without images)
     image: 'img/homepage/danklinux-preview.png',
     announcementBar: {
-      id: 'v1-5-release',
+      id: 'v1-6-release',
       content:
-        '<b>DMS 1.5 "The Wolverine" is here</b> — Frame Mode, DankCalendar integration, Hyprland Lua, and a lot more. <a href="/blog/v1-5-release">Read the announcement</a>',
+        '<b>DMS 1.6 "Marble Tabby" is here</b> - Dank Island, a massive performance pass, standalone greeter, and a lot more. <a href="/blog/v1-6-release">Read the announcement</a>',
       backgroundColor: '#6B46C1',
       textColor: '#ffffff',
       isCloseable: true,
