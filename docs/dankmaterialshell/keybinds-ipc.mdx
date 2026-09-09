@@ -867,6 +867,7 @@ Monitor output profile management for switching between display configurations.
 | `current` | Get the currently active profile | - |
 | `setProfile <name>` | Switch to a specific output profile | profile name |
 | `cycleProfile` | Cycle through configured profiles in order (wraps from last back to first) | - |
+| `cycle` | Cycle through connected displays, leaving one enabled (niri only) | - |
 | `status` | Get current output configuration status | - |
 | `refresh` | Refresh output configuration | - |
 
@@ -885,6 +886,9 @@ dms ipc call outputs setProfile "laptop-only"
 # Cycle through profiles in order
 dms ipc call outputs cycleProfile
 
+# Cycle through connected displays, one enabled at a time
+dms ipc call outputs cycle
+
 # Get output status
 dms ipc call outputs status
 
@@ -894,6 +898,25 @@ dms ipc call outputs refresh
 
 :::note
 This feature is only available on niri, Hyprland, and MangoWC compositors.
+:::
+
+#### Cycling connected displays
+
+`cycle` walks connected outputs in name order and leaves a single display enabled. If the next output is disabled, DMS enables it and waits for confirmation before disabling the others. If it is already enabled, the others are disabled immediately.
+
+The command returns as soon as the switch is started:
+
+| Status | Meaning |
+| --- | --- |
+| `OUTPUT_CYCLE_ACCEPTED` | Switching started, not a confirmation that it finished |
+| `OUTPUT_CYCLE_BUSY` | Still waiting for the previously selected output to become enabled |
+| `OUTPUT_CYCLE_NOOP` | Fewer than two outputs connected, or switching could not start |
+| `OUTPUT_CYCLE_UNSUPPORTED` | Compositor is not niri, its IPC socket is unavailable, or output-state notifications are unavailable |
+
+If the selected display disconnects and no connected display is left enabled, DMS enables the previous connected display in the cycle. The cycle order lives in memory and resets when DMS restarts.
+
+:::note
+`cycle` is niri only, unlike the profile functions above.
 :::
 
 ### hypr
