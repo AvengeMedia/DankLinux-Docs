@@ -93,6 +93,11 @@ const sidebars: SidebarsConfig = {
             'dankmaterialshell/cli-brightness',
             {
               type: 'doc',
+              id: 'dankmaterialshell/cli-icc',
+              label: 'ICC Color Profiles',
+            },
+            {
+              type: 'doc',
               id: 'dankmaterialshell/cli-clipboard',
               label: 'Clipboard Manager',
             },
