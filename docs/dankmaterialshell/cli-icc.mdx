@@ -32,6 +32,10 @@ dms icc apply DP-1 ~/profiles/display.icm
 # Show what is active right now
 dms icc status
 
+# Set a per-output color temperature, and go back to the schedule later
+dms icc set-temp DP-1 7000
+dms icc set-temp DP-1 0
+
 # Remove the assignment again
 dms icc remove DP-1
 ```
@@ -41,12 +45,13 @@ dms icc remove DP-1
 | Command | Description |
 |---------|-------------|
 | `dms icc list` | List profiles found in the profile directory together with the current assignments |
-| `dms icc status` | Show per output the profile, version, color space and whether the ramp is active |
+| `dms icc status` | Show per output the profile, version, color space, whether the ramp is active and the temperature override |
 | `dms icc info <file>` | Show details of an ICC/ICM file (description, version, color space, vcgt) |
 | `dms icc apply <output> <file>` | Apply a profile to a specific output |
 | `dms icc remove <output>` | Remove the profile from a specific output |
+| `dms icc set-temp <output> <kelvin>` | Set a per-output color temperature (1000-10000K); `0` removes the override so the output follows the night light schedule again |
 
-Profiles are looked up in `<config dir>/niri/dms/icc` (for example `~/.config/niri/dms/icc`). Output names are connector names as reported by the compositor, such as `DP-1`, `DP-2`, `HDMI-A-1` or `eDP-1`.
+Profiles are looked up in the DMS config directory for the running compositor, `<config dir>/<compositor>/dms/icc` — for example `~/.config/niri/dms/icc` on niri, `~/.config/hypr/dms/icc` on Hyprland and `~/.config/mango/dms/icc` on MangoWC. Output names are connector names as reported by the compositor, such as `DP-1`, `DP-2`, `HDMI-A-1` or `eDP-1`.
 
 ## Settings UI
 
@@ -59,7 +64,7 @@ Both settings apply immediately and survive restarts.
 
 ## Configuration
 
-Assignments live in the night light configuration at `~/.config/niri/dms/wayland.json`:
+Assignments live in the night light configuration of the running compositor, `~/.config/niri/dms/wayland.json` on niri (Hyprland and MangoWC use their own directory):
 
 ```json
 {
