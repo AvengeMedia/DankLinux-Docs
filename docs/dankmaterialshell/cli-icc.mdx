@@ -49,7 +49,7 @@ dms icc remove DP-1
 | `dms icc info <file>` | Show details of an ICC/ICM file (description, version, color space, vcgt) |
 | `dms icc apply <output> <file>` | Apply a profile to a specific output |
 | `dms icc remove <output>` | Remove the profile from a specific output |
-| `dms icc set-temp <output> <kelvin>` | Set the reference white point of an output (1000-10000K); `0` removes the override and assumes 6500K |
+| `dms icc set-temp <output> <kelvin>` | Set a per-output color temperature (1000-10000K), independently of the night light schedule; `0` removes the override |
 
 Profiles are looked up in the DMS config directory for the running compositor, `<config dir>/<compositor>/dms/icc` — for example `~/.config/niri/dms/icc` on niri, `~/.config/hypr/dms/icc` on Hyprland and `~/.config/mango/dms/icc` on MangoWC. Output names are connector names as reported by the compositor, such as `DP-1`, `DP-2`, `HDMI-A-1` or `eDP-1`.
 
@@ -58,11 +58,11 @@ Profiles are looked up in the DMS config directory for the running compositor, `
 Display Config → each output card carries both controls:
 
 - **Color Profile** — browse to a `.icc`/`.icm` file and apply it. The row shows the profile description together with version, color space and whether the ramp is currently active; the remove button clears the assignment.
-- **Color Temp** — an independent 3000K–10000K reference white point per output. For an output with a profile this is the white point the profile was produced at (for example a display calibrated at 7000K): the profile is applied as measured, and the night light shifts from that reference instead of assuming 6500K. Outputs without a profile use it as their color temperature directly.
+- **Color Temp** — an independent 3000K–10000K temperature per output, applied independently of the night light schedule, so each display can keep its own white point and its own on/off state (the value is per output, and the range is wider than the night light's). For an output with a profile the temperature is composed on top of the profile ramp, which is treated as measured at 6500K; setting it back to `Default` turns the override off.
 
 Both settings apply immediately and survive restarts.
 
-The reference white point only changes what is rendered when the night light asks for a temperature different from it: with the schedule disabled, a profiled output keeps the ramp its profile describes.
+Per-output values win over the night light schedule: a display with its own temperature keeps it whether the schedule is enabled or not, while displays without one follow the schedule and fall back to 6500K when it is disabled.
 
 ## Configuration
 
