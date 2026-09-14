@@ -85,8 +85,8 @@ Assignments live in the night light configuration of the running compositor, `~/
 
 ## Notes
 
-- ICC ramps are applied even while the night light schedule is disabled: outputs with a profile get their measured ramp, outputs without one stay at an identity ramp so nothing is tinted unexpectedly.
+- ICC ramps are applied even while the night light schedule is disabled: outputs with a profile get their measured ramp, outputs without one stay at a neutral ramp so nothing is tinted unexpectedly.
 - Profiles are re-applied after resume and when an output is hot-plugged.
 - The compositor must expose `wlr-gamma-control-unstable-v1`. If `dms icc status` shows no outputs, the running compositor does not provide it.
-- Profiles carrying a `vcgt` tag blend the video card gamma table with the profile tone curves; profiles without one use the TRC curves directly.
+- Only a profile that carries a `vcgt` table can be applied: that tag holds the video card gamma table the GPU ramp takes. The `rTRC`/`gTRC`/`bTRC` tags describe the display's own transfer function (roughly `t^2.2` for a normal monitor), so `dms icc info` reports them but they are never written into the ramp — applying a profile without `vcgt` is refused instead of washing the display out.
 - Night light contrast, gamma and schedule settings in the same file keep working as before; ICC and per-output temperature are applied in addition to them.
