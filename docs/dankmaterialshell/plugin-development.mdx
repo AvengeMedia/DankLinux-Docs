@@ -529,7 +529,7 @@ The dock decides whether the panel is used, not the plugin. With the dock's **Op
 
 The panel spans the dock's length and grows up to 320 px away from the edge, at most half the screen. You don't pick its size, so lay it out for a short dock too. Only one panel is open per dock. Escape or `surfaceContext.dismissExpansion()` closes it and hands focus back to the widget, and `attachedActive` is true while your widget owns it.
 
-:::note Requires DMS 1.7
+:::note[Requires DMS 1.7]
 
 Docks that host widgets, `surfaceContext` and `attachedContent` are new in 1.7. Declare `"requires_dms": ">=1.7.0"` if your widget depends on them.
 
@@ -1391,7 +1391,7 @@ The dash is the popout you get from the bar clock or `dms ipc call dash open`. I
 
 The built-in tabs and cards (Media, Weather, Clock, Calendar, CPU and the rest) go through the same registry as plugins. A plugin tab or card gets everything a built-in one gets: users reorder and hide tabs, drag cards around and resize them, and your options show up in the same options sheet.
 
-:::note Requires DMS 1.7
+:::note[Requires DMS 1.7]
 
 Dash plugins are new in 1.7. Declare `"requires_dms": ">=1.7.0"`.
 
@@ -2267,7 +2267,7 @@ Each surface is a separate object, so they can't read each other's properties di
 
 Composite plugins respect the enable toggle in Settings → Plugins; they are **not** auto-loaded. (A pure `desktop` plugin still auto-loads for backwards compatibility, but a composite that happens to include a desktop surface does not, because it may also carry a daemon.) Enable it once, then add the bar widget and/or place the desktop widget as usual.
 
-:::note Requires DMS 1.5.0
+:::note[Requires DMS 1.5.0]
 
 The `components` map is only understood by DMS 1.5.0 and later — declare `"requires_dms": ">=1.5.0"`. The legacy single `type` + `component` form continues to work unchanged on every version.
 

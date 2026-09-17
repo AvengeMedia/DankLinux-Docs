@@ -1357,7 +1357,7 @@ Each surface is a separate object, so they can't read each other's properties di
 
 Composite plugins respect the enable toggle in Settings → Plugins; they are **not** auto-loaded. (A pure `desktop` plugin still auto-loads for backwards compatibility, but a composite that happens to include a desktop surface does not, because it may also carry a daemon.) Enable it once, then add the bar widget and/or place the desktop widget as usual.
 
-:::note Requires DMS 1.5.0
+:::note[Requires DMS 1.5.0]
 
 The `components` map is only understood by DMS 1.5.0 and later — declare `"requires_dms": ">=1.5.0"`. The legacy single `type` + `component` form continues to work unchanged on every version.
 
