@@ -214,7 +214,7 @@ You now have a working plugin.
 
 ## Widget Plugins
 
-Widget plugins show up in DankBar or the Control Center. They use `PluginComponent` as the base.
+Widget plugins show up in DankBar, in docks, or in the Control Center. They use `PluginComponent` as the base.
 
 ### DankBar Widget
 
@@ -452,6 +452,88 @@ PluginComponent {
 ```
 
 Set `ccWidgetIcon`, `ccWidgetPrimaryText`, `ccWidgetSecondaryText`, and `ccWidgetIsActive`. Handle `onCcWidgetToggled` for toggle clicks.
+
+### Widgets in a Dock
+
+Docks run the same widget plugins as the bar. Users add them from the dock's edit mode or Settings → Dock → Apps & widgets. Your `PluginComponent` needs no extra code, but keep a few things in mind:
+
+- Define both `horizontalBarPill` and `verticalBarPill`. Docks sit on any edge.
+- Size icons with `root.iconSize` and text with `Theme.barTextSize(barThickness, barConfig?.fontScale, barConfig?.maximizeWidgetText)`. The dock passes its own thickness and scale through those properties, so the pill matches the dock icons.
+- Gate timers and animations on `surfaceLive`. It goes false while the bar or dock is hidden.
+- Don't assume a single instance. The same widget can sit on several bars and docks, and `widgetInstanceId` tells them apart.
+
+`surfaceContext` describes where the widget is running:
+
+| Property | Description |
+|----------|-------------|
+| `kind` | `"bar"` or `"dock"` |
+| `id` | The bar or dock config id |
+| `screen`, `isVertical`, `thickness` | Host display, orientation and thickness |
+| `live` | The host is revealed and the monitor is on |
+| `editMode` | The host is in widget edit mode |
+| `inlineExpansion` | The dock opens widgets inline (see below) |
+
+#### Attached Panels
+
+Set `attachedContent` to give a widget a panel that opens inside the dock:
+
+```qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+
+PluginComponent {
+    id: root
+    horizontalBarPill: Component {
+        DankIcon {
+            name: "sticky_note_2"
+            size: root.iconSize
+        }
+    }
+    verticalBarPill: horizontalBarPill
+    attachedContent: Component {
+        Column {
+            spacing: Theme.spacingM
+            padding: Theme.spacingM
+            StyledText {
+                width: parent.width - Theme.spacingM * 2
+                text: I18n.trFor("attachedPanelExample", "Notes")
+                color: Theme.surfaceText
+                font.pixelSize: Theme.fontSizeLarge
+            }
+            DankTextField {
+                width: parent.width - Theme.spacingM * 2
+                placeholderText: I18n.trFor("attachedPanelExample", "Type here…")
+                Accessible.name: I18n.trFor("attachedPanelExample", "Notes")
+            }
+            DankButton {
+                text: I18n.trFor("attachedPanelExample", "Close")
+                onClicked: root.surfaceContext.dismissExpansion()
+            }
+        }
+    }
+    popoutWidth: Theme.listItemHeight * 6
+    popoutHeight: Theme.listItemHeight * 3
+    popoutContent: Component {
+        PopoutComponent {
+            headerText: I18n.trFor("attachedPanelExample", "Notes")
+            detailsText: I18n.trFor("attachedPanelExample", "This widget opens an attached panel in the dock.")
+            showCloseButton: true
+        }
+    }
+}
+```
+
+The dock decides whether the panel is used, not the plugin. With the dock's **Open widgets** setting on Inline, a click grows the dock and shows the panel next to the apps. On Popout (the default) the widget opens its normal `popoutContent` at the matching bar position. A widget with no popout still expands inline. Bars always use `popoutContent`, and a `pillClickAction` wins over both.
+
+The panel spans the dock's length and grows up to 320 px away from the edge, at most half the screen. You don't pick its size, so lay it out for a short dock too. Only one panel is open per dock. Escape or `surfaceContext.dismissExpansion()` closes it and hands focus back to the widget, and `attachedActive` is true while your widget owns it.
+
+:::note Requires DMS 1.7
+
+Docks that host widgets, `surfaceContext` and `attachedContent` are new in 1.7. Declare `"requires_dms": ">=1.7.0"` if your widget depends on them.
+
+:::
 
 ## Daemon Plugins
 
@@ -1303,6 +1385,832 @@ PluginSettings {
 }
 ```
 
+## Dash Plugins
+
+The dash is the popout you get from the bar clock or `dms ipc call dash open`. It has a row of tabs, and its Overview tab is a grid of cards. A plugin can add a tab, a card, or both.
+
+The built-in tabs and cards (Media, Weather, Clock, Calendar, CPU and the rest) go through the same registry as plugins. A plugin tab or card gets everything a built-in one gets: users reorder and hide tabs, drag cards around and resize them, and your options show up in the same options sheet.
+
+:::note Requires DMS 1.7
+
+Dash plugins are new in 1.7. Declare `"requires_dms": ">=1.7.0"`.
+
+:::
+
+### How Users See Them
+
+- Only enabled plugins show up. A disabled plugin has no tab, no card and no rows under Settings → Dashboard. Its saved card placement is kept, so re-enabling it puts the card back.
+- A plugin tab appears in the tab bar as soon as the plugin loads. Users hide or reorder it under Settings → Dashboard → Tabs.
+- Cards are never placed on their own. Users add them from the dash: three-dot menu → Edit → Add widget.
+- With both surfaces, clicking the card opens the tab. If the user hid the tab from the bar, it opens as a detail page with a back button.
+- Tab ids are `plugin_<pluginId>`, so `dms ipc call dash open plugin_myPlugin` opens yours.
+
+### Picking a Manifest Form
+
+| You want | Manifest |
+|----------|----------|
+| A tab | `"type": "dash"` + `"component": "./Tab.qml"` |
+| A card | `"type": "dashCard"` + `"component": "./Card.qml"` |
+| A tab and a card | `"type": "composite"` + `"components": { "dash": ..., "dashCard": ... }` |
+| Dash surfaces plus a bar widget, daemon, ... | `"type": "composite"` with every surface in `components` |
+
+### Dash Tab
+
+A tab is a `DashTabComponent`, an `Item` sized to the dash content area. Here's a complete stopwatch tab. It's the `DashTabExample` plugin in the DMS repo.
+
+```json
+{
+    "id": "dashTabExample",
+    "name": "Stopwatch Example",
+    "description": "A standalone dash tab: a stopwatch with laps that keeps time while the dash is closed",
+    "version": "1.0.0",
+    "author": "DankMaterialShell",
+    "type": "dash",
+    "capabilities": ["dash-tab"],
+    "component": "./StopwatchTab.qml",
+    "icon": "timer",
+    "dash": {
+        "title": "Stopwatch",
+        "options": [
+            {
+                "key": "hundredths",
+                "text": "Show hundredths",
+                "type": "toggle",
+                "def": true
+            },
+            {
+                "key": "laps",
+                "text": "Laps shown",
+                "type": "number",
+                "def": 5,
+                "min": 0,
+                "max": 10
+            }
+        ]
+    },
+    "requires_dms": ">=1.7.0"
+}
+```
+
+```qml
+// StopwatchTab.qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+import qs.Modules.DankDash
+import qs.Modules.DankDash.Overview
+
+DashTabComponent {
+    id: root
+
+    property bool running: false
+    property real startedAt: 0
+    property real banked: 0
+    property var laps: []
+    property real now: 0
+
+    readonly property real elapsed: banked + (running ? Math.max(0, now - startedAt) : 0)
+    readonly property bool showHundredths: options.hundredths !== false
+    readonly property var visibleLaps: laps.slice(0, options.laps ?? 5)
+
+    focusTarget: startButton
+    implicitHeight: Math.max(DashMetrics.tabMinHeight, content.implicitHeight + Theme.spacingL * 2)
+    menuActions: [
+        {
+            label: I18n.trFor("dashTabExample", "Reset"),
+            iconName: "restart_alt",
+            enabled: root.elapsed > 0,
+            action: () => root.reset()
+        }
+    ]
+
+    onPluginIdChanged: restore()
+    onPluginServiceChanged: restore()
+
+    function restore() {
+        if (!pluginService || !pluginId)
+            return;
+        const saved = pluginService.loadPluginState(pluginId, "stopwatch", null);
+        if (!saved)
+            return;
+        running = saved.running === true;
+        startedAt = Number(saved.startedAt) || 0;
+        banked = Number(saved.banked) || 0;
+        laps = Array.isArray(saved.laps) ? saved.laps : [];
+        now = Date.now();
+    }
+
+    function save() {
+        pluginService?.savePluginState(pluginId, "stopwatch", {
+            running: running,
+            startedAt: startedAt,
+            banked: banked,
+            laps: laps
+        });
+    }
+
+    function toggle() {
+        now = Date.now();
+        if (running) {
+            banked += now - startedAt;
+            running = false;
+        } else {
+            startedAt = now;
+            running = true;
+        }
+        save();
+    }
+
+    function lap() {
+        if (!running)
+            return;
+        now = Date.now();
+        laps = [elapsed].concat(laps).slice(0, 99);
+        save();
+    }
+
+    function reset() {
+        running = false;
+        startedAt = 0;
+        banked = 0;
+        laps = [];
+        save();
+    }
+
+    function pad2(value) {
+        return String(value).padStart(2, "0");
+    }
+
+    function format(ms) {
+        const centis = Math.floor(ms / 10);
+        const seconds = Math.floor(centis / 100);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const clock = (hours > 0 ? hours + ":" : "") + pad2(minutes % 60) + ":" + pad2(seconds % 60);
+        return showHundredths ? clock + "." + pad2(centis % 100) : clock;
+    }
+
+    function restoreFocus() {
+        startButton.forceActiveFocus(Qt.OtherFocusReason);
+    }
+
+    function handleKeyEvent(event) {
+        if (event.modifiers & (Qt.ControlModifier | Qt.AltModifier))
+            return false;
+        switch (event.key) {
+        case Qt.Key_Space:
+            toggle();
+            return true;
+        case Qt.Key_L:
+            lap();
+            return true;
+        case Qt.Key_R:
+            reset();
+            return true;
+        }
+        return false;
+    }
+
+    Timer {
+        interval: root.showHundredths ? 40 : 200
+        repeat: true
+        triggeredOnStart: true
+        running: root.live && root.running
+        onTriggered: root.now = Date.now()
+    }
+
+    Column {
+        id: content
+        anchors.centerIn: parent
+        width: Math.min(parent.width, DashMetrics.gridRowUnit * 5)
+        spacing: Theme.spacingL
+
+        NumericText {
+            anchors.horizontalCenter: parent.horizontalCenter
+            isMonospace: false
+            text: root.format(root.elapsed)
+            font.pixelSize: Theme.fontSizeDisplayLarge
+            font.weight: Font.Medium
+            color: root.running ? Theme.primary : Theme.surfaceText
+        }
+
+        Row {
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: Theme.spacingS
+
+            DankButton {
+                text: root.running ? I18n.trFor("dashTabExample", "Lap") : I18n.trFor("dashTabExample", "Reset")
+                reserveText: I18n.trFor("dashTabExample", "Reset")
+                iconName: root.running ? "flag" : "restart_alt"
+                enabled: root.running || root.elapsed > 0
+                backgroundColor: Theme.secondaryContainer
+                textColor: Theme.onSecondaryContainer
+                onClicked: root.running ? root.lap() : root.reset()
+            }
+
+            DankButton {
+                id: startButton
+                text: root.running ? I18n.trFor("dashTabExample", "Pause") : root.elapsed > 0 ? I18n.trFor("dashTabExample", "Resume") : I18n.trFor("dashTabExample", "Start")
+                reserveText: I18n.trFor("dashTabExample", "Resume")
+                iconName: root.running ? "pause" : "play_arrow"
+                onClicked: root.toggle()
+            }
+        }
+
+        Card {
+            id: lapCard
+            width: parent.width
+            height: lapList.implicitHeight + pad * 2
+            visible: root.visibleLaps.length > 0
+
+            Column {
+                id: lapList
+                width: parent.width
+
+                Repeater {
+                    model: root.visibleLaps
+
+                    Item {
+                        id: lapRow
+
+                        required property int index
+                        required property real modelData
+
+                        width: lapList.width
+                        height: Theme.buttonHeightXS
+
+                        StyledText {
+                            anchors.left: parent.left
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: I18n.trFor("dashTabExample", "Lap %1").arg(root.laps.length - lapRow.index)
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: lapCard.mutedColor
+                        }
+
+                        NumericText {
+                            anchors.right: total.left
+                            anchors.rightMargin: Theme.spacingXL
+                            anchors.verticalCenter: parent.verticalCenter
+                            isMonospace: false
+                            text: root.format(lapRow.modelData - (root.laps[lapRow.index + 1] ?? 0))
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: lapCard.contentColor
+                        }
+
+                        NumericText {
+                            id: total
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            isMonospace: false
+                            text: root.format(lapRow.modelData)
+                            font.pixelSize: Theme.fontSizeMedium
+                            color: lapCard.mutedColor
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+What's going on:
+
+- The display `Timer` only runs while `live` is true (tab current and dash visible) and the stopwatch is running. Time comes from stored timestamps, so the stopwatch keeps counting while the dash is closed.
+- Runtime data goes through the [state API](#plugin-state), not settings. No permissions needed.
+- `focusTarget` is where Down lands when the user enters the tab. `restoreFocus()` runs when the dash opens on the tab; focusing with `Qt.OtherFocusReason` avoids drawing a focus ring.
+- `handleKeyEvent` gets keys before the dash does. Return `true` to consume one.
+- `menuActions` adds entries to the tab's three-dot menu.
+- `implicitHeight` grows the dash when many laps are listed. It never goes below `DashMetrics.tabMinHeight`.
+- `options.hundredths` and `options.laps` come from the manifest's `dash.options`. See [Dash Options](#dash-options).
+
+### Dash Card
+
+A card is a `DashCardComponent`, a tonal surface in the overview grid. This one shows how much of the day, week, month or year has passed. It's the `DashCardExample` plugin.
+
+```json
+{
+    "id": "dashCardExample",
+    "name": "Progress Example",
+    "description": "A standalone overview card showing how much of the day, week, month or year has passed",
+    "version": "1.0.0",
+    "author": "DankMaterialShell",
+    "type": "dashCard",
+    "capabilities": ["dash-card"],
+    "component": "./ProgressCard.qml",
+    "icon": "hourglass_bottom",
+    "dash": {
+        "card": {
+            "title": "Progress",
+            "w": 2,
+            "h": 1,
+            "minW": 1,
+            "minH": 1,
+            "maxW": 4,
+            "maxH": 2
+        },
+        "options": [
+            {
+                "key": "period",
+                "text": "Period",
+                "type": "choice",
+                "def": "day",
+                "choices": [
+                    { "value": "day", "text": "Day" },
+                    { "value": "week", "text": "Week" },
+                    { "value": "month", "text": "Month" },
+                    { "value": "year", "text": "Year" }
+                ]
+            },
+            {
+                "key": "remaining",
+                "text": "Show time left",
+                "type": "toggle",
+                "def": true
+            },
+            {
+                "key": "tone",
+                "text": "Tone",
+                "type": "choice",
+                "def": "",
+                "choices": [
+                    { "value": "", "text": "Surface" },
+                    { "value": "primary", "text": "Primary" },
+                    { "value": "secondary", "text": "Secondary" },
+                    { "value": "tertiary", "text": "Tertiary" }
+                ]
+            }
+        ]
+    },
+    "requires_dms": ">=1.7.0"
+}
+```
+
+```qml
+// ProgressCard.qml
+import QtQuick
+import Quickshell
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+import qs.Modules.DankDash
+
+DashCardComponent {
+    id: root
+
+    readonly property string period: options.period ?? "day"
+    readonly property var span: spanFor(clock.date, period)
+    readonly property real progress: Math.max(0, Math.min(1, (clock.date - span.start) / (span.end - span.start)))
+    readonly property bool wide: width >= DashMetrics.gridRowUnit * 2
+    readonly property bool tall: height >= DashMetrics.gridRowUnit * 2
+    readonly property string periodText: {
+        switch (period) {
+        case "week":
+            return I18n.trFor("dashCardExample", "This week");
+        case "month":
+            return I18n.trFor("dashCardExample", "This month");
+        case "year":
+            return I18n.trFor("dashCardExample", "This year");
+        }
+        return I18n.trFor("dashCardExample", "Today");
+    }
+    readonly property string remainingText: {
+        const minutes = Math.ceil((span.end - clock.date) / 60000);
+        if (minutes < 60)
+            return I18n.trFor("dashCardExample", "%1 min left").arg(minutes);
+        const hours = Math.floor(minutes / 60);
+        if (hours < 48)
+            return I18n.trFor("dashCardExample", "%1 h left").arg(hours);
+        return I18n.trFor("dashCardExample", "%1 days left").arg(Math.floor(hours / 24));
+    }
+
+    tone: options.tone ?? ""
+
+    function weekStart() {
+        const setting = SettingsData.firstDayOfWeek;
+        return (setting >= 0 && setting < 7 ? setting : Qt.locale().firstDayOfWeek) % 7;
+    }
+
+    function spanFor(now, period) {
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const day = now.getDate();
+        switch (period) {
+        case "week":
+            {
+                const first = day - (now.getDay() - weekStart() + 7) % 7;
+                return {
+                    start: new Date(year, month, first),
+                    end: new Date(year, month, first + 7)
+                };
+            }
+        case "month":
+            return {
+                start: new Date(year, month, 1),
+                end: new Date(year, month + 1, 1)
+            };
+        case "year":
+            return {
+                start: new Date(year, 0, 1),
+                end: new Date(year + 1, 0, 1)
+            };
+        }
+        return {
+            start: new Date(year, month, day),
+            end: new Date(year, month, day + 1)
+        };
+    }
+
+    SystemClock {
+        id: clock
+        enabled: root.live
+        precision: SystemClock.Minutes
+    }
+
+    StyledText {
+        id: label
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        text: root.periodText
+        font.pixelSize: Theme.fontSizeSmall
+        font.weight: Font.Medium
+        color: root.mutedColor
+        elide: Text.ElideRight
+    }
+
+    Column {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+
+        NumericText {
+            isMonospace: false
+            text: Math.floor(root.progress * 100) + "%"
+            font.pixelSize: root.tall ? Theme.fontSizeDisplay : root.wide ? Theme.fontSizeXXLarge : Theme.fontSizeXLarge
+            font.weight: Font.Bold
+            color: root.accentColor
+        }
+
+        StyledText {
+            width: parent.width
+            visible: root.options.remaining !== false && (root.wide || root.tall)
+            text: root.remainingText
+            font.pixelSize: Theme.fontSizeSmall
+            color: root.mutedColor
+            elide: Text.ElideRight
+        }
+    }
+
+    Rectangle {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: Theme.spacingS
+        radius: height / 2
+        color: root.chipColor
+
+        Rectangle {
+            width: Math.max(height, parent.width * root.progress)
+            height: parent.height
+            radius: height / 2
+            color: root.accentColor
+        }
+    }
+}
+```
+
+What's going on:
+
+- The grid is 6 columns by default (users pick 3 to 8) with 96 px rows. `card.w`/`card.h` set the default size, `minW`..`maxH` the range users can resize within. Widths are clamped to the column count.
+- The card has to look right at every size in its range. `wide` and `tall` compare the card's pixel size to `DashMetrics.gridRowUnit`.
+- `tone` tints the surface. Use the card colors (`accentColor`, `contentColor`, `mutedColor`, `chipColor`) instead of raw theme colors so every tone works.
+- `SystemClock` is disabled while the overview is hidden.
+- The card has no tab and isn't `clickable`, so keyboard navigation skips it.
+
+### Tab and Card Together
+
+A plugin with both surfaces, and maybe a bar widget too, uses `components`. `DashCounterExample` shares one counter between a tab, a card and a bar or dock widget:
+
+```json
+{
+    "id": "dashCounterExample",
+    "name": "Counter Example",
+    "description": "One counter shared by a dash tab, an overview card and a bar or dock widget",
+    "version": "1.0.0",
+    "author": "DankMaterialShell",
+    "type": "composite",
+    "capabilities": ["dash-tab", "dash-card", "dankbar-widget"],
+    "icon": "counter_1",
+    "components": {
+        "dash": "./CounterTab.qml",
+        "dashCard": "./CounterCard.qml",
+        "widget": "./CounterWidget.qml"
+    },
+    "dash": {
+        "title": "Counter",
+        "card": {
+            "w": 2,
+            "h": 1,
+            "minW": 1,
+            "minH": 1,
+            "maxW": 3,
+            "maxH": 2
+        }
+    },
+    "requires_dms": ">=1.7.0",
+    "permissions": ["settings_read", "settings_write"]
+}
+```
+
+The card is clickable, so a click opens the tab:
+
+```qml
+// CounterCard.qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+
+DashCardComponent {
+    id: root
+
+    readonly property int count: pluginData.count ?? 0
+
+    clickable: true
+
+    function handleKeyEvent(event) {
+        switch (event.key) {
+        case Qt.Key_Left:
+            setData("count", Math.max(0, count - 1));
+            return true;
+        case Qt.Key_Right:
+            setData("count", count + 1);
+            return true;
+        }
+        return false;
+    }
+
+    Row {
+        anchors.centerIn: parent
+        spacing: Theme.spacingM
+
+        DankIcon {
+            anchors.verticalCenter: parent.verticalCenter
+            name: "counter_1"
+            size: Theme.iconSizeLarge
+            color: root.accentColor
+        }
+
+        StyledText {
+            anchors.verticalCenter: parent.verticalCenter
+            text: root.count
+            font.pixelSize: Theme.fontSizeXXLarge
+            font.weight: Font.Medium
+            color: root.contentColor
+        }
+    }
+}
+```
+
+The bar widget opens the dash on the counter tab. It works the same in a dock:
+
+```qml
+// CounterWidget.qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+
+PluginComponent {
+    id: root
+
+    property var popoutService: null
+    readonly property int count: pluginData.count ?? 0
+    readonly property real textSize: Theme.barTextSize(barThickness, barConfig?.fontScale, barConfig?.maximizeWidgetText)
+
+    pillClickAction: (x, y, width, section, screen) => popoutService?.toggleDankDash("plugin_" + pluginId, x, y, width, section, screen)
+    pillRightClickAction: () => pluginService?.savePluginData(pluginId, "count", count + 1)
+
+    horizontalBarPill: Component {
+        Row {
+            spacing: Theme.spacingXS
+
+            DankIcon {
+                anchors.verticalCenter: parent.verticalCenter
+                name: "counter_1"
+                size: root.iconSize
+                color: Theme.widgetIconColor
+            }
+
+            StyledText {
+                anchors.verticalCenter: parent.verticalCenter
+                text: root.count
+                font.pixelSize: root.textSize
+                color: Theme.widgetTextColor
+            }
+        }
+    }
+
+    verticalBarPill: Component {
+        Column {
+            spacing: Theme.spacingXXS
+
+            DankIcon {
+                anchors.horizontalCenter: parent.horizontalCenter
+                name: "counter_1"
+                size: root.iconSize
+                color: Theme.widgetIconColor
+            }
+
+            StyledText {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: root.count
+                font.pixelSize: root.textSize
+                color: Theme.widgetTextColor
+            }
+        }
+    }
+}
+```
+
+All three surfaces read `pluginData.count` and write with `setData` / `savePluginData`. `pluginData` reloads on `pluginDataChanged`, so they stay in sync.
+
+### Dash Options
+
+The optional `dash` block in `plugin.json` labels your surfaces and declares user options:
+
+| Field | Description |
+|-------|-------------|
+| `icon`, `title` | Tab icon and label. Fall back to the top-level `icon` and `name` |
+| `card.title`, `card.icon` | Card name and icon in the Add widget menu. Fall back to the tab label and icon |
+| `card.w`, `card.h` | Default card size in grid cells |
+| `card.minW`, `card.minH`, `card.maxW`, `card.maxH` | Resize range. Widths clamp to the column count, heights to the screen |
+| `options` | User options for the tab and card |
+
+Each option has a `key`, a `text` label, a `type` and a default `def`:
+
+```json
+"options": [
+  { "key": "compact", "text": "Compact layout", "type": "toggle", "def": false, "description": "Hide the secondary line" },
+  { "key": "style", "text": "Style", "type": "choice", "def": "bars", "choices": [{ "value": "bars", "text": "Bars" }, { "value": "dots", "text": "Dots" }] },
+  { "key": "limit", "text": "Items", "type": "number", "def": 5, "min": 1, "max": 20, "step": 1 }
+]
+```
+
+- `toggle` takes an optional `description`. `number` takes `min`, `max`, `step` and `unit`.
+- `text`, `description` and choice texts go through your plugin's [translations](#translations).
+- The rows show up in the options sheet (Options in the tab's three-dot menu, or the tune button on a card in edit mode) and under Settings → Dashboard.
+- Read values as `options.<key>` in both the tab and the card. Bindings update when the user changes a value.
+- Only values that differ from `def` are stored, in `settings.json` under `dashOptions.plugin_<pluginId>`. Reset clears your declared keys.
+- `widgets` is reserved for the widget grid below.
+
+`dash.options` only reach the dash surfaces. If your bar widget or daemon needs the same value, use a [settings component](#plugin-settings) and `pluginData` instead.
+
+### DashTabComponent Reference
+
+**Auto-injected** (don't set these):
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `pluginId` | string | Your plugin id |
+| `pluginService` | var | PluginService |
+| `popoutService` | var | PopoutService |
+| `entryId` | string | `plugin_<pluginId>` |
+| `dashHost` | var | The dash popout: `dashVisible`, `requestTab(id)`, `editMode` |
+| `editMode` | bool | The dash is in edit mode |
+| `live` | bool | This tab is current and the dash is visible |
+
+Declare `targetScreen`, `active` or `rowBudget` (rows of 96 px that fit on screen) on your tab and the host binds them too.
+
+**Provided by the base:**
+
+| Member | Description |
+|--------|-------------|
+| `options` | Resolved `dash.options` values |
+| `pluginData` | Your plugin settings, reloaded on `pluginDataChanged` |
+| `getData(key, default)` / `setData(key, value)` | Read and write plugin settings |
+
+**Optional** (define on your tab):
+
+| Member | Description |
+|--------|-------------|
+| `implicitHeight` | The dash grows to fit it. Minimum `DashMetrics.tabMinHeight` |
+| `focusTarget` | Item focused when Down enters the tab |
+| `restoreFocus()` | Called when the dash opens on the tab or returns focus to it |
+| `handleKeyEvent(event)` | Return `true` to consume a key. Ctrl+Tab and Ctrl+Shift+Tab stay with the dash |
+| `blocksTabNavigation` | True while an editor needs native Tab traversal |
+| `menuActions` | `[{ label, iconName, action, visible?, enabled? }]` for the three-dot menu |
+| `signal tabRequested(string id)` | Switch the dash to another tab, like `"overview"` or `"plugin_other"` |
+| `signal navFocusRequested` | Hand focus back to the dash navigation |
+
+For tiles inside a tab, use `Card` from `qs.Modules.DankDash.Overview`. It has the same surface colors, radius and tones as the overview cards.
+
+### Widgets Inside a Tab
+
+Give your tab a `DashWidgetGrid` and assign it to `widgetGrid` to get the dash Edit, Add widget, Reset and Clear All actions for free:
+
+```qml
+import qs.Modules.DankDash
+import qs.Modules.DankDash.Overview
+
+DashTabComponent {
+    id: tab
+    widgetGrid: grid
+    implicitHeight: grid.implicitHeight
+    focusTarget: grid.focusTarget
+
+    DashWidgetGrid {
+        id: grid
+        width: parent.width
+        entryId: tab.entryId
+        live: tab.live
+        editMode: tab.editMode
+        definitions: [
+            { id: "counter", text: I18n.trFor("myPlugin", "Counter"), icon: "counter_1", component: counter, w: 2, h: 2, minW: 1, minH: 1, maxW: 4, maxH: 3 },
+            { id: "reset", text: I18n.trFor("myPlugin", "Reset"), icon: "restart_alt", component: reset, w: 2, h: 1, enabled: false }
+        ]
+    }
+
+    Component {
+        id: counter
+        Card {}
+    }
+
+    Component {
+        id: reset
+        Card {}
+    }
+}
+```
+
+- The grid is 4 columns (2 when it's narrower than `Theme.smallBreakpoint`), separate from the overview column count.
+- Each definition needs a stable `id`, a translated `text`, an `icon`, a `component` and a default `w`/`h`. `minW`/`minH`/`maxW`/`maxH` are optional.
+- `enabled: false` leaves a widget in the Add menu instead of placing it.
+- `graphics: true` adds a Show graphics toggle to the widget's menu.
+- Widgets get `widgetId`, `widgetOptions` and a bound `live` if they declare them. The grid unloads widget content when `live` is false.
+- The layout is saved in `dashOptions[entryId].widgets`. Reset brings back your defaults.
+
+`CounterTab.qml` in `DashCounterExample` is a complete tab built this way.
+
+### DashCardComponent Reference
+
+`DashCardComponent` extends the overview `Card`.
+
+**Auto-injected:**
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `pluginId` | string | Your plugin id |
+| `pluginService` | var | PluginService |
+| `popoutService` | var | PopoutService |
+| `entryId` | string | `plugin_<pluginId>` |
+| `live` | bool | The overview is visible |
+| `interactive` | bool | False while the user edits the grid |
+
+**Provided by the base:**
+
+| Member | Description |
+|--------|-------------|
+| `pad` | Content padding. Children sit inside it |
+| `title` | Optional label drawn at the top |
+| `tone` | `""`, `"primary"`, `"secondary"` or `"tertiary"` |
+| `containerColor`, `contentColor`, `accentColor`, `onAccentColor`, `mutedColor`, `chipColor` | Colors that follow `tone` |
+| `clickable`, `signal clicked` | State layer and click. Clicking opens your tab if you have one |
+| `opensTab` | Set `false` to keep clicks to yourself |
+| `options`, `pluginData`, `getData`, `setData` | Same as the tab |
+| `focusTarget` | Defaults to the card when `clickable`, else `null` (skipped by keyboard navigation) |
+| `handleKeyEvent(event)`, `blocksTabNavigation` | Same as the tab |
+
+### Keyboard
+
+The dash offers every key to the current tab's `handleKeyEvent` first. What it does with the rest:
+
+- Down or Right from the header enters the tab content at `focusTarget`.
+- Tab and Shift+Tab switch dash tabs unless the tab sets `blocksTabNavigation`. Ctrl+Tab and Ctrl+Shift+Tab always switch.
+- On the overview, Alt+Arrows or Alt+H/J/K/L move between cards and Alt+Tab / Alt+Shift+Tab cycle them. Non-clickable cards without a `focusTarget` are skipped.
+- Escape leaves edit mode, then a detail page, then closes the dash. Consume it in `handleKeyEvent` to close your own overlay first.
+
+### Opening the Dash From Other Surfaces
+
+`popoutService.toggleDankDash(tabId, x, y, width, section, screen)` opens the dash on a tab. From a bar or dock widget, use the positioned `pillClickAction` form so the dash opens next to the pill:
+
+```qml
+PluginComponent {
+    property var popoutService: null
+    pillClickAction: (x, y, width, section, screen) => popoutService?.toggleDankDash("plugin_" + pluginId, x, y, width, section, screen)
+}
+```
+
+### Dash Plugin Best Practices
+
+1. **Gate on `live`** - The dash content stays loaded after the popout closes. Timers, animations, `SystemClock` and service refs should all stop when `live` is false
+2. **Lay out for every size** - Test your card at `minW`x`minH` and `maxW`x`maxH`
+3. **Use the card colors** - Raw `Theme.primary` breaks tinted cards
+4. **Keep state out of settings** - Use the state API for runtime data, `setData` for things users configure
+5. **Use `Card` for tiles in a tab** - It matches the overview look and follows the user's surface settings
+
 ## Composite Plugins
 
 A single plugin can provide **multiple surfaces at once** — for example a background daemon, a DankBar widget, and a desktop widget. Each surface has a different lifecycle (the daemon is instantiated once; bar and desktop widgets are instantiated per bar/placement, per screen), so each one is its own QML file.
@@ -1332,7 +2240,7 @@ Replace the single `type` + `component` with a `components` map, and set `type` 
 }
 ```
 
-Provide any subset of the four surface keys — you don't need all of them. A daemon + bar widget is just as valid as all four.
+Provide any subset of the surface keys below. A daemon plus a bar widget is just as valid as all of them.
 
 ### Surfaces
 
@@ -1342,6 +2250,8 @@ Provide any subset of the four surface keys — you don't need all of them. A da
 | `desktop` | `DesktopPluginComponent` | per placement, per screen |
 | `daemon` | `PluginComponent` (or any `Item` exposing `pluginService` / `pluginId`) | one persistent instance |
 | `launcher` | `QtObject` with `getItems` / `executeItem` (requires `trigger`) | one instance |
+| `dash` | `DashTabComponent` | while the tab is current (DMS 1.7+) |
+| `dashCard` | `DashCardComponent` | with the overview grid (DMS 1.7+) |
 
 Each surface is written exactly as it would be for a standalone plugin of that type — see the [Widget](#widget-plugins), [Daemon](#daemon-plugins), [Desktop](#desktop-plugins), and [Launcher](#launcher-plugins) sections above. They're simply bundled into one plugin directory and listed under `components`.
 
@@ -1733,12 +2643,19 @@ PluginComponent {
     "daemon": "./Daemon.qml",
     "widget": "./Widget.qml",
     "desktop": "./Desktop.qml",
-    "launcher": "./Launcher.qml"
+    "launcher": "./Launcher.qml",
+    "dash": "./DashTab.qml",
+    "dashCard": "./DashCard.qml"
+  },
+  "dash": {
+    "title": "My Tab",
+    "card": { "w": 2, "h": 1 },
+    "options": []
   }
 }
 ```
 
-`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other.
+`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other. `dash` labels the dash surfaces and declares their options, see [Dash Options](#dash-options).
 
 ### Plugin Types
 
@@ -1746,6 +2663,8 @@ PluginComponent {
 - `"daemon"` - Background service
 - `"launcher"` - Spotlight extension
 - `"desktop"` - Desktop layer widget
+- `"dash"` - Dash tab (requires DMS &ge; 1.7.0)
+- `"dashCard"` - Dash overview card (requires DMS &ge; 1.7.0)
 - `"composite"` - Multiple surfaces in one plugin (use with `components`; requires DMS &ge; 1.5.0)
 
 ### Permissions
@@ -1845,7 +2764,7 @@ Keep your English strings stable once they're in POEditor. Renaming a term is a 
 ## Testing
 
 1. Enable plugin: Settings → Plugins → Scan → Toggle on
-2. Add to bar: Settings → DankBar → Add widget
+2. Add to bar: Settings → DankBar → Add widget. For a dock, use the dock's edit mode. Dash tabs show up on their own; add dash cards from the dash (three-dot menu → Edit → Add widget), and open a tab directly with `dms ipc call dash open plugin_myPlugin`
 3. Check console: Look for errors in shell output
 4. Hot-reload your plugin: `dms ipc call plugins reload myPlugin`
 5. Check settings file: `~/.config/DankMaterialShell/settings.json`
@@ -1885,6 +2804,10 @@ Check the `PLUGINS/` directory in the DMS repo for example plugins:
 - **WallpaperWatcherDaemon** - Background event watcher
 - **ExampleCompositePlugin** - Daemon + bar widget + desktop widget in one plugin
 - **ExampleStartupCheck** - Blocks activation when a system dependency is missing
+- **DashTabExample** - Standalone dash tab: a stopwatch with laps
+- **DashCardExample** - Standalone dash card: day, week, month or year progress
+- **DashCounterExample** - Dash tab, dash card and a bar or dock widget sharing one counter
+- **AttachedPanelExample** - Widget with an attached dock panel
 
 **First-party plugins** (good references for real-world patterns):
 

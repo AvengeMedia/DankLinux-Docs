@@ -239,7 +239,8 @@ Under `/var/cache/dms-greeter/users/<username>/`:
 - `settings.json` - symlink to `~/.config/DankMaterialShell/settings.json` (theme, clock, weather, fonts)
 - `session.json` - symlink to `~/.local/state/DankMaterialShell/session.json` (wallpaper configuration)
 - `colors.json` - symlink to the DMS color scheme
-- `greeter_wallpaper_override.jpg` - copy of the fixed greeter wallpaper, when one is configured
+
+The greeter reads the same keys as the DMS lock screen. `lockScreenWallpaperPath`, `lockScreenWallpaperFillMode`, `lockScreenFontFamily`, and `lockScreenShowWeather` in `settings.json` apply to the login screen, and fall back to the desktop wallpaper, fill mode, and font when unset. Sync grants the greeter read access to those files alongside the session wallpapers.
 
 The profile photo is read directly from `~/.face`, `~/.face.icon`, or AccountsService. If `setfacl` is unavailable or the greeter cannot be granted read access, sync falls back to a point-in-time snapshot (copied files) and `dms-greeter status` reports the slot as `snapshot`; re-run sync after installing the `acl` package to link it live.
 

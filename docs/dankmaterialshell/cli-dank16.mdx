@@ -1,6 +1,6 @@
 ---
 title: Dank16
-description: Generate Base16 color palettes from a single color with intelligent contrast handling
+description: Generate a 16 color terminal palette from a single color
 ---
 
 import Hero from '@site/src/components/Hero';
@@ -17,18 +17,18 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
   hideTitle={true}
 />
 
-The `dms dank16` command generates complete Base16 color palettes from a single input color. It creates harmonious 16-color terminal themes with proper contrast ratios for both light and dark modes.
+The `dms dank16` command generates a 16 color terminal palette from a single input color, with a contrast floor applied against the background so text stays readable in both light and dark mode.
 
 ## Overview
 
-Dank16 takes a single hex color and generates a full Base16-compatible palette suitable for terminals, editors, and other applications. The algorithm intelligently derives complementary colors while ensuring all colors meet contrast requirements for readability.
+Dank16 fills the 16 ANSI slots directly. It is not base16: there is no base00-base0F monochrome ramp, and the bright slots 9-15 are genuinely brighter rather than repeats of their normal counterparts. If you are looking for something to feed a base16 template, this is not it.
 
-**Key Features**:
-- Generate complete 16-color palettes from one color
-- Support for both dark and light themes
-- Advanced contrast algorithms (Delta Phi Star or WCAG)
-- Multiple output formats (terminal configs, JSON, VSCode)
-- Custom background color support
+What it does:
+- fills all 16 ANSI slots from one color
+- dark and light variants, with separate contrast targets for each
+- two contrast algorithms, Delta Phi Star (default) or WCAG
+- terminal configs, JSON, and the variant JSON that matugen templates consume
+- custom background, so the palette is built against the surface it will actually sit on
 
 <ThemedImage
   alt="Dank16 color palette example showing 16 ANSI colors"
@@ -50,21 +50,21 @@ dms dank16 "#8b5cf6"
 **Output**:
 ```
 palette = 0=#1a1a1a
-palette = 1=#e25443
-palette = 2=#6ed675
-palette = 3=#dbd97b
-palette = 4=#9a65fd
-palette = 5=#9173d2
-palette = 6=#9565ff
-palette = 7=#abb2bf
-palette = 8=#5c6370
-palette = 9=#e06a5f
-palette = 10=#86e08b
-palette = 11=#e8e697
-palette = 12=#e5c7ff
-palette = 13=#8269d9
-palette = 14=#9069c0
-palette = 15=#ffffff
+palette = 1=#ff4f73
+palette = 2=#5bf67c
+palette = 3=#ffd14f
+palette = 4=#9d61ff
+palette = 5=#220071
+palette = 6=#8b5cf6
+palette = 7=#f1ebff
+palette = 8=#4b4853
+palette = 9=#ff879f
+palette = 10=#8fffa7
+palette = 11=#ffe18f
+palette = 12=#a077ff
+palette = 13=#b18fff
+palette = 14=#cdb7ff
+palette = 15=#f9f7ff
 ```
 
 Generate a light theme palette:
@@ -73,28 +73,59 @@ Generate a light theme palette:
 dms dank16 "#8b5cf6" --light
 ```
 
-## Base16 Color Mapping
+**Output**:
+```
+palette = 0=#f8f8f8
+palette = 1=#d4214e
+palette = 2=#008105
+palette = 3=#946500
+palette = 4=#7c4bf2
+palette = 5=#dbcbff
+palette = 6=#8b5cf6
+palette = 7=#424144
+palette = 8=#bbbabe
+palette = 9=#ef5072
+palette = 10=#00a018
+palette = 11=#b08100
+palette = 12=#844fff
+palette = 13=#9676e3
+palette = 14=#c7afff
+palette = 15=#faf8ff
+```
 
-The generated palette follows the standard Base16 specification:
+## Color Slots
 
-| Index | Purpose | Dark Theme | Light Theme |
-|-------|---------|------------|-------------|
-| 0 | Background | Dark gray | Light gray |
-| 1 | Red | Saturated red | Dark red |
-| 2 | Green | Saturated green | Dark green |
-| 3 | Yellow | Saturated yellow | Dark yellow |
-| 4 | Blue | Derived from input | Derived from input |
-| 5 | Magenta | Derived from input | Derived from input |
-| 6 | Cyan | Derived from input | Derived from input |
-| 7 | Foreground | Light gray | Dark gray |
-| 8 | Bright Black | Medium gray | Dark gray |
-| 9 | Bright Red | Lighter red | Medium red |
-| 10 | Bright Green | Lighter green | Medium green |
-| 11 | Bright Yellow | Lighter yellow | Medium yellow |
-| 12 | Bright Blue | Lighter variant | Lighter variant |
-| 13 | Bright Magenta | Lighter variant | Lighter variant |
-| 14 | Bright Cyan | Lighter variant | Lighter variant |
-| 15 | Bright White | White | Black |
+Every slot carries the primary hue to some degree. Reds, greens and yellows keep their own base hue but get pulled part of the way toward the primary so the palette reads as one set. The rest are the primary family outright.
+
+| Slot | ANSI role | What it is |
+|------|-----------|------------|
+| 0 | black | the background, verbatim |
+| 1 / 9 | red | hue 0, pulled 12% toward the primary |
+| 2 / 10 | green | hue 119, pulled 10% |
+| 3 / 11 | yellow | hue 50, pulled 4% |
+| 4 / 12 | blue | the primary hue, saturation and value nudged |
+| 5 / 13 | magenta | 5 is the primary container, 13 is its brighter sibling |
+| 6 / 14 | cyan | 6 is the primary verbatim, 14 is a lighter desaturated variant |
+| 7 / 15 | white | near neutral, tinted at the primary hue |
+| 8 | bright black | a fixed L* offset from the background, so it stays dim no matter how bright the primary is |
+
+### The primary slots
+
+Three pairs are the primary family, and two of them are exact:
+
+- **6 is the primary itself**, unmodified and with no contrast adjustment. Whatever color you hand dank16 is what lands in slot 6.
+- **5 is the primary container.** When the caller has a real `primary_container` (which is how DMS drives it through matugen) that value is used verbatim. The standalone CLI has no theme to read, so it derives an approximation from the primary instead.
+- **4, 12, 13 and 14** are variations on the same hue at different saturation and value.
+
+Slot 5 and slot 6 are a pair. Their contrast is with *each other*, not with the background, which is the Material tone pairing: roughly 5.5:1 in dark mode and 5.0:1 in light. Plenty of powerline prompt themes use ANSI 5 on ANSI 6 for exactly this reason, so that relationship is treated as the invariant.
+
+The consequence is that slot 5 on its own is a surface tone and sits close to the background. That is deliberate. It is a container, and its readable partner is the primary, not the terminal background.
+
+### What this costs you
+
+Magenta and cyan are not independent hues here, they are the primary ramp. With a blue-violet primary, ANSI blue, magenta and cyan all read as the same violet family, and slots 4, 6 and 12 in particular can land within a few units of each other. Anything relying on ANSI 4 vs 5 vs 6 for semantic separation, like some git decorations or `ls` colors, loses that separation.
+
+In light mode slot 0 is the light background, so ANSI black is the background color. Programs that print with `\e[30m` expecting dark text will write background on background.
 
 ## Output Formats
 
@@ -115,9 +146,9 @@ dms dank16 "#8b5cf6" --kitty
 **Output**:
 ```
 color0   #1a1a1a
-color1   #e25443
-color2   #6ed675
-color3   #dbd97b
+color1   #ff4f73
+color2   #5bf67c
+color3   #ffd14f
 ...
 ```
 
@@ -248,11 +279,7 @@ Dank16 supports two contrast algorithms to ensure readability:
 
 ### Delta Phi Star (DPS) - Default
 
-The default algorithm uses Delta Phi Star contrast, which provides perceptually uniform contrast based on the golden ratio (phi). This algorithm:
-- Uses CIELAB color space for perceptual accuracy
-- Applies golden ratio (φ ≈ 1.618) calculations for harmonious contrast
-- Targets minimum Lc (lightness contrast) values of 40 for normal text and 35 for secondary text
-- Adjusts for negative polarity in dark themes
+Delta Phi Star works in CIELAB and weights lightness with the golden ratio, which tracks perceived contrast better than a plain luminance ratio.
 
 ```bash
 dms dank16 "#8b5cf6" --contrast dps
@@ -261,15 +288,21 @@ dms dank16 "#8b5cf6" --contrast dps
 **How it works**:
 1. Converts colors to CIELAB space (L*, a*, b*)
 2. Calculates lightness contrast using: `Lc = (|Lb^φ - Lf^φ|)^(1/φ) × 1.414 - 40`
-3. Adjusts for polarity (+5 for dark mode)
-4. Ensures minimum contrast thresholds are met
+3. Adds 5 for dark polarity
+4. Walks L* until the target is met, which keeps the hue intact
+
+Delta Phi Star is not symmetric across polarity. The same Lc buys much less real contrast on a light background than on a dark one, so the two modes use different targets picked to land on the same measured ratios:
+
+| | Normal text | Accent slots |
+|---|---|---|
+| Dark | Lc 40 | Lc 24.5 |
+| Light | Lc 70 | Lc 58 |
+
+Both of those come out around 4.8:1 and 3.3:1 respectively.
 
 ### WCAG Contrast
 
-Uses the standard WCAG 2.1 contrast ratio algorithm:
-- Targets minimum ratios of 4.5:1 for normal text and 3.0:1 for secondary text
-- Based on relative luminance calculations
-- Industry standard for accessibility compliance
+The standard WCAG 2.1 ratio, targeting 4.5:1 for normal text and 2.1:1 for accent slots. Same number in both modes, since the ratio is already polarity independent.
 
 ```bash
 dms dank16 "#8b5cf6" --contrast wcag
@@ -279,7 +312,7 @@ dms dank16 "#8b5cf6" --contrast wcag
 
 ### Custom Background
 
-Specify a custom background color instead of the default:
+Every contrast decision is made against the background, and the background also becomes slot 0. Pass the surface the palette will actually sit on, otherwise the floor is computed against the wrong thing and the result will be too dark or too washed out in practice:
 
 ```bash
 # Dark theme with custom background
@@ -288,6 +321,8 @@ dms dank16 "#8b5cf6" --background "#0d1117"
 # Light theme with custom background
 dms dank16 "#8b5cf6" --light --background "#ffffff"
 ```
+
+With `--variants` the flag sets the **dark** variant's background. The light variant is built against its own default, since a dark surface is not a sane background for a light palette. DMS passes both surfaces when it drives the generator directly.
 
 ### Combining Options
 
@@ -305,21 +340,15 @@ dms dank16 "#8b5cf6" \
 
 The palette generation process follows these steps:
 
-1. **Container Derivation**: Derives a container color from the input by adjusting saturation and value based on theme mode
+1. **Resolve the container**: use the `primary_container` the caller supplied, or derive one from the primary by scaling saturation and value. This becomes slot 5 and seeds the near neutral slots.
 
-2. **Color Generation**: Creates the core palette colors:
-   - Red, green, yellow: Generated with hue shifts and saturation adjustments
-   - Blue, magenta, cyan: Derived from the input color with variations
-   - Foreground/background: Set based on theme mode
+2. **Pick the background**: the `--background` value, otherwise a mode appropriate default. This becomes slot 0.
 
-3. **Contrast Enforcement**: Each color is adjusted to meet minimum contrast requirements:
-   - Converts to HSV or CIELAB color space
-   - Incrementally adjusts lightness/value until contrast threshold is met
-   - Preserves hue to maintain color identity
+3. **Generate the hues**: red, green and yellow from their own base hue blended part way toward the primary. Blue, magenta and cyan from the primary family.
 
-4. **Bright Variants**: Generates brighter versions for colors 9-14:
-   - Dark mode: Uses L* retoning to ensure high visibility
-   - Light mode: Reduces saturation and adjusts value for subtle contrast
+4. **Enforce contrast**: every slot except 5 and 6 is walked in L* (or HSV on the WCAG path) against the background until it clears its target. Hue is preserved so colors keep their identity. Slots 5 and 6 are skipped because they pair with each other.
+
+5. **Dim slot**: slot 8 is placed at a fixed L* offset from the background rather than by contrast, so bright black stays dim regardless of the primary.
 
 ## Use Cases
 
@@ -340,7 +369,7 @@ dms dank16 "#your-color" --alacritty >> ~/.config/alacritty/alacritty.yml
 
 ### Editor Themes
 
-VSCode and other editors get their terminal colors automatically through DMS's built-in theming. The dank16 palette is also available in your custom matugen templates via the `dank16` object—see the [Application Theming](/docs/dankmaterialshell/application-themes#available-template-variables) docs for details.
+VSCode and other editors get their terminal colors automatically through DMS's built-in theming. The dank16 palette is also available in your custom matugen templates via the `dank16` object. See the [Application Theming](/docs/dankmaterialshell/application-themes#available-template-variables) docs for details.
 
 ### Dynamic Theming
 
@@ -380,7 +409,9 @@ fi
 
 ### Choosing Input Colors
 
-Choose an input color that you want to be prominent in your terminal. The input color will be most directly represented as the blue/cyan colors (palette indices 4, 6, 12, 14) in the output, with other colors derived as complementary hues. True red, green, and yellow will still be represented in the appropriate position.
+Pick the color you want prominent in the terminal. It lands verbatim in slot 6 and drives slots 4, 5, 12, 13 and 14, so it shows up wherever a program prints blue, magenta or cyan. Red, green and yellow stay recognisably themselves and only get pulled a few percent toward it.
+
+A heavily desaturated or very dark input gives the generator little to work with. There are saturation and value floors to stop the whole palette collapsing to mud, but the result will still be flat compared to a vivid input.
 
 ### Testing Contrast
 
@@ -416,7 +447,7 @@ dms dank16 <hex_color> [flags]
 
 **Flags**:
 - `--light`: Generate light theme variant (sets default to light)
-- `--background <hex>`: Custom background color
+- `--background <hex>`: Custom background color. With `--variants` this is the dark variant's background
 - `--contrast <algorithm>`: Contrast algorithm: dps (Delta Phi Star, default) or wcag (default "dps")
 - `--kitty`: Output in Kitty terminal format
 - `--foot`: Output in Foot terminal format
