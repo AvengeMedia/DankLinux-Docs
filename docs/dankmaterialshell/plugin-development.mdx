@@ -397,61 +397,91 @@ The `PopoutComponent` helper gives you consistent header/footer and a `closePopo
 
 ### Control Center Widget
 
-Add a toggle to the Control Center:
+Tiles use square cells. The default size is 4×1; 2×2 is square. Users resize tiles and the panel within the available screen space.
+
+This audio tile uses demo data. Small tiles use the standard icon and status layout. Larger tiles add a volume slider and as many device rows as fit. The icon toggles mute; the label opens the full device list. Icon-only tiles open the list directly.
 
 ```qml
+import QtQuick
+import qs.Common
+import qs.Widgets
+import qs.Modules.Plugins
+import qs.Modules.ControlCenter.Widgets
+
 PluginComponent {
     id: root
 
-    property bool isEnabled: pluginData.isEnabled || false
-    property int clickCount: pluginData.clickCount || 0
+    PluginGlobalVar { id: muteState; varName: "muted"; defaultValue: false }
+    PluginGlobalVar { id: volumeState; varName: "volume"; defaultValue: 70 }
+    PluginGlobalVar { id: deviceState; varName: "device"; defaultValue: 0 }
+    readonly property var devices: [
+        { name: I18n.trFor("responsiveAudio", "Speakers"), icon: "speaker" },
+        { name: I18n.trFor("responsiveAudio", "Headphones"), icon: "headphones" },
+        { name: I18n.trFor("responsiveAudio", "Monitor"), icon: "monitor" }
+    ]
+    readonly property var deviceActions: devices.map((device, index) => ({
+        text: device.name,
+        icon: device.icon,
+        active: index === deviceState.value,
+        trigger: () => deviceState.set(index)
+    }))
 
-    ccWidgetIcon: isEnabled ? "toggle_on" : "toggle_off"
-    ccWidgetPrimaryText: "Example Toggle"
-    ccWidgetSecondaryText: isEnabled ? `Active • ${clickCount} clicks` : "Inactive"
-    ccWidgetIsActive: isEnabled
+    ccWidgetIcon: muteState.value ? "volume_off" : devices[deviceState.value].icon
+    ccWidgetPrimaryText: devices[deviceState.value].name
+    ccWidgetSecondaryText: muteState.value ? I18n.trFor("responsiveAudio", "Muted") : I18n.trFor("responsiveAudio", "Volume: %1%").arg(volumeState.value)
+    ccWidgetIsActive: !muteState.value
+    onCcWidgetToggled: muteState.set(!muteState.value)
 
-    onCcWidgetToggled: {
-        isEnabled = !isEnabled
-        clickCount += 1
-        if (pluginService) {
-            pluginService.savePluginData(pluginId, "isEnabled", isEnabled)
-            pluginService.savePluginData(pluginId, "clickCount", clickCount)
+    ccExpandedMinimumHeight: Theme.sliderHandleHeightM + Theme.spacingXS + Theme.spacingS + Theme.listItemHeight
+    ccExpandedContent: Component {
+        CcTileContent {
+            id: content
+
+            DankSlider {
+                id: volumeControl
+                width: parent.width
+                size: "m"
+                minimum: 0
+                maximum: 100
+                unit: "%"
+                enabled: !muteState.value
+                Accessible.name: I18n.trFor("responsiveAudio", "Volume")
+                onSliderValueChanged: newValue => volumeState.set(newValue)
+
+                Binding on value {
+                    value: volumeState.value
+                    when: !volumeControl.isDragging
+                }
+            }
+
+            CcTileActions {
+                anchors.top: volumeControl.bottom
+                anchors.topMargin: Theme.spacingS
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                tile: content.tile
+                actions: root.deviceActions
+            }
         }
-        ToastService.showInfo(isEnabled ? "Enabled" : "Disabled")
     }
 
-    horizontalBarPill: Component {
-        Row {
-            DankIcon {
-                name: root.isEnabled ? "toggle_on" : "toggle_off"
-                color: root.isEnabled ? Theme.primary : Theme.surfaceVariantText
-            }
-            StyledText {
-                text: `${root.clickCount} clicks`
-                color: Theme.surfaceText
-            }
-        }
-    }
-
-    verticalBarPill: Component {
-        Column {
-            DankIcon {
-                name: root.isEnabled ? "toggle_on" : "toggle_off"
-                color: root.isEnabled ? Theme.primary : Theme.surfaceVariantText
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            StyledText {
-                text: `${root.clickCount}`
-                color: Theme.surfaceText
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
+    ccDetailHeight: devices.length * (Theme.listItemHeight + Theme.groupedListGap) - Theme.groupedListGap
+    ccDetailContent: Component {
+        CcTileActions {
+            actions: root.deviceActions
         }
     }
 }
 ```
 
-Set `ccWidgetIcon`, `ccWidgetPrimaryText`, `ccWidgetSecondaryText`, and `ccWidgetIsActive`. Handle `onCcWidgetToggled` for toggle clicks.
+Replace the demo devices and handlers with your backend. Use your manifest's plugin id in `I18n.trFor()`. The tile and detail page have separate plugin instances, so `PluginGlobalVar` keeps their state in sync. It also preserves the selection and volume when inline content is recreated.
+
+`CcTileActions` fits whole rows to its available height. Each action takes `text`, `icon`, and `trigger`; `active` marks the selected row; `enabled: false` disables a row. The same actions work in the inline list and detail page.
+
+`ccExpandedMinimumHeight` reserves enough room below the header for the slider and one row. The host loads `ccExpandedContent` when it fits. Set `ccWidgetIsToggle: false` for action tiles.
+
+`CcTileContent` provides `tile`, `columns`, `rows`, `live`, `contentColor`, and `subtitleColor`. Lay out controls using its `width` and `height`; pass `tile` to nested `CcTileActions` as shown above. Inline content is disabled during editing and destroyed when the Control Center closes or the tile becomes too small. Gate ongoing work on `live`.
 
 ### Widgets in a Dock
 

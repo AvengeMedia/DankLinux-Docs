@@ -128,6 +128,8 @@ For themes without light/dark variants, define colors at the top level:
 - `surfaceContainerHigh` - Elevated container for layered interfaces
 - `surfaceContainerHighest` - Highest elevation container for top-level surfaces
 
+DMS paints its containers through four semantic roles instead of picking these tokens directly: `hostSurface` (`surface`) for anything floating over the desktop, `cardSurface` (`surfaceContainer`) for the first container inside a host, `chipSurface` (`surfaceContainerHigh`) for a container inside a card, and `chipSurfaceNested` (`surfaceContainerHighest`) for a chip inside a nested row. The tokens are exported unchanged and keep their palette meaning, so a theme that sets them shifts the whole ladder with them.
+
 :::note[Not all colors are used by DMS itself]
 A few keys complete the Material palette but aren't rendered by DMS's own UI —
 currently `surfaceContainerLowest`, `surfaceContainerLow`, and `backgroundText`. They are
@@ -143,6 +145,25 @@ external apps themed by DMS use them even though the shell does not.
 - `outline` - Color for subtle borders, dividers, muted icons, and extra subtle text
 
 ## Optional Properties
+
+### Accents
+
+Category badges, such as the settings sidebar icons, use a small set of categorical colors derived from `primary`: fixed hues nudged toward the primary hue, saturation following the primary, lightness fixed per mode so the glyph stays readable. Add an `accents` object to a color set to pick your own hues. Each value sets the hue and saturation of that slot; DMS still derives the fill and glyph lightness. Slots you leave out are derived.
+
+```json
+{
+  "accents": {
+    "red": "#fb4934",
+    "orange": "#fe8019",
+    "yellow": "#fabd2f",
+    "green": "#b8bb26",
+    "teal": "#8ec07c",
+    "blue": "#83a598",
+    "purple": "#d3869b",
+    "pink": "#d3869b"
+  }
+}
+```
 
 ### Semantic Colors
 - `error` - Error states, delete buttons, critical warnings
@@ -161,16 +182,12 @@ Available options:
 - `scheme-monochrome` - Monochromatic color schemes
 - `scheme-neutral` - Neutral, subdued color schemes
 - `scheme-rainbow` - Rainbow-like color schemes
+- `scheme-smart` - Picks the variant automatically from the wallpaper (requires matugen 4.2+)
 - `scheme-tonal-spot` - Tonal spot color schemes (default)
 
 ## Example Themes
 
-Pre-built example themes are available in the [DankMaterialShell repository](https://github.com/AvengeMedia/DankMaterialShell/tree/master/docs):
-
-- [Cyberpunk Electric](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_cyberpunk_electric.json) - Neon green and magenta cyberpunk aesthetic
-- [Hotline Miami](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_hotline_miami.json) - Retro 80s hot pink and blue
-- [Miami Vice](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_miami_vice.json) - Classic teal and pink vice aesthetic
-- [Synthwave Electric](https://github.com/AvengeMedia/DankMaterialShell/blob/master/docs/theme_synthwave_electric.json) - Electric purple and cyan synthwave
+The [official registry](https://github.com/AvengeMedia/dms-plugin-registry/tree/master/themes) carries dozens of themes in this format. Browse them in **Settings → Theme & Colors**, or copy a `theme.json` as a starting point.
 
 ## Applying Custom Themes
 

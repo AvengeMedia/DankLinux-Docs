@@ -230,15 +230,17 @@ Idle inhibitor control to prevent automatic sleep/lock.
 | Function | Description |
 | --- | --- |
 | `toggle` | Toggle idle inhibit state |
-| `enable` | Enable idle inhibit (prevent sleep) |
+| `enable` | Enable idle inhibit indefinitely (prevent sleep) |
+| `enableFor <minutes>` | Enable idle inhibit for a number of minutes |
 | `disable` | Disable idle inhibit (allow sleep) |
-| `status` | Report whether idle inhibit is currently enabled |
+| `status` | Report whether idle inhibit is on, and the remaining time when a timer is set |
 | `reason <text>` | Set the inhibit reason; pass an empty string to read the current one |
 
 **Examples:**
 ```bash
 dms ipc call inhibit toggle
 dms ipc call inhibit enable
+dms ipc call inhibit enableFor 60
 dms ipc call inhibit status
 dms ipc call inhibit reason "rendering a video"
 dms ipc call inhibit reason ""   # prints the current reason
@@ -427,7 +429,7 @@ Dank Island activity surface. Requires a bar instance designated as the island i
 | `toggle <activity>` | Collapse if expanded; otherwise expand into the activity | activity id |
 | `show <activity>` | Switch the compact face without expanding | activity id |
 | `close` | Collapse back to the compact face | - |
-| `cycle` | Cycle activities (`home` → `media` when available → `launcher` when Default Opens is Island) | - |
+| `cycle` | Cycle activities (`home` → `media` when available → `launcher` when Default Opens is Island → `controlcenter` → `wallpaper` → `weather` when enabled → `notificationcenter`) | - |
 | `status` | JSON snapshot of the island on the focused screen | - |
 | `notifications` | Toggle the notification center as an island activity | - |
 | `openOn` / `toggleOn` / `showOn` / `closeOn` / `cycleOn` / `statusOn` / `notificationsOn` | Same actions on a named monitor | activity (where required) + screen name |
@@ -438,7 +440,7 @@ When Dank Island is the sole top chrome on the focused display, these existing t
 
 - `control-center` `open` / `toggle` / `hide` / `status`
 - `notifications` `open` / `toggle` / `close` (the notification modal is used if the island does not own the screen)
-- `dash` `open` / `toggle` with `media`, `wallpaper`, or `weather`, and `dash close` while those activities are open
+- `dash` `open` / `toggle` with `overview` (or no tab), `media`, `wallpaper`, or `weather`, and `dash close` while those activities are open
 
 `spotlight` and `launcher` open the island launcher when **Launcher → Default Opens** is Island, and fall back to Spotlight if the focused screen has no island.
 
@@ -462,15 +464,19 @@ dms ipc call island status
 
 Dock visibility and behavior control.
 
+A dock is one of possibly several configurations, each holding one screen edge. Functions without a selector act on the dock of the focused screen; the `*For` variants take a selector naming a dock by its id or its display name (as shown in **Settings → Dock → Configuration**). Any function returns `DOCK_NOT_FOUND` when no dock matches.
+
 | Function | Description |
 | --- | --- |
-| `reveal` | Show the dock |
-| `hide` | Hide the dock |
-| `toggle` | Toggle dock visibility |
-| `status` | Get dock visibility status |
+| `reveal` / `revealFor <selector>` | Enable the dock |
+| `hide` / `hideFor <selector>` | Disable the dock |
+| `toggle` / `toggleFor <selector>` | Toggle the dock |
+| `status` / `statusFor <selector>` | Get dock visibility status |
+| `edit` / `editFor <selector>` | Open the dock's widget edit mode, or `DOCK_HIDDEN` when the dock is disabled |
 | `autoHide` | Enable auto-hide mode |
 | `manualHide` | Disable auto-hide mode |
 | `toggleAutoHide` | Toggle auto-hide mode |
+| `autoHideFor <selector> <enabled>` | Set auto-hide on a named dock, `true` or `false` |
 
 **Examples:**
 ```bash
@@ -478,11 +484,18 @@ dms ipc call dock toggle
 dms ipc call dock hide
 dms ipc call dock reveal
 dms ipc call dock status
+dms ipc call dock edit
+
+# A specific dock, by display name or id
+dms ipc call dock revealFor Dock
+dms ipc call dock hideFor dock_1757371200000
+dms ipc call dock editFor Dock
 
 # Auto-hide controls
 dms ipc call dock autoHide
 dms ipc call dock manualHide
 dms ipc call dock toggleAutoHide
+dms ipc call dock autoHideFor Dock true
 ```
 
 ### widget
