@@ -20,6 +20,26 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 DankMaterialShell automatically generates theme files for native applications when matugen is enabled. These files are created on wallpaper changes and theme switches.
 
+## Source Color
+
+**Source Color** picks which color in the wallpaper seeds the palette matugen builds around.
+
+| Value | What it does | matugen flag |
+|---|---|---|
+| Dominant | The wallpaper's most common color. Default; matches DMS's existing behavior. | `--source-color-index 0` |
+| Colorful | Favors a vivid, well-lit color over a larger but duller one. Computed by DMS. | none |
+| Darkest | Picks among matugen's candidates by darkness. | `--prefer darkness` |
+| Lightest | Picks among matugen's candidates by lightness. | `--prefer lightness` |
+| Most Saturated | Picks among matugen's candidates by saturation. | `--prefer saturation` |
+| Least Saturated | The inverse of Most Saturated. | `--prefer less-saturation` |
+| Most Vivid | Picks among matugen's candidates by HSV value. | `--prefer value` |
+
+Colorful has no matugen flag because matugen has no equivalent. The five `--prefer` modes sort matugen's own candidate list by one property; Colorful re-quantizes the image and scores it on a mix of prominence and colorfulness instead.
+
+The five `--prefer` modes need matugen 4.1 or newer and fall back to Dominant on anything older.
+
+Set it at **Settings → Theme & Colors → Source Color**.
+
 ## Disabling Matugen
 
 Set the environment variable `DMS_DISABLE_MATUGEN` to `1` or `true` before launching to disable theme generation entirely.
