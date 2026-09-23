@@ -51,6 +51,8 @@ Manage audio output and input devices.
 | `setmic <percentage>` | Set microphone volume | percentage (0-100) |
 | `micmute` | Toggle microphone mute | - |
 | `cycleoutput` | Cycle through audio output devices | - |
+| `setmono <bool>` | Enable or disable mono audio | true/false |
+| `getmono` | Get current mono audio state | - |
 | `status` | Get current audio status | - |
 
 **Examples:**
@@ -59,6 +61,8 @@ dms ipc call audio setvolume 50
 dms ipc call audio increment 10
 dms ipc call audio mute
 dms ipc call audio cycleoutput
+dms ipc call audio setmono true
+dms ipc call audio getmono
 ```
 
 :::note
