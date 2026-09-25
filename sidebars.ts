@@ -48,6 +48,7 @@ const sidebars: SidebarsConfig = {
         'dankmaterialshell/calendar-integration',
         'dankmaterialshell/lock-screen-authentication',
         'dankmaterialshell/vpn',
+        'dankmaterialshell/network-speed-monitor',
         {
           type: 'doc',
           id: 'dankmaterialshell/managing',
