@@ -23,6 +23,7 @@ type Config struct {
 	UploadToken            string
 	UploadDir              string
 	CacheDir               string
+	BlogDir                string
 	PublicBaseURL          string
 	FedoraMessagingEnabled bool
 	FedoraMessagingURL     string
@@ -75,6 +76,11 @@ func NewConfig() *Config {
 
 	cacheDir := os.Getenv("CACHE_DIR")
 
+	blogDir := os.Getenv("BLOG_DIR")
+	if blogDir == "" {
+		blogDir = "../blog"
+	}
+
 	publicBaseURL := os.Getenv("PUBLIC_BASE_URL")
 	if publicBaseURL == "" {
 		publicBaseURL = "https://api.danklinux.com"
@@ -111,6 +117,7 @@ func NewConfig() *Config {
 		UploadToken:            uploadToken,
 		UploadDir:              uploadDir,
 		CacheDir:               cacheDir,
+		BlogDir:                blogDir,
 		PublicBaseURL:          publicBaseURL,
 		FedoraMessagingEnabled: fedoraMessagingEnabled,
 		FedoraMessagingURL:     fedoraMessagingURL,
