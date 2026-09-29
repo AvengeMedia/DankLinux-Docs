@@ -2287,6 +2287,127 @@ PluginComponent {
 4. **Keep state out of settings** - Use the state API for runtime data, `setData` for things users configure
 5. **Use `Card` for tiles in a tab** - It matches the overview look and follows the user's surface settings
 
+## Lyrics Providers
+
+A plugin can add a lyrics source. The provider is a program you ship in the plugin, written in anything. DMS runs it with the track's title and artist and it prints the lyrics. It sits next to the built-in providers with the same cache, rate limit and priority order.
+
+:::note[Requires DMS 1.7]
+
+Lyrics providers are new in 1.7. Declare `"requires_dms": ">=1.7.0"`.
+
+:::
+
+### How Users See Them
+
+- After the plugin is enabled under Settings → Plugins, the provider shows up switched off at the bottom of Settings → Sound & media → Media player → Lyrics providers.
+- It only runs once the user switches it on there. Dragging it up or down sets its priority against the other providers.
+- Your `name` is the row title and the credit under the lyrics. `url` makes the credit a link.
+- Provider ids are `plugin_<pluginId>`.
+
+### Manifest
+
+```json
+{
+  "id": "exampleLyrics",
+  "name": "Example Lyrics",
+  "description": "Lyrics from lyrics.example.com",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "lyrics",
+  "requires_dms": ">=1.7.0",
+  "lyrics": {
+    "command": "./fetch.py",
+    "name": "Example",
+    "url": "https://lyrics.example.com",
+    "wordSync": false
+  }
+}
+```
+
+A plugin with only a `lyrics` block needs no QML. The block also works next to `component` or `components`, so a widget or daemon plugin can bring its own provider.
+
+| Key | |
+|-----|---|
+| `command` | Required. The program to run, relative to the plugin directory. Commit it with the executable bit and a shebang line. |
+| `name` | The row title and credit. Defaults to the plugin's `name`. |
+| `url` | Link for the credit. |
+| `wordSync` | Set it when your source usually has word timing. DMS then waits up to 2 seconds for you when the best answer so far only has line timing. |
+
+### The Command
+
+DMS runs the command once per lookup. The track comes in on stdin. `album` and `duration` (seconds) are left out when unknown:
+
+```json
+{ "title": "Get Lucky", "artist": "Daft Punk", "album": "Random Access Memories", "duration": 369 }
+```
+
+Print the answer on stdout:
+
+```json
+{ "format": "lrc", "lyrics": "[00:31.40]Like the legend of the phoenix\n[00:35.93]All ends with beginnings" }
+```
+
+| Output | Means |
+|--------|-------|
+| `"format": "lrc"` | LRC: line-synced, enhanced with `<mm:ss.xx>` word stamps, or plain text with no stamps. |
+| `"format": "ttml"` | TTML, including singers (`ttm:agent`) and backing vocals (`ttm:role="x-bg"`). |
+| `"format": "lyricsfile"` | Lyricsfile 1.0 YAML. |
+| `{"instrumental": true}` | The track is an instrumental. |
+| Nothing, exit 0 | No lyrics for this track. |
+| Non-zero exit | An error. |
+
+- Answers are cached per track. A miss is asked again after 14 days, and so are line-synced lyrics in case word timing showed up.
+- Errors are not cached, and the other providers still answer.
+- The command gets 8 seconds. After that, or once another provider wins, it is killed along with anything it started.
+- Output over 512 KiB is rejected. stderr is dropped.
+- It runs with the environment and working directory of the `dms` process. Find your own files relative to the script.
+- Each provider gets a burst of 10 lookups, then one every 2 seconds.
+
+### Example
+
+```python
+#!/usr/bin/env python3
+import json
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+
+track = json.load(sys.stdin)
+query = urllib.parse.urlencode({"artist": track["artist"], "title": track["title"]})
+try:
+    with urllib.request.urlopen(f"https://lyrics.example.com/search?{query}", timeout=5) as response:
+        found = json.load(response)
+except urllib.error.HTTPError as error:
+    if error.code == 404:
+        sys.exit(0)
+    raise
+
+json.dump({"format": "lrc", "lyrics": found["lrc"]}, sys.stdout)
+```
+
+A 404 prints nothing, which is a miss. Any other failure raises, exits non-zero and counts as an error.
+
+### Testing a Provider
+
+Run it by hand:
+
+```bash
+echo '{"title":"Get Lucky","artist":"Daft Punk"}' | ./fetch.py
+```
+
+DMS caches every answer, misses included. Clear the cache after changing your command, then skip to another track and back, since the shell keeps the current track's lyrics until the track changes:
+
+```bash
+rm -rf ~/.cache/DankMaterialShell/lyrics
+```
+
+### Lyrics Provider Best Practices
+
+1. **Match strictly** - Check the title, artist and duration of what you found. A wrong song beats every provider below yours, a miss lets them answer
+2. **Exit 0 when nothing matches** - A non-zero exit is an error, and errors are asked again on every lookup
+3. **Answer in time** - Keep your own request timeouts well under 8 seconds
+
 ## Composite Plugins
 
 A single plugin can provide **multiple surfaces at once** — for example a background daemon, a DankBar widget, and a desktop widget. Each surface has a different lifecycle (the daemon is instantiated once; bar and desktop widgets are instantiated per bar/placement, per screen), so each one is its own QML file.
@@ -2772,7 +2893,7 @@ Outputs:
 - `wordTime` and `wordEnd`: the current word's timing, when the provider has word timing.
 - `attributionName`, `attributionUrl`: credit for the provider.
 
-Lookups only use the lyrics providers the user enabled in Settings. With none enabled, lookups never hit the network.
+Lookups only use the lyrics providers the user enabled in Settings. With none enabled, lookups never hit the network. To add a provider, see [Lyrics Providers](#lyrics-providers).
 
 ## Plugin Manifest Reference
 
@@ -2813,11 +2934,17 @@ Lookups only use the lyrics providers the user enabled in Settings. With none en
     "title": "My Tab",
     "card": { "w": 2, "h": 1 },
     "options": []
+  },
+  "lyrics": {
+    "command": "./fetch.py",
+    "name": "My Source",
+    "url": "https://example.com",
+    "wordSync": false
   }
 }
 ```
 
-`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other. `dash` labels the dash surfaces and declares their options, see [Dash Options](#dash-options).
+`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other. `dash` labels the dash surfaces and declares their options, see [Dash Options](#dash-options). `lyrics` adds a [lyrics provider](#lyrics-providers). A plugin with only `lyrics` needs no `component`.
 
 ### Plugin Types
 
@@ -2827,6 +2954,7 @@ Lookups only use the lyrics providers the user enabled in Settings. With none en
 - `"desktop"` - Desktop layer widget
 - `"dash"` - Dash tab (requires DMS &ge; 1.7.0)
 - `"dashCard"` - Dash overview card (requires DMS &ge; 1.7.0)
+- `"lyrics"` - [Lyrics provider](#lyrics-providers) with no QML (requires DMS &ge; 1.7.0)
 - `"composite"` - Multiple surfaces in one plugin (use with `components`; requires DMS &ge; 1.5.0)
 
 ### Permissions
