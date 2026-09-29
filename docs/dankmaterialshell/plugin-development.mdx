@@ -2095,6 +2095,8 @@ Each option has a `key`, a `text` label, a `type` and a default `def`:
 - Only values that differ from `def` are stored, in `settings.json` under `dashOptions.plugin_<pluginId>`. Reset clears your declared keys.
 - `widgets` is reserved for the widget grid below.
 
+Set `"cardOnly": true` on an option that only the overview card reads. It stays on the card's sheet and in Settings, and the tab's sheet leaves it out.
+
 `dash.options` only reach the dash surfaces. If your bar widget or daemon needs the same value, use a [settings component](#plugin-settings) and `pluginData` instead.
 
 ### DashTabComponent Reference
@@ -2177,11 +2179,56 @@ DashTabComponent {
 - The grid is 4 columns (2 when it's narrower than `Theme.smallBreakpoint`), separate from the overview column count.
 - Each definition needs a stable `id`, a translated `text`, an `icon`, a `component` and a default `w`/`h`. `minW`/`minH`/`maxW`/`maxH` are optional.
 - `enabled: false` leaves a widget in the Add menu instead of placing it.
-- `graphics: true` adds a Show graphics toggle to the widget's menu.
+- `options` gives a widget its own options, see [Widget Options](#widget-options).
 - Widgets get `widgetId`, `widgetOptions` and a bound `live` if they declare them. The grid unloads widget content when `live` is false.
 - The layout is saved in `dashOptions[entryId].widgets`. Reset brings back your defaults.
 
 `CounterTab.qml` in `DashCounterExample` is a complete tab built this way.
+
+### Widget Options
+
+A definition can carry `options`, a list of option specs in the same shape as [Dash Options](#dash-options). Build them with the `DashRegistry` helpers:
+
+```qml
+definitions: [
+    {
+        id: "counter", text: I18n.trFor("myPlugin", "Counter"), icon: "counter_1", component: counter, w: 2, h: 2,
+        options: [
+            DashRegistry.toneOption("primary"),
+            DashRegistry.toggle("compact", I18n.trFor("myPlugin", "Compact"), false),
+            DashRegistry.choice("style", I18n.trFor("myPlugin", "Style"), "bars", [{ value: "bars", text: "Bars" }, { value: "dots", text: "Dots" }]),
+            DashRegistry.number("limit", I18n.trFor("myPlugin", "Items"), 5, 1, 20)
+        ]
+    }
+]
+```
+
+- In edit mode a widget with options shows an options button that opens them in a sheet.
+- Every placed widget stores its own values. The widget reads them from `widgetOptions` by key, for example `widgetOptions.tone`.
+- `DashRegistry.toneOption(def)` is the shared Tone choice: `""` for the surface, `"primary"`, `"secondary"` or `"tertiary"`.
+- `id`, `w`, `h`, `col` and `row` are reserved keys.
+
+A `Card` takes the tone directly with `tone: widgetOptions.tone`. Anything else can follow a tone with `DankTone` from `qs.Widgets`:
+
+```qml
+Rectangle {
+    property var widgetOptions: ({})
+
+    color: toneColors.surfaceColor
+
+    DankTone {
+        id: toneColors
+        tone: widgetOptions.tone ?? ""
+    }
+
+    StyledText {
+        text: "42"
+        color: toneColors.contentColor
+    }
+}
+```
+
+`DankTone` exposes `surfaceColor`, `containerColor`, `contentColor`, `accentColor`, `onAccentColor`, `mutedColor`, `chipColor` and `tinted`, the same values a `Card` has. The built-in weather widgets are painted this way.
 
 ### DashCardComponent Reference
 
