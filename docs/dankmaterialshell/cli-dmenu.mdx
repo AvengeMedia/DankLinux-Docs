@@ -17,7 +17,7 @@ import Hero from '@site/src/components/Hero';
 
 The `dms dmenu` command reads newline-separated items from stdin, shows them in the DMS launcher, and prints whatever gets picked to stdout. It's a drop-in replacement for `dmenu`, with some extra functionality inspired by `rofi`'s dmenu mode.
 
-> The one thing it doesn't carry over from classic dmenu is the `-i` flag: matching is always case-sensitive.
+> Matching is always case-insensitive, but `dmenu`'s `-i` flag is still accepted for script compatibility.
 
 ## Quick Start
 
@@ -36,6 +36,8 @@ Exit codes: `0` on accept, `1` if the user cancelled (or stdin was empty), `2` i
 
 ## Options
 
+> Every long-form flag also accepts rofi's single-dash spelling
+
 ### Prompt & Input
 
 | Flag | Short | Description |
@@ -53,22 +55,30 @@ Exit codes: `0` on accept, `1` if the user cancelled (or stdin was empty), `2` i
 | Flag | Short | Description |
 |------|-------|-------------|
 | `--select` | | Pre-select the first row matching this string (with `--dump`, filters instead) |
-| `--active` | | Mark rows active by index, e.g. `1,3,7:11,-3:` |
-| `--urgent` | | Mark rows urgent by index (same syntax as `--active`) |
+| `--active` | `-a` | Mark rows active by index, e.g. `1,3,7:11,-3:` |
+| `--urgent` | `-u`| Mark rows urgent by index (same syntax as `--active`) |
 | `--only-match` | | Reject free text; only a listed item may be returned. Also blocks Escape/click-outside, forcing a real pick |
 | `--no-custom` | | Reject free text; only a listed item may be returned. Unlike `--only-match`, Escape/cancel still works |
 | `--multi-select` | | Allow selecting multiple rows; each prints on its own line on accept |
-| `--password` | | Mask typed input (cosmetic only, not a security boundary) |
 | `--markup-rows` | | Render each row's text as rich markup |
+| `--case-insensitive` | `-i` | No effect -- included only for parity with `dmenu`, matching is always case-insensitive |
 
-The index spec syntax used by `--active`/`--urgent` takes comma-separated indices and ranges: `1,3` for single rows, `7:11` for a range, and `-3:` for "from the third-to-last row onward" (an empty side of `:` means "to the start/end").
+The index syntax used by `--active`/`--urgent` takes comma-separated indices and ranges: `1,3` for single rows, `7:11` for a range, and `-3:` for "from the third-to-last row onward" (an empty side of `:` means "to the start/end").
+
+### Security
+| Flag | Description |
+|------|-------------|
+| `--password` | Mask typed input (cosmetic only, not a security boundary) |
+| `--disable-history` | Don't add this session's search query to the launcher's persistent history |
+
+> **NOTE**: `--password` does not automatically disable history. If handling sensitive data such as a password, it is advised you use *both* flags, as well as display text for each entry which differs from the passed value.
 
 ### Reading stdin
 
-| Flag | Short | Description |
-|------|-------|-------------|
-| `--sync` | | Read all input to EOF before showing the picker (default: stream as items arrive) |
-| `--no-run-if-empty` | | If stdin is empty, exit `1` immediately with no UI shown |
+| Flag | Description |
+|------|-------------|
+| `--sync` | Read all input to EOF before showing the picker (default: stream as items arrive) |
+| `--no-run-if-empty` | If stdin is empty, exit `1` immediately with no UI shown |
 
 ### Output Format
 
