@@ -323,6 +323,8 @@ hl.config({
 
 #### Decoration
 
+**Window opacity** on the Compositor page sets `active_opacity` and `inactive_opacity` for you. At 100 DMS leaves them to your config.
+
 ```lua
 hl.config({
     decoration = {
@@ -388,14 +390,14 @@ hl.window_rule({ match = { class = "^(com\\.mitchellh\\.ghostty)$" }, border_siz
 hl.window_rule({ match = { class = "^(kitty)$" }, border_size = 0 })
 
 -- Floating windows
-hl.window_rule({ match = { class = "^(gnome-calculator)$" }, floating = true })
+hl.window_rule({ match = { class = "^(gnome-calculator)$" }, float = true })
 
-hl.window_rule({ match = { class = "^(blueman-manager)$" }, floating = true })
+hl.window_rule({ match = { class = "^(blueman-manager)$" }, float = true })
 
-hl.window_rule({ match = { class = "^(org\\.gnome\\.Nautilus)$" }, floating = true })
+hl.window_rule({ match = { class = "^(org\\.gnome\\.Nautilus)$" }, float = true })
 
 -- Open DMS windows as floating by default (optional — DMS can manage this for you)
-hl.window_rule({ match = { class = "^(com.danklinux.dms)$" }, floating = true })
+hl.window_rule({ match = { class = "^(com.danklinux.dms)$" }, float = true })
 ```
 
 As on niri, **Settings → Theme & Colors → Floating Windows → Open Windows Floating** can manage this rule in `~/.config/hypr/dms/windowrules.lua` (click **Setup** on the banner if the fragment isn't included yet). DMS floating windows use app ID `com.danklinux.dms`.
