@@ -44,7 +44,7 @@ func TestParseNotes(t *testing.T) {
 				"### Other Changes\n- core: bump dankgop by @bbedward (243d716)\n\n" +
 				"**Full Changelog**: https://github.com/AvengeMedia/DankMaterialShell/compare/v1.6.1...v1.6.2\n",
 			counts:     models.ReleaseCounts{Breaking: 1, Features: 2, Fixes: 2, Other: 4},
-			highlights: []string{"Split move size hyprland windowrules", "Add flag to control HUD scale"},
+			highlights: []string{"Split move size hyprland windowrules", "Add flag to control HUD scale", "Niri: fix workspace updates never applying", "Preserve pinned state"},
 		},
 		{
 			name:       "no features falls back to fixes",

@@ -58,14 +58,13 @@ func parseNotes(body string) (models.ReleaseCounts, []string) {
 		}
 	}
 
-	src := features
-	if len(src) == 0 {
-		src = fixes
-	}
-	// release-notes.py lists oldest first; the head of a minor's list is mostly items already backported.
+	// Features first, fixes fill the rest; patch releases are mostly fixes.
 	highlights := make([]string, 0, maxHighlights)
-	for i := len(src) - 1; i >= 0 && len(highlights) < maxHighlights; i-- {
-		highlights = append(highlights, src[i])
+	for _, src := range [][]string{features, fixes} {
+		// release-notes.py lists oldest first; the head of a minor's list is mostly items already backported.
+		for i := len(src) - 1; i >= 0 && len(highlights) < maxHighlights; i-- {
+			highlights = append(highlights, src[i])
+		}
 	}
 	return counts, highlights
 }
