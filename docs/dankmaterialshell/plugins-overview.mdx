@@ -78,13 +78,14 @@ Background services with no UI. Run automation, monitoring, or provide services 
 Widgets that render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can drag them anywhere and resize via corner handles.
 
 **Capabilities:**
-- `desktop-widget` - Appears on the desktop layer
+- `desktop-widget` - Appears on the desktop layer and can be added to the lock screen
 
 **Features:**
 - Free positioning anywhere on desktop
 - Resizing with minimum size constraints
 - Multi-monitor support with independent positions per screen
 - Position/size persistence across sessions
+- Reusable on the lock screen with separate instances and geometry (see [Lock Screen](plugin-development#lock-screen))
 
 **Example use cases:** Desktop clock, system monitor, weather widget, sticky notes
 

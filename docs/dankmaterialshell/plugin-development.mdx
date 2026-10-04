@@ -642,7 +642,7 @@ Daemon manifest uses `"type": "daemon"`:
 
 ## Desktop Plugins {/* #desktop-plugins */}
 
-Desktop plugins render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can freely position and resize them.
+Desktop plugins render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can freely position and resize them. The same component can be placed on the lock screen (see [Lock Screen](#lock-screen)).
 
 ### Basic Desktop Widget
 
@@ -719,6 +719,7 @@ Desktop manifest uses `"type": "desktop"`:
 | `defaultHeight` | real | 200 | Initial height for new widgets |
 | `forceSquare` | bool | false | Constrain to square aspect ratio |
 | `acceptsKeyboardFocus` | bool | false | Opt in to receive keyboard focus when not interacting (see below) |
+| `lockScreen` | bool | false | Set by the host when the instance renders on the lock screen (see below) |
 
 **Helper functions:**
 
@@ -762,6 +763,30 @@ When enabled, the widget's layer requests `OnDemand` keyboard focus whenever the
 :::warning
 Only enable this if your widget actually needs keyboard input. Always-focused desktop widgets can interfere with global shortcuts and the focused application.
 :::
+
+### Lock Screen
+
+The lock screen is built from widgets. The stock layout is six built-in instances (clock, date, password, notifications, status row, power button) that users can move, configure, disable or remove, and every desktop widget can be added next to them. Users manage them from Settings → Lock screen → Widgets, or from the inline editor (`dms ipc call lock demo`, or the "Edit widgets" row on that page), which shows the lock screen with a FAB bar to add widgets or reset to the stock layout and lets them drag, resize and remove widgets in place. Lock screen instances have their own list and their own saved geometry, so one plugin can be on the desktop and the lock screen at the same time with different settings. The password widget cannot be removed: it owns keyboard focus and IME input. After `dms-greeter sync`, the greeter renders the same stock widgets with the same styles and positions; plugin widgets and the notifications widget are lock-screen only, and the ring password style falls back to the pill there because the user picker lives inside the field.
+
+Each stock widget has its own options page: the clock offers horizontal, vertical (two-tone stacked digits), expressive (Google Sans Flex, sized by the widget box) and analog styles with size, weight and color; the password block offers pill, expressive (shape-morphing lock), ring (swaylock-style indicator around the avatar), minimal and dots styles; the power button offers Material shapes; the status row can sit on a backdrop. Plugin widgets get the same reset, geometry and display options as on the desktop.
+
+The host sets `lockScreen: true` on the component before it loads. Use it to adapt:
+
+```qml
+DesktopPluginComponent {
+    id: root
+
+    // hide controls that make no sense while the session is locked
+    readonly property bool interactive: !lockScreen
+}
+```
+
+Rules that apply on the lock screen:
+
+- The widget is an item inside the session lock surface, not a layer surface. Nothing that opens a window, popout, or external application works there, and `acceptsKeyboardFocus` is ignored: the host returns keyboard focus to the password field whenever a widget takes it, so IME and typing always reach the lock.
+- Right-click move and resize are off. Geometry is edited in the inline editor only.
+- The lock screen runs while the user is away. Keep timers coarse (`SystemClock` with `Minutes` where possible) and stop animations when `lockScreen` is true.
+- Positions default to screen fractions (the "Sync position across displays" option), so one layout fits every output.
 
 ### Responsive Layout
 
