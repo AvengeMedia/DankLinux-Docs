@@ -289,6 +289,45 @@ dms ipc call powerprofile toggle
 - Returns `ERROR: power-profiles-daemon not available` when no PowerProfiles daemon (`power-profiles-daemon`, `tuned-ppd` or `tlp-pd`) is running
 - Returns `ERROR: Failed to set power profile` if the profile change could not be applied
 
+### wellbeing
+
+Digital Wellbeing screen time tracking and limits. Usage is recorded by the DMS server, so tracking needs a running `dms` backend with wellbeing support.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `toggle` | Toggle screen time tracking | - |
+| `enable` | Enable screen time tracking | - |
+| `disable` | Disable screen time tracking | - |
+| `status` | Report tracking state, today's screen time and the daily limit | - |
+| `today` | Today's screen time in seconds (`0` while tracking is off) | - |
+| `dailyLimit <minutes>` | Set the daily screen time limit; `0` clears it, empty string prints the current one | minutes |
+| `appLimit <appId> <minutes>` | Set a daily limit for one app; `0` clears it, empty string prints the current one | app id, minutes |
+
+To open the Digital Wellbeing dashboard tab, use `dms ipc call dash open wellbeing`. The tab only appears while tracking is enabled.
+
+**Examples:**
+```bash
+dms ipc call wellbeing status
+dms ipc call wellbeing toggle
+dms ipc call wellbeing today
+dms ipc call wellbeing dailyLimit 180
+dms ipc call wellbeing dailyLimit ""   # prints the current limit
+dms ipc call wellbeing appLimit firefox 60
+dms ipc call wellbeing appLimit firefox 0
+```
+
+**Keybind examples:**
+```kdl
+// niri
+Mod+Shift+W { spawn "dms" "ipc" "call" "dash" "toggle" "wellbeing"; }
+```
+```lua
+-- Hyprland
+hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("dms ipc call dash toggle wellbeing"))
+```
+
+Both actions are also available in **Settings → Keyboard shortcuts** as *Dashboard: Digital Wellbeing* and *Screen Time Tracking: Toggle*.
+
 ## Wallpaper & Profile
 
 ### wallpaper
@@ -736,7 +775,7 @@ Dashboard popup with multiple tabs.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
-| `open [tab]` | Show dashboard | tab: "", "overview", "media", "wallpaper", "weather" |
+| `open [tab]` | Show dashboard | tab: "", "overview", "media", "wallpaper", "weather", "wellbeing", "notifications" |
 | `close` | Hide dashboard | - |
 | `toggle [tab]` | Toggle dashboard | tab |
 | `openAt <tab> <position>` | Show dashboard anchored to a bar section | tab, position: "left", "center", "right" |
@@ -752,6 +791,7 @@ dms ipc call dash toggle ""
 dms ipc call dash open overview
 dms ipc call dash toggle media
 dms ipc call dash open weather
+dms ipc call dash open wellbeing
 dms ipc call dash toggleAt wallpaper center
 dms ipc call dash openAt overview right
 ```
