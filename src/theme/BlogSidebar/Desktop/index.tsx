@@ -46,8 +46,8 @@ function BlogSidebarDesktop({ sidebar }: any): React.JSX.Element {
           message: 'Blog recent posts navigation',
           description: 'The ARIA label for recent posts in the blog sidebar',
         })}>
-        <div style={{ paddingBottom: '1rem', borderBottom: '1px solid rgba(208, 188, 255, 0.15)', marginBottom: '1.25rem' }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.5rem' }}>
+        <div style={{ paddingBottom: '1rem', borderBottom: '1px solid var(--dank-outline-variant)', marginBottom: '1.25rem' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--dank-on-surface-variant)', marginBottom: '0.5rem' }}>
             Latest Release Notes
           </div>
           <a
@@ -57,14 +57,12 @@ function BlogSidebarDesktop({ sidebar }: any): React.JSX.Element {
               alignItems: 'center',
               gap: '0.5rem',
               padding: '0.5rem 0.75rem',
-              borderRadius: '0.375rem',
-              background: 'rgba(208, 188, 255, 0.1)',
-              border: '1px solid rgba(208, 188, 255, 0.2)',
-              color: 'var(--dank-purple-light)',
+              borderRadius: 'var(--dank-radius-lg)',
+              background: 'var(--dank-primary-container)',
+              color: 'var(--dank-on-primary-container)',
               fontWeight: 500,
               fontSize: '0.875rem',
               textDecoration: 'none',
-              transition: 'all 0.2s ease',
             }}
           >
             <span>📋</span>

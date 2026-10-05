@@ -653,12 +653,14 @@ export default function Plugins() {
             <div className={styles.tabContainer}>
               <button
                 className={`${styles.tabButton} ${activeTab === 'plugins' ? styles.activeTab : ''}`}
+                aria-pressed={activeTab === 'plugins'}
                 onClick={() => setActiveTab('plugins')}
               >
                 Plugins
               </button>
               <button
                 className={`${styles.tabButton} ${activeTab === 'themes' ? styles.activeTab : ''}`}
+                aria-pressed={activeTab === 'themes'}
                 onClick={() => setActiveTab('themes')}
               >
                 Themes
@@ -671,6 +673,7 @@ export default function Plugins() {
               <input
                 type="text"
                 placeholder={activeTab === 'plugins' ? 'Search plugins...' : 'Search themes...'}
+                aria-label={activeTab === 'plugins' ? 'Search plugins' : 'Search themes'}
                 className={styles.searchInput}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -737,15 +740,19 @@ export default function Plugins() {
                 <div className={styles.viewToggle}>
                   <button
                     className={`${styles.viewButton} ${viewMode === 'grid' ? styles.active : ''}`}
+                    aria-pressed={viewMode === 'grid'}
                     onClick={() => setViewMode('grid')}
                     title="Grid view"
+                    aria-label="Grid view"
                   >
                     <span className="material-symbols-outlined">grid_view</span>
                   </button>
                   <button
                     className={`${styles.viewButton} ${viewMode === 'list' ? styles.active : ''}`}
+                    aria-pressed={viewMode === 'list'}
                     onClick={() => setViewMode('list')}
                     title="List view"
+                    aria-label="List view"
                   >
                     <span className="material-symbols-outlined">view_list</span>
                   </button>
@@ -762,6 +769,7 @@ export default function Plugins() {
                       <button
                         key={cat.id}
                         className={`${styles.filterButton} ${selectedCategory === cat.id ? styles.active : ''}`}
+                        aria-pressed={selectedCategory === cat.id}
                         onClick={() => setSelectedCategory(cat.id)}
                       >
                         {cat.label}
@@ -777,6 +785,7 @@ export default function Plugins() {
                       <button
                         key={cap.id}
                         className={`${styles.filterButton} ${selectedCapability === cap.id ? styles.active : ''}`}
+                        aria-pressed={selectedCapability === cap.id}
                         onClick={() => setSelectedCapability(cap.id)}
                       >
                         {cap.label}
@@ -792,6 +801,7 @@ export default function Plugins() {
                       <button
                         key={comp.id}
                         className={`${styles.filterButton} ${selectedCompositor === comp.id ? styles.active : ''}`}
+                        aria-pressed={selectedCompositor === comp.id}
                         onClick={() => setSelectedCompositor(comp.id)}
                       >
                         {comp.label}
@@ -1004,6 +1014,7 @@ export default function Plugins() {
                             <button
                               key={variant.id}
                               className={`${styles.variantButton} ${getSelectedVariant(theme) === variant.id ? styles.active : ''}`}
+                              aria-pressed={getSelectedVariant(theme) === variant.id}
                               onClick={() => setSelectedVariants(prev => ({ ...prev, [theme.id]: variant.id }))}
                             >
                               {variant.name}
@@ -1022,6 +1033,7 @@ export default function Plugins() {
                               <button
                                 key={flavor.id}
                                 className={`${styles.variantButton} ${getSelectedFlavor(theme) === flavor.id ? styles.active : ''}`}
+                                aria-pressed={getSelectedFlavor(theme) === flavor.id}
                                 onClick={() => setSelectedFlavors(prev => ({ ...prev, [theme.id]: flavor.id }))}
                               >
                                 {flavor.name}
@@ -1036,6 +1048,7 @@ export default function Plugins() {
                               <button
                                 key={accent.id}
                                 className={`${styles.variantButton} ${getSelectedAccent(theme) === accent.id ? styles.active : ''}`}
+                                aria-pressed={getSelectedAccent(theme) === accent.id}
                                 onClick={() => setSelectedAccents(prev => ({ ...prev, [theme.id]: accent.id }))}
                               >
                                 {accent.name}

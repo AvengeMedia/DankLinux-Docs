@@ -1,7 +1,7 @@
 .logoWrapper {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.625rem;
   text-decoration: none;
   color: inherit;
 }
@@ -23,14 +23,12 @@
 }
 
 .brandText {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--ifm-heading-color);
-  letter-spacing: 0.08em;
+  font-size: 1.25rem;
+  font-weight: 650;
+  color: var(--dank-on-surface);
+  letter-spacing: -0.02em;
   opacity: 0.95;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--dank-duration-fast) var(--dank-easing);
   white-space: nowrap;
-  text-transform: uppercase;
   line-height: 1;
-  padding-top: 0.15rem;
 }

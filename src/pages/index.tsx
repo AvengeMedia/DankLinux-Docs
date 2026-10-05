@@ -3,6 +3,7 @@ import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
 import LandingBackground from '../components/LandingBackground';
+import ThemePreview from '../components/ThemePreview';
 import styles from './index.module.css';
 
 declare global {
@@ -33,7 +34,7 @@ const compositorLinks: Record<string, string> = {
 
 export default function Home() {
   const [typed, setTyped] = useState('');
-  const [showCursor, setShowCursor] = useState(true);
+  const [reduceMotion, setReduceMotion] = useState(false);
   const [currentCompositor, setCurrentCompositor] = useState(-1);
   const [copied, setCopied] = useState(false);
   const fullText = 'curl -fsSL https://install.danklinux.com | sh';
@@ -50,20 +51,25 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateMotion = () => setReduceMotion(preference.matches);
+    updateMotion();
+    preference.addEventListener('change', updateMotion);
+    return () => preference.removeEventListener('change', updateMotion);
+  }, []);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setTyped(fullText);
+      return;
+    }
     if (typed.length < fullText.length) {
       const timeout = setTimeout(() => {
         setTyped(fullText.slice(0, typed.length + 1));
       }, 50);
       return () => clearTimeout(timeout);
     }
-  }, [typed, fullText]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
+  }, [typed, fullText, reduceMotion]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -125,6 +131,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (reduceMotion) {
+      setCurrentCompositor(compositors.length - 1);
+      return;
+    }
     const timeouts: NodeJS.Timeout[] = [];
 
     const showFirstTimeout = setTimeout(() => {
@@ -146,7 +156,7 @@ export default function Home() {
     return () => {
       timeouts.forEach(t => clearTimeout(t));
     };
-  }, []);
+  }, [reduceMotion]);
 
   useEffect(() => {
     if (!videoRef.current || typeof window === 'undefined') return;
@@ -200,8 +210,8 @@ export default function Home() {
       description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, Sway, and Miracle WM.">
       <Head>
         <meta property="og:image" content="https://danklinux.com/img/homepage/danklinux-preview.png" />
-        <meta property="og:image:width" content="2145" />
-        <meta property="og:image:height" content="1365" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:image" content="https://danklinux.com/img/homepage/danklinux-preview.png" />
       </Head>
       <noscript>
@@ -275,9 +285,9 @@ export default function Home() {
               </div>
 
               <div className={styles.terminalFloat}>
-                <div className={styles.terminalWindow} onClick={handleCopyCommand}>
+                <div className={styles.terminalWindow}>
                   {copied && (
-                    <div className={styles.copiedIndicator}>
+                    <div className={styles.copiedIndicator} role="status">
                       <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{ marginRight: '0.5rem' }}>
                         <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
@@ -308,8 +318,8 @@ export default function Home() {
                         ))}
                     </div>
                   </div>
-                  <div className={styles.terminalBody}>
-                    <div className={styles.terminalLine}>
+                  <button type="button" className={styles.terminalBody} onClick={handleCopyCommand} aria-label={`Copy install command: ${fullText}`}>
+                    <span className={styles.terminalLine}>
                       <span className={styles.prompt}>❯</span>
                       <span className={styles.typedCommand}>
                         {typed.length > 0 && (
@@ -330,21 +340,20 @@ export default function Home() {
                           </>
                         )}
                       </span>
-                      <span className={`${styles.terminalCursor} ${!showCursor ? styles.hidden : ''}`}>█</span>
-                    </div>
-                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`}>
+                    </span>
+                    <span className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`}>
                       <span className={styles.output}>→ Detecting distribution...</span>
-                    </div>
-                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.3s' }}>
+                    </span>
+                    <span className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.3s' }}>
                       <span className={styles.success}>✓ Installing dependencies</span>
-                    </div>
-                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.6s' }}>
+                    </span>
+                    <span className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.6s' }}>
                       <span className={styles.success}>✓ Configuring DankMaterialShell</span>
-                    </div>
-                    <div className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.9s' }}>
+                    </span>
+                    <span className={`${styles.terminalLine} ${typed.length >= fullText.length ? styles.fadeIn : styles.hidden}`} style={{ animationDelay: '0.9s' }}>
                       <span className={styles.success}>✓ Ready to rock!</span>
-                    </div>
-                  </div>
+                    </span>
+                  </button>
                 </div>
               </div>
 
@@ -586,10 +595,12 @@ export default function Home() {
                 imageAlign="top"
               />
               <FeatureCard
-                title="Fully Customizable"
-                description="Plugins, widgets, themes, and configs to make it yours"
-                imageDark="/img/homepage/plugins_dark.png"
-                imageLight="/img/homepage/plugins_light.png"
+                title="DankCalendar"
+                description="Your calendars, events, and tasks together, with Google, Microsoft, CalDAV, and iCloud support."
+                imageDark="/img/blog/v1.6/dcal_drag.png"
+                imageLight="/img/blog/v1.6/dcal_drag.png"
+                imageAlign="top"
+                href="/docs/dankcalendar"
               />
             </div>
           </section>
@@ -598,47 +609,41 @@ export default function Home() {
             <div className={styles.showcaseGrid}>
               <div className={styles.showcaseText}>
                 <h2 className={styles.showcaseTitle}>
-                  Beautiful by <span className={styles.gradientText}>default</span>
+                  One theme.<br /><span className={styles.gradientText}>Across your apps.</span>
                 </h2>
                 <p className={styles.showcaseDesc}>
-                  Dynamic theming powered by matugen extracts colors from your wallpaper
-                  to create a cohesive experience.
+                  DMS automatically generates matching colors for supported GTK and Qt apps,
+                  terminals, editors, and more.
+                </p>
+                <p className={styles.showcaseDesc}>
+                  Our custom <Link to="/docs/dankmaterialshell/cli-dank16">dank16</Link> algorithm builds a full 16-color palette
+                  for terminals and syntax highlighting, with contrast tuned for light and dark themes.
                 </p>
                 <ul className={styles.showcaseFeatures}>
                   <li>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <span>Material Design 3 color schemes</span>
+                    <span>GTK3, GTK4, and Qt</span>
                   </li>
                   <li>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <span>Automatic theming for system applications.</span>
+                    <span>Terminal and editor color schemes</span>
                   </li>
                   <li>
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
-                    <span>Automatic light/dark mode</span>
-                  </li>
-                  <li>
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path d="M4 10L8 14L16 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    <span>Smooth animations throughout</span>
+                    <span>Light and dark modes</span>
                   </li>
                 </ul>
+                <Link to="/docs/dankmaterialshell/application-themes" className={styles.themingLink}>
+                  Set up app theming <span aria-hidden="true">↗</span>
+                </Link>
               </div>
-              <div className={styles.showcaseVisual}>
-                <div className={styles.colorGrid}>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #805AD5, #6B46C1)' }}></div>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #D0BCFF, #9F7AEA)' }}></div>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #B794F4, #805AD5)' }}></div>
-                  <div className={styles.colorBlock} style={{ background: 'linear-gradient(135deg, #6B46C1, #553C9A)' }}></div>
-                </div>
-              </div>
+              <ThemePreview />
             </div>
           </section>
         </div>
@@ -647,12 +652,13 @@ export default function Home() {
   );
 }
 
-function FeatureCard({ title, description, imageDark, imageLight, imageAlign = 'center' }: {
+function FeatureCard({ title, description, imageDark, imageLight, imageAlign = 'center', href }: {
   title: string;
   description: string;
   imageDark?: string;
   imageLight?: string;
   imageAlign?: 'top' | 'center';
+  href?: string;
 }) {
   return (
     <div className={styles.featureCard}>
@@ -672,7 +678,7 @@ function FeatureCard({ title, description, imageDark, imageLight, imageAlign = '
           />
         </div>
       )}
-      <h3 className={styles.cardTitle}>{title}</h3>
+      <h3 className={styles.cardTitle}>{href ? <Link to={href}>{title} <span aria-hidden="true">↗</span></Link> : title}</h3>
       <p className={styles.cardDesc}>{description}</p>
     </div>
   );

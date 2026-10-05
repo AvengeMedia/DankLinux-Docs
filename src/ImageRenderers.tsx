@@ -16,41 +16,41 @@ const BASE_HEIGHT = 630
 
 const fonts = [
   {
-    name: 'Adwaita Sans',
+    name: 'Google Sans Flex',
     data: readFileSync(
-      join(__dirname, '../static/fonts/AdwaitaSans-Regular.ttf'),
+      join(__dirname, '../static/fonts/GoogleSansFlex-400.ttf'),
     ),
     weight: 400 as const,
     style: 'normal' as const,
   },
   {
-    name: 'Adwaita Sans',
+    name: 'Google Sans Flex',
     data: readFileSync(
-      join(__dirname, '../static/fonts/AdwaitaSans-Medium.ttf'),
+      join(__dirname, '../static/fonts/GoogleSansFlex-500.ttf'),
     ),
     weight: 500 as const,
     style: 'normal' as const,
   },
   {
-    name: 'Adwaita Sans',
+    name: 'Google Sans Flex',
     data: readFileSync(
-      join(__dirname, '../static/fonts/AdwaitaSans-SemiBold.ttf'),
+      join(__dirname, '../static/fonts/GoogleSansFlex-600.ttf'),
     ),
     weight: 600 as const,
     style: 'normal' as const,
   },
   {
-    name: 'Adwaita Sans',
+    name: 'Google Sans Flex',
     data: readFileSync(
-      join(__dirname, '../static/fonts/AdwaitaSans-Bold.ttf'),
+      join(__dirname, '../static/fonts/GoogleSansFlex-700.ttf'),
     ),
     weight: 700 as const,
     style: 'normal' as const,
   },
   {
-    name: 'Adwaita Sans',
+    name: 'Google Sans Flex',
     data: readFileSync(
-      join(__dirname, '../static/fonts/AdwaitaSans-ExtraBold.ttf'),
+      join(__dirname, '../static/fonts/GoogleSansFlex-800.ttf'),
     ),
     weight: 800 as const,
     style: 'normal' as const,
@@ -79,24 +79,27 @@ const logoPng = readFileSync(
 
 const logoDataUrl = `data:image/png;base64,${logoPng.toString('base64')}`
 
-export const docs: ImageRenderer<DocsPageData> = (data) => {
-  const getCategoryFromPath = (permalink: string): string => {
-    const segments = permalink.split('/').filter(Boolean)
-    if (segments.length > 1 && segments[0] === 'docs') {
-      const categorySlug = segments[1]
-      const categoryMap: Record<string, string> = {
-        'dankmaterialshell': 'DMS',
-        'dankgreeter': 'DMS Greeter',
-        'dgop': 'dgop',
-        'danksearch': 'dsearch',
-      }
-      return categoryMap[categorySlug] || 'Dank Linux'
-    }
-    return 'Dank Linux'
-  }
+const projectCategories: Record<string, string> = {
+  dankmaterialshell: 'DMS',
+  dankgreeter: 'DMS Greeter',
+  dankcalendar: 'DankCalendar',
+  dankinstall: 'DankInstall',
+  dgop: 'dgop',
+  danksearch: 'dsearch',
+}
 
-  const category = getCategoryFromPath(data.metadata.permalink)
-  const title = data.metadata.title
+function getCategoryFromPath(permalink: string): string {
+  const segments = permalink.split('/').filter(Boolean)
+  if (segments[0] !== 'docs') return 'Dank Linux'
+
+  const project = /^\d+(?:\.\d+)*$/.test(segments[1]) ? segments[2] : segments[1]
+  return projectCategories[project] || 'Dank Linux'
+}
+
+function titleCard(category: string, title: string): ReturnType<ImageRenderer> {
+  if (title.toLowerCase().startsWith(category.toLowerCase())) {
+    category = 'Dank Linux'
+  }
 
   return [
     <div
@@ -156,7 +159,7 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
             style={{
               fontSize: '54px',
               color: '#B794F4',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               fontWeight: 500,
               marginLeft: '4px',
               marginBottom: '18px',
@@ -170,7 +173,7 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
             style={{
               fontSize: '96px',
               color: '#ffffff',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               fontWeight: 700,
               lineHeight: 1.15,
               maxWidth: '1000px',
@@ -193,7 +196,7 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
             style={{
               fontSize: '36px',
               color: '#ffffff',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               fontWeight: 500,
             }}
           >
@@ -210,10 +213,18 @@ export const docs: ImageRenderer<DocsPageData> = (data) => {
   ]
 }
 
+export const docs: ImageRenderer<DocsPageData> = (data) =>
+  titleCard(getCategoryFromPath(data.metadata.permalink), data.metadata.title)
+
 export const pages: ImageRenderer<PagesPageData> = (data) => {
   const route = data.route || data.metadata?.permalink || '/'
   const isHomePage = route === '/'
   const isPluginsPage = route === '/plugins' || route === '/plugins/'
+
+  if (!isHomePage && !isPluginsPage) {
+    const title = data.metadata?.title?.replace(/\s+\|\s+Dank Linux$/, '') || 'Dank Linux'
+    return titleCard('Dank Linux', title)
+  }
 
   if (isPluginsPage) {
     return [
@@ -281,7 +292,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
             <div
               style={{
                 fontSize: '48px',
-                fontFamily: 'Adwaita Sans',
+                fontFamily: 'Google Sans Flex',
                 fontWeight: 800,
                 color: '#fffffff2',
                 letterSpacing: '0.08em',
@@ -313,7 +324,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
               textAlign: 'center',
             }}
           >
-            Plugin Registry
+            Plugins &amp; Themes
           </div>
         </div>
       </div>,
@@ -391,7 +402,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
           <div
             style={{
               fontSize: '48px',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               fontWeight: 800,
               color: '#fffffff2',
               letterSpacing: '0.08em',
@@ -413,7 +424,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            fontFamily: 'Adwaita Sans',
+            fontFamily: 'Google Sans Flex',
             lineHeight: 1.1,
             textAlign: 'center',
             width: '100%',
@@ -482,7 +493,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
 
 export const blog: ImageRenderer<BlogPageData> = (data) => {
   // Handle different blog page types
-  let title = 'Blog'
+  let title = 'Updates'
   let isV1Release = false
   let isV12Release = false
   let isV14Release = false
@@ -493,15 +504,15 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     const postData = data.data as Record<string, unknown>
     const metadata = postData.metadata as Record<string, unknown> | undefined
     title = String(metadata?.title || postData.title || 'Blog')
-    // Check for v1 release post
     const id = String(postData.id || '')
     const permalink = String(metadata?.permalink || '')
-    isV1Release = id === 'v1-release' || permalink.includes('v1-release') || title.includes('1.0')
-    isV12Release = id === 'v1-2-release' || permalink.includes('v1-2-release') || title.includes('1.2')
-    isV14Release = id === 'v1-4-release' || permalink.includes('v1-4-release') || title.includes('1.4')
+    const slug = permalink.split('/').filter(Boolean).pop() || id
+    isV1Release = slug === 'v1-release'
+    isV12Release = slug === 'v1-2-release'
+    isV14Release = slug === 'v1-4-release'
     const frontMatter = metadata?.frontMatter as Record<string, unknown> | undefined
     hasStaticImage = Boolean(frontMatter?.image)
-    isDankCalendar = id === 'dankcalendar-release' || permalink.includes('dankcalendar-release') || title.includes('DankCalendar')
+    isDankCalendar = slug === 'dankcalendar-release'
   } else if (data.pageType === 'tag' && 'label' in data.data) {
     title = `Tag: ${String(data.data.label)}`
   } else if (data.pageType === 'archive') {
@@ -632,7 +643,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               display: 'flex',
               alignItems: 'baseline',
               gap: '24px',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
             }}
           >
             <div
@@ -666,7 +677,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               fontSize: '32px',
               fontWeight: 600,
               color: 'rgba(208, 188, 255, 0.4)',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               marginTop: '16px',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -767,7 +778,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               display: 'flex',
               alignItems: 'baseline',
               gap: '24px',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
             }}
           >
             <div
@@ -801,7 +812,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               fontSize: '32px',
               fontWeight: 600,
               color: 'rgba(198, 93, 59, 0.4)',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               marginTop: '16px',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -902,7 +913,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               display: 'flex',
               alignItems: 'baseline',
               gap: '24px',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
             }}
           >
             <div
@@ -936,7 +947,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               fontSize: '32px',
               fontWeight: 600,
               color: 'rgba(252, 165, 165, 0.4)',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               marginTop: '16px',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -972,7 +983,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
           border: '2px solid rgba(128, 90, 213, 0.45)',
           background: 'rgba(128, 90, 213, 0.12)',
           color: '#B794F4',
-          fontFamily: 'Adwaita Sans',
+          fontFamily: 'Google Sans Flex',
           fontWeight: 700,
           fontSize: size * 0.42,
           transform: `rotate(${rot}deg)`,
@@ -1044,7 +1055,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
             style={{
               display: 'flex',
               alignItems: 'baseline',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
             }}
           >
             <div
@@ -1078,7 +1089,7 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
               fontSize: '32px',
               fontWeight: 600,
               color: 'rgba(183, 148, 244, 0.5)',
-              fontFamily: 'Adwaita Sans',
+              fontFamily: 'Google Sans Flex',
               marginTop: '16px',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -1096,93 +1107,5 @@ export const blog: ImageRenderer<BlogPageData> = (data) => {
     ]
   }
 
-  return [
-    <div
-      style={{
-        display: 'flex',
-        width: BASE_WIDTH,
-        height: BASE_HEIGHT,
-        background: 'linear-gradient(135deg, #1a1318 0%, #2d1b3d 100%)',
-        position: 'relative',
-        overflow: 'hidden',
-        fontSmooth: 'always',
-        WebkitFontSmoothing: 'antialiased',
-        MozOsxFontSmoothing: 'grayscale',
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          background: 'radial-gradient(circle at 20% 50%, rgba(128, 90, 213, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(208, 188, 255, 0.12) 0%, transparent 50%)',
-        }}
-      />
-
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-          padding: '60px',
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
-        <img
-          src={logoDataUrl}
-          style={{
-            position: 'absolute',
-            top: '50px',
-            right: '50px',
-            opacity: 0.6,
-            width: '120px',
-            height: '120px',
-          }}
-        />
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            flex: 1,
-            justifyContent: 'center',
-          }}
-        >
-          <div
-            style={{
-              fontSize: '54px',
-              color: '#B794F4',
-              fontFamily: 'Adwaita Sans',
-              fontWeight: 500,
-              marginLeft: '4px',
-              marginBottom: '18px',
-              letterSpacing: '0.5px',
-            }}
-          >
-            Blog
-          </div>
-
-          <div
-            style={{
-              fontSize: '96px',
-              color: '#ffffff',
-              fontFamily: 'Adwaita Sans',
-              fontWeight: 700,
-              lineHeight: 1.15,
-              maxWidth: '1000px',
-            }}
-          >
-            {title}
-          </div>
-        </div>
-      </div>
-    </div>,
-    {
-      width: BASE_WIDTH,
-      height: BASE_HEIGHT,
-      fonts,
-    },
-  ]
+  return titleCard('Updates', title)
 }

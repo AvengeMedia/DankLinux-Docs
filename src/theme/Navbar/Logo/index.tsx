@@ -23,7 +23,7 @@ export default function LogoWrapper(props: Props): React.JSX.Element {
   const logoImageUrlDark = useBaseUrl(logo?.srcDark || logo?.src || '');
 
   return (
-    <Link to={logoLink} className={styles.logoWrapper}>
+    <Link to={logoLink} className={`${styles.logoWrapper} navbar__brand`}>
       <div className="navbar__logo">
         <ThemedImage
           sources={{
@@ -34,7 +34,7 @@ export default function LogoWrapper(props: Props): React.JSX.Element {
           className={styles.logo}
         />
       </div>
-      <span className={`${styles.brandText} navbar-brand-text`}>DANK LINUX</span>
+      <span className={`${styles.brandText} navbar-brand-text`}>Dank Linux</span>
     </Link>
   );
 }

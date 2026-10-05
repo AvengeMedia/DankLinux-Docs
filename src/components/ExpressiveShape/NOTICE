@@ -1,0 +1,7 @@
+Selected geometry from AndroidX MaterialShapes, adapted to SVG paths.
+Copyright 2024 The Android Open Source Project
+Licensed under the Apache License, Version 2.0. See Apache-2.0.txt.
+
+Source: https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/MaterialShapes.kt
+Geometry: androidx.graphics:graphics-shapes-android:1.0.1
+Exported by dank-qml-common in MaterialShapeData.js, retrieved 2026-09-08.
