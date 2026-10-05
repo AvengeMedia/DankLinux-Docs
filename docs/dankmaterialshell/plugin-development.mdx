@@ -2117,7 +2117,6 @@ Each option has a `key`, a `text` label, a `type` and a default `def`:
 - `text`, `description` and choice texts go through your plugin's [translations](#translations).
 - The rows show up in the options sheet (Options in the tab's three-dot menu, or the tune button on a card in edit mode) and under Settings → Dashboard.
 - Read values as `options.<key>` in both the tab and the card. Bindings update when the user changes a value.
-- Only values that differ from `def` are stored, in `settings.json` under `dashOptions.plugin_<pluginId>`. Reset clears your declared keys.
 - `widgets` is reserved for the widget grid below.
 
 Set `"cardOnly": true` on an option that only the overview card reads. It stays on the card's sheet and in Settings, and the tab's sheet leaves it out.
@@ -3082,7 +3081,7 @@ Keep your English strings stable once they're in POEditor. Renaming a term is a 
 2. Add to bar: Settings → DankBar → Add widget. For a dock, use the dock's edit mode. Dash tabs show up on their own; add dash cards from the dash (three-dot menu → Edit → Add widget), and open a tab directly with `dms ipc call dash open plugin_myPlugin`
 3. Check console: Look for errors in shell output
 4. Hot-reload your plugin: `dms ipc call plugins reload myPlugin`
-5. Check settings file: `~/.config/DankMaterialShell/settings.json`
+5. Check settings files: `~/.config/DankMaterialShell/settings.json` or `~/.config/DankMaterialShell/config.d/*.json`
 
 ### Hot Reloading
 
