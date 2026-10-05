@@ -814,6 +814,87 @@
   stroke: #6b46c1;
 }
 
+/* ===== Support ===== */
+
+.support {
+  padding: 2rem 2rem 5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.supportCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  padding: 2.5rem 3rem;
+  background: var(--dank-surface-container);
+  border: 1px solid var(--dank-outline-variant);
+  border-radius: var(--dank-radius-xl);
+}
+
+.supportText {
+  max-width: 640px;
+}
+
+.supportTitle {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+  font-weight: 650;
+}
+
+.supportDesc {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--dank-on-surface-variant);
+}
+
+.supportActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.kofiIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: block;
+  background: currentColor;
+  mask: url('/img/kofi.svg') no-repeat center / contain;
+  -webkit-mask: url('/img/kofi.svg') no-repeat center / contain;
+}
+
+@media (max-width: 996px) {
+  .supportCard {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .supportText {
+    max-width: none;
+  }
+
+  .supportActions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .support {
+    padding: 1rem 1.5rem 3rem;
+  }
+
+  .supportActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 /* ===== Animations ===== */
 
 @keyframes fadeInUp {

@@ -500,6 +500,10 @@ const config: Config = {
               label: 'Contributing',
               to: '/docs/contributing',
             },
+            {
+              label: 'Tip us',
+              href: 'https://ko-fi.com/danklinux',
+            },
           ],
         },
       ],

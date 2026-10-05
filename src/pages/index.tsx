@@ -646,6 +646,34 @@ export default function Home() {
               <ThemePreview />
             </div>
           </section>
+
+          <section className={styles.support}>
+            <div className={styles.supportCard}>
+              <div className={styles.supportText}>
+                <h2 className={styles.supportTitle}>
+                  Free and open source. <span className={styles.gradientText}>Kept going by you.</span>
+                </h2>
+                <p className={styles.supportDesc}>
+                  Dank Linux costs nothing to use. If it has earned a spot on your desktop,
+                  a tip helps cover the time and infrastructure that keep releases coming.
+                </p>
+              </div>
+              <div className={styles.supportActions}>
+                <a
+                  href="https://ko-fi.com/danklinux"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.primaryCTA}
+                >
+                  <span className={styles.kofiIcon} aria-hidden="true" />
+                  <span>Tip on Ko-fi</span>
+                </a>
+                <Link to="/docs/contributing" className={styles.secondaryCTA}>
+                  Contribute code
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </Layout>
