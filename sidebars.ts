@@ -108,6 +108,11 @@ const sidebars: SidebarsConfig = {
               id: 'dankmaterialshell/cli-qr',
               label: 'QR Codes',
             },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-dmenu',
+              label: 'Dmenu',
+            },
           ],
         },
         {
