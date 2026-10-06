@@ -32,7 +32,14 @@ type Store struct {
 }
 
 func NewStore(cacheDir string) (*Store, error) {
-	dir := filepath.Join(cacheDir, "previews")
+	return newStoreAt(filepath.Join(cacheDir, "previews"))
+}
+
+func NewThumbStore(cacheDir string) (*Store, error) {
+	return newStoreAt(filepath.Join(cacheDir, "previews", "thumbs"))
+}
+
+func newStoreAt(dir string) (*Store, error) {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create previews directory: %w", err)
 	}

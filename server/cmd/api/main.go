@@ -181,8 +181,13 @@ func startAPI(cfg *config.Config) {
 		servePreview := func(w http.ResponseWriter, r *http.Request) {
 			previews_handler.ServePreview(previewGen.Store(), chi.URLParam(r, "pluginId"), w, r)
 		}
+		serveThumb := func(w http.ResponseWriter, r *http.Request) {
+			previews_handler.ServePreview(previewGen.ThumbStore(), chi.URLParam(r, "pluginId"), w, r)
+		}
 		r.Get("/previews/{pluginId}", servePreview)
 		r.Head("/previews/{pluginId}", servePreview)
+		r.Get("/previews/{pluginId}/thumb", serveThumb)
+		r.Head("/previews/{pluginId}/thumb", serveThumb)
 	}
 
 	r.Get("/ready", func(w http.ResponseWriter, r *http.Request) {

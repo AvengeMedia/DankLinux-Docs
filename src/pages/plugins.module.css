@@ -715,7 +715,7 @@
 
 .pluginImage {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(208, 188, 255, 0.05), rgba(128, 90, 213, 0.05));
 }
