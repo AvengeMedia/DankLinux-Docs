@@ -36,10 +36,6 @@ func NewGenerator(cacheDir, publicBaseURL string) (*Generator, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err := thumbs.EnsurePlaceholder(renderThumbPlaceholder); err != nil {
-		return nil, err
-	}
-
 	return &Generator{
 		store:         store,
 		thumbs:        thumbs,
@@ -91,14 +87,17 @@ func (g *Generator) syncPlugin(ctx context.Context, p *models.Plugin) {
 
 func (g *Generator) syncImageSource(ctx context.Context, p models.Plugin, kind, sourceURL string) bool {
 	key := SourceKey(sourceURL, p)
-	if !g.store.NeedsUpdate(p.ID, key) && !g.thumbs.NeedsUpdate(p.ID, key) {
+	needCard := g.store.NeedsUpdate(p.ID, key)
+	needThumb := g.thumbs.NeedsUpdate(p.ID, key)
+	if !needCard && !needThumb {
 		return true
 	}
 
 	src, err := g.fetcher.fetch(ctx, sourceURL)
 	if err != nil {
 		log.Warnf("Preview %s fetch failed for %s: %v", kind, p.ID, err)
-		return false
+		// A current card must survive a failed refetch; the thumb retries next sync
+		return !needCard
 	}
 
 	card, err := ComposeScreenshot(src, p)
@@ -156,14 +155,6 @@ func (g *Generator) putCard(store *Store, p models.Plugin, key string, compose f
 
 func renderPlaceholder() ([]byte, error) {
 	img, err := ComposeCard(models.Plugin{Name: "DMS Plugin"})
-	if err != nil {
-		return nil, err
-	}
-	return encodePNG(img)
-}
-
-func renderThumbPlaceholder() ([]byte, error) {
-	img, err := ComposeThumbCard(models.Plugin{Name: "DMS Plugin"})
 	if err != nil {
 		return nil, err
 	}

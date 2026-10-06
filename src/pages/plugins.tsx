@@ -19,7 +19,6 @@ interface Plugin {
   distro: string[];
   screenshot?: string;
   previewUrl?: string;
-  thumbUrl?: string;
   version?: string;
   icon?: string;
   permissions?: string[];
@@ -417,7 +416,6 @@ export default function Plugins() {
       const pluginList = (data.plugins ?? []).map(p => ({
         ...p,
         previewUrl: p.previewUrl ? `${apiOrigin}/previews/${p.id}` : p.previewUrl,
-        thumbUrl: p.thumbUrl ? `${apiOrigin}/previews/${p.id}/thumb` : p.thumbUrl,
       }));
       setPlugins(pluginList);
       setFilteredPlugins(pluginList);
@@ -841,7 +839,7 @@ export default function Plugins() {
                       role="button"
                       title="Click to expand"
                     >
-                      <img src={plugin.thumbUrl || plugin.previewUrl || plugin.screenshot} alt={plugin.name} loading="lazy" />
+                      <img src={plugin.previewUrl || plugin.screenshot} alt={plugin.name} loading="lazy" />
                     </div>
                   )}
                   <div className={styles.pluginContent}>
