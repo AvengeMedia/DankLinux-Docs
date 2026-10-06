@@ -113,6 +113,11 @@ const sidebars: SidebarsConfig = {
               id: 'dankmaterialshell/cli-dmenu',
               label: 'Dmenu',
             },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-notify',
+              label: 'Notifications',
+            },
           ],
         },
         {
