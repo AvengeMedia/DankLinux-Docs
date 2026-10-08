@@ -95,6 +95,7 @@ DMS application windows — Settings, Notepad, Polkit, Process List, the greeter
 
 - **Floating vs. tiled**: **Theme & Colors** → **Floating Windows** → **Open Windows Floating** manages a compositor window rule that opens DMS windows floating (niri, Hyprland, MangoWC). The rule lives in a managed fragment (`~/.config/niri/dms/windowrules.kdl`, `~/.config/hypr/dms/windowrules.lua`, `~/.config/mango/dms/windowrules.conf`); if the fragment isn't included in your compositor config yet, a **First Time Setup** banner on the same page adds it when you click **Setup**.
 - **Transparency & blur**: floating windows have their own **Window Opacity** and foreground controls under **Theme & Colors** → **Floating Windows**, independent of layer surfaces (which use **Surface Styling**). Enable **Sync with Global Settings** to have floating windows follow Surface Styling.
+- **Compositor opacity**: DMS windows already draw their own translucent background, so DMS keeps a rule for `com.danklinux.dms` in its window rules fragment that stops compositor opacity from dimming them further (`opaque` on Hyprland, `opacity 1.0` on niri). Opacity rules and Hyprland's decoration opacity still apply to every other window.
 - **niri xray**: the `background-effect` xray behavior of DMS windows follows **Settings → Compositor → Layout → Xray Blur Effect** and is managed in `dms/layout.kdl` — a hand-written `background-effect` block for DMS in your main niri config is redundant and can be removed.
 
 ## Compositor Examples
