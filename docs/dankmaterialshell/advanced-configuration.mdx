@@ -72,10 +72,14 @@ DMS_NO_DDC=1 dms run
 
 ### Shadow & Elevation Migration Notes (Power Users)
 
-If you manually edit `settings.json`, use:
+If you manually edit the settings, use:
 
 ```text
 ~/.config/DankMaterialShell/settings.json
+```
+or
+```
+~/.config/DankMaterialShell/config.d/*.json
 ```
 
 Important keys and compatibility notes:
@@ -97,7 +101,7 @@ Avoiding duplicate or unexpected shadow behavior:
 Migration behavior:
 
 - Legacy bar shadow state is migrated to `barElevationEnabled` for older configs.
-- If `settings.json` is read-only, migration/write-back may not persist until the file is writable.
+- If any settings file is read-only, migration/write-back to that file may not persist until the file is writable.
 
 ### Layer Variables And Fullscreen Toggles
 

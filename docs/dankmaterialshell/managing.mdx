@@ -216,6 +216,36 @@ Environment=ELECTRON_OZONE_PLATFORM_HINT=auto
 
 This only affects DMS and apps it launches, whereas `90-dms.conf` applies to all user sessions.
 
+## Drop-in Settings Files
+By default, your DMS settings are stored in `settings.json`. You may opt to split them between multiple files. This can be useful for example, in conjunction with version control to keep your configuration synced between different machines.
+
+1. Create a `config.d/` directory alongside your `settings.json` file in the `~/.config/DankMaterialShell/` directory.
+
+2. Restart DMS
+
+    ```bash
+    dms restart
+    ``` 
+
+3. Split your settings
+
+    DMS will now automatically source all `json` files from `config.d/`. You can proceed moving your settings from `settings.json` to your desired files.
+
+:::note
+Keep in mind that it is recommend to save a duplicate of the moved settings before removing the original values from their old file.
+:::
+
+### File order
+Settings from files found in `config.d/` take precedence over those defined in
+`settings.json`. The drop-in files are sourced in lexicographic order so
+settings from `00-common.json` may be overshadowed by `05-host-specific.json`.
+
+When tweaking the settings from the UI, DMS will only overwrite the effective
+value.
+
+### Default values
+By default, DMS omits settings which haven't been modified. If you cannot find a setting in `settings.json` because it is still set to its default, you can toggle it in the Settings UI to write it to disk.
+
 ## Updating
 
 ### Package Installations
@@ -331,7 +361,7 @@ rm -r ~/.config/DankMaterialShell ~/.local/state/DankMaterialShell ~/.cache/Dank
 - Kill stuck processes: `dms kill`
 
 **Settings not applying:**
-- Backup and remove `~/.config/DankMaterialShell/settings.json`
+- Backup and remove `~/.config/DankMaterialShell/settings.json` and drop-in files under `~/.config/DankMaterialShell/config.d/*.json` (if you have any).
 - Restart DMS to regenerate defaults
 
 **Environment variables not working:**
