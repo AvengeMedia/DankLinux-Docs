@@ -742,15 +742,17 @@ DMS starts when niri starts and stops when niri exits. It won't run in other ses
 
 #### Hyprland
 
-Hyprland doesn't initialize the systemd user session by default. You need to export the environment to systemd for user services to work.
+Hyprland 0.57 and newer ship and start `hyprland-session.target` themselves, so you can skip creating the unit below. Keep the `dbus-update-activation-environment` line in your config and still run the `add-wants` step at the end of this section.
 
-Create a session target:
+On 0.55 and 0.56, Hyprland doesn't initialize the systemd user session by default. You need to export the environment to systemd for user services to work. `dms setup` and `dankinstall` write this unit for you; to create it by hand:
 
 ```ini title="~/.config/systemd/user/hyprland-session.target"
 [Unit]
 Description=Hyprland Session Target
-Requires=graphical-session.target
-After=graphical-session.target
+BindsTo=graphical-session.target
+Wants=graphical-session-pre.target
+After=graphical-session-pre.target
+PropagatesStopTo=graphical-session.target
 ```
 
 Add to your Hyprland config (after any `env =` lines):

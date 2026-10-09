@@ -93,10 +93,11 @@ If you're a plugin dev, see the [plugin development](./plugin-development.mdx#wi
 
 DMS application windows — Settings, Notepad, Polkit, Process List, the greeter, and the app/widget browsers — are regular XDG toplevel windows, not layer-shell surfaces. They share app ID `com.danklinux.dms`, so compositor **window rules** (not layer rules) apply to them.
 
-- **Floating vs. tiled**: **Theme & Colors** → **Floating Windows** → **Open Windows Floating** manages a compositor window rule that opens DMS windows floating (niri, Hyprland, MangoWC). The rule lives in a managed fragment (`~/.config/niri/dms/windowrules.kdl`, `~/.config/hypr/dms/windowrules.lua`, `~/.config/mango/dms/windowrules.conf`); if the fragment isn't included in your compositor config yet, a **First Time Setup** banner on the same page adds it when you click **Setup**.
-- **Transparency & blur**: floating windows have their own **Window Opacity** and foreground controls under **Theme & Colors** → **Floating Windows**, independent of layer surfaces (which use **Surface Styling**). Enable **Sync with Global Settings** to have floating windows follow Surface Styling.
+- **Floating vs. tiled**: **Interface style** → **Floating windows** → **Open floating** manages a compositor window rule that opens DMS windows floating (niri, Hyprland, MangoWC). The rule lives in a managed fragment (`~/.config/niri/dms/windowrules.kdl`, `~/.config/hypr/dms/windowrules.lua`, `~/.config/mango/dms/windowrules.conf`); if the fragment isn't included in your compositor config yet, a **First Time Setup** banner on the same page adds it when you click **Setup**.
+- **Transparency & blur**: floating windows follow **Interface style** → **Surfaces** by default. Turn on **Override** under **Interface style** → **Floating windows** to give them their own opacity and foreground controls.
 - **Compositor opacity**: DMS windows already draw their own translucent background, so DMS keeps a rule for `com.danklinux.dms` in its window rules fragment that stops compositor opacity from dimming them further (`opaque` on Hyprland, `opacity 1.0` on niri). Opacity rules and Hyprland's decoration opacity still apply to every other window.
-- **niri xray**: the `background-effect` xray behavior of DMS windows follows **Settings → Compositor → Layout → Xray Blur Effect** and is managed in `dms/layout.kdl` — a hand-written `background-effect` block for DMS in your main niri config is redundant and can be removed.
+- **niri xray**: the `background-effect` xray behavior of DMS windows follows **Settings → System & integrations → niri → Layout overrides → Xray blur** and is managed in `dms/layout.kdl` — a hand-written `background-effect` block for DMS in your main niri config is redundant and can be removed.
+- **Hyprland effects**: DMS windows are ordinary windows to Hyprland, so they get its blur, glow and wobbly-window effects like any other window.
 
 ## Compositor Examples
 
@@ -104,27 +105,28 @@ Each compositor has its own syntax for layer rules.
 
 ### Hyprland
 
+On Hyprland 0.56 and newer, DMS blurs its own surfaces through `ext-background-effect-v1` when **Background blur** is on, so you don't need blur layer rules (see [Compositor Blur](./compositor-blur.mdx)). The blur layer rules below are for Hyprland 0.55, or for namespaces and options DMS doesn't manage.
+
 :::info
 
 In order for some layer rules (such as `animation`, `blur` and `dimaround`), you will have to disable the shell's animations and dim effect.
 
-- You can disable animations in **Settings**>**Personalization**>**Animation Speed** and set to **None**.
-- You can disable the dim in **Settings**>**Launcher** and untoggle **Darken Modal Background**.
+- You can tone down animations in **Settings** > **Fonts & motion** > **Animations**.
+- You can disable the dim in **Settings** > **Launcher** and untoggle **Darken modal background**.
 
 :::
 
 #### Blur Settings
+
+Blur reach is set by the **Blur strength** slider under **Settings → Interface style**, which writes `decoration:blur:size` and `passes` to `~/.config/hypr/dms/layout.lua`. Don't set them by hand. The other blur options are yours to set in `hyprland.lua`:
 
 ```lua
 hl.config({
     decoration = {
         blur = {
             enabled = true,
-            size = 10,
-            passes = 4,
             ignore_opacity = true,
             new_optimizations = true,
-            xray = false,
             noise = 0.02,
             contrast = 1.1,
             vibrancy = 0.2,
@@ -140,9 +142,27 @@ hl.config({
 })
 ```
 
+#### Xray
+
+**Settings → System & integrations → Hyprland → Layout overrides** has two xray toggles, written to `dms/layout.lua`:
+
+- **Xray blur**: blurred DMS surfaces show the wallpaper, not the windows beneath. DMS writes:
+  ```lua
+  hl.layer_rule({ match = { namespace = "^dms:.*$" }, xray = true })
+  ```
+- **Bar xray** (**Frame xray** when the frame is on): the bar, island or separate frame blurs against the wallpaper even with **Xray blur** off. Hidden in connected frame mode.
+
+#### Dropdown Menus
+
+Hyprland doesn't apply `ext-background-effect-v1` to popups yet ([hyprwm/Hyprland#15737](https://github.com/hyprwm/Hyprland/pull/15737)), so dropdown and context menus stay unblurred. Until that lands, set `decoration:blur:popups = true` or add a `blur_popups` layer rule:
+
+```lua
+hl.layer_rule({ match = { namespace = "^dms:.*$" }, blur_popups = true })
+```
+
 #### Layer Rules
 
-Add these layer rules to enable blur for DMS components:
+Add these layer rules to enable blur for DMS components (only needed below Hyprland 0.56):
 
 ```lua
 hl.layer_rule({
@@ -197,16 +217,18 @@ hl.layer_rule({
 
 If blur is impacting system performance, try these optimizations in order:
 
-1. **Reduce passes**: Set `passes = 2` instead of 4
-2. **Reduce size**: Set `size = 6` instead of 10
-4. **Use xray mode**: Set `xray = true` to reduce blur on stacked layers
+1. **Lower Blur strength**: fewer passes cost less GPU
+2. **Use the Default blur style**: other styles cost more, animated ones far more
+3. **Turn on Xray blur**: blurs against the wallpaper instead of the stacked windows
 
-You can test blur impact in real-time:
+You can test blur impact in real time with `hyprctl eval` (0.55+), then restore your config with `hyprctl reload`:
 ```bash
-hyprctl keyword decoration:blur:enabled false
+hyprctl eval 'hl.config({ decoration = { blur = { enabled = false } } })'
 # Test performance
-hyprctl keyword decoration:blur:enabled true
+hyprctl reload
 ```
+
+`hyprctl keyword` is removed on Hyprland main.
 
 You can find more about Hyprland's layer rules [here](https://wiki.hypr.land/Configuring/Window-Rules/#layer-rules).
 

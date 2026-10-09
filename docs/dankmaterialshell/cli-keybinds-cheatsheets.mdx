@@ -73,11 +73,13 @@ This opens a modal overlay showing the keybinds in the shell interface, eg for H
 The Hyprland provider automatically parses your Hyprland configuration files and extracts keybinds.
 
 **Features**:
-- Parses all `*.conf` files in your Hyprland config directory
-- Supports section headers with `##!` (categories) and `###!` (subcategories)
+- Starts at `~/.config/hypr/hyprland.lua` and follows every `require(...)`, including the DMS fragments `dms/binds.lua` and `dms/binds-user.lua`
+- Reads descriptions from the bind's `description` option or a trailing `--` comment
 - Auto-generates descriptions for common dispatchers
-- Respects `[hidden]` comments to exclude certain binds
 - Categorizes binds by type (Window, Workspace, Execute, etc.)
+- Shows per-device binds (`device = { ... }`) and keeps their device table when you edit them
+
+On Hyprland 0.55 and 0.56, an install still on `hyprland.conf` is parsed read-only (including `##!` section headers and `[hidden]` comments) until you run `dms setup` to migrate. See [Compositor Setup](./compositors.mdx#hyprland-configuration).
 
 **Usage**:
 
@@ -92,9 +94,10 @@ dms keybinds show hyprland --path /path/to/hypr/config
 **Description Priority**:
 
 The provider generates descriptions in this order:
-1. Custom comment in your config (e.g., `bind = SUPER, T, exec, kitty # Open terminal`)
-2. Auto-generated for known dispatchers (e.g., `killactive` → "Close window")
-3. Fallback format showing dispatcher and params (e.g., `togglegroup`)
+1. The bind's `description` option (e.g., `{ description = "Open terminal" }`)
+2. A trailing comment on the same line (e.g., `hl.bind(...) -- Open terminal`)
+3. Auto-generated for known dispatchers (e.g., `hl.dsp.window.close()` → "Close window")
+4. Fallback format showing the dispatcher and its arguments
 
 **Category Logic**:
 
@@ -106,24 +109,18 @@ Binds are automatically categorized based on their dispatcher:
 - **System**: system actions (exit, dpms, etc.)
 - **Other**: miscellaneous dispatchers
 
+**Bind options in the editor**:
+
+The keyboard shortcuts editor (**Settings → Input → Keyboard shortcuts**) shows a toggle for each Hyprland bind option and writes it to the `hl.bind` options table in `dms/binds-user.lua`: Repeat, Locked, Release, Long press, Non-consuming, Mouse, Transparent, Ignore mods, All submaps, Auto-consuming, Input capture, Not inhibitable, Click, and Drag.
+
 **Example Hyprland config**:
 
-```conf
-##! Window Management
-bind = SUPER, Q, killactive
-bind = SUPER, F, fullscreen, 0
-
-###! Movement
-bind = SUPER, left, movefocus, l
-bind = SUPER, right, movefocus, r
-
-##! Workspaces
-bind = SUPER, 1, workspace, 1
-bind = SUPER, 2, workspace, 2
-
-##! Applications
-bind = SUPER, T, exec, kitty # Open terminal
-bind = SUPER, E, exec, thunar # File manager
+```lua
+hl.bind("SUPER + Q", hl.dsp.window.close())
+hl.bind("SUPER + left", hl.dsp.focus({ direction = "l" }))
+hl.bind("SUPER + 1", hl.dsp.focus({ workspace = "1" }))
+hl.bind("SUPER + T", hl.dsp.exec_cmd("kitty"), { description = "Open terminal" })
+hl.bind("SUPER + E", hl.dsp.exec_cmd("thunar")) -- File manager
 ```
 
 ### Sway
