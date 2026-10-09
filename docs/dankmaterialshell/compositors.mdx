@@ -462,22 +462,37 @@ Effects apply to every window, including DMS floating windows such as Settings a
 
 ### Key Configuration Sections
 
-DMS will automatically apply gaps, window radius, and colors if you include the following files in your MangoWC config. You can customize gaps, border radius, and window radius in **Settings → Compositor**.
+`dms setup` writes the main config plus fragments under `~/.config/mango/dms/`:
+
+| Fragment | Purpose | Settings page |
+| --- | --- | --- |
+| `colors.conf` | Theme colors | Wallpaper & colors |
+| `layout.conf` | Gaps, borders, window radius | System & integrations → Compositor |
+| `cursor.conf` | Cursor theme, size and hide timeout | Wallpaper & colors |
+| `input.conf` | Mouse, touchpad and keyboard settings | Input → Mouse & touchpad, Keyboard |
+| `outputs.conf` | Monitors and display settings | Displays |
+| `windowrules.conf` | Window rules | Applications → Window rules |
+| `binds.conf` | Keybinds | Input → Keyboard shortcuts |
+
+If you maintain `config.conf` by hand, source every fragment and make sure the files exist. A **First Time Setup** banner on the matching Settings page adds a missing `source` line for you.
 
 ```conf
 # Add to the end of ~/.config/mango/config.conf
-source=~/.config/mango/dms/colors.conf
-source=~/.config/mango/dms/layout.conf
-source=~/.config/mango/dms/outputs.conf
+source=./dms/colors.conf
+source=./dms/layout.conf
+source=./dms/cursor.conf
+source=./dms/input.conf
+source=./dms/outputs.conf
+source=./dms/windowrules.conf
+source=./dms/binds.conf
 ```
 
-:::tip
-Be sure that all files exist before including them in the MangoWC configuration.
 ```bash
 mkdir -p ~/.config/mango/dms
-touch ~/.config/mango/dms/{colors,layout,outputs}.conf
+touch ~/.config/mango/dms/{colors,layout,cursor,input,outputs,windowrules,binds}.conf
 ```
-:::
+
+Mouse and touchpad rows map onto MangoWC's `mouse_*` and `trackpad_*` keys. Keyboard keys (`xkb_rules_*`, `repeat_*`, numlock) are written only once you set one of them, so an untouched Keyboard page keeps the keyboard lines in your own `config.conf`. The **Keymap file** row is hidden on MangoWC because it has no such option. The numlock key is spelled `numlockon` or `numlock_on` to match the installed MangoWC release.
 
 For manual configuration recommendations, continue below.
 
