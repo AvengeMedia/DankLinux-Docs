@@ -752,20 +752,48 @@ Settings modal with additional read/write access to configuration values.
 | `get <key>` | Get a setting value | setting key name |
 | `set <key> <value>` | Set a setting value | setting key, new value |
 
-**Available Tab IDs:**
-- **Personalization:** `personalization`, `wallpaper`, `theme`, `typography`, `time_weather`, `sounds`
-- **Dankbar:** `dankbar`, `dankbar_settings`, `dankbar_widgets`, `dank_island`
-- **Widgets:** `workspaces_widgets`, `workspaces`, `media_player`, `notifications`, `osd`, `running_apps`, `updater`
-- **Dock & Launcher:** `dock_launcher`, `dock`, `launcher`
-- **System:** `keybinds`, `displays`, `network`, `printers`
-- **Power & Security:** `power_security`, `lock_screen`, `power_sleep`
-- **Other:** `plugins`, `about`
+**Settings Categories:**
+
+Each category in the settings sidebar can be opened directly. Names are case-insensitive, and `-`, `_` and spaces are ignored, so `bar-widgets`, `bar_widgets` and `barwidgets` are equivalent.
+
+| Category | Tab | Also accepts |
+| --- | --- | --- |
+| Wallpaper & colors | `personalization` | `wallpaper`, `colors`, `wallpaper_colors` |
+| Interface style | `theme_surfaces` | `interface`, `interface_style` |
+| Fonts & motion | `typography` | `fonts`, `fonts_motion` |
+| Bar | `dankbar` | `bar` |
+| Bar widgets | `dankbar_widgets` | `bar_widgets`, `workspaces` |
+| Dock | `dock` | `dock_launcher` |
+| Launcher | `launcher` | - |
+| Dashboard | `dank_dash` | `dashboard` |
+| Desktop widgets | `desktop_widgets` | - |
+| Notifications | `notifications` | - |
+| On-screen displays | `osd` | - |
+| Digital wellbeing | `wellbeing` | `screen_time` |
+| Sound & media | `sound_media` | `sound`, `media` |
+| Displays | `displays` | - |
+| Input | `input` | - |
+| Power & battery | `power_battery` | `power`, `power_security` |
+| Network | `network` | - |
+| Users & accounts | `user_accounts` | - |
+| Security | `security_accounts` | `security` |
+| Applications | `applications` | - |
+| Date, time & region | `date_time_region` | `datetime`, `region` |
+| System & integrations | `system` | - |
+| Plugins | `plugins` | - |
+| About | `about` | - |
+
+Individual pages inside a category (for example `theme`, `keybinds`, `lock_screen`, `dock_appearance`) can also be opened directly. Run `dms ipc call settings tabs` for the full list of page IDs, including installed plugins as `plugin:<id>`. Categories that don't apply to your system are hidden from the sidebar and the jump list.
+
+The same categories are available as a jump list when you right-click the DMS Settings icon pinned to the dock or the bar's pinned apps.
 
 **Examples:**
 ```bash
 dms ipc call settings toggle
-dms ipc call settings openWith theme
+dms ipc call settings openWith wallpaper
+dms ipc call settings openWith bar-widgets
 dms ipc call settings toggleWith dock
+dms ipc call settings focusOrToggleWith displays
 dms ipc call settings tabs
 dms ipc call settings set showSeconds true
 dms ipc call settings set opacity 0.9
