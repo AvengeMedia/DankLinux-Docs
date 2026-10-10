@@ -21,7 +21,25 @@ func ServePreview(store *previews.Store, pluginID string, w http.ResponseWriter,
 		servePlaceholder(store, w, r)
 		return
 	}
+	serveStored(path, etag, w, r)
+}
 
+// No placeholder: a 404 lets clients fall back to the full preview card until the thumb is generated.
+func ServeThumb(store *previews.Store, pluginID string, w http.ResponseWriter, r *http.Request) {
+	if !pluginIDPattern.MatchString(pluginID) {
+		http.NotFound(w, r)
+		return
+	}
+
+	path, etag, ok := store.Lookup(pluginID)
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	serveStored(path, etag, w, r)
+}
+
+func serveStored(path, etag string, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Cache-Control", "public, max-age=3600")
 	quoted := `"` + etag + `"`

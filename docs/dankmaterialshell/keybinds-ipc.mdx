@@ -51,6 +51,8 @@ Manage audio output and input devices.
 | `setmic <percentage>` | Set microphone volume | percentage (0-100) |
 | `micmute` | Toggle microphone mute | - |
 | `cycleoutput` | Cycle through audio output devices | - |
+| `setmono <bool>` | Enable or disable mono audio | true/false |
+| `getmono` | Get current mono audio state | - |
 | `status` | Get current audio status | - |
 
 **Examples:**
@@ -59,6 +61,8 @@ dms ipc call audio setvolume 50
 dms ipc call audio increment 10
 dms ipc call audio mute
 dms ipc call audio cycleoutput
+dms ipc call audio setmono true
+dms ipc call audio getmono
 ```
 
 :::note
@@ -288,6 +292,45 @@ dms ipc call powerprofile toggle
 - `status` returns the current slug: `power-saver`, `balanced`, or `performance`
 - Returns `ERROR: power-profiles-daemon not available` when no PowerProfiles daemon (`power-profiles-daemon`, `tuned-ppd` or `tlp-pd`) is running
 - Returns `ERROR: Failed to set power profile` if the profile change could not be applied
+
+### wellbeing
+
+Digital Wellbeing screen time tracking and limits. Usage is recorded by the DMS server, so tracking needs a running `dms` backend with wellbeing support.
+
+| Function | Description | Parameters |
+| --- | --- | --- |
+| `toggle` | Toggle screen time tracking | - |
+| `enable` | Enable screen time tracking | - |
+| `disable` | Disable screen time tracking | - |
+| `status` | Report tracking state, today's screen time and the daily limit | - |
+| `today` | Today's screen time in seconds (`0` while tracking is off) | - |
+| `dailyLimit <minutes>` | Set the daily screen time limit; `0` clears it, empty string prints the current one | minutes |
+| `appLimit <appId> <minutes>` | Set a daily limit for one app; `0` clears it, empty string prints the current one | app id, minutes |
+
+To open the Digital Wellbeing dashboard tab, use `dms ipc call dash open wellbeing`. The tab only appears while tracking is enabled.
+
+**Examples:**
+```bash
+dms ipc call wellbeing status
+dms ipc call wellbeing toggle
+dms ipc call wellbeing today
+dms ipc call wellbeing dailyLimit 180
+dms ipc call wellbeing dailyLimit ""   # prints the current limit
+dms ipc call wellbeing appLimit firefox 60
+dms ipc call wellbeing appLimit firefox 0
+```
+
+**Keybind examples:**
+```kdl
+// niri
+Mod+Shift+W { spawn "dms" "ipc" "call" "dash" "toggle" "wellbeing"; }
+```
+```lua
+-- Hyprland
+hl.bind(mod .. " + SHIFT + W", hl.dsp.exec_cmd("dms ipc call dash toggle wellbeing"))
+```
+
+Both actions are also available in **Settings → Keyboard shortcuts** as *Dashboard: Digital Wellbeing* and *Screen Time Tracking: Toggle*.
 
 ## Wallpaper & Profile
 
@@ -709,20 +752,48 @@ Settings modal with additional read/write access to configuration values.
 | `get <key>` | Get a setting value | setting key name |
 | `set <key> <value>` | Set a setting value | setting key, new value |
 
-**Available Tab IDs:**
-- **Personalization:** `personalization`, `wallpaper`, `theme`, `typography`, `time_weather`, `sounds`
-- **Dankbar:** `dankbar`, `dankbar_settings`, `dankbar_widgets`, `dank_island`
-- **Widgets:** `workspaces_widgets`, `workspaces`, `media_player`, `notifications`, `osd`, `running_apps`, `updater`
-- **Dock & Launcher:** `dock_launcher`, `dock`, `launcher`
-- **System:** `keybinds`, `displays`, `network`, `printers`
-- **Power & Security:** `power_security`, `lock_screen`, `power_sleep`
-- **Other:** `plugins`, `about`
+**Settings Categories:**
+
+Each category in the settings sidebar can be opened directly. Names are case-insensitive, and `-`, `_` and spaces are ignored, so `bar-widgets`, `bar_widgets` and `barwidgets` are equivalent.
+
+| Category | Tab | Also accepts |
+| --- | --- | --- |
+| Wallpaper & colors | `personalization` | `wallpaper`, `colors`, `wallpaper_colors` |
+| Interface style | `theme_surfaces` | `interface`, `interface_style` |
+| Fonts & motion | `typography` | `fonts`, `fonts_motion` |
+| Bar | `dankbar` | `bar` |
+| Bar widgets | `dankbar_widgets` | `bar_widgets`, `workspaces` |
+| Dock | `dock` | `dock_launcher` |
+| Launcher | `launcher` | - |
+| Dashboard | `dank_dash` | `dashboard` |
+| Desktop widgets | `desktop_widgets` | - |
+| Notifications | `notifications` | - |
+| On-screen displays | `osd` | - |
+| Digital wellbeing | `wellbeing` | `screen_time` |
+| Sound & media | `sound_media` | `sound`, `media` |
+| Displays | `displays` | - |
+| Input | `input` | - |
+| Power & battery | `power_battery` | `power`, `power_security` |
+| Network | `network` | - |
+| Users & accounts | `user_accounts` | - |
+| Security | `security_accounts` | `security` |
+| Applications | `applications` | - |
+| Date, time & region | `date_time_region` | `datetime`, `region` |
+| System & integrations | `system` | - |
+| Plugins | `plugins` | - |
+| About | `about` | - |
+
+Individual pages inside a category (for example `theme`, `keybinds`, `lock_screen`, `dock_appearance`) can also be opened directly. Run `dms ipc call settings tabs` for the full list of page IDs, including installed plugins as `plugin:<id>`. Categories that don't apply to your system are hidden from the sidebar and the jump list.
+
+The same categories are available as a jump list when you right-click the DMS Settings icon pinned to the dock or the bar's pinned apps.
 
 **Examples:**
 ```bash
 dms ipc call settings toggle
-dms ipc call settings openWith theme
+dms ipc call settings openWith wallpaper
+dms ipc call settings openWith bar-widgets
 dms ipc call settings toggleWith dock
+dms ipc call settings focusOrToggleWith displays
 dms ipc call settings tabs
 dms ipc call settings set showSeconds true
 dms ipc call settings set opacity 0.9
@@ -736,7 +807,7 @@ Dashboard popup with multiple tabs.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
-| `open [tab]` | Show dashboard | tab: "", "overview", "media", "wallpaper", "weather" |
+| `open [tab]` | Show dashboard | tab: "", "overview", "media", "wallpaper", "weather", "wellbeing", "notifications" |
 | `close` | Hide dashboard | - |
 | `toggle [tab]` | Toggle dashboard | tab |
 | `openAt <tab> <position>` | Show dashboard anchored to a bar section | tab, position: "left", "center", "right" |
@@ -752,6 +823,7 @@ dms ipc call dash toggle ""
 dms ipc call dash open overview
 dms ipc call dash toggle media
 dms ipc call dash open weather
+dms ipc call dash open wellbeing
 dms ipc call dash toggleAt wallpaper center
 dms ipc call dash openAt overview right
 ```

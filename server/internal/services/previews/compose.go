@@ -20,6 +20,8 @@ import (
 const (
 	cardWidth        = 960
 	cardHeight       = 540
+	thumbWidth       = 960
+	thumbHeight      = 600
 	regionInset      = 16.0
 	regionWidth      = 928.0
 	baseRegionHeight = 392.0
@@ -101,12 +103,16 @@ func lightenChannel(v uint8, frac float64) uint8 {
 }
 
 func newCanvas() *gg.Context {
-	dc := gg.NewContext(cardWidth, cardHeight)
-	grad := gg.NewLinearGradient(0, 0, 0, cardHeight)
+	return newCanvasSized(cardWidth, cardHeight)
+}
+
+func newCanvasSized(w, h int) *gg.Context {
+	dc := gg.NewContext(w, h)
+	grad := gg.NewLinearGradient(0, 0, 0, float64(h))
 	grad.AddColorStop(0, colSurface)
 	grad.AddColorStop(1, lighten(colSurface, 0.06))
 	dc.SetFillStyle(grad)
-	dc.DrawRectangle(0, 0, cardWidth, cardHeight)
+	dc.DrawRectangle(0, 0, float64(w), float64(h))
 	dc.Fill()
 	return dc
 }
@@ -269,16 +275,9 @@ func ComposeScreenshot(src image.Image, p models.Plugin) (image.Image, error) {
 	dc.DrawRoundedRectangle(regionInset, regionInset, regionWidth, regionHeight, regionRadius)
 	dc.Fill()
 
-	scaled, x, y := fitRegionImage(src, regionHeight)
 	dc.DrawRoundedRectangle(regionInset, regionInset, regionWidth, regionHeight, regionRadius)
 	dc.Clip()
-	if scaled.Bounds().Dx() < int(regionWidth) || scaled.Bounds().Dy() < int(regionHeight) {
-		dc.DrawImage(blurFill(src, regionHeight), int(regionInset), int(regionInset))
-		dc.SetColor(withAlpha(colSurface, blurOverlayAlpha))
-		dc.DrawRectangle(regionInset, regionInset, regionWidth, regionHeight)
-		dc.Fill()
-	}
-	dc.DrawImage(scaled, x, y)
+	drawFitted(dc, src, regionInset, regionInset, regionWidth, regionHeight)
 	dc.ResetClip()
 
 	if err := drawStatusChips(dc, p.Status); err != nil {
@@ -290,23 +289,36 @@ func ComposeScreenshot(src image.Image, p models.Plugin) (image.Image, error) {
 	return dc.Image(), nil
 }
 
-func blurFill(src image.Image, regionHeight float64) image.Image {
+// drawFitted letterboxes src into the box at (x0,y0), covering only when the ratios nearly match.
+// Letterbox bands are a dimmed blur of src so portrait screenshots don't sit on flat color.
+func drawFitted(dc *gg.Context, src image.Image, x0, y0, w, h float64) {
+	scaled, x, y := fitImage(src, w, h)
+	if scaled.Bounds().Dx() < int(w) || scaled.Bounds().Dy() < int(h) {
+		dc.DrawImage(blurFill(src, w, h), int(x0), int(y0))
+		dc.SetColor(withAlpha(colSurface, blurOverlayAlpha))
+		dc.DrawRectangle(x0, y0, w, h)
+		dc.Fill()
+	}
+	dc.DrawImage(scaled, int(x0)+x, int(y0)+y)
+}
+
+func blurFill(src image.Image, w, h float64) image.Image {
 	small := image.NewRGBA(image.Rect(0, 0, blurSampleWidth, blurSampleHeight))
 	draw.ApproxBiLinear.Scale(small, small.Bounds(), src, src.Bounds(), draw.Src, nil)
-	full := image.NewRGBA(image.Rect(0, 0, int(regionWidth), int(regionHeight)))
+	full := image.NewRGBA(image.Rect(0, 0, int(w), int(h)))
 	draw.CatmullRom.Scale(full, full.Bounds(), small, small.Bounds(), draw.Src, nil)
 	return full
 }
 
-func fitRegionImage(src image.Image, regionHeight float64) (image.Image, int, int) {
+func fitImage(src image.Image, w, h float64) (image.Image, int, int) {
 	b := src.Bounds()
 	sw, sh := float64(b.Dx()), float64(b.Dy())
-	regionAR := regionWidth / regionHeight
+	boxAR := w / h
 	srcAR := sw / sh
 
-	scale := math.Min(regionWidth/sw, regionHeight/sh)
-	if math.Abs(srcAR-regionAR)/regionAR <= coverTolerance {
-		scale = math.Max(regionWidth/sw, regionHeight/sh)
+	scale := math.Min(w/sw, h/sh)
+	if math.Abs(srcAR-boxAR)/boxAR <= coverTolerance {
+		scale = math.Max(w/sw, h/sh)
 	}
 	scale = math.Min(scale, maxUpscale)
 
@@ -316,7 +328,5 @@ func fitRegionImage(src image.Image, regionHeight float64) (image.Image, int, in
 	dst := image.NewRGBA(image.Rect(0, 0, dw, dh))
 	draw.CatmullRom.Scale(dst, dst.Bounds(), src, b, draw.Over, nil)
 
-	x := int(regionInset) + (int(regionWidth)-dw)/2
-	y := int(regionInset) + (int(regionHeight)-dh)/2
-	return dst, x, y
+	return dst, (int(w) - dw) / 2, (int(h) - dh) / 2
 }

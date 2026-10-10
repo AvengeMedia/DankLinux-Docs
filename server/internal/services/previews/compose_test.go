@@ -158,3 +158,19 @@ func TestComposeCardDimensions(t *testing.T) {
 	}
 	assertPixel(t, img, 480, 538, colPrimary)
 }
+
+func TestComposeThumbFillsWithoutFooter(t *testing.T) {
+	img := ComposeThumb(solidImage(1600, 1000, sourceRed))
+	b := img.Bounds()
+	if b.Dx() != 960 || b.Dy() != 600 {
+		t.Fatalf("output size %dx%d, want 960x600", b.Dx(), b.Dy())
+	}
+	assertPixel(t, img, 2, 2, sourceRed)
+	assertPixel(t, img, 957, 597, sourceRed)
+}
+
+func TestComposeThumbPortraitBlurredLetterbox(t *testing.T) {
+	img := ComposeThumb(solidImage(540, 960, sourceRed))
+	assertPixel(t, img, 480, 300, sourceRed)
+	assertPixelNear(t, img, 40, 300, letterboxRed, 12)
+}

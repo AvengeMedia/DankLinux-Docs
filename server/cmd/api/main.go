@@ -16,6 +16,7 @@ import (
 	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/poeditor"
 	previews_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/previews"
+	releases_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/releases"
 	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
 	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
 	uploads_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/uploads"
@@ -29,6 +30,7 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/previews"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/qtrebuild"
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
+	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/releases"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
 	"github.com/go-chi/chi/v5"
@@ -78,13 +80,15 @@ func startAPI(cfg *config.Config) {
 		cancel()
 	}()
 
-	var pluginCacheFile, themeCacheFile string
+	var pluginCacheFile, themeCacheFile, releasesCacheFile string
 	if cfg.CacheDir != "" {
 		pluginCacheFile = filepath.Join(cfg.CacheDir, "plugins.json")
 		themeCacheFile = filepath.Join(cfg.CacheDir, "themes.json")
+		releasesCacheFile = filepath.Join(cfg.CacheDir, "releases.json")
 	}
 	pluginCache := registry.NewCache(cfg.GithubToken, pluginCacheFile)
 	themeCache := registry.NewThemeCache(cfg.GithubToken, themeCacheFile)
+	releasesCache := releases.NewCache(cfg.GithubToken, cfg.BlogDir, releasesCacheFile)
 
 	var previewGen *previews.Generator
 	if cfg.CacheDir != "" {
@@ -99,8 +103,9 @@ func startAPI(cfg *config.Config) {
 	}
 
 	srvImpl := &server.Server{
-		PluginCache: pluginCache,
-		ThemeCache:  themeCache,
+		PluginCache:   pluginCache,
+		ThemeCache:    themeCache,
+		ReleasesCache: releasesCache,
 	}
 
 	go func() {
@@ -117,6 +122,13 @@ func startAPI(cfg *config.Config) {
 		}
 	}()
 
+	go func() {
+		log.Info("Initializing releases cache...")
+		if err := releasesCache.Initialize(ctx); err != nil {
+			log.Error("Failed to initialize releases cache", "err", err)
+		}
+	}()
+
 	var klipyClient *klipy.Client
 	if cfg.KlipyAPIKey != "" {
 		klipyClient = klipy.NewClient(cfg.KlipyAPIKey)
@@ -124,6 +136,8 @@ func startAPI(cfg *config.Config) {
 	}
 
 	gifRateLimiter := middleware.NewRateLimiter(100.0/60.0, 100)
+	// Every API route gets a per-client ceiling; the Klipy-backed routes keep their tighter one on top.
+	apiRateLimiter := middleware.NewRateLimiter(20, 100)
 
 	r := chi.NewRouter()
 
@@ -167,8 +181,13 @@ func startAPI(cfg *config.Config) {
 		servePreview := func(w http.ResponseWriter, r *http.Request) {
 			previews_handler.ServePreview(previewGen.Store(), chi.URLParam(r, "pluginId"), w, r)
 		}
+		serveThumb := func(w http.ResponseWriter, r *http.Request) {
+			previews_handler.ServeThumb(previewGen.ThumbStore(), chi.URLParam(r, "pluginId"), w, r)
+		}
 		r.Get("/previews/{pluginId}", servePreview)
 		r.Head("/previews/{pluginId}", servePreview)
+		r.Get("/previews/{pluginId}/thumb", serveThumb)
+		r.Head("/previews/{pluginId}/thumb", serveThumb)
 	}
 
 	r.Get("/ready", func(w http.ResponseWriter, r *http.Request) {
@@ -178,6 +197,7 @@ func startAPI(cfg *config.Config) {
 
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.RealIP)
+		r.Use(apiRateLimiter.Middleware)
 		r.Use(middleware.Logger)
 		r.Use(middleware.RequestID)
 
@@ -218,6 +238,12 @@ func startAPI(cfg *config.Config) {
 			next(op)
 		})
 		themes_handler.RegisterHandlers(srvImpl, themesGroup)
+
+		releasesGroup := huma.NewGroup(api, "/dms/releases")
+		releasesGroup.UseSimpleModifier(func(op *huma.Operation) {
+			op.Tags = []string{"Releases"}
+		})
+		releases_handler.RegisterHandlers(srvImpl, releasesGroup)
 
 		gifsGroup := huma.NewGroup(api, "/gifs")
 		gifsGroup.UseSimpleModifier(func(op *huma.Operation) {
@@ -302,6 +328,22 @@ func startAPI(cfg *config.Config) {
 				}
 				if err := themeCache.Refresh(ctx); err != nil {
 					log.Error("Failed to refresh theme cache", "err", err)
+				}
+			},
+			ctx,
+		),
+	)
+	if err != nil {
+		log.Fatal("Failed to schedule cache refresh", "err", err)
+	}
+
+	// Releases change a few times a month; a slower tick keeps GitHub calls down.
+	_, err = scheduler.NewJob(
+		gocron.DurationJob(30*time.Minute),
+		gocron.NewTask(
+			func(ctx context.Context) {
+				if err := releasesCache.Refresh(ctx); err != nil {
+					log.Error("Failed to refresh releases cache", "err", err)
 				}
 			},
 			ctx,

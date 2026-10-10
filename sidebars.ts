@@ -49,6 +49,7 @@ const sidebars: SidebarsConfig = {
         'dankmaterialshell/lock-screen-authentication',
         'dankmaterialshell/vpn',
         'dankmaterialshell/network-speed-monitor',
+        'dankmaterialshell/reboot-to-another-os',
         {
           type: 'doc',
           id: 'dankmaterialshell/managing',
@@ -108,6 +109,16 @@ const sidebars: SidebarsConfig = {
               type: 'doc',
               id: 'dankmaterialshell/cli-qr',
               label: 'QR Codes',
+            },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-dmenu',
+              label: 'Dmenu',
+            },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-notify',
+              label: 'Notifications',
             },
           ],
         },

@@ -7,6 +7,107 @@ description: Release notes for the latest DankMaterialShell stable and point rel
 
 Latest release notes for DankMaterialShell (DMS) v1.6 Series. See the original release announcement in [updates](/blog).
 
+## v1.6.2
+
+**Released**: 2026-09-17
+
+### Features
+- doctor: add aqueous and scroll by @bbedward (b451d4d)
+- feat(screenshot): add flag to control HUD scale and visibility by @hthienloc in #3398
+
+### Fixes
+- fix(settings): size the plugin update spinner to fit its row by @Mario-Mohar in #3383
+- fix(clipboard): preserve pinned state when editing entries by @hthienloc in #3412
+- fix(battery): report when no charge threshold exists instead of faking success by @Mario-Mohar in #3385
+- fix(media widget): prevent title from truncating with scroll song title on by @deepfriedret in #3436
+- fix(audio): avoid false negative when some event sounds can't be found by @2gibbert in #3437
+- fix(hyprland): use focusedMonitor instead of focusedWorkspace.monitor by @tx0xyz in #3424
+- dank16: use the real primary_container and fix light-mode derivation by @bbedward (41dd91f)
+- dock: fix visibility in niri overview by @korbash in #3460
+- fix(frame): keep launcher edge-hover on the Top layer by @Conava in #3453
+- niri: fix workspace updates never applying by @bbedward (a7db035)
+- displayconfig: fix custom scale option by @bbedward (097de49)
+
+### Other Changes
+- refactor(island): add island satellite hover option by @purian23 (12f7675)
+- disable dcal from release dispatch by @bbedward (ef179f9)
+- privacy: stop counting screen captures as camera use by @avesst in #3428
+- evdev: open input devices read-only by @bbedward (e73b9c3)
+- frame: close hairline gap at the screen edge by @bbedward (e0aa1f0)
+- display config: read live layout from hyprland instead of the cached wlr snapshot by @aarshivv in #3418
+- tailscale: handle profile switches and bus updates reactively by @MishowHD in #3427
+- core: bump dankgop by @bbedward (243d716)
+- tray: use available width for menu labels by @domenkozar in #3456
+- Update vesktop.css by @phoropter in #3410
+- qt: write real newlines in new qt5ct/qt6ct config by @bbedward (2d2502c)
+
+**GitHub Release**: https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.6.2
+
+---
+
+## v1.6.1
+
+**Released**: 2026-09-08
+
+### Features
+- feat(island): allow hiding clock or date options in compact pill by @purian23 (700f43a)
+- screenshot: add instancelock on runtimedir/wayland-display to prevent multiple instances from running by @bbedward (c929a89)
+- feat(island): vertical orientation layout management support by @purian23 (faf25e9)
+- audio: add output card selection by @bbedward (6713f05)
+- feat(screenshot): add touch & stylus support for region capture by @hthienloc in #3353
+- feat: support for Aqueous Compositor by @bbedward in #3357
+- add support for shelly by @ZoeyErinBauer in #3367
+
+### Fixes
+- fix(dash): dim today button when on current month by @hthienloc in #3294
+- Fix repeated day in calendar by @aochagavia in #3302
+- fix(screenshot): scale HUD & selection label for HiDPI displays by @hthienloc in #3308
+- dash, notifications, island: fix calendar banner overflow, expand chevron, and player row clippingby @bbedward (bca1466)
+- fix(launcher): stop injectnig plugins into app categories by @bbedward (c1a3be6)
+- fix(screenshot): force full-damage commit on cursor toggle by @hthienloc in #3365
+
+### Internationalization
+- i18n: make sync script auto-pull plugins for translation by @bbedward (710f20d)
+- i18n: sync by @bbedward (2e2c74e)
+- i18n: sync, change plugin workflow by @bbedward (ed26bde)
+
+### Other Changes
+- build: remove install-shell from install in Makefile by @bbedward (53a5582)
+- niri: create screenshot directory lazily by @li-yuanfei in #3286
+- plugins: use plugin ids for management actions by @FengYing1314 in #3284
+- brightness: retry initial DDC read by @li-yuanfei in #3287
+- matugen: give dry runs their own config file by @bbedward (fdf8722)
+- theme: write desktop settings through dconf instead of gsettings by @bbedward (344c1e6)
+- matugen: stop embedding the adw-gtk3 body in the gtk light template by @bbedward (094dcdd)
+- bar: make the global shadow toggles authoritative by @bbedward (a478c27)
+- audio: resolve the sound theme before the login sound plays by @bbedward (8371fa8)
+- clock: align the horizontal time block to whole pixels by @bbedward (19a56d1)
+- launcher: revalidate the cached launcher sections on load by @bbedward (82089c5)
+- bar: keep the widget font size the user asked for by @bbedward (d7b2647)
+- systemd: keep the inherited hard file limit in dms.service by @bbedward (33e5991)
+- theme: read the dynamic error color per mode by @bbedward (7f1a423)
+- screenshot: resolve region and picker keys through the seat keymap by @bbedward (71e8a85)
+- display config: judge profile outputs by live heads, not stored make/model by @bbedward (5defc26)
+- bar: focus workspace icons on any workspace and wire island overview loader by @bbedward (a1b51b1)
+- network: keep saved wifi profiles when NM fails with no-secrets by @bbedward (75b8932)
+- network: reject weak hotspot passwords before handing them to NetworkManager by @bbedward (166b82d)
+- lock: keep the password cursor inside the field and follow it through overflow and wrapped revealsby @bbedward (5d39702)
+- controlcenter: release dgop refs while the popout is closed by @bbedward (e8a755b)
+- launcher: stop rebuilding the category map per app and index i18n misses by @bbedward (42912eb)
+- bar: refresh blur region after widget layout settles by @bbedward (6261e58)
+- display: watch the session store for active profile changes by @bbedward (c0bc1d8)
+- ci: disable qml-common from release fanout by @bbedward (ed18559)
+- frame: keep overlay backgrounds with their content by @bbedward (f826051)
+- frame: draw panel backgrounds when fullscreen hides the frame by @bbedward (0189eb0)
+- hyprland: stop overwriting the config backup during lua migration by @bbedward (0a64302)
+- workspace: keep hit area out of adjacent spacers by @bbedward (40a0eb6)
+- core: bump dankgo by @bbedward (3711cb1)
+- systray: dont wrap context menu title by @bbedward (b2d1ec6)
+
+**GitHub Release**: https://github.com/AvengeMedia/DankMaterialShell/releases/tag/v1.6.1
+
+---
+
 ## DMS v1.6 "Marble Tabby"
 
 **Released**: 2026-09-03

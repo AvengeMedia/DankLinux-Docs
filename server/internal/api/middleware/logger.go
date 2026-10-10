@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/utils"
 )
 
 // for defining context keys was copied from Go 1.7's new use of context in net/http.
@@ -118,11 +117,8 @@ func (l *DefaultLogFormatter) NewLogEntry(r *http.Request) LogEntry {
 	if r.TLS != nil {
 		scheme = "https"
 	}
-	cW(entry.buf, useColor, nCyan, "%s://%s%s %s\" ", scheme, r.Host, r.RequestURI, r.Proto)
-
-	entry.buf.WriteString("from ")
-	entry.buf.WriteString(utils.GetIPAddress(r))
-	entry.buf.WriteString(" - ")
+	// Client addresses stay out of the logs on purpose.
+	cW(entry.buf, useColor, nCyan, "%s://%s%s %s\" - ", scheme, r.Host, r.RequestURI, r.Proto)
 
 	return entry
 }

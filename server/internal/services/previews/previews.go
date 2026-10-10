@@ -17,6 +17,7 @@ const syncWorkers = 4
 
 type Generator struct {
 	store         *Store
+	thumbs        *Store
 	fetcher       *imageFetcher
 	publicBaseURL string
 }
@@ -31,8 +32,13 @@ func NewGenerator(cacheDir, publicBaseURL string) (*Generator, error) {
 		return nil, err
 	}
 
+	thumbs, err := NewThumbStore(cacheDir)
+	if err != nil {
+		return nil, err
+	}
 	return &Generator{
 		store:         store,
+		thumbs:        thumbs,
 		fetcher:       newImageFetcher(),
 		publicBaseURL: strings.TrimSuffix(publicBaseURL, "/"),
 	}, nil
@@ -40,6 +46,10 @@ func NewGenerator(cacheDir, publicBaseURL string) (*Generator, error) {
 
 func (g *Generator) Store() *Store {
 	return g.store
+}
+
+func (g *Generator) ThumbStore() *Store {
+	return g.thumbs
 }
 
 func (g *Generator) Sync(ctx context.Context, plugins []models.Plugin) []models.Plugin {
@@ -67,6 +77,7 @@ func (g *Generator) Sync(ctx context.Context, plugins []models.Plugin) []models.
 
 func (g *Generator) syncPlugin(ctx context.Context, p *models.Plugin) {
 	p.PreviewURL = g.publicBaseURL + "/previews/" + p.ID
+	p.ThumbURL = p.PreviewURL + "/thumb"
 
 	if p.Screenshot != "" && g.syncImageSource(ctx, *p, "screenshot", p.Screenshot) {
 		return
@@ -76,14 +87,17 @@ func (g *Generator) syncPlugin(ctx context.Context, p *models.Plugin) {
 
 func (g *Generator) syncImageSource(ctx context.Context, p models.Plugin, kind, sourceURL string) bool {
 	key := SourceKey(sourceURL, p)
-	if !g.store.NeedsUpdate(p.ID, key) {
+	needCard := g.store.NeedsUpdate(p.ID, key)
+	needThumb := g.thumbs.NeedsUpdate(p.ID, key)
+	if !needCard && !needThumb {
 		return true
 	}
 
 	src, err := g.fetcher.fetch(ctx, sourceURL)
 	if err != nil {
 		log.Warnf("Preview %s fetch failed for %s: %v", kind, p.ID, err)
-		return false
+		// A current card must survive a failed refetch; the thumb retries next sync
+		return !needCard
 	}
 
 	card, err := ComposeScreenshot(src, p)
@@ -92,14 +106,20 @@ func (g *Generator) syncImageSource(ctx context.Context, p models.Plugin, kind, 
 		return false
 	}
 
-	data, err := encodeJPEG(card)
-	if err != nil {
-		log.Warnf("Preview encoding failed for %s: %v", p.ID, err)
+	if !g.putJPEG(g.store, p.ID, kind, key, card) {
 		return false
 	}
+	return g.putJPEG(g.thumbs, p.ID, kind, key, ComposeThumb(src))
+}
 
-	if err := g.store.Put(p.ID, kind, key, "jpg", data); err != nil {
-		log.Warnf("Preview store failed for %s: %v", p.ID, err)
+func (g *Generator) putJPEG(store *Store, id, kind, key string, img image.Image) bool {
+	data, err := encodeJPEG(img)
+	if err != nil {
+		log.Warnf("Preview encoding failed for %s: %v", id, err)
+		return false
+	}
+	if err := store.Put(id, kind, key, "jpg", data); err != nil {
+		log.Warnf("Preview store failed for %s: %v", id, err)
 		return false
 	}
 	return true
@@ -107,11 +127,16 @@ func (g *Generator) syncImageSource(ctx context.Context, p models.Plugin, kind, 
 
 func (g *Generator) syncCard(p models.Plugin) {
 	key := SourceKey("", p)
-	if !g.store.NeedsUpdate(p.ID, key) {
-		return
+	if g.store.NeedsUpdate(p.ID, key) {
+		g.putCard(g.store, p, key, ComposeCard)
 	}
+	if g.thumbs.NeedsUpdate(p.ID, key) {
+		g.putCard(g.thumbs, p, key, ComposeThumbCard)
+	}
+}
 
-	card, err := ComposeCard(p)
+func (g *Generator) putCard(store *Store, p models.Plugin, key string, compose func(models.Plugin) (image.Image, error)) {
+	card, err := compose(p)
 	if err != nil {
 		log.Warnf("Preview card render failed for %s: %v", p.ID, err)
 		return
@@ -123,7 +148,7 @@ func (g *Generator) syncCard(p models.Plugin) {
 		return
 	}
 
-	if err := g.store.Put(p.ID, "card", key, "png", data); err != nil {
+	if err := store.Put(p.ID, "card", key, "png", data); err != nil {
 		log.Warnf("Preview store failed for %s: %v", p.ID, err)
 	}
 }

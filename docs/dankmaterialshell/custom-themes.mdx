@@ -102,7 +102,7 @@ For themes without light/dark variants, define colors at the top level:
 ### Primary Colors
 - `primary` - Main accent color for buttons, highlights, and active states
 - `primaryText` - Text color contrasting with primary background
-- `primaryContainer` - Variant of primary for containers
+- `primaryContainer` - Variant of primary for containers. Exported to app templates as is. DMS paints a softer container derived from `primary`, see `softPrimaryContainer` under [Derived colors](#derived-colors)
 
 ### Secondary Colors
 - `secondary` - Supporting accent color for variety and hierarchy
@@ -145,6 +145,24 @@ external apps themed by DMS use them even though the shell does not.
 - `outline` - Color for subtle borders, dividers, muted icons, and extra subtle text
 
 ## Optional Properties
+
+### Derived colors
+
+Everything below is derived from the required keys when a color set leaves it out. A value you set is used as is, never adjusted, even when it fails a contrast check. Derivation only fills gaps. The one exception is `onPrimaryContainer` on a derived `softPrimaryContainer`, described below.
+
+- `surfaceContainerHighest` - falls back to `surfaceContainerHigh`
+- `surfaceBright` - `surface` in light mode, `surfaceContainerHighest` in dark mode
+- `surfaceDim` - `surfaceContainer` in light mode, `background` in dark mode
+- `outlineVariant` - `outline` at 60% opacity
+- `secondaryContainer`, `tertiaryContainer` - `surfaceContainerHigh` blended 35% toward `secondary` / `tertiary`
+- `softPrimaryContainer` - the tinted fill DMS paints wherever a primary container appears: clock and weather cards, badges, icon boxes, floating action buttons. Derived as a mix of two colors at one tone, 16 above `surfaceContainer` on dark surfaces (30 at least) and 4 below it on light ones (90 at most): `surfaceContainer` lifted to that tone, and `primary` at that tone with its HCT chroma capped at 48. Fading toward your surface instead of grey keeps the accent reading as its own hue on tinted surfaces. `primaryContainer` does not feed it, because many themes use that key as a second accent
+- `containerTint` - the share of `primary` in that mix, from `0` to `1`. Defaults to `0.5` on dark surfaces and `1` on light ones. Lower reads more pastel, `0` is your surface at the container tone. Users scale it with **Settings → Interface style → Container saturation**
+- `onPrimaryContainer`, `onSecondaryContainer`, `onTertiaryContainer` - the first of `surfaceText`, `surface`, white, black that reads at 4.5:1 on the container. An `onPrimaryContainer` you set was written for `primaryContainer`, so on the derived `softPrimaryContainer` it is kept only when it reads at 4.5:1. Set `softPrimaryContainer` as well and both are used as is
+- `inverseSurface`, `inverseOnSurface` - `surfaceText` and `surface` swapped
+- `selectedContainer` - the fill behind the selected item of every list (launcher rows, settings rows and sidebar, control center lists, dropdowns, context menus, file browser). Derived as `secondaryContainer` when you set it and both `onSecondaryContainer` and `surfaceText` read on it at 4.5:1, otherwise `surfaceContainerHigh` tinted 20% toward `primary`, backed off until `surfaceText` reads at 4.5:1
+- `selectedContainerTint` - the tint amount used by that fallback, `0.2` by default
+- `onSelectedContainer` - text and icons on `selectedContainer`. Derived as the readable pick when you set `selectedContainer`, else `onSecondaryContainer` or `surfaceText` following the branch above
+- `accentOnSelectedContainer`, `accentOnPrimaryContainer` - accent glyphs on those containers: `primary` when it reads at 3:1, else the container's on-color
 
 ### Accents
 
@@ -199,7 +217,7 @@ The [official registry](https://github.com/AvengeMedia/dms-plugin-registry/tree/
 
 ### Via Configuration File
 
-Edit `~/.config/DankMaterialShell/settings.json`:
+Edit `~/.config/DankMaterialShell/settings.json` or `~/.config/DankMaterialShell/config.d/*.json`:
 
 ```json
 {

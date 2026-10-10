@@ -87,7 +87,7 @@ Logs are written to `/tmp/dankinstall-<timestamp>.log`. Set `DANKINSTALL_LOG_DIR
 
 ### Core Components
 - **[DankMaterialShell](./dankmaterialshell/overview.mdx)** - The desktop shell built with quickshell & Go.
-- **Compositor** - Your choice of [niri](https://github.com/niri-wm/niri) or [Hyprland](https://hypr.land)
+- **Compositor** - Your choice of [niri](https://github.com/niri-wm/niri) or [Hyprland](https://hypr.land). With Hyprland, dankinstall also installs `hyprland-guiutils` (Hyprland's dialogs and helper apps). DMS needs Hyprland 0.55 or newer; on an older Hyprland, dankinstall won't write the Lua config
 - **Terminal** - Ghostty, with Kitty and Alacritty as alternatives
 - **dms CLI** - Backend service providing dbus APIs, plugin management, and wayland protocol implementations
 
@@ -108,7 +108,7 @@ Build dependencies: git, jq, curl, wget, go, cmake, rustup. The exact package li
 
 **Supported:** Arch, ArchARM, Archcraft, CachyOS, EndeavourOS, Manjaro
 
-Uses `pacman` for system packages from official repos, including `dms-shell` from extra. Builds quickshell, matugen (pre-compiled binary), and dgop from AUR using `makepkg` - no AUR helper needed. niri and hyprland are available in official repos.
+Uses `pacman` for system packages from official repos, including `dms-shell` from extra. Builds quickshell, matugen (pre-compiled binary), and dgop from AUR using `makepkg` - no AUR helper needed. niri, hyprland and hyprland-guiutils are available in official repos.
 
 If you're using archinstall, the `minimal` profile with `NetworkManager` for networking is a good starting point.
 
@@ -116,7 +116,7 @@ If you're using archinstall, the `minimal` profile with `NetworkManager` for net
 
 **Supported:** Fedora, Nobara, Fedora Asahi Remix
 
-Almost everything comes from official repos or COPR repositories (`avengemedia/danklinux`, `avengemedia/dms`, `lionheartp/Hyprland`, `niri-wm/niri`). Only dgop needs to be built from source with Go.
+Almost everything comes from official repos or COPR repositories (`avengemedia/danklinux`, `avengemedia/dms`, `lionheartp/Hyprland` for Hyprland and hyprland-guiutils, `niri-wm/niri`). Only dgop needs to be built from source with Go.
 
 dankinstall is tested on Workstation Edition but should work fine on any Fedora flavor.
 
@@ -124,7 +124,7 @@ dankinstall is tested on Workstation Edition but should work fine on any Fedora 
 
 **Supported:** Ubuntu 26.04 LTS+ (Resolute Raccoon)
 
-Packages come from the [DankLinux PPA](./danklinux#ubuntu) (`ppa:avengemedia/danklinux`). Hyprland comes from `ppa:cppiber/hyprland`.
+Packages come from the [DankLinux PPA](./danklinux#ubuntu) (`ppa:avengemedia/danklinux`). Hyprland and hyprland-guiutils come from `ppa:cppiber/hyprland`.
 
 ### Debian
 
@@ -134,7 +134,7 @@ Packages come from the [DankLinux OBS repository](./danklinux#debian). **niri on
 
 ### openSUSE Tumbleweed
 
-Good package availability out of the box. niri, hyprland, ghostty, and most tools are in standard repos. Additional packages come from the [DankLinux OBS repository](./danklinux#opensuse).
+Good package availability out of the box. niri, hyprland, hyprland-guiutils, ghostty, and most tools are in standard repos. Additional packages come from the [DankLinux OBS repository](./danklinux#opensuse).
 
 ### Gentoo
 

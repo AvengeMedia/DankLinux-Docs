@@ -15,7 +15,7 @@ import Hero from '@site/src/components/Hero';
   hideTitle={true}
 />
 
-The `dms setup` command generates default configuration files for your compositor (niri or Hyprland). It only writes files that don't already exist or are empty, so it won't clobber anything you've customized.
+The `dms setup` command generates default configuration files for your compositor (niri, Hyprland, or MangoWC). It only writes files that don't already exist or are empty, so it won't clobber anything you've customized.
 
 Running `dms setup` with no arguments deploys all defaults at once. You can also deploy individual configs one at a time.
 
@@ -35,17 +35,21 @@ dms setup binds
 
 ## Subcommands
 
-| Subcommand | Description | niri | Hyprland |
-|---|---|---|---|
-| `binds` | Default keybinds config | `~/.config/niri/dms/binds.kdl` | `~/.config/hypr/dms/binds.conf` |
-| `colors` | Default colors config | `~/.config/niri/dms/colors.kdl` | `~/.config/hypr/dms/colors.conf` |
-| `layout` | Default layout config | `~/.config/niri/dms/layout.kdl` | `~/.config/hypr/dms/layout.conf` |
-| `outputs` | Default outputs config | `~/.config/niri/dms/outputs.kdl` | `~/.config/hypr/dms/outputs.conf` |
-| `cursor` | Default cursor config | `~/.config/niri/dms/cursor.kdl` | `~/.config/hypr/dms/cursor.conf` |
-| `windowrules` | Default window rules config | `~/.config/niri/dms/windowrules.kdl` | `~/.config/hypr/dms/windowrules.conf` |
-| `alttab` | Default alt-tab config (niri only) | `~/.config/niri/dms/alttab.kdl` | — |
+| Subcommand | Description | niri | Hyprland | MangoWC |
+|---|---|---|---|---|
+| `binds` | Default keybinds config | `~/.config/niri/dms/binds.kdl` | `~/.config/hypr/dms/binds.lua` | `~/.config/mango/dms/binds.conf` |
+| `colors` | Default colors config | `~/.config/niri/dms/colors.kdl` | `~/.config/hypr/dms/colors.lua` | `~/.config/mango/dms/colors.conf` |
+| `layout` | Default layout config | `~/.config/niri/dms/layout.kdl` | `~/.config/hypr/dms/layout.lua` | `~/.config/mango/dms/layout.conf` |
+| `outputs` | Default outputs config | `~/.config/niri/dms/outputs.kdl` | `~/.config/hypr/dms/outputs.lua` | `~/.config/mango/dms/outputs.conf` |
+| `cursor` | Default cursor config | `~/.config/niri/dms/cursor.kdl` | `~/.config/hypr/dms/cursor.lua` | `~/.config/mango/dms/cursor.conf` |
+| `windowrules` | Default window rules config | `~/.config/niri/dms/windowrules.kdl` | `~/.config/hypr/dms/windowrules.lua` | `~/.config/mango/dms/windowrules.conf` |
+| `alttab` | Default alt-tab config (niri only) | `~/.config/niri/dms/alttab.kdl` | — | — |
 
-Running `dms setup` with no subcommand deploys all of the above.
+Running `dms setup` with no subcommand deploys all of the above, plus the input fragment (`dms/input.kdl` on niri, `dms/input.lua` on Hyprland, `dms/input.conf` on MangoWC) and, on Hyprland, `dms/binds-user.lua`. The input fragment has no subcommand of its own.
+
+:::note[Hyprland 0.55 or newer]
+DMS writes Hyprland config in Lua only. When the installed Hyprland reports a version older than 0.55, `dms setup` stops with `hyprland.lua is not loaded by Hyprland <version>; DMS needs 0.55 or newer` instead of writing a config Hyprland would ignore. If the version can't be detected, it deploys anyway.
+:::
 
 :::tip
 If you installed DMS from packages (not through the interactive installer), run `dms setup` after install to get working compositor and terminal configs right away.

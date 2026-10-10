@@ -113,13 +113,22 @@ All wayland compositors that implement the [layer shell protocol](https://waylan
 | Compositor | Detection | Version Parsing |
 |------------|-----------|-----------------|
 | niri | `niri` | `niri --version` |
-| Hyprland | `hyprland`, `Hyprland` | `hyprctl version` |
+| Hyprland | `hyprland`, `Hyprland` | `Hyprland --version` (`Tag:` line) |
 | mangowc | `mangowc` | `mangowc --version` |
 | labwc | `labwc` | `labwc --version` |
 | Sway | `sway` | `sway --version` |
 | Miracle WM | `miracle-wm` | `miracle-wm --version` |
 | River | `river` | `river -version` |
 | Wayfire | `wayfire` | `wayfire --version` |
+
+### Hyprland Lua config
+
+On Hyprland, doctor adds a **Hyprland Lua config** warning in two cases:
+
+- **Hyprland `<version>` is older than 0.55**: DMS writes Hyprland config in Lua only, which needs Hyprland 0.55 or newer. Upgrade Hyprland.
+- **Hyprland config is hyprland.conf**: `~/.config/hypr/hyprland.conf` exists and `hyprland.lua` doesn't. DMS keybinds, window rules and displays are read-only until you run `dms setup` to migrate to Lua. Hyprland 0.57 drops `.conf` support.
+
+When both files exist, `hyprland.lua` wins and there is no warning.
 
 ### Active Compositor {/* #compositor */}
 
@@ -288,6 +297,7 @@ Adds fingerprint authentication support to the lock screen.
 | `plugin_settings.json` | `~/.config/DankMaterialShell/` | Plugin configuration |
 | `session.json` | `~/.local/state/DankMaterialShell/` | Session state |
 | `dms-colors.json` | `~/.cache/DankMaterialShell/` | Cached color scheme |
+| `config.d/*.json` | `~/.config/DankMaterialShell/` | Drop-in settings (optional) |
 
 ---
 
@@ -311,15 +321,15 @@ systemctl --user status graphical-session.target
 
 Compositors with native systemd session integration (niri) activate the target themselves. Others need a compositor-specific session target that pulls it in, started from the compositor config.
 
-On Hyprland, `hyprland-session.target` must exist and Hyprland must start it. `dankinstall` writes this unit; a hand-written one is left alone:
+On Hyprland, `hyprland-session.target` must exist and Hyprland must start it. Hyprland 0.57 and newer ship this unit in `/usr/lib/systemd/user/` (or `/usr/local/lib/systemd/user/`); when it's there, `dankinstall` and `dms setup` use it and remove their own copy from `~/.config/systemd/user/`. On older Hyprland they write the unit below. A hand-written unit is left alone either way:
 
 ```ini title="~/.config/systemd/user/hyprland-session.target"
 [Unit]
 Description=Hyprland Session Target
 BindsTo=graphical-session.target
-Before=graphical-session.target
 Wants=graphical-session-pre.target
 After=graphical-session-pre.target
+PropagatesStopTo=graphical-session.target
 ```
 
 Hyprland then needs to export its environment and start the target:

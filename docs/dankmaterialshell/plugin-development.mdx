@@ -35,7 +35,7 @@ qs -p .  # Press Ctrl+C after it starts
 mkdir -p dms-plugins/MyPlugin
 ```
 
-Core widget sources under `quickshell/DankCommon` come from the shared [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) submodule — plugin imports are unchanged (`qs.Widgets`, `qs.Common`, ...), but the submodule must be present for the QML language server to resolve them.
+Core widget sources under `quickshell/DCommon` come from the shared [dank-qml-common](https://github.com/AvengeMedia/dank-qml-common) submodule — plugin imports are unchanged (`qs.Widgets`, `qs.Common`, ...), but the submodule must be present for the QML language server to resolve them.
 
 ### VSCode Setup
 
@@ -488,7 +488,7 @@ Replace the demo devices and handlers with your backend. Use your manifest's plu
 Docks run the same widget plugins as the bar. Users add them from the dock's edit mode or Settings → Dock → Apps & widgets. Your `PluginComponent` needs no extra code, but keep a few things in mind:
 
 - Define both `horizontalBarPill` and `verticalBarPill`. Docks sit on any edge.
-- Size icons with `root.iconSize` and text with `Theme.barTextSize(barThickness, barConfig?.fontScale, barConfig?.maximizeWidgetText)`. The dock passes its own thickness and scale through those properties, so the pill matches the dock icons.
+- Size icons with `root.iconSize` and text with `root.textSize`. Both follow the host's thickness, scale and maximize options, so the pill matches the bar or dock it sits in.
 - Gate timers and animations on `surfaceLive`. It goes false while the bar or dock is hidden.
 - Don't assume a single instance. The same widget can sit on several bars and docks, and `widgetInstanceId` tells them apart.
 
@@ -642,7 +642,7 @@ Daemon manifest uses `"type": "daemon"`:
 
 ## Desktop Plugins {/* #desktop-plugins */}
 
-Desktop plugins render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can freely position and resize them.
+Desktop plugins render directly on the desktop background layer using Wayland's wlr-layer-shell protocol. Users can freely position and resize them. The same component can be placed on the lock screen (see [Lock Screen](#lock-screen)).
 
 ### Basic Desktop Widget
 
@@ -719,6 +719,7 @@ Desktop manifest uses `"type": "desktop"`:
 | `defaultHeight` | real | 200 | Initial height for new widgets |
 | `forceSquare` | bool | false | Constrain to square aspect ratio |
 | `acceptsKeyboardFocus` | bool | false | Opt in to receive keyboard focus when not interacting (see below) |
+| `lockScreen` | bool | false | Set by the host when the instance renders on the lock screen (see below) |
 
 **Helper functions:**
 
@@ -762,6 +763,30 @@ When enabled, the widget's layer requests `OnDemand` keyboard focus whenever the
 :::warning
 Only enable this if your widget actually needs keyboard input. Always-focused desktop widgets can interfere with global shortcuts and the focused application.
 :::
+
+### Lock Screen
+
+The lock screen is built from widgets. The stock layout is six built-in instances (clock, date, password, notifications, status row, power button) that users can move, configure, disable or remove, and every desktop widget can be added next to them. Users manage them from Settings → Lock screen → Widgets, or from the inline editor (`dms ipc call lock demo`, or the "Edit widgets" row on that page), which shows the lock screen with a FAB bar to add widgets or reset to the stock layout and lets them drag, resize and remove widgets in place. Lock screen instances have their own list and their own saved geometry, so one plugin can be on the desktop and the lock screen at the same time with different settings. The password widget cannot be removed: it owns keyboard focus and IME input. After `dms-greeter sync`, the greeter renders the same stock widgets with the same styles and positions; plugin widgets and the notifications widget are lock-screen only, and the ring password style falls back to the pill there because the user picker lives inside the field.
+
+Each stock widget has its own options page: the clock offers horizontal, vertical (two-tone stacked digits), expressive (Google Sans Flex, sized by the widget box) and analog styles with size, weight and color; the password block offers pill, expressive (shape-morphing lock), ring (swaylock-style indicator around the avatar), minimal and dots styles; the power button offers Material shapes; the status row can sit on a backdrop. Plugin widgets get the same reset, geometry and display options as on the desktop.
+
+The host sets `lockScreen: true` on the component before it loads. Use it to adapt:
+
+```qml
+DesktopPluginComponent {
+    id: root
+
+    // hide controls that make no sense while the session is locked
+    readonly property bool interactive: !lockScreen
+}
+```
+
+Rules that apply on the lock screen:
+
+- The widget is an item inside the session lock surface, not a layer surface. Nothing that opens a window, popout, or external application works there, and `acceptsKeyboardFocus` is ignored: the host returns keyboard focus to the password field whenever a widget takes it, so IME and typing always reach the lock.
+- Right-click move and resize are off. Geometry is edited in the inline editor only.
+- The lock screen runs while the user is away. Keep timers coarse (`SystemClock` with `Minutes` where possible) and stop animations when `lockScreen` is true.
+- Positions default to screen fractions (the "Sync position across displays" option), so one layout fits every output.
 
 ### Responsive Layout
 
@@ -2018,7 +2043,6 @@ PluginComponent {
 
     property var popoutService: null
     readonly property int count: pluginData.count ?? 0
-    readonly property real textSize: Theme.barTextSize(barThickness, barConfig?.fontScale, barConfig?.maximizeWidgetText)
 
     pillClickAction: (x, y, width, section, screen) => popoutService?.toggleDankDash("plugin_" + pluginId, x, y, width, section, screen)
     pillRightClickAction: () => pluginService?.savePluginData(pluginId, "count", count + 1)
@@ -2093,8 +2117,9 @@ Each option has a `key`, a `text` label, a `type` and a default `def`:
 - `text`, `description` and choice texts go through your plugin's [translations](#translations).
 - The rows show up in the options sheet (Options in the tab's three-dot menu, or the tune button on a card in edit mode) and under Settings → Dashboard.
 - Read values as `options.<key>` in both the tab and the card. Bindings update when the user changes a value.
-- Only values that differ from `def` are stored, in `settings.json` under `dashOptions.plugin_<pluginId>`. Reset clears your declared keys.
 - `widgets` is reserved for the widget grid below.
+
+Set `"cardOnly": true` on an option that only the overview card reads. It stays on the card's sheet and in Settings, and the tab's sheet leaves it out.
 
 `dash.options` only reach the dash surfaces. If your bar widget or daemon needs the same value, use a [settings component](#plugin-settings) and `pluginData` instead.
 
@@ -2178,11 +2203,56 @@ DashTabComponent {
 - The grid is 4 columns (2 when it's narrower than `Theme.smallBreakpoint`), separate from the overview column count.
 - Each definition needs a stable `id`, a translated `text`, an `icon`, a `component` and a default `w`/`h`. `minW`/`minH`/`maxW`/`maxH` are optional.
 - `enabled: false` leaves a widget in the Add menu instead of placing it.
-- `graphics: true` adds a Show graphics toggle to the widget's menu.
+- `options` gives a widget its own options, see [Widget Options](#widget-options).
 - Widgets get `widgetId`, `widgetOptions` and a bound `live` if they declare them. The grid unloads widget content when `live` is false.
 - The layout is saved in `dashOptions[entryId].widgets`. Reset brings back your defaults.
 
 `CounterTab.qml` in `DashCounterExample` is a complete tab built this way.
+
+### Widget Options
+
+A definition can carry `options`, a list of option specs in the same shape as [Dash Options](#dash-options). Build them with the `DashRegistry` helpers:
+
+```qml
+definitions: [
+    {
+        id: "counter", text: I18n.trFor("myPlugin", "Counter"), icon: "counter_1", component: counter, w: 2, h: 2,
+        options: [
+            DashRegistry.toneOption("primary"),
+            DashRegistry.toggle("compact", I18n.trFor("myPlugin", "Compact"), false),
+            DashRegistry.choice("style", I18n.trFor("myPlugin", "Style"), "bars", [{ value: "bars", text: "Bars" }, { value: "dots", text: "Dots" }]),
+            DashRegistry.number("limit", I18n.trFor("myPlugin", "Items"), 5, 1, 20)
+        ]
+    }
+]
+```
+
+- In edit mode a widget with options shows an options button that opens them in a sheet.
+- Every placed widget stores its own values. The widget reads them from `widgetOptions` by key, for example `widgetOptions.tone`.
+- `DashRegistry.toneOption(def)` is the shared Tone choice: `""` for the surface, `"primary"`, `"secondary"` or `"tertiary"`.
+- `id`, `w`, `h`, `col` and `row` are reserved keys.
+
+A `Card` takes the tone directly with `tone: widgetOptions.tone`. Anything else can follow a tone with `DankTone` from `qs.Widgets`:
+
+```qml
+Rectangle {
+    property var widgetOptions: ({})
+
+    color: toneColors.surfaceColor
+
+    DankTone {
+        id: toneColors
+        tone: widgetOptions.tone ?? ""
+    }
+
+    StyledText {
+        text: "42"
+        color: toneColors.contentColor
+    }
+}
+```
+
+`DankTone` exposes `surfaceColor`, `containerColor`, `contentColor`, `accentColor`, `onAccentColor`, `mutedColor`, `chipColor` and `tinted`, the same values a `Card` has. The built-in weather widgets are painted this way.
 
 ### DashCardComponent Reference
 
@@ -2240,6 +2310,127 @@ PluginComponent {
 3. **Use the card colors** - Raw `Theme.primary` breaks tinted cards
 4. **Keep state out of settings** - Use the state API for runtime data, `setData` for things users configure
 5. **Use `Card` for tiles in a tab** - It matches the overview look and follows the user's surface settings
+
+## Lyrics Providers
+
+A plugin can add a lyrics source. The provider is a program you ship in the plugin, written in anything. DMS runs it with the track's title and artist and it prints the lyrics. It sits next to the built-in providers with the same cache, rate limit and priority order.
+
+:::note[Requires DMS 1.7]
+
+Lyrics providers are new in 1.7. Declare `"requires_dms": ">=1.7.0"`.
+
+:::
+
+### How Users See Them
+
+- After the plugin is enabled under Settings → Plugins, the provider shows up switched off at the bottom of Settings → Sound & media → Media player → Lyrics providers.
+- It only runs once the user switches it on there. Dragging it up or down sets its priority against the other providers.
+- Your `name` is the row title and the credit under the lyrics. `url` makes the credit a link.
+- Provider ids are `plugin_<pluginId>`.
+
+### Manifest
+
+```json
+{
+  "id": "exampleLyrics",
+  "name": "Example Lyrics",
+  "description": "Lyrics from lyrics.example.com",
+  "version": "1.0.0",
+  "author": "Your Name",
+  "type": "lyrics",
+  "requires_dms": ">=1.7.0",
+  "lyrics": {
+    "command": "./fetch.py",
+    "name": "Example",
+    "url": "https://lyrics.example.com",
+    "wordSync": false
+  }
+}
+```
+
+A plugin with only a `lyrics` block needs no QML. The block also works next to `component` or `components`, so a widget or daemon plugin can bring its own provider.
+
+| Key | |
+|-----|---|
+| `command` | Required. The program to run, relative to the plugin directory. Commit it with the executable bit and a shebang line. |
+| `name` | The row title and credit. Defaults to the plugin's `name`. |
+| `url` | Link for the credit. |
+| `wordSync` | Set it when your source usually has word timing. DMS then waits up to 2 seconds for you when the best answer so far only has line timing. |
+
+### The Command
+
+DMS runs the command once per lookup. The track comes in on stdin. `album` and `duration` (seconds) are left out when unknown:
+
+```json
+{ "title": "Get Lucky", "artist": "Daft Punk", "album": "Random Access Memories", "duration": 369 }
+```
+
+Print the answer on stdout:
+
+```json
+{ "format": "lrc", "lyrics": "[00:31.40]Like the legend of the phoenix\n[00:35.93]All ends with beginnings" }
+```
+
+| Output | Means |
+|--------|-------|
+| `"format": "lrc"` | LRC: line-synced, enhanced with `<mm:ss.xx>` word stamps, or plain text with no stamps. |
+| `"format": "ttml"` | TTML, including singers (`ttm:agent`) and backing vocals (`ttm:role="x-bg"`). |
+| `"format": "lyricsfile"` | Lyricsfile 1.0 YAML. |
+| `{"instrumental": true}` | The track is an instrumental. |
+| Nothing, exit 0 | No lyrics for this track. |
+| Non-zero exit | An error. |
+
+- Answers are cached per track. A miss is asked again after 14 days, and so are line-synced lyrics in case word timing showed up.
+- Errors are not cached, and the other providers still answer.
+- The command gets 8 seconds. After that, or once another provider wins, it is killed along with anything it started.
+- Output over 512 KiB is rejected. stderr is dropped.
+- It runs with the environment and working directory of the `dms` process. Find your own files relative to the script.
+- Each provider gets a burst of 10 lookups, then one every 2 seconds.
+
+### Example
+
+```python
+#!/usr/bin/env python3
+import json
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+
+track = json.load(sys.stdin)
+query = urllib.parse.urlencode({"artist": track["artist"], "title": track["title"]})
+try:
+    with urllib.request.urlopen(f"https://lyrics.example.com/search?{query}", timeout=5) as response:
+        found = json.load(response)
+except urllib.error.HTTPError as error:
+    if error.code == 404:
+        sys.exit(0)
+    raise
+
+json.dump({"format": "lrc", "lyrics": found["lrc"]}, sys.stdout)
+```
+
+A 404 prints nothing, which is a miss. Any other failure raises, exits non-zero and counts as an error.
+
+### Testing a Provider
+
+Run it by hand:
+
+```bash
+echo '{"title":"Get Lucky","artist":"Daft Punk"}' | ./fetch.py
+```
+
+DMS caches every answer, misses included. Clear the cache after changing your command, then skip to another track and back, since the shell keeps the current track's lyrics until the track changes:
+
+```bash
+rm -rf ~/.cache/DankMaterialShell/lyrics
+```
+
+### Lyrics Provider Best Practices
+
+1. **Match strictly** - Check the title, artist and duration of what you found. A wrong song beats every provider below yours, a miss lets them answer
+2. **Exit 0 when nothing matches** - A non-zero exit is an error, and errors are asked again on every lookup
+3. **Answer in time** - Keep your own request timeouts well under 8 seconds
 
 ## Composite Plugins
 
@@ -2642,6 +2833,92 @@ PluginComponent {
 
 `Proc.release(id)` drops a fixed id's pending work and its timer explicitly — call it from `Component.onDestruction` if you don't pass `owner`. Both `owner` and `release` require DMS 1.6+; on older versions guard your callback with `if (!root) return` instead.
 
+### Lyrics
+
+:::note[Requires DMS 1.7]
+
+Declare `"requires_dms": ">=1.7.0"` to use lyrics.
+
+:::
+
+Lyrics come from a `LyricsController` in `qs.Services`. It looks up the track through the DMS core and keeps the current line and word in sync with playback. It does nothing while `enabled` is false.
+
+`LyricsService.controller` is the shared controller for the active MPRIS player. The media tab, the island and plugins all read the same one, so there is one lookup and one clock no matter how many views are open. It only runs while something holds a `LyricsSubscription`:
+
+```qml
+import QtQuick
+import qs.Services
+import qs.Widgets
+import qs.Modules.Plugins
+
+DesktopPluginComponent {
+    id: root
+
+    readonly property var lyrics: LyricsService.controller
+
+    LyricsSubscription {
+        active: root.visible
+    }
+
+    StyledText {
+        anchors.centerIn: parent
+        text: root.lyrics.lines[root.lyrics.activeIndex]?.x ?? ""
+    }
+}
+```
+
+For the full scrolling view with word highlights, use `LyricsOverlay` from `qs.Modules.DankDash.Media`. It subscribes by itself while visible:
+
+```qml
+LyricsOverlay {
+    anchors.fill: parent
+}
+```
+
+#### Players that are not MPRIS
+
+Give your player its own `LyricsController` and pass it to the overlay:
+
+```qml
+LyricsController {
+    id: radioLyrics
+    enabled: available && overlay.visible
+    track: radio.title ? {
+        title: radio.title,
+        artist: radio.artist,
+        length: radio.duration
+    } : null
+    player: radio
+    playing: radio.playing
+}
+
+LyricsOverlay {
+    id: overlay
+    anchors.fill: parent
+    lyrics: radioLyrics
+}
+```
+
+Inputs:
+
+- `track`: `{ title, artist, album, length }` with `length` in seconds, or `null` when nothing is loaded. Add `key` to tell tracks from different players apart.
+- `player`: any object with a `position` in seconds. Update it when the user seeks. Between updates the controller counts forward on its own using `rate`.
+- `playing`, `stopped` and `rate`. Set `stopped` when `position` means nothing, so the controller holds the last line.
+- `url`: the track's `file://` url for local files. Other urls are ignored.
+- `embeddedText`: plain lyrics to show when the lookup finds nothing.
+- `settling`: true while your metadata is still changing. The lookup waits for it.
+- `enabled`: only true while the lyrics are on screen. Check `available` too, since older cores have no lyrics support.
+
+Outputs:
+
+- `state`: `idle`, `loading`, `ready`, `instrumental`, `none` or `error`. `pending` is true while a lookup is in flight.
+- `synced`: true when `lines` has timestamps. Otherwise read `plainLines`.
+- `lines`: groups of `{ t, e, x, parts }`, times in seconds. `activeIndex` is the current group.
+- `wordTime` and `wordEnd`: the current word's timing, when the provider has word timing.
+- `attributionName`, `attributionUrl`: credit for the provider.
+
+Lookups only use the lyrics providers the user enabled in Settings. With none enabled, lookups never hit the network. To add a provider, see [Lyrics Providers](#lyrics-providers).
+
 ## Plugin Manifest Reference
 
 ### Required Fields
@@ -2681,11 +2958,17 @@ PluginComponent {
     "title": "My Tab",
     "card": { "w": 2, "h": 1 },
     "options": []
+  },
+  "lyrics": {
+    "command": "./fetch.py",
+    "name": "My Source",
+    "url": "https://example.com",
+    "wordSync": false
   }
 }
 ```
 
-`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other. `dash` labels the dash surfaces and declares their options, see [Dash Options](#dash-options).
+`components` replaces `component` for [composite plugins](#composite-plugins) that expose more than one surface. Provide one or the other. `dash` labels the dash surfaces and declares their options, see [Dash Options](#dash-options). `lyrics` adds a [lyrics provider](#lyrics-providers). A plugin with only `lyrics` needs no `component`.
 
 ### Plugin Types
 
@@ -2695,6 +2978,7 @@ PluginComponent {
 - `"desktop"` - Desktop layer widget
 - `"dash"` - Dash tab (requires DMS &ge; 1.7.0)
 - `"dashCard"` - Dash overview card (requires DMS &ge; 1.7.0)
+- `"lyrics"` - [Lyrics provider](#lyrics-providers) with no QML (requires DMS &ge; 1.7.0)
 - `"composite"` - Multiple surfaces in one plugin (use with `components`; requires DMS &ge; 1.5.0)
 
 ### Permissions
@@ -2797,7 +3081,7 @@ Keep your English strings stable once they're in POEditor. Renaming a term is a 
 2. Add to bar: Settings → DankBar → Add widget. For a dock, use the dock's edit mode. Dash tabs show up on their own; add dash cards from the dash (three-dot menu → Edit → Add widget), and open a tab directly with `dms ipc call dash open plugin_myPlugin`
 3. Check console: Look for errors in shell output
 4. Hot-reload your plugin: `dms ipc call plugins reload myPlugin`
-5. Check settings file: `~/.config/DankMaterialShell/settings.json`
+5. Check settings files: `~/.config/DankMaterialShell/settings.json` or `~/.config/DankMaterialShell/config.d/*.json`
 
 ### Hot Reloading
 
