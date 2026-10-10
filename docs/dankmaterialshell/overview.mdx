@@ -44,6 +44,10 @@ DankMaterialShell (dms) is a Wayland desktop shell built with [Quickshell](https
 
 *There's really too much to list, but those are some of the highlights!*
 
+### Launcher Appearance
+
+In **Settings → Launcher → Appearance**, turn off **Show app icons** for text-only app results in list and grid views, including the app picker. File, settings, clipboard, and plugin result icons remain visible. Icons are shown by default. In list view, the text moves left to fill the space. Package source badges have their own separate toggle.
+
 ## Architecture
 
 DankMaterialShell uses a client-server architecture where a Go backend (`dms`) manages system integrations and spawns the Quickshell-based UI as a child process. Communication happens over Unix socket using REQ/REP and PUB/SUB patterns.
