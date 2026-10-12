@@ -53,7 +53,7 @@ func (c *ThemeCache) Initialize(ctx context.Context) error {
 func (c *ThemeCache) Refresh(ctx context.Context) error {
 	log.Info("Refreshing theme cache...")
 
-	themes, err := c.parser.FetchThemes(ctx)
+	themes, err := c.parser.FetchThemes(ctx, c.GetThemes())
 	if err != nil {
 		return err
 	}

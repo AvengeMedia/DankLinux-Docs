@@ -3,9 +3,11 @@ package registry
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
@@ -16,6 +18,7 @@ import (
 
 type Parser struct {
 	token   string
+	mu      sync.Mutex
 	clients map[string]*github.Client
 	gitlab  *gitlab.Client
 }
@@ -28,6 +31,9 @@ func NewParser(token string) *Parser {
 }
 
 func (p *Parser) getGitLabClient() *gitlab.Client {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
 	if p.gitlab == nil {
 		p.gitlab = gitlab.NewClient("")
 	}
@@ -35,6 +41,9 @@ func (p *Parser) getGitLabClient() *gitlab.Client {
 }
 
 func (p *Parser) getClient(host string) (*github.Client, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
 	if client, ok := p.clients[host]; ok {
 		return client, nil
 	}
@@ -54,36 +63,31 @@ func (p *Parser) getClient(host string) (*github.Client, error) {
 	return client, nil
 }
 
-func (p *Parser) FetchPlugins(ctx context.Context) ([]models.Plugin, error) {
+func (p *Parser) FetchPlugins(ctx context.Context, prev []models.Plugin) ([]models.Plugin, error) {
 	registryPlugins, err := p.fetchRegistryPlugins(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch registry plugins: %w", err)
 	}
 
-	var plugins []models.Plugin
+	carry := newCarryForward("plugin", pluginsByID(prev))
 	for _, regPlugin := range registryPlugins {
-		plugin, err := p.enrichPlugin(ctx, regPlugin)
-		if err != nil {
-			log.Warnf("Skipping plugin %s: %v", regPlugin.ID, err)
-			continue
+		if err := ctx.Err(); err != nil {
+			return nil, err
 		}
 
-		plugins = append(plugins, plugin)
+		plugin, err := p.enrichPlugin(ctx, regPlugin)
+		carry.add(regPlugin.ID, plugin, err)
 	}
 
-	p.applyFeedback(ctx, plugins)
-
-	return plugins, nil
+	return carry.result(), nil
 }
 
-func (p *Parser) applyFeedback(ctx context.Context, plugins []models.Plugin) {
-	feedback, err := p.FetchFeedback(ctx)
-	if err != nil {
-		log.Warnf("Failed to fetch plugin feedback: %v", err)
-		return
+func pluginsByID(plugins []models.Plugin) map[string]models.Plugin {
+	byID := make(map[string]models.Plugin, len(plugins))
+	for _, plugin := range plugins {
+		byID[plugin.ID] = plugin
 	}
-
-	mergeFeedback(plugins, feedback)
+	return byID
 }
 
 func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlugin, error) {
@@ -108,9 +112,12 @@ func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlu
 		}
 
 		fileData, err := client.GetFileContents(ctx, content.DownloadURL)
-		if err != nil {
-			log.Warnf("Failed to fetch %s: %v", content.Name, err)
+		switch {
+		case errors.Is(err, github.ErrNotFound):
+			log.Warnf("Skipping %s: %v", content.Name, err)
 			continue
+		case err != nil:
+			return nil, fmt.Errorf("failed to fetch %s: %w", content.Name, err)
 		}
 
 		var plugin models.RegistryPlugin
