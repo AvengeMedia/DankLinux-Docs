@@ -369,6 +369,23 @@ Used to set the Qt platform theme - usually one of `gtk3`, `qt6ct`, `qtengine`, 
 
 When the variable is set, `dms doctor` also verifies that the plugin it names actually exists in the plugin directory Qt searches (asked via `qmake`/`qtpaths`), warning with the expected path on a miss. Without Qt development tools installed, the check reports "Cannot verify" instead of guessing.
 
+For Qt 6 plugins, it also compares the Qt version the plugin was built against with the installed Qt, and warns on a mismatch (for example `Built for Qt 6.11, Qt is 6.12.0`).
+
+:::warning[Platform theme plugins break after Qt updates]
+Qt only loads a platform theme plugin built for its exact major.minor version and skips any other without a visible error. Plugins built outside your distribution's repositories (an AUR package such as `qt6ct-kde`, a COPR/PPA build, or a local build) stop loading after a Qt minor update until they are rebuilt. Qt apps then fall back to a built-in theme, and Quickshell tray icons and menus show black/magenta placeholders.
+
+Rebuild or reinstall the package providing the plugin against the current Qt, then restart DMS. On Arch Linux:
+
+```bash
+paru -S --rebuild qt6ct-kde
+# or
+yay -S --rebuild qt6ct-kde
+systemctl --user restart dms
+```
+
+To confirm the cause, run any Qt app from a terminal with `QT_LOGGING_RULES="qt.core.plugin.factoryloader.debug=true"` and look for `Ignoring QPA plugin due to mismatching Qt versions`.
+:::
+
 With `qtengine`, it checks the Qt5 and Qt6 plugins and whether `~/.config/qtengine/config.json` points at the DMS color scheme.
 
 ### QS_ICON_THEME
