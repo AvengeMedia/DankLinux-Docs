@@ -51,7 +51,7 @@ dms icc remove DP-1
 | `dms icc remove <output>` | Remove the profile from a specific output |
 | `dms icc set-temp <output> <kelvin>` | Set a per-output color temperature (1000-10000K), independently of the night light schedule; `0` removes the override |
 
-Profiles are looked up in the DMS config directory for the running compositor, `<config dir>/<compositor>/dms/icc` — for example `~/.config/niri/dms/icc` on niri, `~/.config/hypr/dms/icc` on Hyprland and `~/.config/mango/dms/icc` on MangoWC. Output names are connector names as reported by the compositor, such as `DP-1`, `DP-2`, `HDMI-A-1` or `eDP-1`.
+Applying a profile copies it to `~/.config/DankMaterialShell/icc`, and `dms icc list` shows every profile in that directory. Output names are connector names as reported by the compositor, such as `DP-1`, `DP-2`, `HDMI-A-1` or `eDP-1`.
 
 ## Settings UI
 
@@ -66,13 +66,13 @@ Per-output values win over the night light schedule: a display with its own temp
 
 ## Configuration
 
-Assignments live in the night light configuration of the running compositor, `~/.config/niri/dms/wayland.json` on niri (Hyprland and MangoWC use their own directory):
+Assignments live in `~/.config/DankMaterialShell/icc.json`:
 
 ```json
 {
   "iccProfiles": {
-    "DP-1": "/home/user/profiles/display.icm",
-    "eDP-1": "/home/user/profiles/laptop.icm"
+    "DP-1": "display.icm",
+    "eDP-1": "laptop.icm"
   },
   "outputTemps": {
     "DP-1": 7000,
@@ -81,7 +81,7 @@ Assignments live in the night light configuration of the running compositor, `~/
 }
 ```
 
-`iccProfiles` maps an output name to the profile path, `outputTemps` maps an output name to its color temperature in Kelvin.
+`iccProfiles` maps an output name to a profile file in `~/.config/DankMaterialShell/icc` (an absolute path works too), `outputTemps` maps an output name to its color temperature in Kelvin. Both live in the DMS config directory, so `dms backup` carries them to another machine.
 
 ## Notes
 
@@ -89,5 +89,4 @@ Assignments live in the night light configuration of the running compositor, `~/
 - Profiles are re-applied after resume and when an output is hot-plugged.
 - The compositor must expose `wlr-gamma-control-unstable-v1`. If `dms icc status` shows no outputs, the running compositor does not provide it.
 - Only a profile that carries a `vcgt` table can be applied: that tag holds the video card gamma table the GPU ramp takes. The `rTRC`/`gTRC`/`bTRC` tags describe the display's own transfer function (roughly `t^2.2` for a normal monitor), so `dms icc info` reports them but they are never written into the ramp — applying a profile without `vcgt` is refused instead of washing the display out.
-- Night light contrast, gamma and schedule settings in the same file keep working as before; ICC and per-output temperature are applied in addition to them.
-- DMS only ever writes `iccProfiles` and `outputTemps` to that file: the night light fields are owned by the shell, so applying a profile never persists the night light state the daemon happened to hold.
+- Night light contrast, gamma and schedule settings keep working as before, ICC and per-output temperature are applied in addition to them.
