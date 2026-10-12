@@ -50,6 +50,7 @@ const sidebars: SidebarsConfig = {
         'dankmaterialshell/vpn',
         'dankmaterialshell/autostart',
         'dankmaterialshell/network-speed-monitor',
+        'dankmaterialshell/system-monitor',
         'dankmaterialshell/reboot-to-another-os',
         {
           type: 'doc',
