@@ -150,6 +150,11 @@ binds {
     XF86MonBrightnessDown allow-when-locked=true {
        spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
     }
+
+    // Touchpad toggle key (needs niri with the toggle-touchpad action)
+    XF86TouchpadToggle allow-when-locked=true repeat=false {
+        spawn "dms" "ipc" "call" "niri" "toggleTouchpad";
+    }
 }
 ```
 

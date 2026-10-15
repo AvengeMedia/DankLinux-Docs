@@ -902,13 +902,25 @@ Screenshot functionality for the niri compositor. Captures are opened in your co
 | `screenshot` | Interactive selection screenshot |
 | `screenshotScreen` | Capture entire screen |
 | `screenshotWindow` | Capture focused window |
+| `toggleTouchpad` | Toggle the touchpad on or off and show an OSD (niri-git, `toggle-touchpad` action) |
 
 **Examples:**
 ```bash
 dms ipc call niri screenshot
 dms ipc call niri screenshotScreen
 dms ipc call niri screenshotWindow
+dms ipc call niri toggleTouchpad
 ```
+
+**Touchpad toggle:** niri does not report touchpad state over IPC, so the OSD only tracks toggles issued through this call. Bind the laptop key to it rather than to the raw niri action:
+
+```kdl
+XF86TouchpadToggle allow-when-locked=true repeat=false {
+    spawn "dms" "ipc" "call" "niri" "toggleTouchpad";
+}
+```
+
+The OSD can be turned off in Settings → OSD → Touchpad.
 
 **Configuration:**
 
