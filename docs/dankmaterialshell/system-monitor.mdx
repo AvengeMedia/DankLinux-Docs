@@ -21,16 +21,16 @@ default keybinds). Its data comes from [dgop](../dgop/), so it needs dgop instal
 
 | Page | Shows |
 |------|-------|
-| Processes | Every process with CPU, memory, GPU, disk and network use. Open a row for its command, details and connections. |
+| Processes | Every process with CPU, memory, GPU, disk and network use. Open a row for its overview, resources, connections and details. |
 | Performance | CPU, memory, each GPU, drive and network interface with a live chart. |
 | Disks | Each drive's health, SMART values, read/write chart and partitions. A sleeping hard drive is not woken up here. |
-| System | Software, hardware and sensor readings. **Copy system info** copies them as plain text. |
+| System | Software, hardware and sensor readings. **Copy summary** copies a short overview, **Copy report** everything as Markdown. Neither includes the hostname, user name or network names. |
 
 ## Ending and restarting processes
 
-Open a process or right-click it for **Quit**, **Force quit**, **End process tree** and **Restart**. Each asks for
-confirmation. For the compositor, the user's systemd, the session bus and DMS itself it also warns that this usually
-ends the session and offers a restart instead.
+Open a process, or right-click it and choose **Quit or restart**, for **Quit**, **Force quit**, **End process tree** and
+**Restart**. Each asks for confirmation. For the compositor, the user's systemd, the session bus and DMS itself it also
+warns that this usually ends the session and offers a restart instead.
 
 | Process | Restart does |
 |---------|--------------|
@@ -45,4 +45,4 @@ ends the session and offers a restart instead.
 Linux only lets the owner or root read a process's disk and network activity, so most values of other users'
 processes show `—`. The lock button in the Processes toolbar asks for your password once and then reads every
 process as root until you lock it again or close the window. While unlocked, ending another user's process needs no
-further password.
+further password, and the Disks page shows each drive's full SMART report.
