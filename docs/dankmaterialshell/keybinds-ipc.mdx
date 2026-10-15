@@ -639,7 +639,8 @@ dms ipc call widget reset weather
 
 **Notes:**
 - Use `list` to discover available widget IDs with their current visibility state (`[visible]` or `[hidden]`)
-- Widget IDs depend on which widgets are enabled in your bar settings
+- Widget IDs come from the widgets in your bar settings; a disabled widget still opens its popout
+- With several bars, popouts open on the focused screen, preferring a bar where the widget is shown, then the bar you last clicked when **Last used on this screen** is on. A widget on a hidden bar opens anchored where that bar sits
 - The `status` function returns "visible" or "hidden" for the widget **popout** state
 - The `visibility`, `reveal`, `hide`, and `reset` functions control the widget's **bar presence** (whether it appears on the bar at all)
 - Plugins can define conditional visibility via `visibilityCommand` — use `reset` to return to that behavior after overriding
@@ -893,30 +894,44 @@ dms ipc call welcome page 2
 
 ### niri
 
-**Requires niri 25.11+**
+**Screenshot functions require niri 25.11+.** Automatic touchpad OSD updates require a niri build with `TouchpadToggled` IPC events (currently niri-git).
 
-Screenshot functionality for the niri compositor. Captures are opened in your configured editor for markup and annotation.
+Screenshot and touchpad controls for the niri compositor. Captures are opened in your configured editor for markup and annotation.
 
 | Function | Description |
 | --- | --- |
 | `screenshot` | Interactive selection screenshot |
 | `screenshotScreen` | Capture entire screen |
 | `screenshotWindow` | Capture focused window |
-| `toggleTouchpad` | Toggle the touchpad on or off and show an OSD (niri-git, `toggle-touchpad` action) |
+| `showTouchpadOsd <enabled>` | Show the hardware-reported touchpad state (`true` for on, `false` for off), without changing it |
 
 **Examples:**
 ```bash
 dms ipc call niri screenshot
 dms ipc call niri screenshotScreen
 dms ipc call niri screenshotWindow
-dms ipc call niri toggleTouchpad
+dms ipc call niri showTouchpadOsd true
+dms ipc call niri showTouchpadOsd false
 ```
 
-**Touchpad toggle:** niri does not report touchpad state over IPC, so the OSD only tracks toggles issued through this call. Bind the laptop key to it rather than to the raw niri action:
+**Touchpad toggle:** DMS listens for niri's `TouchpadToggled` events and shows the reported software-toggle state. Native keybindings and `niri msg action toggle-touchpad` both trigger the OSD. This state describes niri's software toggle; hardware switches and `input { touchpad { off; } }` can still disable the device.
+
+The following binding calls niri directly. It uses `spawn` so the config remains parseable on older niri versions; toggling still requires the `toggle-touchpad` action, and the OSD requires the new events:
 
 ```kdl
 XF86TouchpadToggle allow-when-locked=true repeat=false {
-    spawn "dms" "ipc" "call" "niri" "toggleTouchpad";
+    spawn "niri" "msg" "action" "toggle-touchpad";
+}
+```
+
+**Hardware On/Off keys:** For laptops that enable or disable the touchpad in hardware and emit `XF86TouchpadOn` or `XF86TouchpadOff`, these bindings show the corresponding OSD without sending a toggle action. They do not require niri's `toggle-touchpad` action or `TouchpadToggled` events.
+
+```kdl
+XF86TouchpadOn allow-when-locked=true repeat=false {
+    spawn "dms" "ipc" "call" "niri" "showTouchpadOsd" "true";
+}
+XF86TouchpadOff allow-when-locked=true repeat=false {
+    spawn "dms" "ipc" "call" "niri" "showTouchpadOsd" "false";
 }
 ```
 

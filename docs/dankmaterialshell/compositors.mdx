@@ -151,9 +151,16 @@ binds {
        spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
     }
 
-    // Touchpad toggle key (needs niri with the toggle-touchpad action)
+    // Touchpad toggle key (OSD needs niri with TouchpadToggled events)
     XF86TouchpadToggle allow-when-locked=true repeat=false {
-        spawn "dms" "ipc" "call" "niri" "toggleTouchpad";
+        spawn "niri" "msg" "action" "toggle-touchpad";
+    }
+    // Hardware On/Off notifications (OSD only)
+    XF86TouchpadOn allow-when-locked=true repeat=false {
+        spawn "dms" "ipc" "call" "niri" "showTouchpadOsd" "true";
+    }
+    XF86TouchpadOff allow-when-locked=true repeat=false {
+        spawn "dms" "ipc" "call" "niri" "showTouchpadOsd" "false";
     }
 }
 ```
