@@ -137,6 +137,37 @@ dms restart
 
 Browse [plugins.danklinux.com](https://plugins.danklinux.com) for installation links and documentation.
 
+### From the Plugin Browser
+
+Open **Settings → Plugins** and click **Browse**. The browser lists every plugin of the configured registries and installs one with a click.
+
+**Finding a plugin**
+
+- **Pick of the week** and **Pick of the day** highlight one plugin each. They are chosen from the registry list on your machine and change by themselves.
+- Three shelves sit above the full list: **For you** (plugins close to the ones you already installed: same categories, same authors), **Trending** (recent upvotes and updates) and **New** (latest arrivals).
+- Quick filters narrow the list: **Hide installed**, **Installed first**, **Works here** (plugins that support your compositor), **New & updated** and **Official only**.
+- Search forgives typos, so `walpaper` still finds wallpaper plugins. When nothing matches, **Did you mean** offers the closest plugins.
+- Cards carry `new` and `updated` marks, and tell you when a plugin targets another compositor.
+
+Everything above is computed locally from the registry list. Nothing about your installed plugins is sent anywhere.
+
+**The detail page**
+
+Click a card to open its detail page:
+
+- **This plugin can** lists the permissions the plugin declares, in plain words.
+- **Needs** lists the commands the plugin requires and marks the ones that are not found on your machine.
+- The links open the source, the discussion, a pre-filled problem report, or copy a link to the plugin.
+- Click the author to list all of their plugins.
+
+**Upvoting**
+
+The 👍 count on a card and on the detail page is a button. With the [GitHub CLI](https://cli.github.com) installed and logged in (`gh auth login`), a click adds your upvote to the plugin's tracking issue and a second click takes it back. Without it, DMS opens the tracking issue in your web browser instead.
+
+**Undoing an uninstall**
+
+After you uninstall a registry plugin, the Plugins page shows `<name> uninstalled, Undo` for a few seconds. **Undo** installs the plugin again from the registry and turns it back on if it was enabled.
+
 ### Reproduce Managed Plugins
 
 DMS keeps `~/.config/DankMaterialShell/plugins.lock.json` synchronized when registry plugins are installed, updated, or removed. The lockfile records each Git repository, optional monorepo path, and exact commit.
