@@ -126,6 +126,8 @@ dankinstall is tested on Workstation Edition but should work fine on any Fedora 
 
 dankinstall enables EPEL 10 and the same COPR repositories as Fedora. **niri only** - the Hyprland COPR and Terra (mango) do not build for EL. Terminals come from EPEL (`kitty`) or the `avengemedia/danklinux` COPR (`ghostty` on x86_64, `alacritty`), which also provides `xwayland-satellite`, `greetd`, and `cava` since EPEL 10 lacks them.
 
+Hyprland, mango and miracle-wm are not supported on EL and are not planned. A community COPR, [kmf/dank-ws-copr](https://copr.fedorainfracloud.org/coprs/kmf/dank-ws-copr/), packages that stack for EL 10, but it replaces several system libraries (lua, libxkbcommon, iniparser, pixman, libdrm) and can conflict with packages such as wireplumber. Use it at your own risk; issues with those compositors on EL should go to that project.
+
 ### Ubuntu
 
 **Supported:** Ubuntu 26.04 LTS+ (Resolute Raccoon)
