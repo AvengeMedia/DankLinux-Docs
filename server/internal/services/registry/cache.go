@@ -14,6 +14,8 @@ import (
 	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
 )
 
+const moderationGrace = time.Minute
+
 type PreviewSyncer interface {
 	Sync(ctx context.Context, plugins []models.Plugin) []models.Plugin
 }
@@ -21,6 +23,7 @@ type PreviewSyncer interface {
 type Cache struct {
 	mu          sync.RWMutex
 	plugins     []models.Plugin
+	moderatedAt map[string]time.Time
 	parser      *Parser
 	lastUpdate  time.Time
 	ready       bool
@@ -36,6 +39,7 @@ type pluginSnapshot struct {
 func NewCache(githubToken, persistPath string) *Cache {
 	return &Cache{
 		plugins:     []models.Plugin{},
+		moderatedAt: make(map[string]time.Time),
 		parser:      NewParser(githubToken),
 		persistPath: persistPath,
 	}
@@ -62,13 +66,21 @@ func (c *Cache) Initialize(ctx context.Context) error {
 func (c *Cache) Refresh(ctx context.Context) error {
 	log.Info("Refreshing plugin cache...")
 
-	plugins, err := c.parser.FetchPlugins(ctx)
+	plugins, err := c.parser.FetchPlugins(ctx, c.GetPlugins())
 	if err != nil {
 		return err
 	}
 
+	feedbackStarted := time.Now()
+	feedback, err := c.parser.FetchFeedback(ctx)
+	if err != nil {
+		log.Warnf("Failed to fetch plugin feedback: %v", err)
+	}
+
 	c.mu.Lock()
 	carryFeedback(plugins, c.plugins)
+	mergeFeedback(plugins, feedback)
+	c.keepRecentModeration(plugins, feedbackStarted.Add(-moderationGrace))
 	c.mu.Unlock()
 
 	if c.previews != nil {
@@ -174,6 +186,7 @@ func (c *Cache) ApplyStatus(pluginID, status string, add bool) {
 			break
 		}
 	}
+	c.moderatedAt[pluginID] = time.Now()
 	c.mu.Unlock()
 
 	if err := c.saveToDisk(); err != nil {
@@ -191,10 +204,23 @@ func (c *Cache) ApplySimilar(pluginID, similarID string, add bool) {
 			break
 		}
 	}
+	c.moderatedAt[pluginID] = time.Now()
 	c.mu.Unlock()
 
 	if err := c.saveToDisk(); err != nil {
 		log.Warn("Failed to persist plugin cache after similar update", "err", err)
+	}
+}
+
+func (c *Cache) keepRecentModeration(plugins []models.Plugin, since time.Time) {
+	current := pluginsByID(c.plugins)
+	for i := range plugins {
+		cached, ok := current[plugins[i].ID]
+		if !ok || c.moderatedAt[plugins[i].ID].Before(since) {
+			continue
+		}
+		plugins[i].Status = cached.Status
+		plugins[i].Similar = cached.Similar
 	}
 }
 

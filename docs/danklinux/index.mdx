@@ -41,7 +41,7 @@ DankMaterialShell is now available on more distributions than ever before!
 - [**cliphist**](https://github.com/sentriz/cliphist): Wayland clipboard manager with history support
 - [**dgop**](https://github.com/AvengeMedia/dgop): Stateless CPU/GPU monitor system by Avenge Media
 - [**dsearch**](https://github.com/AvengeMedia/danksearch): a Blazingly fast filesystem search tool by Avenge Media
-- [**DankCalendar**](https://github.com/AvengeMedia/dankcalendar) (`dcal`): Standalone calendar app for Local, Google, Microsoft, CalDAV, and iCloud — package **`dankcalendar-git`**
+- [**DankCalendar**](https://github.com/AvengeMedia/dankcalendar) (`dcal`): Standalone calendar app for Local, Google, Microsoft, CalDAV, and iCloud — packages **`dankcalendar`** and **`dankcalendar-git`**
 - [**matugen**](https://github.com/InioX/matugen): Material Design 3 color palette generator for themes
 - [**xWayland-Satellite**](https://github.com/Supreeeme/xwayland-satellite): XWayland integration tool
 - [**xWayland-Satellite-git**](https://github.com/Supreeeme/xwayland-satellite): Development build of xWayland-Satellite
@@ -54,7 +54,7 @@ For complete DMS installation instructions including repository setup, see the [
 
 :::tip[Quick Start]
 
-- **Fedora**: See the [Fedora & CentOS](../dankmaterialshell/installation#fedora--centos) section in the installation guide
+- **Fedora / Enterprise Linux**: See the [Fedora & Enterprise Linux](../dankmaterialshell/installation#fedora--enterprise-linux) section in the installation guide
 - **Ubuntu/Debian**: See the [Ubuntu & Debian](../dankmaterialshell/installation#debian--ubuntu) section in the installation guide
 - **OpenSUSE**: See the [OpenSUSE](../dankmaterialshell/installation#opensuse--derivatives) section in the installation guide
 - **Void Linux**: See the [Void Linux](../dankmaterialshell/installation#void-linux) section in the installation guide
@@ -334,9 +334,9 @@ sudo zypper install quickshell-git niri-git
 </TabItem>
 </Tabs>
 
-### Fedora & CentOS
+### Fedora & Enterprise Linux
 
-The COPR repositories provide packages for Fedora 41/42/43 rawhide and CentOS 10.
+The COPR repositories provide packages for Fedora 43/44/45, Rawhide, and Enterprise Linux 10 (RHEL, CentOS Stream, Rocky Linux, AlmaLinux) on the latest 10.x minor. Enable EPEL first on Enterprise Linux.
 
 <Tabs groupId="dms-channel">
 <TabItem value="stable" label="Stable Release" default>
@@ -375,7 +375,7 @@ Niri packages are available in both stable and development variants. Supported o
 
 ### Fedora COPR
 
-The COPR provides packages for Fedora 41/42/43 rawhide and CentOS 10:
+The COPR provides packages for Fedora 43/44/45, Rawhide, and Enterprise Linux 10. On EL the `danklinux` COPR also carries packages missing from EPEL 10: `greetd`, `xwayland-satellite`, `alacritty`, `gtk4-layer-shell`, `cava`, and `ghostty` (x86_64 only).
 
 - **DankLinux Core Repository**: [avengemedia/danklinux](https://copr.fedorainfracloud.org/coprs/avengemedia/danklinux/)
 - **DMS Stable**: [avengemedia/dms](https://copr.fedorainfracloud.org/coprs/avengemedia/dms/)
@@ -406,7 +406,7 @@ The packaging configurations and build scripts are maintained in the official Da
 
 :::note
 
-**Official Avenge Media packages**: `dms`, `dms-cli`, `dgop`, `danksearch`, `dankcalendar-git`, `dms-greeter`, `dms-greeter-git`, `dms-color-picker`, and `dms clipboard` are developed and maintained by the Avenge Media team under the MIT License. External packages in these repositories are maintained by Avenge Media, but originate from upstream projects by their respective authors, credited in the package listings. They are considered unofficial Avenge Media packages unless stated otherwise by the project authors.
+**Official Avenge Media packages**: `dms`, `dms-cli`, `dgop`, `danksearch`, `dankcalendar`, `dankcalendar-git`, `dms-greeter`, `dms-greeter-git`, `dms-color-picker`, and `dms clipboard` are developed and maintained by the Avenge Media team under the MIT License. External packages in these repositories are maintained by Avenge Media, but originate from upstream projects by their respective authors, credited in the package listings. They are considered unofficial Avenge Media packages unless stated otherwise by the project authors.
 Packages retain their upstream licenses: Niri (GPL-3.0), Quickshell (LGPL-3.0), Matugen (GPL-2.0), Cliphist (GPL-3.0).
 
 :::
