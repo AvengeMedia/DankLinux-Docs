@@ -63,9 +63,11 @@ paru -S dms-shell-git
 
 These packages ship the shell, widgets, and CLI. Pair them with `niri`, `hyprland`, `sway`, `mangowc`, `labwc`, or `miracle-wm` packages from the official repositories for a complete desktop stack.
 
-## Fedora & CentOS
+## Fedora & Enterprise Linux
 
-DankMaterialShell is available through COPR repositories for Fedora 43/44, Rawhide and CentOS 10.
+DankMaterialShell is available through COPR repositories for Fedora 43/44/45, Rawhide, and Enterprise Linux 10 (RHEL, CentOS Stream, Rocky Linux, AlmaLinux) on the latest 10.x minor.
+
+On Enterprise Linux, enable EPEL first (`sudo dnf install epel-release`, or the [EPEL release RPM](https://docs.fedoraproject.org/en-US/epel/getting-started/) on RHEL). EL support is in testing and covers niri only.
 
 <Tabs groupId="dms-channel">
 <TabItem value="stable" label="Stable Release" default>
