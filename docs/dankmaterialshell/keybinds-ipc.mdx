@@ -116,13 +116,14 @@ dms ipc call brightness increment 10 ""
 dms ipc call brightness decrement 5 "intel_backlight"
 dms ipc call brightness disableExponential "backlight:intel_backlight"
 dms ipc call brightness toggleExponential
+dms ipc call brightness set 40 "software:DP-2"
 ```
 
 ### night
 
 Night mode (gamma/color temperature) control.
 
-`gamma` and `contrast` are separate from night mode. They stay applied when night mode is off, and setting both back to 1.0 releases the gamma protocol so other tools can bind it again. Both need DMS API v34.
+`gamma` and `contrast` are separate from night mode. They stay applied when night mode is off, and setting both back to 1.0 releases the gamma protocol so other tools can bind it again, unless an output is software-dimmed. Both need DMS API v34.
 
 | Function | Description | Parameters |
 | --- | --- | --- |
