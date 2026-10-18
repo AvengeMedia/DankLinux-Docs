@@ -82,6 +82,16 @@ const sidebars: SidebarsConfig = {
               id: 'dankmaterialshell/cli-system-updater',
               label: 'System updater',
             },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-switch',
+              label: 'Switch channels',
+            },
+            {
+              type: 'doc',
+              id: 'dankmaterialshell/cli-systemd',
+              label: 'Systemd service',
+            },
             'dankmaterialshell/cli-process-management',
             'dankmaterialshell/cli-keybinds-cheatsheets',
             {

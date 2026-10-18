@@ -307,6 +307,8 @@ Adds fingerprint authentication support to the lock screen.
 
 If in use, DMS lifecycle will be managed by systemd. This is optional, DMS can also be started manually or via other init systems.
 
+The detail line lists the compositor units that want the service (`Wanted by niri.service`). When the service is not running and the compositor you are logged into does not want it, the check reports `Nothing starts dms.service with hyprland-session.target. Run 'dms systemd enable'.` See [Systemd service](./cli-systemd.mdx).
+
 ### graphical-session.target
 
 Only reported when `dms.service` is installed and enabled. Warns with `Inactive` when the target exists but is not active in the current session.

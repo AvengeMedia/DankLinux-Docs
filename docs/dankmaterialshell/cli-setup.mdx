@@ -71,6 +71,8 @@ dms setup headless --compositor niri
 | `--skip-existing` | Log a warning and skip anything that already has a config, instead of failing |
 | `--no-systemd` | Deploy the session config without systemd integration |
 
+With systemd, setup binds `dms.service` to the compositor's session unit (the same step as [`dms systemd enable`](./cli-systemd.mdx)) and the deployed config does not start DMS itself. If that binding fails, the config falls back to starting `dms run`.
+
 If a config already exists and you pass neither `--force` nor `--skip-existing`, the command fails with a non-zero exit so scripts notice. The two flags can't be combined.
 
 `dms` refuses to run as root, so from an install hook run it as the target user:

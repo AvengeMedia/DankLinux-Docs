@@ -687,15 +687,17 @@ See [Managing Your Installation](managing) for detailed guidance on service mana
 
 :::tip[DankInstall Users]
 
-If you used [dankinstall](../dankinstall), this is already configured. The installer runs `systemctl --user enable --now dms` during setup.
+If you used [dankinstall](../dankinstall) or `dms setup` with systemd, this is already configured. Both bind `dms.service` to your compositor's session unit.
 
 :::
 
 **Enable autostart:**
 
 ```bash
-systemctl --user enable dms
+dms systemd enable
 ```
+
+This binds `dms.service` to the running compositor's session unit (`niri.service`, `hyprland-session.target` or `mango-session.target`), so DMS starts only with that compositor. See [Systemd service](./cli-systemd.mdx). The sections below show the same wiring by hand.
 
 **Manual control:**
 
@@ -713,7 +715,7 @@ journalctl --user -u dms -f
 systemctl --user restart dms
 
 # Disable autostart
-systemctl --user disable dms
+dms systemd disable
 ```
 
 :::warning
