@@ -214,21 +214,14 @@ dms brightness set ddc:monitor-name 60 --ddc
 
 **Note**: DDC operations are slower than backlight operations due to the I2C communication protocol. Expect a slight delay when setting brightness on external monitors.
 
-## Software Brightness (Gamma)
+## Software Brightness
 
-Outputs that have neither a backlight nor DDC/CI, such as OLED panels without a working backlight device or monitors without DDC/CI, get a `software:<output>` device. It dims the output by scaling its gamma ramp instead of driving hardware.
+Monitors that have neither a backlight nor DDC/CI, such as OLED panels without a working backlight device or monitors without DDC/CI, get a `software:<output>` device. It dims the output by scaling its gamma ramp instead of driving hardware.
 
-**When a device appears**:
-- One `software:<output>` per output not controlled by a backlight (internal panels) or a DDC/CI monitor (that connector)
-- Devices appear once DDC probing has finished, so a DDC/CI monitor never shows both
-- If DDC/CI or a backlight later takes over an output, its software level is dropped and the output returns to full brightness
-
-**How it works**:
-- The output's gamma ramp is scaled, so the image itself gets darker
-- 0% maps to a 10% floor, so the screen never goes fully black
-- It combines with night mode, per-output temperature and ICC profiles
-- Levels are saved per output in `~/.config/DankMaterialShell/icc.json` and restored at startup and on hotplug; 100% removes the entry
-- Exponential scaling is not offered, the gamma ramp is already perceptually spaced
+**Requirements**:
+- The compositor must expose `wlr-gamma-control-unstable-v1`, the protocol night mode uses. Without it no software devices are created
+- Monitor must not have support for DDC/CI and a backlight
+- No software other than `DMS` holds gamma control, for example `hypsunset`, `gammastep` or `wl-gammarelay`.
 
 **Usage**:
 
@@ -237,12 +230,7 @@ Outputs that have neither a backlight nor DDC/CI, such as OLED panels without a 
 dms ipc call brightness set 40 software:DP-2
 ```
 
-`dms brightness list` and `dms brightness set` without the running shell do not show or set software devices.
-
-**Requirements and limits**:
-- The compositor must expose `wlr-gamma-control-unstable-v1`, the protocol night mode uses. Without it (e.g. Miracle WM) no software devices are created
-- Gamma control is exclusive per output: while an output is dimmed, DMS holds it, so tools like hyprsunset, gammastep or wl-gammarelay cannot use that output
-- If the compositor refuses gamma control for an output (another client holds it, or Aqueous outside SDR Vulkan outputs), its software slider is hidden once DMS first asks for it
+**Notes**: Monitors that only support software brightness don't support a custom `Exponential scaling` parameter, this is done to avoid making the display too dark and unusable.
 
 ## Integration with DMS
 
@@ -267,7 +255,7 @@ hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightnes
 
 ## Gamma and Contrast
 
-The `dms brightness` CLI only drives hardware backlights, LEDs and DDC. It does not touch the gamma ramp; only [software devices](#software-brightness-gamma), set through the shell, dim through it. If a panel looks washed out and backlight or temperature changes do not help, adjust gamma and contrast instead. Both live under the `night` IPC target but apply whether night mode is on or off:
+`dms brightness` CLI is only responsible for setting the actual brightness of the display, for monitors that support DDC/CI or have a backlight, and for the percieved brightness, for monitors that only support software brightness. If a panel looks washed out and backlight or temperature changes do not help, adjust gamma and contrast instead. Both live under the `night` IPC target but apply whether night mode is on or off:
 
 ```bash
 dms ipc call night gamma 1.2
