@@ -1,6 +1,6 @@
 ---
 title: Brightness Control
-description: Control backlight, LED, and DDC/I2C monitor brightness
+description: Control backlight, LED, DDC/I2C monitor and software (gamma) brightness
 ---
 
 import Hero from '@site/src/components/Hero';
@@ -23,6 +23,7 @@ The `dms brightness` command provides a unified interface for controlling bright
 - **Backlight devices**: Laptop screens, integrated displays (e.g., `amdgpu_bl1`, `intel_backlight`, `nvidia_0`)
 - **LED devices**: Keyboard backlights, indicator LEDs (e.g., `asus::kbd_backlight`, `phy0-led`)
 - **DDC/I2C monitors**: External monitors via DDC/CI protocol (requires `--ddc` flag)
+- **Software (gamma) devices**: Outputs with no backlight and no DDC/CI, such as OLED panels without a working backlight device or monitors without DDC/CI. Dimmed through the gamma ramp by the running shell, not the standalone CLI (see [Software Brightness](#software-brightness-gamma))
 
 **Key Features**:
 - List all brightness devices with current values
@@ -69,7 +70,7 @@ dms brightness get backlight:amdgpu_bl1
 
 Devices are identified using the format `<class>:<name>`:
 
-- **Class**: The device class (`backlight`, `leds`, or `ddc`)
+- **Class**: The device class (`backlight`, `leds`, `ddc`, or `software`)
 - **Name**: The device name as shown in the list output
 
 **Examples**:
@@ -78,6 +79,7 @@ Devices are identified using the format `<class>:<name>`:
 - `backlight:nvidia_0` - NVIDIA GPU backlight
 - `leds:asus::kbd_backlight` - ASUS keyboard backlight
 - `leds:phy0-led` - WiFi/network activity LED
+- `software:DP-2` - Output `DP-2` dimmed through its gamma ramp
 
 ## Commands
 
@@ -212,6 +214,24 @@ dms brightness set ddc:monitor-name 60 --ddc
 
 **Note**: DDC operations are slower than backlight operations due to the I2C communication protocol. Expect a slight delay when setting brightness on external monitors.
 
+## Software Brightness
+
+Monitors that have neither a backlight nor DDC/CI, such as OLED panels without a working backlight device or monitors without DDC/CI, get a `software:<output>` device. It dims the output by scaling its gamma ramp instead of driving hardware.
+
+**Requirements**:
+- The compositor must expose `wlr-gamma-control-unstable-v1`, the protocol night mode uses. Without it no software devices are created
+- Monitor must not have support for DDC/CI and a backlight
+- No software other than `DMS` holds gamma control, for example `hypsunset`, `gammastep` or `wl-gammarelay`.
+
+**Usage**:
+
+```bash
+# Dim DP-2 to 40% through the shell (also available as the Control Center slider)
+dms ipc call brightness set 40 software:DP-2
+```
+
+**Notes**: Monitors that only support software brightness don't support a custom `Exponential scaling` parameter, this is done to avoid making the display too dark and unusable.
+
 ## Integration with DMS
 
 DMS integrates with the shell over IPC via a Unix socket. To show brightness OSDs and use shell-integrated brightness controls, use `dms ipc` commands instead of the direct CLI commands.
@@ -235,7 +255,7 @@ hl.bind("SHIFT + XF86MonBrightnessDown", hl.dsp.exec_cmd("dms ipc call brightnes
 
 ## Gamma and Contrast
 
-`dms brightness` only drives hardware backlights, LEDs and DDC. It does not touch the gamma ramp. If a panel looks washed out and backlight or temperature changes do not help, adjust gamma and contrast instead. Both live under the `night` IPC target but apply whether night mode is on or off:
+`dms brightness` CLI is only responsible for setting the actual brightness of the display, for monitors that support DDC/CI or have a backlight, and for the percieved brightness, for monitors that only support software brightness. If a panel looks washed out and backlight or temperature changes do not help, adjust gamma and contrast instead. Both live under the `night` IPC target but apply whether night mode is on or off:
 
 ```bash
 dms ipc call night gamma 1.2
@@ -243,7 +263,7 @@ dms ipc call night contrast 1.1
 dms ipc call night gamma        # print the current value
 ```
 
-Values range from 0.5 to 2.0, 1.0 is neutral. The same sliders are in Settings > Displays > Gamma Control. Setting both back to 1.0 with night mode off releases the gamma protocol so tools like wl-gammarelay can bind it again.
+Values range from 0.5 to 2.0, 1.0 is neutral. The same sliders are in Settings > Displays > Gamma Control. Setting both back to 1.0 with night mode off and no output software-dimmed releases the gamma protocol so tools like wl-gammarelay can bind it again.
 
 ## Comparison with Other Tools
 
@@ -286,6 +306,7 @@ If a device isn't listed:
 - For backlights: Check `/sys/class/backlight/`
 - For LEDs: Check `/sys/class/leds/`
 - For DDC: Make sure to use the `--ddc` flag and verify monitor supports DDC/CI
+- For software devices: they are only listed by the running shell (`dms ipc call brightness list`). A missing `software:` device usually means the output already has a backlight or DDC/CI, the compositor lacks `wlr-gamma-control-unstable-v1`, or it refused gamma control for that output
 
 ### DDC/I2C Not Working
 
