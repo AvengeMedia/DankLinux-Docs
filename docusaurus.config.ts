@@ -297,12 +297,12 @@ const config: Config = {
           versions: {
             current: {
               label: '2.1',
-              path: '',
+              path: '2.1',
               banner: 'unreleased',
             },
             '2.0': {
               label: '2.0',
-              path: '2.0',
+              path: '',
             },
             '1.6': {
               label: '1.6',
