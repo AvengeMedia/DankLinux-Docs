@@ -278,6 +278,16 @@ touch ~/.config/hypr/dms/{colors,outputs,layout,cursor,input,binds,binds-user,wi
 ```
 :::
 
+#### Focus follows mouse
+
+**Settings → Input → Mouse & touchpad → Focus follows mouse** controls Hyprland's `input.follow_mouse`. Turning it on writes `follow_mouse = 1`; turning it off writes `follow_mouse = 0` in `~/.config/hypr/dms/input.lua` and reloads Hyprland.
+
+Until you change the toggle, DMS reads the current mode without overriding your configuration. Resetting the setting removes the override, including when your own config uses mode `2` or `3`.
+
+The toggle requires an active Lua config and a writable `dms.input` include. If the include is missing, use the repair action on the Mouse & touchpad page.
+
+Hyprland's separate `input.float_switch_override_focus` setting can still move focus between tiled and floating windows when `follow_mouse` is `0`. This toggle leaves that setting unchanged.
+
 For manual configuration recommendations, continue below.
 
 #### Startup
