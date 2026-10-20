@@ -5,8 +5,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/gitlab"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/github"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/gitlab"
 )
 
 func TestParserSharesOneClientPerHostAcrossGoroutines(t *testing.T) {

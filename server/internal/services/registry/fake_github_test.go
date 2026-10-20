@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/github"
+	"github.com/duxlabs-dev/dux-docs/server/internal/models"
 )
 
-const registryAPI = "/repos/AvengeMedia/dms-plugin-registry"
+const registryAPI = "/repos/duxlabs-dev/dux-plugin-registry"
 
 type fakeGitHub struct {
 	*httptest.Server

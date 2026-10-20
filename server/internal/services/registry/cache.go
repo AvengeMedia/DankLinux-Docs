@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
+	"github.com/duxlabs-dev/dux-docs/server/internal/log"
+	"github.com/duxlabs-dev/dux-docs/server/internal/models"
 )
 
 const moderationGrace = time.Minute

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
+	"github.com/duxlabs-dev/dux-docs/server/internal/models"
 )
 
 func pluginIssue(id string, upvotes int, labels ...string) map[string]any {

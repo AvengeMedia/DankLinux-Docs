@@ -5,7 +5,8 @@ COPY server/go.mod server/go.sum ./
 RUN go mod download
 
 COPY server/ ./
-RUN CGO_ENABLED=0 go build -ldflags "-s -w" -o /out/api ./cmd/api
+ARG UNBIND_GIT_SHA
+RUN CGO_ENABLED=0 go build -ldflags "-s -w -X main.Version=${UNBIND_GIT_SHA:-development}" -o /out/api ./cmd/api
 
 FROM stablecog/ubuntu:22.04
 

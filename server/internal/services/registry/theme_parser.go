@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
+	"github.com/duxlabs-dev/dux-docs/server/internal/models"
 )
 
 func (p *Parser) FetchThemes(ctx context.Context, prev []models.Theme) ([]models.Theme, error) {
@@ -15,7 +15,7 @@ func (p *Parser) FetchThemes(ctx context.Context, prev []models.Theme) ([]models
 		return nil, err
 	}
 
-	contents, err := client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", "themes")
+	contents, err := client.GetRepoContents(ctx, "duxlabs-dev", "dux-plugin-registry", "themes")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get themes directory: %w", err)
 	}
@@ -46,7 +46,7 @@ func themesByDir(themes []models.Theme) map[string]models.Theme {
 }
 
 func themePreviewURL(themeName string) string {
-	return fmt.Sprintf("https://raw.githubusercontent.com/AvengeMedia/dms-plugin-registry/main/themes/%s/preview.svg", themeName)
+	return fmt.Sprintf("https://raw.githubusercontent.com/duxlabs-dev/dux-plugin-registry/main/themes/%s/preview.svg", themeName)
 }
 
 func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme, error) {
@@ -57,7 +57,7 @@ func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme
 
 	themeJSONPath := fmt.Sprintf("themes/%s/theme.json", themeName)
 
-	contents, err := client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", themeJSONPath)
+	contents, err := client.GetRepoContents(ctx, "duxlabs-dev", "dux-plugin-registry", themeJSONPath)
 	if err != nil {
 		return models.Theme{}, fmt.Errorf("failed to get theme.json: %w", err)
 	}
@@ -80,7 +80,7 @@ func (p *Parser) fetchTheme(ctx context.Context, themeName string) (models.Theme
 		return models.Theme{}, fmt.Errorf("theme.json missing id")
 	}
 
-	lastCommit, err := client.GetLastCommit(ctx, "AvengeMedia", "dms-plugin-registry", fmt.Sprintf("themes/%s", themeName))
+	lastCommit, err := client.GetLastCommit(ctx, "duxlabs-dev", "dux-plugin-registry", fmt.Sprintf("themes/%s", themeName))
 	if err != nil {
 		return models.Theme{}, fmt.Errorf("failed to fetch last commit: %w", err)
 	}

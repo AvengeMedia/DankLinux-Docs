@@ -10,10 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/github"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/gitlab"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/github"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/gitlab"
+	"github.com/duxlabs-dev/dux-docs/server/internal/log"
+	"github.com/duxlabs-dev/dux-docs/server/internal/models"
 )
 
 type Parser struct {
@@ -96,7 +96,7 @@ func (p *Parser) fetchRegistryPlugins(ctx context.Context) ([]models.RegistryPlu
 		return nil, err
 	}
 
-	contents, err := client.GetRepoContents(ctx, "AvengeMedia", "dms-plugin-registry", "plugins")
+	contents, err := client.GetRepoContents(ctx, "duxlabs-dev", "dux-plugin-registry", "plugins")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get plugins directory: %w", err)
 	}
