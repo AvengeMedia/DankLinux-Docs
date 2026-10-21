@@ -218,13 +218,13 @@ body.blog-page main {
   padding-top: 0;
 }
 
-.landing-page .main-wrapper {
+.landing-main-wrapper {
   margin-top: calc(-1 * var(--ifm-navbar-height));
   position: relative;
   z-index: 1;
 }
 
-.landing-page main {
+.landing-main-wrapper main {
   padding-top: 0;
 }
 

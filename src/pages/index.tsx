@@ -22,7 +22,6 @@ const compositors = [
   { name: 'labwc', logo: '/img/labwc.png', duration: 600 },
   { name: 'Miracle', logo: '/img/miraclewm.svg', duration: 600 },
   { name: 'Aqueous', logo: '/img/aqueous.svg', duration: 600 },
-  { name: 'Umbriel', logo: '/img/umbriel.svg', duration: 600 },
   { name: 'Wayland', logo: null, duration: 0 },
 ];
 
@@ -34,7 +33,6 @@ const compositorLinks: Record<string, string> = {
   'labwc': 'https://labwc.github.io/',
   'Miracle': 'https://github.com/miracle-wm-org/miracle-wm',
   'Aqueous': 'https://www.seafoam-labs.org/aqueous/overview/',
-  'Umbriel': 'https://github.com/noctalia-dev/umbriel',
 };
 
 export default function Home() {
@@ -252,8 +250,9 @@ export default function Home() {
 
   return (
     <Layout
+      wrapperClassName="landing-main-wrapper"
       title="Modern Desktop Suite"
-      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, Sway, Miracle WM, Aqueous, and Umbriel.">
+      description="A modern Linux desktop suite with beautiful widgets and powerful monitoring - optimized for niri, Hyprland, MangoWC, Sway, Miracle WM, and Aqueous.">
       <Head>
         <meta property="og:image" content="https://duxlabs.dev/img/homepage/dux-preview.png" />
         <meta property="og:image:width" content="1200" />
@@ -293,7 +292,7 @@ export default function Home() {
                 <span className={styles.compositorRotatorWrapper}>
                   <noscript>
                     <span style={{display: 'inline', fontSize: 'inherit', color: 'inherit'}}>
-                      niri, Hyprland, Sway, Aqueous, Umbriel, and Wayland
+                      niri, Hyprland, Sway, Aqueous, and Wayland
                     </span>
                   </noscript>
                   <span className={styles.compositorRotator}>
