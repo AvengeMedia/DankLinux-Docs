@@ -19,47 +19,50 @@
   z-index: 1;
 }
 
-/* ===== Tonal blobs: flat container fills that slowly morph between organic forms ===== */
+/* ===== Tonal blobs ===== */
 
 .blobPrimary,
 .blobSecondary,
 .blobTertiary {
   position: absolute;
-  filter: blur(56px);
   pointer-events: none;
-  will-change: border-radius, transform;
+  background: radial-gradient(
+    closest-side,
+    var(--blob-color) 0%,
+    var(--blob-color) 52%,
+    color-mix(in srgb, var(--blob-color) 50%, transparent) 76%,
+    transparent 100%
+  );
+  will-change: transform;
 }
 
 .blobPrimary {
-  width: 760px;
-  height: 760px;
-  background: var(--md-sys-color-primary-container);
-  top: -180px;
-  left: -160px;
+  --blob-color: var(--md-sys-color-primary-container);
+  width: 1000px;
+  height: 920px;
+  top: -300px;
+  left: -280px;
   opacity: 0.28;
-  border-radius: 62% 38% 46% 54% / 55% 44% 56% 45%;
   animation: blobMorphA 26s var(--blob-ease) infinite alternate;
 }
 
 .blobSecondary {
-  width: 700px;
-  height: 700px;
-  background: var(--md-sys-color-secondary-container);
-  bottom: -160px;
-  right: -160px;
+  --blob-color: var(--md-sys-color-secondary-container);
+  width: 900px;
+  height: 960px;
+  bottom: -290px;
+  right: -260px;
   opacity: 0.22;
-  border-radius: 44% 56% 61% 39% / 48% 57% 43% 52%;
   animation: blobMorphB 30s var(--blob-ease) infinite alternate;
 }
 
 .blobTertiary {
-  width: 520px;
-  height: 520px;
-  background: var(--md-sys-color-tertiary-container);
+  --blob-color: var(--md-sys-color-tertiary-container);
+  width: 760px;
+  height: 680px;
   top: 42%;
   left: 52%;
   opacity: 0.16;
-  border-radius: 52% 48% 40% 60% / 60% 42% 58% 40%;
   animation: blobMorphC 24s var(--blob-ease) infinite alternate;
 }
 
@@ -72,21 +75,21 @@
 [data-theme='light'] .blobTertiary { opacity: 0.28; }
 
 @keyframes blobMorphA {
-  0%   { border-radius: 62% 38% 46% 54% / 55% 44% 56% 45%; transform: translate(0, 0) scale(1) rotate(0deg); }
-  50%  { border-radius: 38% 62% 58% 42% / 44% 60% 40% 56%; transform: translate(32px, -20px) scale(1.04) rotate(8deg); }
-  100% { border-radius: 54% 46% 38% 62% / 62% 38% 62% 38%; transform: translate(-20px, 18px) scale(0.97) rotate(-6deg); }
+  0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate(32px, -20px) scale(1.04, 0.97) rotate(14deg); }
+  100% { transform: translate(-20px, 18px) scale(0.97, 1.03) rotate(-10deg); }
 }
 
 @keyframes blobMorphB {
-  0%   { border-radius: 44% 56% 61% 39% / 48% 57% 43% 52%; transform: translate(0, 0) scale(1) rotate(0deg); }
-  50%  { border-radius: 60% 40% 42% 58% / 56% 40% 60% 44%; transform: translate(-28px, 20px) scale(1.04) rotate(-8deg); }
-  100% { border-radius: 40% 60% 52% 48% / 42% 58% 42% 58%; transform: translate(18px, -14px) scale(0.97) rotate(6deg); }
+  0%   { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate(-28px, 20px) scale(0.97, 1.04) rotate(-14deg); }
+  100% { transform: translate(18px, -14px) scale(1.03, 0.97) rotate(10deg); }
 }
 
 @keyframes blobMorphC {
-  0%   { border-radius: 52% 48% 40% 60% / 60% 42% 58% 40%; transform: translate(-50%, -50%) scale(1); }
-  50%  { border-radius: 42% 58% 56% 44% / 46% 56% 44% 54%; transform: translate(-48%, -52%) scale(1.05); }
-  100% { border-radius: 58% 42% 46% 54% / 40% 60% 40% 60%; transform: translate(-52%, -48%) scale(0.96); }
+  0%   { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+  50%  { transform: translate(-48%, -52%) scale(1.05, 0.96) rotate(18deg); }
+  100% { transform: translate(-52%, -48%) scale(0.96, 1.04) rotate(-12deg); }
 }
 
 /* ===== Cursor-revealed coordinate grid ===== */

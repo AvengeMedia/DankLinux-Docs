@@ -473,15 +473,19 @@ export default function Home() {
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="/img/homepage/dankdash_dark.png"
+                    src="/img/homepage/dankdash_dark.webp"
                     alt="Dux Dash - Overview Dashboard"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                   <img
-                    src="/img/homepage/dankdash_light.png"
+                    src="/img/homepage/dankdash_light.webp"
                     alt="Dux Dash - Overview Dashboard"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                 </div>
@@ -494,15 +498,19 @@ export default function Home() {
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="/img/homepage/controlcenter_dark.png"
+                    src="/img/homepage/controlcenter_dark.webp"
                     alt="Quick Settings"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                   <img
-                    src="/img/homepage/controlcenter_light.png"
+                    src="/img/homepage/controlcenter_light.webp"
                     alt="Quick Settings"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                 </div>
@@ -515,15 +523,19 @@ export default function Home() {
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="/img/homepage/widget_dark.png"
+                    src="/img/homepage/widget_dark.webp"
                     alt="Widget Customization"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                   <img
-                    src="/img/homepage/widget_light.png"
+                    src="/img/homepage/widget_light.webp"
                     alt="Widget Customization"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                 </div>
@@ -536,15 +548,19 @@ export default function Home() {
               <div className={styles.screenshotCard}>
                 <div className={styles.screenshotFrame}>
                   <img
-                    src="/img/homepage/plugins_dark.png"
+                    src="/img/homepage/plugins_dark.webp"
                     alt="Plugins"
                     className={`${styles.screenshotImage} ${styles.darkOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                   <img
-                    src="/img/homepage/plugins_light.png"
+                    src="/img/homepage/plugins_light.webp"
                     alt="Plugins"
                     className={`${styles.screenshotImage} ${styles.lightOnly}`}
+                    loading="lazy"
+                    decoding="async"
                     data-zoom
                   />
                 </div>
@@ -570,44 +586,44 @@ export default function Home() {
               <FeatureCard
                 title="Dux Shell"
                 description="A modern and beautiful desktop shell with dynamic theming and smooth animations."
-                imageDark="/img/desktop.png"
-                imageLight="/img/desktoplight.png"
+                imageDark="/img/desktop.webp"
+                imageLight="/img/desktoplight.webp"
                 href="/docs/dms/overview"
               />
               <FeatureCard
                 title="Dux Files"
                 description="A fast, keyboard-first file manager with tabs, split view, search, trash, devices, and network shares."
-                imageDark="/img/dfiles.png"
-                imageLight="/img/dfileslight.png"
+                imageDark="/img/dfiles.webp"
+                imageLight="/img/dfileslight.webp"
                 href="/docs/dfiles"
               />
               <FeatureCard
                 title="Dux GOP"
                 description="Stateless system and process monitoring for CPU, memory, GPU, disks, and network interfaces."
-                imageDark="/img/dgop.png"
-                imageLight="/img/dgoplight.png"
+                imageDark="/img/dgop.webp"
+                imageLight="/img/dgoplight.webp"
                 href="/docs/dgop"
               />
               <FeatureCard
                 title="Dux Greeter"
                 description="An aesthetically pleasing greetd greeter for your desktop."
-                imageDark="/img/dgreet.png"
-                imageLight="/img/dgreetlight.png"
+                imageDark="/img/dgreet.webp"
+                imageLight="/img/dgreetlight.webp"
                 href="/docs/dms-greeter"
               />
               <FeatureCard
                 title="Dux Search"
                 description="Blazingly fast and efficient file system search tool."
-                imageDark="/img/dsearch.png"
-                imageLight="/img/dsearchlight.png"
+                imageDark="/img/dsearch.webp"
+                imageLight="/img/dsearchlight.webp"
                 imageAlign="top"
                 href="/docs/dsearch"
               />
               <FeatureCard
                 title="Dux Calendar"
                 description="Your calendars, events, and tasks together, with Google, Microsoft, CalDAV, and iCloud support."
-                imageDark="/img/dms/dcal_dark.png"
-                imageLight="/img/dms/dcal_light.png"
+                imageDark="/img/dms/dcal_dark.webp"
+                imageLight="/img/dms/dcal_light.webp"
                 imageAlign="top"
                 href="/docs/dcal"
               />
@@ -699,12 +715,16 @@ function FeatureCard({ title, description, imageDark, imageLight, imageAlign = '
             src={imageDark}
             alt={title}
             className={`${styles.cardImage} ${styles.darkOnly} ${imageAlign === 'top' ? styles.topAlign : ''}`}
+            loading="lazy"
+            decoding="async"
             data-zoom
           />
           <img
             src={imageLight}
             alt={title}
             className={`${styles.cardImage} ${styles.lightOnly} ${imageAlign === 'top' ? styles.topAlign : ''}`}
+            loading="lazy"
+            decoding="async"
             data-zoom
           />
         </div>

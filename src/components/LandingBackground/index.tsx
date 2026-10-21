@@ -4,7 +4,7 @@ import styles from './styles.module.css';
 
 /*
  * Material 3 Expressive landing backdrop.
- * Depth comes from tonal blobs and shapes that breathe, morph and scale with
+ * Depth comes from tonal blobs and shapes that breathe and scale with
  * page scroll. A faint coordinate grid surfaces only around the cursor.
  */
 export default function LandingBackground(): React.JSX.Element {
@@ -51,7 +51,7 @@ export default function LandingBackground(): React.JSX.Element {
 
   return (
     <>
-      {/* 1. Viewport-fixed tonal blobs. Border radii morph between organic forms. */}
+      {/* 1. Viewport-fixed tonal blobs. */}
       <div ref={canvasRef} className={styles.fixedCanvas} aria-hidden="true">
         <div className={styles.blobPrimary} />
         <div className={styles.blobSecondary} />
