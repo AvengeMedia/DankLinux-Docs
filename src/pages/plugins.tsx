@@ -803,7 +803,7 @@ export default function Plugins() {
           {loading && (
             <div className={styles.loadingContainer}>
               <div className={styles.spinner}></div>
-              <p>Loading {activeTab}...</p>
+              <p>{`Loading ${activeTab}...`}</p>
             </div>
           )}
 

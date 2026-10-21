@@ -709,7 +709,7 @@ function FeatureCard({ title, description, imageDark, imageLight, imageAlign = '
           />
         </div>
       )}
-      <h3 className={styles.cardTitle}>{href ? <Link to={href}>{title} <span aria-hidden="true">↗</span></Link> : title}</h3>
+      <h3 className={styles.cardTitle}>{href ? <Link to={href}>{title}<span aria-hidden="true"> ↗</span></Link> : title}</h3>
       <p className={styles.cardDesc}>{description}</p>
     </div>
   );
