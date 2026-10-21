@@ -74,11 +74,11 @@ const fonts = [
   },
 ]
 
-const logoPng = readFileSync(
-  join(__dirname, '../static/img/path32.png')
+const logoSvg = readFileSync(
+  join(__dirname, '../static/img/dux-labs-logo-dark.svg')
 )
 
-const logoDataUrl = `data:image/png;base64,${logoPng.toString('base64')}`
+const logoDataUrl = `data:image/svg+xml;base64,${logoSvg.toString('base64')}`
 
 const projectCategories: Record<string, string> = {
   dms: 'DMS',
@@ -150,7 +150,7 @@ function titleCard(category: string, title: string): ReturnType<ImageRenderer> {
             top: '50px',
             right: '50px',
             opacity: 0.6,
-            width: '120px',
+            width: '90px',
             height: '120px',
           }}
         />
@@ -208,7 +208,7 @@ function titleCard(category: string, title: string): ReturnType<ImageRenderer> {
               fontWeight: 500,
             }}
           >
-            Dank Linux
+            Dux
           </div>
         </div> */}
       </div>
@@ -230,8 +230,8 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
   const isPluginsPage = route === '/plugins' || route === '/plugins/'
 
   if (!isHomePage && !isPluginsPage) {
-    const title = data.metadata?.title?.replace(/\s+\|\s+Dank Linux$/, '') || 'Dank Linux'
-    return titleCard('Dank Linux', title)
+    const title = data.metadata?.title?.replace(/\s+\|\s+Dux$/, '') || 'Dux Labs'
+    return titleCard('Dux Labs', title)
   }
 
   if (isPluginsPage) {
@@ -293,8 +293,8 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
             <img
               src={logoDataUrl}
               style={{
-                width: '80px',
-                height: '80px',
+                width: '72px',
+                height: '96px',
               }}
             />
             <div
@@ -303,7 +303,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
                 fontFamily: 'Google Sans Flex',
                 fontWeight: 800,
                 color: '#fffffff2',
-                letterSpacing: '0.08em',
+                letterSpacing: '0.02em',
                 textRendering: 'optimizeLegibility',
                 fontSmooth: 'always',
                 WebkitFontSmoothing: 'antialiased',
@@ -311,7 +311,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
                 lineHeight: 1,
               }}
             >
-              DANK LINUX
+              Dux Labs
             </div>
           </div>
 
@@ -403,8 +403,8 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
           <img
             src={logoDataUrl}
             style={{
-              width: '80px',
-              height: '80px',
+              width: '72px',
+              height: '96px',
             }}
           />
           <div
@@ -413,7 +413,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
               fontFamily: 'Google Sans Flex',
               fontWeight: 800,
               color: '#fffffff2',
-              letterSpacing: '0.08em',
+              letterSpacing: '0.02em',
               textRendering: 'optimizeLegibility',
               fontSmooth: 'always',
               WebkitFontSmoothing: 'antialiased',
@@ -421,7 +421,7 @@ export const pages: ImageRenderer<PagesPageData> = (data) => {
               lineHeight: 1,
             }}
           >
-            DANK LINUX
+            Dux Labs
           </div>
         </div>
 
