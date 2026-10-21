@@ -53,7 +53,7 @@ func NewConfig() *Config {
 
 	modOrg := os.Getenv("PLUGIN_MOD_ORG")
 	if modOrg == "" {
-		modOrg = "AvengeMedia"
+		modOrg = "duxlabs-dev"
 	}
 
 	modTeam := os.Getenv("PLUGIN_MOD_TEAM")
@@ -92,7 +92,7 @@ func NewConfig() *Config {
 
 	qtRebuildRepo := os.Getenv("QT_REBUILD_REPO")
 	if qtRebuildRepo == "" {
-		qtRebuildRepo = "AvengeMedia/danklinux"
+		qtRebuildRepo = "duxlabs-dev/dux-packaging"
 	}
 
 	qtRebuildPackages := os.Getenv("QT_REBUILD_PACKAGES")
