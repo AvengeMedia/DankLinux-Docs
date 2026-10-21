@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/models"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
 	"github.com/danielgtaylor/huma/v2"
+	"github.com/duxlabs-dev/dux-docs/server/internal/models"
+	"github.com/duxlabs-dev/dux-docs/server/internal/services/registry"
 )
 
 type PluginSortBy string

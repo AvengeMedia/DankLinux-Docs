@@ -11,28 +11,28 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/AvengeMedia/DankLinux-Docs/server/config"
-	gifs_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/gifs"
-	plugins_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/plugins"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/poeditor"
-	previews_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/previews"
-	releases_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/releases"
-	stickers_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/stickers"
-	themes_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/themes"
-	uploads_handler "github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/uploads"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/handlers/webhooks"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/middleware"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/api/server"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/fedoramessaging"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/githubapp"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/integrations/klipy"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/log"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/previews"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/qtrebuild"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/registry"
-	"github.com/AvengeMedia/DankLinux-Docs/server/internal/services/releases"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
+	"github.com/duxlabs-dev/dux-docs/server/config"
+	gifs_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/gifs"
+	plugins_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/plugins"
+	"github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/poeditor"
+	previews_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/previews"
+	releases_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/releases"
+	stickers_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/stickers"
+	themes_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/themes"
+	uploads_handler "github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/uploads"
+	"github.com/duxlabs-dev/dux-docs/server/internal/api/handlers/webhooks"
+	"github.com/duxlabs-dev/dux-docs/server/internal/api/middleware"
+	"github.com/duxlabs-dev/dux-docs/server/internal/api/server"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/fedoramessaging"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/githubapp"
+	"github.com/duxlabs-dev/dux-docs/server/internal/integrations/klipy"
+	"github.com/duxlabs-dev/dux-docs/server/internal/log"
+	"github.com/duxlabs-dev/dux-docs/server/internal/services/previews"
+	"github.com/duxlabs-dev/dux-docs/server/internal/services/qtrebuild"
+	"github.com/duxlabs-dev/dux-docs/server/internal/services/registry"
+	"github.com/duxlabs-dev/dux-docs/server/internal/services/releases"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/go-co-op/gocron/v2"
@@ -145,10 +145,11 @@ func startAPI(cfg *config.Config) {
 	if cfg.Environment == "development" {
 		allowedOrigins = []string{
 			"http://localhost:3000",
-			"https://danklinux.com",
+			"https://duxlabs.dev",
 		}
 	} else {
 		allowedOrigins = []string{
+			"https://duxlabs.dev",
 			"https://danklinux.com",
 		}
 	}
@@ -275,7 +276,7 @@ func startAPI(cfg *config.Config) {
 		webhooksGroup.UseSimpleModifier(func(op *huma.Operation) {
 			op.Tags = []string{"Webhooks"}
 		})
-		const registryOwner, registryRepo = "AvengeMedia", "dms-plugin-registry"
+		const registryOwner, registryRepo = "duxlabs-dev", "dux-plugin-registry"
 		var moderator webhooks.Moderator
 		switch {
 		case cfg.GithubAppID != 0 && cfg.GithubAppPrivateKey != "":
