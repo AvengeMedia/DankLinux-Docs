@@ -251,6 +251,39 @@ With the key set, DMS never clones or pulls a registry. Installed plugins and th
 
 > Requires DMS &ge; 2.0.0.
 
+## Administrator Lock Policy
+
+An administrator can stop DMS's own interfaces from ending or weakening a lock with these keys in `/etc/dms/cli-policy.json`. Each key is off unless set to `true`:
+
+```json
+{
+  "policy_version": 1,
+  "disable_lock_ipc_unlock": true,
+  "disable_logind_unlock": true,
+  "disable_custom_lock_pam": true,
+  "disable_user_plugins": true,
+  "disable_settings_ipc_set": true
+}
+```
+
+| Key | When `true` |
+| --- | --- |
+| `disable_lock_ipc_unlock` | `dms ipc call lock unlock`, `forceReset` and `demo` do nothing, and the keybind editor no longer offers **Lock Screen: Demo**. |
+| `disable_logind_unlock` | A logind Unlock (`loginctl unlock-session`, `SetLockedHint(false)` or the DMS socket's `loginctl.unlock`) neither ends nor cancels a lock. |
+| `disable_custom_lock_pam` | Password unlock uses `/etc/pam.d/dankshell`, or `/etc/pam.d/login` when it is missing. Fingerprint uses only `/etc/pam.d/dankshell-fprint` and security keys only `/etc/pam.d/dankshell-u2f`; a factor whose service is missing is unavailable, so AND mode then unlocks with the password alone and logs a warning. Custom PAM sources, **Use system PAM authentication** and the generated stack in the user state directory are ignored. |
+| `disable_user_plugins` | Only plugins in `/etc/xdg/quickshell/dms-plugins` load. The user plugin directory is neither read nor watched; plugins installed from the plugin browser are written there and do not load. |
+| `disable_settings_ipc_set` | `dms ipc call settings set` returns `SETTINGS_SET_DISABLED` and changes nothing. `get`, `dump` and `dumpSession` keep working, and the Settings UI and `settings.json` still apply. |
+
+Distributions can ship the same keys in `/usr/share/dms/cli-policy.json`; when both files set a key, `/etc/dms/cli-policy.json` wins. `dms run` reads the keys each time it starts the shell, so a change applies at the next shell start or restart. If either file exists but cannot be read or parsed, every key above is treated as `true`.
+
+With `disable_lock_ipc_unlock`, `dms ipc call lock unlock` is no longer a way out of a lock that cannot authenticate, so test the PAM setup before setting it.
+
+With `disable_custom_lock_pam`, the administrator provides the services. `dms auth sync` writes `dankshell` and `dankshell-u2f`, except on NixOS, and never writes `dankshell-fprint`; base that one on the bundled `assets/pam/fprint` in the shell directory and keep its `max-tries=1 timeout=90`. The shell checks which services exist when it starts, and checks `dankshell-u2f` again at each lock. Keep a root shell open while testing.
+
+These keys constrain DMS's own interfaces. They are not a boundary against other programs running as the same user, and a shell started without `dms run` does not see them.
+
+> Available starting with the DMS release following 2.0.0.
+
 ## Official Plugins
 
 Maintained by the Dux Shell team at [dms-plugins](https://github.com/duxlabs-dev/dux-plugins):
