@@ -485,7 +485,7 @@ To convert an older config, run the `migrate-config-keys.sh` attached to [MangoW
 | Fragment | Purpose | Settings page |
 | --- | --- | --- |
 | `colors.conf` | Theme colors | Wallpaper & colors |
-| `layout.conf` | Gaps, borders, window radius | System & integrations → Compositor |
+| `layout.conf` | Gaps, borders, window radius, DMS layer rules | System & integrations → Compositor |
 | `cursor.conf` | Cursor theme, size and hide timeout | Wallpaper & colors |
 | `input.conf` | Mouse, touchpad and keyboard settings | Input → Mouse & touchpad, Keyboard |
 | `outputs.conf` | Monitors and display settings | Displays |
@@ -559,10 +559,16 @@ shadows_blur=15
 
 #### Layer Rules
 
+DMS writes these rules into `dms/layout.conf`, so MangoWC skips its layer animation on the shell's own surfaces:
+
 ```conf
-# Disable animation on DMS layers
-layer_rule=no_animation:1,layer_name:^dms
+layer_rule=no_animation:1,layer_name:^(quickshell)$
+layer_rule=no_animation:1,layer_name:^dms:.*
 ```
+
+With `layer_animations=1`, MangoWC restarts a move animation every time a layer changes size or position, so the dot and island lag behind. If you do not source `dms/layout.conf`, copy these lines into `config.conf`. A `layer_rule=no_animation:1,layer_name:^dms` line you added by hand earlier can go.
+
+Each matching `layer_rule` resets the on/off options it does not set, so the last match wins. Put your own rules for DMS layers after `source=./dms/layout.conf` and include `no_animation:1`. To let DMS layers animate instead, add the same two lines there with `no_animation:0`. MangoWC applies layer rules when a layer opens, so restart the shell once after updating (`dms restart`).
 
 For more about layer rules see [layer rules](./layers.mdx).
 

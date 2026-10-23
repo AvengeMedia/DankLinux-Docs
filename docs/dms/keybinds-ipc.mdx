@@ -478,9 +478,9 @@ Dank Island activity surface. Requires a bar instance using the Island layout an
 | `notifications` | Toggle the notification center as an island activity | - |
 | `openOn` / `toggleOn` / `showOn` / `closeOn` / `cycleOn` / `statusOn` / `notificationsOn` | Same actions on a named monitor | activity (where required) + screen name |
 | `openInstance` / `toggleInstance` | Address one island or dot instance by bar id | activity + screen name + bar id |
-| `move <x> <y>` | Move a free island's centre to a pixel position on its screen, clamped fully on screen | x, y |
+| `move <x> <y>` | Move a free island's center to a pixel position on its screen, clamped fully on screen | x, y |
 | `moveOn <screen> <x> <y>` | Same on a named monitor | screen name, x, y |
-| `center` / `centerOn <screen>` | Recentre a free island, useful to recover one parked off a disconnected display | screen name (for `centerOn`) |
+| `center` / `centerOn <screen>` | Recenter a free island, useful to recover one parked off a disconnected display | screen name (for `centerOn`) |
 
 **Activities:** `home` (clock), `media`, `launcher`, `controlcenter` (`control-center`, `cc`), `wallpaper`, `weather`, `notificationcenter` (`notifications`, `notification-center`, `nc`). Unrecognized ids open `home`. `media` needs an active session; `weather` needs weather enabled. A screen name with no island returns `DANK_ISLAND_UNAVAILABLE` rather than falling back to another display.
 
@@ -526,8 +526,8 @@ Dank Dot: a bar instance using the Dot layout (Settings → Bar → Layout → D
 | `cycle` | Cycle activities, same order as the island | - |
 | `status` | JSON snapshot of the dot (`screen`, `x`, `y`, `idle`, `activity`, `expanded`, …) | - |
 | `notifications` | Toggle the notification center as a dot activity | - |
-| `move <x> <y>` | Move the dot's centre to a pixel position on its screen, clamped fully on screen | x, y |
-| `center` | Recentre the dot on its screen | - |
+| `move <x> <y>` | Move the dot's center to a pixel position on its screen, clamped fully on screen | x, y |
+| `center` | Recenter the dot on its screen (Settings → Dot → **Reset Position** recenters it on every screen) | - |
 | `openOn` / `toggleOn` / `showOn` | Same activity action on a named monitor | activity + screen name |
 | `closeOn` / `cycleOn` / `statusOn` / `notificationsOn` / `centerOn` | Same action on a named monitor | screen name |
 | `moveOn` | Move the dot on a named monitor | screen name + x + y |
