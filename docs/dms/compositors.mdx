@@ -472,6 +472,12 @@ Effects apply to every window, including DMS floating windows such as Settings a
 
 [MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling Wayland compositor based on dwl (wlroots). Configuration lives at `~/.config/mango/config.conf`.
 
+:::note[MangoWC 0.18 or newer]
+MangoWC 0.18 renamed its config keys to snake_case and dropped the old names (`exec-once` is now `exec_once`, `windowrule` is `window_rule`, `monitorrule` is `monitor_rule`, `borderpx` is `border_px`, and so on). The file format is still `.conf`, not TOML. Lines with the old names are rejected as unknown keywords. DMS supports MangoWC 0.18 and newer, and everything `dms setup` and the shell write uses the snake_case names.
+
+To convert an older config, run the `migrate-config-keys.sh` attached to [MangoWC's 0.18.0 release](https://github.com/DreamMaoMao/mangowc/releases/tag/0.18.0) over `~/.config/mango`; it rewrites `config.conf` and the DMS fragments alike. If you had that script running from a systemd `--user` path unit or a cron job to keep up with DMS, remove it: DMS writes snake_case itself now. [`dms doctor`](./cli-doctor.mdx#compositor-checks) lists any keys MangoWC still rejects.
+:::
+
 ### Key Configuration Sections
 
 `dms setup` writes the main config plus fragments under `~/.config/mango/dms/`:
@@ -504,7 +510,7 @@ mkdir -p ~/.config/mango/dms
 touch ~/.config/mango/dms/{colors,layout,cursor,input,outputs,windowrules,binds}.conf
 ```
 
-Mouse and touchpad rows map onto MangoWC's `mouse_*` and `trackpad_*` keys. Keyboard keys (`xkb_rules_*`, `repeat_*`, numlock) are written only once you set one of them, so an untouched Keyboard page keeps the keyboard lines in your own `config.conf`. The **Keymap file** row is hidden on MangoWC because it has no such option. The numlock key is spelled `numlockon` or `numlock_on` to match the installed MangoWC release.
+Mouse and touchpad rows map onto MangoWC's `mouse_*` and `trackpad_*` keys. Keyboard keys (`xkb_rules_*`, `repeat_*`, numlock) are written only once you set one of them, so an untouched Keyboard page keeps the keyboard lines in your own `config.conf`. The **Keymap file** row is hidden on MangoWC because it has no such option. Numlock is written as `numlock_on`.
 
 For manual configuration recommendations, continue below.
 
@@ -513,10 +519,10 @@ For manual configuration recommendations, continue below.
 For systemd autostart setup (recommended if you have multiple desktop environments), see the [Installation guide](./installation#mangowc). If you prefer not to use systemd, add DMS directly to your MangoWC config:
 
 ```conf
-exec-once=dms run
+exec_once=dms run
 
 # Optional: Clipboard history
-exec-once=wl-paste --type text --watch cliphist store
+exec_once=wl-paste --type text --watch cliphist store
 ```
 
 #### Environment Variables
@@ -534,15 +540,15 @@ Recommended appearance settings for DMS integration:
 ```conf
 # Window appearance
 border_radius=12
-borderpx=0
+border_px=0
 focused_opacity=1.0
 unfocused_opacity=0.9
 
 # Gaps
-gappih=5
-gappiv=5
-gappoh=5
-gappov=5
+gap_inner_horizontal=5
+gap_inner_vertical=5
+gap_outer_horizontal=5
+gap_outer_vertical=5
 
 # Shadows (optional)
 shadows=1
@@ -555,7 +561,7 @@ shadows_blur=15
 
 ```conf
 # Disable animation on DMS layers
-layerrule=noanim:1,layer_name:^dms
+layer_rule=no_animation:1,layer_name:^dms
 ```
 
 For more about layer rules see [layer rules](./layers.mdx).
@@ -590,16 +596,16 @@ bind=NONE,XF86MonBrightnessDown,spawn,dms ipc call brightness decrement 5
 
 ```conf
 # GNOME apps
-windowrule=isnoborder:1,appid:^org\.gnome\.
+window_rule=no_border:1,app_id:^org\.gnome\.
 
 # Terminal apps - no borders
-windowrule=isnoborder:1,appid:^org\.wezfurlong\.wezterm$
-windowrule=isnoborder:1,appid:^Alacritty$
-windowrule=isnoborder:1,appid:^com\.mitchellh\.ghostty$
-windowrule=isnoborder:1,appid:^kitty$
+window_rule=no_border:1,app_id:^org\.wezfurlong\.wezterm$
+window_rule=no_border:1,app_id:^Alacritty$
+window_rule=no_border:1,app_id:^com\.mitchellh\.ghostty$
+window_rule=no_border:1,app_id:^kitty$
 
 # Float DMS windows
-windowrule=isfloating:1,appid:^org\.quickshell$
+window_rule=is_floating:1,app_id:^com\.danklinux\.dms$
 ```
 
 ## Sway Configuration

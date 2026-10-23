@@ -75,7 +75,7 @@ This ties the dms service to niri's session, so it won't start under other deskt
 
 #### Other Compositors
 
-Hyprland, Sway, MangoWC, and Miracle WM don't have systemd session targets. If you use multiple desktop environments and only want DMS on one of them, disable the systemd unit and start DMS from your compositor config instead:
+Sway and Miracle WM don't have systemd session targets (Hyprland 0.57+ ships `hyprland-session.target` and MangoWC ships `mango-session.target`; see [Systemd service](./cli-systemd.mdx)). If you use multiple desktop environments and only want DMS on one of them, disable the systemd unit and start DMS from your compositor config instead:
 
 ```bash
 systemctl --user disable dms
@@ -100,6 +100,9 @@ exec dms run
 
 # niri (~/.config/niri/config.kdl)
 spawn-at-startup "dms" "run"
+
+# MangoWC (~/.config/mango/config.conf)
+exec_once=dms run
 ```
 
 **Manual control:**

@@ -686,7 +686,7 @@ Install optional components for full functionality using your distribution's pac
 
 After completing installation:
 
-1. **Generate compositor config** (niri/Hyprland only): Run `dms setup` to create a starter configuration with DMS keybinds and autostart. Other compositors (sway, MangoWC, labwc, Miracle WM) are supported but require manual configuration.
+1. **Generate compositor config** (niri, Hyprland, MangoWC): Run `dms setup` to create a starter configuration with DMS keybinds and autostart. Other compositors (sway, labwc, Miracle WM) are supported but require manual configuration.
 2. Enable the systemd service (recommended) or add `dms run` to your compositor config
 3. Configure your compositor keybinds - see the [Keybinds & IPC](keybinds-ipc) guide
 4. Customize appearance via [Themes](application-themes)
@@ -731,7 +731,7 @@ dms systemd disable
 
 :::warning
 
-If using systemd autostart, remove `dms run` / `spawn "dms" "run"` / `exec-once=dms run` from your compositor's configuration to avoid running DMS twice.
+If using systemd autostart, remove `dms run` / `spawn "dms" "run"` / `exec_once=dms run` from your compositor's configuration to avoid running DMS twice.
 
 :::
 
@@ -787,9 +787,9 @@ systemctl --user add-wants hyprland-session.target dms
 
 #### MangoWC
 
-[MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling compositor based on dwl (wlroots). Like other wlroots compositors, it requires manual environment export for systemd user services.
+[MangoWC](https://github.com/DreamMaoMao/mangowc) is a dynamic tiling compositor based on dwl (wlroots). DMS needs MangoWC 0.18 or newer.
 
-Create a session target:
+MangoWC ships `mango-session.target` (since 0.17.1) and starts it itself after exporting the environment to systemd, so you only need the `add-wants` step at the end of this section. If your package doesn't install the target, create it by hand:
 
 ```ini title="~/.config/systemd/user/mango-session.target"
 [Unit]
@@ -801,8 +801,8 @@ After=graphical-session.target
 Add to your MangoWC config:
 
 ```conf title="~/.config/mango/config.conf"
-exec-once=dbus-update-activation-environment --systemd --all
-exec-once=systemctl --user start mango-session.target
+exec_once=dbus-update-activation-environment --systemd --all
+exec_once=systemctl --user start mango-session.target
 ```
 
 Bind DMS to the session:
