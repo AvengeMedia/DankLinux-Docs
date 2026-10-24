@@ -92,7 +92,7 @@ func NewConfig() *Config {
 
 	qtRebuildRepo := os.Getenv("QT_REBUILD_REPO")
 	if qtRebuildRepo == "" {
-		qtRebuildRepo = "duxlabs-dev/dux-packaging"
+		qtRebuildRepo = "duxlabs-dev/dux-repo"
 	}
 
 	qtRebuildPackages := os.Getenv("QT_REBUILD_PACKAGES")
