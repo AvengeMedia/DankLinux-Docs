@@ -381,22 +381,22 @@ const config: Config = {
       {
         redirects: [{from: '/blog/v1-7-release', to: '/blog/v2-0-release'}],
         createRedirects(existingPath: string) {
-          const map: [string, string][] = [
-            ['/docs/dms/', '/docs/dankmaterialshell/'],
-            ['/docs/dms-greeter/', '/docs/dankgreeter/'],
-            ['/docs/dsearch/', '/docs/danksearch/'],
-            ['/docs/dcal/', '/docs/dankcalendar/'],
-            ['/docs/packaging/', '/docs/danklinux/'],
-            ['/docs/dms', '/docs/dankmaterialshell'],
-            ['/docs/dms-greeter', '/docs/dankgreeter'],
-            ['/docs/dsearch', '/docs/danksearch'],
-            ['/docs/dcal', '/docs/dankcalendar'],
-            ['/docs/packaging', '/docs/danklinux'],
-            ['/docs/duxinstall', '/docs/dankinstall'],
+          const map: [string, string[]][] = [
+            ['/docs/dms/', ['/docs/dankmaterialshell/']],
+            ['/docs/dms-greeter/', ['/docs/dankgreeter/']],
+            ['/docs/dsearch/', ['/docs/danksearch/']],
+            ['/docs/dcal/', ['/docs/dankcalendar/']],
+            ['/docs/repo/', ['/docs/packaging/', '/docs/danklinux/']],
+            ['/docs/dms', ['/docs/dankmaterialshell']],
+            ['/docs/dms-greeter', ['/docs/dankgreeter']],
+            ['/docs/dsearch', ['/docs/danksearch']],
+            ['/docs/dcal', ['/docs/dankcalendar']],
+            ['/docs/repo', ['/docs/packaging', '/docs/danklinux']],
+            ['/docs/duxinstall', ['/docs/dankinstall']],
           ];
-          for (const [neu, old] of map) {
+          for (const [neu, olds] of map) {
             if (existingPath === neu || existingPath.startsWith(neu.endsWith('/') ? neu : neu + '/')) {
-              return [existingPath.replace(neu, old)];
+              return olds.map((old) => existingPath.replace(neu, old));
             }
           }
           return undefined;

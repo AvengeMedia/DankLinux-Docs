@@ -151,12 +151,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Dux Labs Packages',
+      label: 'Dux Labs Repo',
       collapsed: false,
       items: [
         {
           type: 'doc',
-          id: 'packaging/index',
+          id: 'repo/index',
           label: 'Overview',
         },
       ],
